@@ -8,8 +8,8 @@ module.exports = {
     name: 'meraki',
     category: 'Networking Tools',
     description: 'Meraki network statistics',
-    usage: `${prefix}meraki list`,
-    aliases: ['']
+    usage: `${prefix}network <devices>`,
+    aliases: ['speak']
   },
   options: {
     enabled: true,
@@ -17,15 +17,16 @@ module.exports = {
     showInHelp: true,
     ownerOnly: true,
     guildOnly: true,
-    args: true,
+    args: false,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute (client, msg, api) {
     //* -------------------------- Setup --------------------------
-    const { bytesToSize, addSpace, sortByKey } = client.utils
+    const { bytesToSize } = client.utils
 
     //* ------------------------- Config --------------------------
 
+    const space = client.utils.space
     const { serielNum, apiKey } = client.config.commands.meraki
 
     //* ----------------------- Main Logic ------------------------
@@ -74,7 +75,7 @@ module.exports = {
           return {
             numDevices: numDevices,
             traffic: { sent: bytesToSize(sent * 1000), recv: bytesToSize(recv * 1000) },
-            devices: sortByKey(deviceList, 'ip')
+            devices: deviceList
           }
         }
       } catch {
@@ -89,30 +90,27 @@ module.exports = {
     if (!api) {
       embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
     }
-    switch (args[0]) {
-      case 'list': {
-        const status = await networkDevices()
 
-        switch (status) {
-          case 'failure':
-            if (api) return 'Failure connection to Meraki API'
+    const status = await networkDevices()
 
-            embed.setTitle('Failure connection to Meraki API')
-            msg.channel.send('Failure connection to Meraki API')
-            break
-          default: {
-            if (api) return status
+    switch (status) {
+      case 'failure':
+        if (api) return 'Failure connection to Meraki API'
 
-            for (const item of status.devices) {
-              embed.addField(
-                `**== ${item.name} ==**`,
-                `**IP:** ${addSpace(5)} ${item.ip}\n**Sent:** ${item.sent}\n**Recv:** ${item.recv}`,
-                true
-              )
-            }
-            return msg.channel.send({ embed })
-          }
+        embed.setTitle('Failure connection to Meraki API')
+        msg.channel.send('Failure connection to Meraki API')
+        break
+      default: {
+        if (api) return status
+
+        for (const item of status.devices) {
+          embed.addField(
+            `**== ${item.name} ==**`,
+            `**IP:** ${space(5)} ${item.ip}\n**Sent:** ${item.sent}\n**Recv:** ${item.recv}`,
+            true
+          )
         }
+        return msg.channel.send({ embed })
       }
     }
   }

@@ -2,7 +2,6 @@
 const Discord = require('discord.js')
 const Enmap = require('enmap')
 const shell = require('shelljs')
-const fs = require('fs')
 const config = require('./data/config.js')
 
 const client = new Discord.Client({
@@ -14,25 +13,7 @@ client.commands = new Enmap()
 client.utils = require('./lib/utils')
 client.config = config
 client.dateFormat = require('dateformat')
-
-const setup = () => {
-  //* load commands from ./commands folder
-  const cmdFiles = client.utils.findNested('./commands', '.js')
-  cmdFiles.forEach((file) => {
-    const command = require(file)
-    client.commands.set(command.help.name, command)
-  })
-
-  //* load events from ./events folder
-  fs.readdir('./events/', (err, files) => {
-    if (err) console.error(err)
-    const jsFiles = files.filter((f) => f.split('.').pop() === 'js')
-    jsFiles.forEach((f, i) => {
-      require(`./events/${f}`)
-    })
-  })
-}
-setup()
+client.utils.setup(client)
 
 //* clear terminal
 shell.exec('clear')
