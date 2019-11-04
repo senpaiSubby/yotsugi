@@ -4,6 +4,10 @@ const urljoin = require('url-join')
 const config = require('../../data/config')
 const { prefix } = config.general
 
+/*
+requires role "requestmovie"
+*/
+
 module.exports = {
   help: {
     name: 'movie',
@@ -111,7 +115,7 @@ module.exports = {
 
     const requestMovie = async (movieMsg, movie) => {
       if (
-        (!requestmovie || msg.member.roles.some((role) => role.name === requestmovie)) &&
+        (!requestmovie || msg.member.roles.some((role) => role.name === 'requestmovie')) &&
         !movie.available &&
         !movie.requested &&
         !movie.approved

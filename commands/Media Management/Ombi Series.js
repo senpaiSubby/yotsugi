@@ -4,6 +4,10 @@ const urljoin = require('url-join')
 const config = require('../../data/config')
 const { prefix } = config.general
 
+/*
+requires role "requesttv"
+*/
+
 module.exports = {
   help: {
     name: 'tv',
@@ -23,15 +27,10 @@ module.exports = {
   },
   async execute (client, msg, args, api) {
     //* -------------------------- Setup --------------------------
-    const { host, apiKey, username, requesttv } = client.config.commands.ombi
 
     //* ------------------------- Config --------------------------
-    const ombi = {
-      host: 'https://ombi.atriox.io/',
-      apiKey: 'c24dbafe708947c5b305990e75bc0cf9',
-      username: 'sublime',
-      requesttv: true
-    }
+    const { host, apiKey, username, requesttv } = client.config.commands.ombi
+
     //* ----------------------- Main Logic ------------------------
     const outputTVShow = (show) => {
       const embed = new Discord.RichEmbed()
@@ -112,7 +111,7 @@ module.exports = {
 
     const requestTVShow = async (showMsg, show) => {
       if (
-        (!requesttv || msg.member.roles.some((role) => role.name === requesttv)) &&
+        (!requesttv || msg.member.roles.some((role) => role.name === 'requesttv')) &&
         !show.available &&
         !show.requested &&
         !show.approved
