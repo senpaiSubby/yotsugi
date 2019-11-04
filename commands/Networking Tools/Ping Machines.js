@@ -19,7 +19,7 @@ module.exports = {
     args: false,
     cooldown: 5
   },
-  async execute(client, msg, args, api) {
+  async execute (client, msg, args, api) {
     const embed = new Discord.RichEmbed()
 
     if (!api) {

@@ -9,7 +9,7 @@ const { prefix } = config.general
 module.exports = {
   help: {
     name: 'docker',
-    category: 'System Management',
+    category: 'Server Management',
     description: 'Docker Management',
     usage: `${prefix}docker <state> <name> | ${prefix}docker list <state>`,
     aliases: ['container']
@@ -23,7 +23,7 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute(client, msg, args, api) {
+  async execute (client, msg, args, api) {
     //* -------------------------- Setup --------------------------
 
     //* ------------------------- Config --------------------------

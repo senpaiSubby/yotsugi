@@ -70,8 +70,6 @@ module.exports = {
     const embed = new Discord.RichEmbed()
     if (!api) {
       embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
-      embed.attachFile('./data/images/icons/pihole.png')
-      embed.setThumbnail('attachment://pihole.png')
     }
 
     switch (args[0]) {
@@ -108,6 +106,8 @@ module.exports = {
       }
 
       case 'stats': {
+        embed.attachFile('./data/images/icons/pihole.png')
+        embed.setThumbnail('attachment://pihole.png')
         const status = await getStats()
         if (status !== 'no connection') {
           if (api) return status

@@ -36,15 +36,12 @@ module.exports = {
       host: 'https://sabnzbd.domain.io',
       apiKey: ''
     },
-    sonarr: {
-      host: 'http://10.0.0.5:8989',
+    ombi: {
+      host: 'https://ombi.domain.io/',
       apiKey: '',
-      profile: 4,
-      monitored: true,
-      autosearch: true,
-      seasonfolder: true,
-      seriesPath: '/GMEDIA/media/series/',
-      animePath: '/GMEDIA/media/anime/'
+      username: 'sublime',
+      requesttv: true,
+      requestmovie: true
     },
     meraki: {
       serielNum: '',
