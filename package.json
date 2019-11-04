@@ -1,0 +1,46 @@
+{
+  "name": "subby-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "subbyBot.js",
+  "scripts": {
+    "start": "pm2 start subbyBot.js",
+    "stop": "pm2 del subbyBot",
+    "dev": "nodemon ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simplysublimee/subby-bot.git"
+  },
+  "keywords": [],
+  "author": "SimplySublime",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "dateformat": "^3.0.3",
+    "discord.js": "^11.5.1",
+    "enmap": "^5.2.1",
+    "express": "^4.17.1",
+    "google-home-notify-client": "^0.3.1",
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.0",
+    "node-schedule": "^1.3.2",
+    "pm2": "^4.1.2",
+    "portscanner": "^2.2.0",
+    "shelljs": "^0.8.3",
+    "torrent2magnet": "^1.0.0",
+    "transmission-promise": "^1.1.4",
+    "tuyapi": "github:codetheweb/tuyapi",
+    "url-join": "^4.0.1",
+    "wol": "^1.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4",
+    "eslint": "^6.6.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  }
+}

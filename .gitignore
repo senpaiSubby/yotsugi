@@ -1,0 +1,54 @@
+# Compiled api #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw api
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+logs
+*.sql
+*.sqlite
+*.sqlite3
+*.sqlite3*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.bak
+*.swp
+
+# Programming #
+######################
+node_modules
+__pycache__
+env
+venv
+*.pyc
+*.idea
+.vscode
+
+config.js
