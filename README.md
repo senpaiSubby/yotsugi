@@ -4,10 +4,10 @@
 <br />
 <p align="center">
   <a href="https://github.com/simplysublimee/subby-bot">
-    <img src="data/images/logo.png" alt="Logo" width="80" height="80">
+    <img src="data/images/logo.png" alt="Logo" width="126" height="126">
   </a>
 
-  <h3 align="center">Subby Bot</h3>
+**<h3 align="center">Subby Bot</h3>**
 
   <p align="center">
     Home automation, media management and server automation bot.
@@ -23,22 +23,22 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## **About The Project**
 
 This bot was made to help me automate and control my lights, computers, smart plugs and various other things.
 
-### Built With
+### **Built With**
 
 - [discord.js]()
 - [express]()
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## **Getting Started**
 
 To get a local copy up and running follow these simple steps.
 
-### Prerequisites
+### **Prerequisites**
 
 This is an example of how to list things you need to use the software and how to
 install them.
@@ -53,7 +53,7 @@ Arch Linux
 sudo pacman -S yarn
 ```
 
-### Installation
+### **Installation**
 
 1. Clone the subby-bot
 
@@ -69,7 +69,7 @@ yarn install
 
 <!-- USAGE EXAMPLES -->
 
-## Usage
+## **Usage**
 
 I'll fill this out later..
 
@@ -77,14 +77,14 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ROADMAP -->
 
-## Roadmap
+## **Roadmap**
 
 See the [open issues](https://github.com/simplysublimee/subby-bot/issues) for a
 list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
-## Contributing
+## **Contributing**
 
 Contributions are what make the open source community such an amazing place to
 be learn, inspire, and create. Any contributions you make are **greatly
@@ -98,19 +98,19 @@ appreciated**.
 
 <!-- LICENSE -->
 
-## License
+## **License**
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- CONTACT -->
 
-## Contact
+## **Contact**
 
 [![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/simplysublimee/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/simplysublimee?style=for-the-badge)
 
 <!-- ACKNOWLEDGEMENTS -->
 
-## Acknowledgements
+## **Acknowledgements**
 
 - []()
 - []()
