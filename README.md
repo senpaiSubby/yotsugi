@@ -69,13 +69,114 @@ yarn install
 
 <!-- USAGE EXAMPLES -->
 
-## **Usage**
+## **Commands**
 
-I'll fill this out later..
+### **sab** | sabNZBD Management
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+```
+> ?sab add NZBLINK
+> ?sab list
+```
 
-<!-- ROADMAP -->
+### **tor** | Transmission Management
+
+```
+> ?tor add MAGNETLINK
+> ?tor list
+```
+
+### ​**movie** | Search and Request Movies in Ombi
+
+```
+> ?movie black hawk down
+```
+
+### **tv** | Search and Request TV Shows in Ombi
+
+```
+> ?tv mr robot
+```
+
+### **ip** | Show Server IP
+
+```
+> ?ip
+```
+
+### **meraki** | Meraki network statistics
+
+```
+> ?meraki list
+```
+
+### **pihole** | PiHole stats and management
+
+```
+> ?pihole on/off
+> ?pihole stats
+```
+
+### **ping** | Check Bot Latency
+
+```
+> ?ping
+```
+
+### **port** | Check open/closed and available ports
+
+```
+> ?ports 80
+```
+
+### **docker** | Docker Management
+
+```
+> ?docker list
+> ?docker restart/stop/start CONTAINERNAME
+```
+
+### **avr** | Pioneer AVR Controller
+
+```
+> ?avr on/off
+> ?avr vol
+> ?avr vol 50
+```
+
+### **lights** | Sengled Light Control
+
+```
+> ?lights list
+> ?lights desk
+> ?lights desk 85
+```
+
+### **pc** | Power linux systems on/off
+
+```
+> ?pc gaara on/off/restart
+```
+
+### **plug** | Tuya Plug Control
+
+```
+> ?plug list
+> ?plug tank
+> ?plug tank on/off
+```
+
+### **routine** | Routines like good morning or goodnight
+
+```
+> ?routine on
+> ?routine goodnight
+```
+
+### **say** | Speak through Google Home
+
+```
+> ?say waddup my g
+```
 
 ## **Roadmap**
 

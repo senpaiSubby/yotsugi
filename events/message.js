@@ -1,12 +1,13 @@
 const { client } = require('../subbyBot')
 const Discord = require('discord.js')
-const logging = require('../lib/logging')
+const messageLogging = require('../lib/messageLogging')
 const chalk = require('chalk')
 const moment = require('moment')
 
 client.on('message', async (msg) => {
   // client.emit('guildMemberAdd', msg.member)
   const time = moment().format('LT')
+  const { logger } = client
 
   //* load config
   const { prefix, ownerId } = client.config.general
@@ -20,7 +21,7 @@ client.on('message', async (msg) => {
   if (msg.author.bot) return
 
   //* send all messages to our logger
-  await logging(client, msg)
+  await messageLogging(client, msg)
 
   //* if msg doesnt start with prefix then ignore msg
   if (!content.startsWith(prefix)) return
@@ -43,11 +44,11 @@ client.on('message', async (msg) => {
   if (!command.options.enabled) return
 
   //* print to console hwne user runs any command
-  console.log(
+  logger.info(
     chalk.green(
-      `${time} | ${chalk.yellow(msg.author.username)} ran command ${chalk.yellow(
-        commandName
-      )} ${chalk.yellow(args.join(' '))}`
+      `${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(
+        args.join(' ')
+      )}`
     )
   )
 
@@ -122,7 +123,7 @@ client.on('message', async (msg) => {
     command.execute(client, msg, args, null)
     msg.channel.stopTyping()
   } catch (error) {
-    console.error(error)
+    logger.warn(error)
     msg.reply('there was an error trying to execute that command!')
   }
 })

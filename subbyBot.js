@@ -14,6 +14,7 @@ client.commands = new Enmap()
 client.utils = require('./lib/utils')
 client.config = config
 client.dateFormat = require('dateformat')
+client.logger = require('./lib/logger')
 
 const setup = () => {
   //* load commands from ./commands folder

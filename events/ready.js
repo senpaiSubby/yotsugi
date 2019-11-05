@@ -4,14 +4,15 @@ const scheduledTasks = require('../lib/scheduledTaks')
 const chalk = require('chalk')
 
 client.on('ready', async () => {
+  const { logger } = client
   const { username } = client.config.general
   //* log that bot is ready
-  console.log(chalk.green(`> ${chalk.yellow(client.user.username)}'s lazers ready to fire.`))
+  logger.info(chalk.green(`${chalk.yellow(client.user.username)}'s lazers ready to fire.`))
 
   //* set bot username
   if (client.user.username !== username) {
     client.user.setUsername(username)
-    console.log(chalk.white(`Username changed to ${chalk.yellow(username)}`))
+    logger.info(chalk.white(`Username changed to ${chalk.yellow(username)}`))
   }
 
   //* set bot activity status
@@ -24,5 +25,4 @@ client.on('ready', async () => {
 
   //* start scheduled tasks
   await scheduledTasks(client)
-  console.log('\n')
 })
