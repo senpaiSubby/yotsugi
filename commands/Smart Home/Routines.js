@@ -19,6 +19,8 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
+    const logger = client.logger
+
     const routine = args[0]
     //* command setup
     let commands
@@ -48,9 +50,7 @@ module.exports = {
     try {
       for (const item of commands) {
         const params = item[1].trim().split(' ')
-        const cmd =
-          client.commands.get(item[0]) ||
-          client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(item[0]))
+        const cmd = client.commands.get(item[0]) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(item[0]))
         try {
           if (api) {
             await cmd.execute(client, msg, params, 'expressAPI')
@@ -61,7 +61,8 @@ module.exports = {
         }
       }
       return 'success'
-    } catch {
+    } catch (error) {
+      logger.warn(error)
       return 'failure'
     }
   }

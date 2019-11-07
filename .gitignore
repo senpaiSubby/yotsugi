@@ -46,9 +46,11 @@ Thumbs.db
 node_modules
 __pycache__
 env
+.env
 venv
 *.pyc
 *.idea
 .vscode
+testing.js
 
 config.js

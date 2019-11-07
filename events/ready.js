@@ -1,6 +1,6 @@
 const { client } = require('../subbyBot')
-const apiServer = require('../lib/apiServer')
-const scheduledTasks = require('../lib/scheduledTaks')
+const apiServer = require('../modules/apiServer')
+const scheduledTasks = require('../modules/scheduledTaks')
 const chalk = require('chalk')
 
 client.on('ready', async () => {
@@ -16,7 +16,7 @@ client.on('ready', async () => {
   }
 
   //* set bot activity status
-  client.user.setActivity('Lewd anime. ;)', {
+  client.user.setActivity('my codebase burn. ;)', {
     type: 'watching'
   })
 

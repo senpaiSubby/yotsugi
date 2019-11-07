@@ -1,35 +1,14 @@
 const fs = require('fs')
 const path = require('path')
 const fetch = require('node-fetch')
-const attachmentParser = require('./attachmentParser')
+const attachmentHandler = require('./attachmentHandler')
 
 module.exports = async (client, msg) => {
   const content = msg.content
   const guild = msg.guild
 
-  //* save all attachements sent on server
-  msg.attachments.forEach(async (a) => {
-    const name = a.url.split('/').pop()
-    //* send attachment urls to our attachmentParser
-    await attachmentParser(client, msg, a.url)
-
-    const dir = `./data/logs/attachments/${name}`
-    if (!fs.existsSync(path.dirname(dir))) {
-      fs.mkdirSync(path.dirname(dir), { recursive: true })
-    }
-    const res = await fetch(a.url)
-    const fileStream = fs.createWriteStream(dir)
-
-    await new Promise((resolve, reject) => {
-      res.body.pipe(fileStream)
-      res.body.on('error', (err) => {
-        reject(err)
-      })
-      fileStream.on('finish', () => {
-        resolve()
-      })
-    })
-  })
+  //* forward all messages to our attachment parser
+  await attachmentHandler(client, msg)
 
   //* log every msg inside of guilds
   if (msg.channel.type === 'text') {

@@ -9,7 +9,6 @@ const apiKey = 284695
 // your-username ALL=NOPASSWD: /sbin/shutdown
 
 app.post('/', (req, res) => {
-  console.log(req.body)
   //* check if all required params are met
   if (!req.body.apiKey && !req.body.command) {
     res.status(406).json({ response: "Missing params 'apiKey' and 'command'" })

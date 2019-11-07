@@ -22,6 +22,7 @@ module.exports = {
   },
   async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -32,6 +33,7 @@ module.exports = {
     /**
      * send text to Google Home to TTS
      * @param {String} speach text to have spoken
+     * @returns {String} success / no connection
      */
     const googleSpeak = async (speach) => {
       try {
@@ -39,6 +41,7 @@ module.exports = {
         await device.notify(speach)
         return 'success'
       } catch (error) {
+        logger.warn(error)
         return 'no connection'
       }
     }
@@ -49,16 +52,14 @@ module.exports = {
     const status = await googleSpeak(command)
     const embed = new Discord.RichEmbed()
 
-    if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
-    }
-
-    if (api) return
+    if (!api) embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
 
     if (status === 'success') {
+      if (api) return `Told Google Home to say: ${command}`
       embed.setTitle(`Told Google Home to say: **${command}**`)
       return msg.channel.send({ embed })
     } else {
+      if (api) return 'No connection to Google Home.'
       embed.setTitle('No connection to Google Home.')
       return msg.channel.send({ embed })
     }

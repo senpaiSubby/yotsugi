@@ -20,9 +20,10 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
     const { bytesToSize, addSpace, sortByKey } = client.utils
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -77,7 +78,8 @@ module.exports = {
             devices: sortByKey(deviceList, 'ip')
           }
         }
-      } catch {
+      } catch (error) {
+        logger.warn(error)
         return 'failure'
       }
     }

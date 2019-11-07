@@ -22,6 +22,7 @@ module.exports = {
   },
   async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     if (!api) msg.delete()
 
@@ -29,10 +30,7 @@ module.exports = {
     //* ----------------------- Main Logic ------------------------
     //* ---------------------- Usage Logic ------------------------
     if (!api) {
-      const embed = new Discord.RichEmbed().setFooter(
-        `Requested by: ${msg.author.username}`,
-        msg.author.avatarURL
-      )
+      const embed = new Discord.RichEmbed().setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
     }
   }
 }

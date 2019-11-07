@@ -20,8 +20,9 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -31,7 +32,7 @@ module.exports = {
 
     /**
      * List info from plugs specify in config
-     * @return {object} list of devices
+     * @return {Object} array of devices
      */
     const listPlugs = async () => {
       try {
@@ -51,8 +52,9 @@ module.exports = {
           device.disconnect()
         }
         return deviceList
-      } catch (e) {
-        return e
+      } catch (error) {
+        logger.warn(error)
+        return error
       }
     }
 
@@ -74,8 +76,9 @@ module.exports = {
         await device.set({ set: !currentStatus })
         device.disconnect()
         return currentStatus ? 'off' : 'on'
-      } catch (e) {
-        return e
+      } catch (error) {
+        logger.warn(error)
+        return error
       }
     }
 
@@ -105,8 +108,9 @@ module.exports = {
           device.disconnect()
           return state
         }
-      } catch (e) {
-        return e
+      } catch (error) {
+        logger.warn(error)
+        return error
       }
     }
 

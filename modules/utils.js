@@ -2,6 +2,26 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 
+const runCommand = async (client, cmdString) => {
+  const commandName = cmdString.split(' ').shift()
+  const cmd =
+    client.commands.get(commandName) || client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(commandName))
+  const args = cmdString.split(' ').slice(1)
+  if (cmd) {
+    if (cmd.options.enabled) {
+      try {
+        await cmd.execute(client, null, args, true)
+        return 'success'
+      } catch (error) {
+        logger.warn(error)
+        return 'failure'
+      }
+    } else {
+      return 'command disabled'
+    }
+  }
+}
+
 const findNested = (dir, pattern) => {
   let results = []
 
@@ -80,5 +100,6 @@ module.exports = {
   millisecondsToTime,
   findNested,
   bytesToSize,
-  sleep
+  sleep,
+  runCommand
 }

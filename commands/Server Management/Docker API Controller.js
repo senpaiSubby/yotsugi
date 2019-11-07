@@ -23,8 +23,9 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -61,7 +62,8 @@ module.exports = {
           })
         }
         return containerList
-      } catch {
+      } catch (error) {
+        logger.warn(error)
         return 'no connection'
       }
     }
@@ -80,19 +82,17 @@ module.exports = {
       //* if container name doesnt match
       if (!containers[index].id) return 'no match'
       try {
-        const response = await fetch(
-          urljoin(host, `/containers/${containers[index].id}/${newState}`),
-          {
-            method: 'POST'
-          }
-        )
+        const response = await fetch(urljoin(host, `/containers/${containers[index].id}/${newState}`), {
+          method: 'POST'
+        })
         const status = response.status
         if (status >= 200 && status < 300) {
           return 'success'
         } else if (newState !== 'restart' && status >= 300 && status < 400) {
           return 'same state'
         }
-      } catch {
+      } catch (error) {
+        logger.warn(error)
         return 'failure'
       }
     }
@@ -111,9 +111,7 @@ module.exports = {
         if (containers === 'bad params') {
           if (api) return 'Valid options are `running, paused, exited, created, restarting, dead`'
 
-          embed.setTitle(
-            ':rotating_light: Valid options are `running, paused, exited, created, restarting, dead`'
-          )
+          embed.setTitle(':rotating_light: Valid options are `running, paused, exited, created, restarting, dead`')
           return msg.channel.send({ embed })
         } else if (containers === 'no connection') {
           if (api) return 'Could not connect to the docker daemon.'
@@ -154,23 +152,15 @@ module.exports = {
           case 'success':
             if (api) return `Container: ${containerName} has been ${newState}ed successfully.`
 
-            embed.setTitle(
-              `:ok_hand: Container: ${containerName} has been ${newState}ed successfully.`
-            )
+            embed.setTitle(`:ok_hand: Container: ${containerName} has been ${newState}ed successfully.`)
             return msg.channel.send({ embed })
 
           case 'same state':
             if (api) {
-              return `Container: ${containerName} is already ${newState}${
-                newState === 'stop' ? 'ped' : 'ed'
-              }.`
+              return `Container: ${containerName} is already ${newState}${newState === 'stop' ? 'ped' : 'ed'}.`
             }
 
-            embed.setTitle(
-              `:warning: Container: ${containerName} is already ${newState}${
-                newState === 'stop' ? 'ped' : 'ed'
-              }.`
-            )
+            embed.setTitle(`:warning: Container: ${containerName} is already ${newState}${newState === 'stop' ? 'ped' : 'ed'}.`)
             return msg.channel.send({ embed })
 
           case 'failure':

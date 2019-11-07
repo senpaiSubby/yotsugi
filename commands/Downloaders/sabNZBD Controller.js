@@ -21,21 +21,26 @@ module.exports = {
     args: false,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
     const { sortByKey, addSpace } = client.utils
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
     const { host, apiKey } = client.config.commands.sabnzbd
 
     //* ----------------------- Main Logic ------------------------
-
+    /**
+     * Fetches the download queue
+     * @type {Object}
+     * @return {Promise} asd
+     */
     const getQueue = async () => {
       try {
         const endpoint = '/api?output=json&mode=queue'
         const response = await fetch(urljoin(host, endpoint, `&apikey=${apiKey}`))
         const data = await response.json()
-        var downloadQueue = []
+        let downloadQueue = []
         const results = data.queue
         for (const key of results.slots) {
           downloadQueue.push({
@@ -48,6 +53,7 @@ module.exports = {
         }
         return sortByKey(downloadQueue, 'percentage')
       } catch (error) {
+        logger.warn(error)
         return 'no connection'
       }
     }
@@ -55,6 +61,7 @@ module.exports = {
     //* ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
+
     if (!api) {
       embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
     }
@@ -74,11 +81,9 @@ module.exports = {
               for (const item of status) {
                 embed.addField(
                   item.filename,
-                  `**Status:** ${addSpace(9)} ${item.status}\n**Percentage:** ${
-                    item.percentage
-                  }%\n**Size:** ${addSpace(14)} ${item.size.left}/${
-                    item.size.total
-                  }\n**Time Left:** ${addSpace(4)} ${item.time.left}`
+                  `**Status:** ${addSpace(9)} ${item.status}\n**Percentage:** ${item.percentage}%\n**Size:** ${addSpace(14)} ${
+                    item.size.left
+                  }/${item.size.total}\n**Time Left:** ${addSpace(4)} ${item.time.left}`
                 )
               }
               return msg.channel.send({ embed })

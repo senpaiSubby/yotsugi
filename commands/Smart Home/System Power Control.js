@@ -23,6 +23,7 @@ module.exports = {
   },
   async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -48,6 +49,7 @@ module.exports = {
             return `${text}`
           }
         } catch (error) {
+          logger.warn(error)
           return 'error'
         }
       } else if (command === 'on') {

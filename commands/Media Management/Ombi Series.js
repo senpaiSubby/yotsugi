@@ -25,8 +25,9 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
     const { host, apiKey, username, requesttv } = client.config.commands.ombi
@@ -79,9 +80,7 @@ module.exports = {
           await msg.reply({ embed })
           try {
             const collected = await msg.channel.awaitMessages(
-              (m) =>
-                (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) &&
-                m.author.id === msg.author.id,
+              (m) => (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) && m.author.id === msg.author.id,
               { max: 1, time: 120000, errors: ['time'] }
             )
 
@@ -104,7 +103,7 @@ module.exports = {
           return data[0].id
         }
       } catch (error) {
-        console.error(error)
+        logger.warn(error)
         return msg.reply('There was an error in your request.')
       }
     }
@@ -138,7 +137,7 @@ module.exports = {
               return msg.reply(`Requested **${show.title}** in Ombi.`)
             }
           } catch (error) {
-            console.error(error)
+            logger.warn(error)
             return msg.reply('There was an error in your request.')
           }
         } catch {

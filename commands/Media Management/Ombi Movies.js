@@ -25,24 +25,18 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
     const { host, apiKey, username, requestmovie } = client.config.commands.ombi
     //* ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
       const movieEmbed = new Discord.RichEmbed()
-        .setTitle(
-          `${movie.title} ${
-            movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
-          }`
-        )
+        .setTitle(`${movie.title} ${movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''}`)
         .setDescription(movie.overview.substr(0, 255) + '(...)')
-        .setFooter(
-          msg.author.username,
-          `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png`
-        )
+        .setFooter(msg.author.username, `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png`)
         .setTimestamp(new Date())
         .setImage('https://image.tmdb.org/t/p/w500' + movie.posterPath)
         .setURL('https://www.themoviedb.org/movie/' + movie.theMovieDbId)
@@ -83,9 +77,7 @@ module.exports = {
           await msg.reply({ embed })
           try {
             const collected = await msg.channel.awaitMessages(
-              (m) =>
-                (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) &&
-                m.author.id === msg.author.id,
+              (m) => (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) && m.author.id === msg.author.id,
               { max: 1, time: 120000, errors: ['time'] }
             )
 
@@ -108,7 +100,7 @@ module.exports = {
           return data[0].id
         }
       } catch (error) {
-        console.error(error)
+        logger.warn(error)
         return msg.reply('There was an error in your request.')
       }
     }
@@ -144,7 +136,7 @@ module.exports = {
               return msg.reply(`Requested **${movie.title}** in Ombi.`)
             }
           } catch (error) {
-            console.error(error)
+            logger.warn(error)
             return msg.reply('There was an error in your request.')
           }
         } catch {
@@ -182,7 +174,7 @@ module.exports = {
         const dataMsg = await outputMovie(data)
         await requestMovie(dataMsg, data)
       } catch (error) {
-        console.error(error)
+        logger.warn(error)
         return msg.reply('There was an error in your request.')
       }
     }

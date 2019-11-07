@@ -20,9 +20,10 @@ module.exports = {
     args: false,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
     const { bytesToSize, sortByKey } = client.utils
+    const logger = client.logger
     //* ------------------------- Config --------------------------
 
     const { host, port, ssl } = client.config.commands.transmission
@@ -36,22 +37,23 @@ module.exports = {
     //* ----------------------- Main Logic ------------------------
 
     const getStatus = (code) => {
-      if (code === 0) {
-        return ':octagonal_sign: '
-      } else if (code === 1) {
-        return 'Check Queued'
-      } else if (code === 2) {
-        return 'Checking'
-      } else if (code === 3) {
-        return 'DL Queued'
-      } else if (code === 4) {
-        return ':arrow_up_down:'
-      } else if (code === 5) {
-        return 'Seed Queued'
-      } else if (code === 6) {
-        return ':arrow_up:'
-      } else if (code === 7) {
-        return 'No Peers'
+      switch (code) {
+        case 0:
+          return 'stopped'
+        case 1:
+          return 'checkWait'
+        case 2:
+          return 'checking'
+        case 3:
+          return 'downloadWait'
+        case 4:
+          return 'downloading'
+        case 5:
+          return 'seedWait'
+        case 6:
+          return 'seeding'
+        case 7:
+          return 'No Peers'
       }
     }
 
@@ -63,10 +65,9 @@ module.exports = {
         for (const item of torrents) {
           downloadQueue.push({
             name: item.name,
+            id: item.id,
             status: getStatus(item.status),
-            percentage: item.downloadedEver
-              ? Math.round((item.downloadedEver / item.sizeWhenDone) * 100).toString()
-              : '0',
+            percentage: item.downloadedEver ? Math.round((item.downloadedEver / item.sizeWhenDone) * 100).toString() : '0',
             rate: {
               up: item.rateUpload ? bytesToSize(item.rateUpload) : 0,
               down: item.rateDownload ? bytesToSize(item.rateDownload) : 0
@@ -78,7 +79,8 @@ module.exports = {
           })
         }
         return sortByKey(downloadQueue, 'percentage')
-      } catch {
+      } catch (error) {
+        logger.warn(error)
         return 'no connection'
       }
     }
@@ -88,7 +90,7 @@ module.exports = {
         const response = await trans.addUrl(magnet)
         return response.name
       } catch (error) {
-        console.log(error)
+        logger.warn(error)
       }
     }
     // todo need to add some type of pagination logic here
@@ -98,9 +100,6 @@ module.exports = {
     //* ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
-    if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
-    }
 
     switch (args[0]) {
       case 'list': {
@@ -113,17 +112,17 @@ module.exports = {
         }
 
         if (dlQueue.length) {
+          embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
           for (const item of dlQueue) {
-            const netStats =
-              item.rate.up && item.rate.down === 0
-                ? `- [U ${item.rate.up} | D ${item.rate.down}]`
-                : ''
-            embed.addField(
-              `${item.name}`,
-              `${item.percentage >= 100 ? ':white_check_mark:' : ':arrow_down:'} ${item.status} | ${
-                item.percentage
-              }% | ${item.size.current}/${item.size.complete} ${netStats}`
-            )
+            if (item.status === 'downloading') {
+              const netStats = item.rate.up && item.rate.down === 0 ? `- [U ${item.rate.up} | D ${item.rate.down}]` : ''
+              embed.addField(
+                `${item.id} | ${item.name}`,
+                `${item.percentage >= 100 ? ':white_check_mark:' : ':arrow_down:'} ${item.percentage}% | ${item.size.current}/${
+                  item.size.complete
+                } ${netStats}`
+              )
+            }
           }
           return msg.channel.send({ embed })
         } else {
@@ -137,9 +136,6 @@ module.exports = {
         embed.setTitle(`**${status}**\nAdded to Transmission`)
         return msg.channel.send({ embed })
       }
-
-      default:
-        break
     }
   }
 }

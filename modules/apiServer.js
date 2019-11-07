@@ -1,21 +1,26 @@
 const express = require('express')
 const chalk = require('chalk')
 
-module.exports = async (client) => {
-  const { apiPort, apiKey } = client.config.general
-  const { logger } = client
-
-  /* USAGE
+/**
+ * A simple API server for remotely running the discord.js commands of this project
+ *
+ * @param {*} client discord.js client object
+ */
+const apiServer = async (client) => {
+  /**
+   * example API usage
    *  {   "apiKey": "KEY FROM CONFIG",
    *      "command": "<command> <params>"
    *  }
    */
+
+  const { apiPort, apiKey } = client.config.general
+  const { logger } = client
+
   const app = express()
   app.use(express.json())
   app.post('/', async (req, res) => {
-    logger.info(
-      chalk.green(`${chalk.yellow(req.ip)} sent command ${chalk.yellow(req.body.command)}`)
-    )
+    logger.info(chalk.green(`${chalk.yellow(req.ip)} sent command ${chalk.yellow(req.body.command)}`))
 
     //* check if all required params are met
     if (!req.body.apiKey && !req.body.command) {
@@ -31,8 +36,7 @@ module.exports = async (client) => {
       //* command name without prefix
       const command = args.shift().toLowerCase()
       const cmd =
-        client.commands.get(command) ||
-        client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(command))
+        client.commands.get(command) || client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(command))
 
       //* if command exists
       if (cmd) {
@@ -58,3 +62,4 @@ module.exports = async (client) => {
     logger.warn(e)
   }
 }
+module.exports = apiServer

@@ -22,6 +22,7 @@ module.exports = {
   },
   async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -51,6 +52,7 @@ module.exports = {
         const data = await response.json()
         return data
       } catch (error) {
+        logger.warn(error)
         return error
       }
     }
@@ -58,7 +60,6 @@ module.exports = {
     const getDevices = async () => {
       try {
         const response = await fetch(`${baseUrl}/room/getUserRoomsDetail.json`, {
-          credentials: 'include',
           method: 'POST',
           headers: headers
         })
@@ -77,6 +78,7 @@ module.exports = {
         }
         return deviceList
       } catch (error) {
+        logger.warn(error)
         return error
       }
     }
@@ -88,7 +90,6 @@ module.exports = {
           onoff: newState === 'off' ? 0 : 1
         }
         await fetch(`${baseUrl}/device/deviceSetOnOff.json`, {
-          credentials: 'include',
           method: 'POST',
           headers: headers,
           body: JSON.stringify(jsonData)
@@ -96,6 +97,7 @@ module.exports = {
         //* const data = await response.json()
         return newState
       } catch (error) {
+        logger.warn(error)
         return error
       }
     }
@@ -117,6 +119,7 @@ module.exports = {
         //* const data = await response.json()
         if (response.status === 200) return 'ok'
       } catch (error) {
+        logger.warn(error)
         return error
       }
     }
@@ -137,10 +140,7 @@ module.exports = {
         embed.setTitle(':flashlight: Lights')
 
         for (const device of devices) {
-          embed.addField(
-            `${device.name}`,
-            `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`
-          )
+          embed.addField(`${device.name}`, `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`)
         }
         return msg.channel.send({ embed })
 
@@ -163,9 +163,7 @@ module.exports = {
 
               if (api) return `${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}`
 
-              embed.setTitle(
-                `:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.`
-              )
+              embed.setTitle(`:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.`)
               return msg.channel.send({ embed })
             } else {
               //* set light brightness eg: !light desk 100

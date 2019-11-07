@@ -22,6 +22,7 @@
     "enmap": "^5.2.1",
     "express": "^4.17.1",
     "google-home-notify-client": "^0.3.1",
+    "js-yaml": "^3.13.1",
     "loglevel": "^1.6.4",
     "loglevel-plugin-prefix": "^0.8.4",
     "loglevel-plugin-remote": "^0.6.8",
@@ -38,12 +39,16 @@
     "wol": "^1.0.6"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4",
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "javascript-typescript-langserver": "^2.11.3",
+    "nodemon": "^1.19.4"
   }
 }

@@ -1,3 +1,5 @@
+//* This module serves as a custom logger using loglevel
+
 const chalk = require('chalk')
 const log = require('loglevel')
 const prefix = require('loglevel-plugin-prefix')
@@ -14,13 +16,13 @@ prefix.reg(log)
 log.enableAll()
 
 prefix.apply(log, {
-  format (level, name, timestamp) {
+  format(level, name, timestamp) {
     return `${chalk.gray(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)}:`
   }
 })
 
 prefix.apply(log.getLogger('critical'), {
-  format (level, name, timestamp) {
+  format(level, name, timestamp) {
     return chalk.red.bold(`[${timestamp}] ${level}:`)
   }
 })

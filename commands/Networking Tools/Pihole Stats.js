@@ -21,8 +21,9 @@ module.exports = {
     args: true,
     cooldown: 5
   },
-  async execute (client, msg, args, api) {
+  async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 
@@ -44,7 +45,8 @@ module.exports = {
         } else {
           return 'success'
         }
-      } catch {
+      } catch (error) {
+        logger.warn(error)
         return 'no connection'
       }
     }
@@ -60,7 +62,8 @@ module.exports = {
           queriesToday: data.dns_queries_today,
           adsBlockedToday: data.ads_blocked_today
         }
-      } catch {
+      } catch (error) {
+        logger.warn(error)
         return 'no connection'
       }
     }

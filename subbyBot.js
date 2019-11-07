@@ -11,10 +11,10 @@ const client = new Discord.Client({
 })
 
 client.commands = new Enmap()
-client.utils = require('./lib/utils')
+client.utils = require('./modules/utils')
 client.config = config
 client.dateFormat = require('dateformat')
-client.logger = require('./lib/logger')
+client.logger = require('./modules/logger')
 
 const setup = () => {
   //* load commands from ./commands folder

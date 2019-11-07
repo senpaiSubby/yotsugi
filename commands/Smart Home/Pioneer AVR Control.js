@@ -24,6 +24,7 @@ module.exports = {
   async execute(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
     const { sleep } = client.utils
+    const logger = client.logger
 
     //* ------------------------- Config --------------------------
 

@@ -1,6 +1,6 @@
 const { client } = require('../subbyBot')
 const Discord = require('discord.js')
-const messageLogging = require('../lib/messageLogging')
+const messageLogging = require('../modules/messageLogging')
 const chalk = require('chalk')
 const moment = require('moment')
 
@@ -34,8 +34,7 @@ client.on('message', async (msg) => {
 
   //* set command name and aliases
   const command =
-    client.commands.get(commandName) ||
-    client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(commandName))
+    client.commands.get(commandName) || client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(commandName))
 
   //* if no command or alias do nothing
   if (!command) return
@@ -45,11 +44,7 @@ client.on('message', async (msg) => {
 
   //* print to console hwne user runs any command
   logger.info(
-    chalk.green(
-      `${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(
-        args.join(' ')
-      )}`
-    )
+    chalk.green(`${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(args.join(' '))}`)
   )
 
   //* if command is marked 'ownerOnly: true' then don't excecute
@@ -105,11 +100,7 @@ client.on('message', async (msg) => {
       const timeLeft = (expirationTime - now) / 1000
       msg.delete()
       return msg
-        .reply(
-          `please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${
-            command.name
-          }\` command.`
-        )
+        .reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
         .then((msg) => msg.delete(2000))
     }
   } else {
