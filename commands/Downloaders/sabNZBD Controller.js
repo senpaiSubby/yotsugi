@@ -22,14 +22,14 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const { sortByKey, addSpace } = client.utils
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
     const { host, apiKey } = client.config.commands.sabnzbd
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
     /**
      * Fetches the download queue
      * @type {Object}
@@ -58,7 +58,7 @@ module.exports = {
       }
     }
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
 

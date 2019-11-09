@@ -21,14 +21,14 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
 
     const { devices } = client.config.commands.tuyaPlugControl
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
 
     /**
      * List info from plugs specify in config
@@ -99,7 +99,7 @@ module.exports = {
         await device.connect()
         const currentState = await device.get()
         const newState = state === 'on'
-        //* if state same and new state return state
+        // if state same and new state return state
         if (currentState === newState) {
           device.disconnect()
           return `already ${state}`
@@ -114,7 +114,7 @@ module.exports = {
       }
     }
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
     if (!api) {
@@ -123,7 +123,7 @@ module.exports = {
 
     switch (args[0]) {
       case 'list': {
-        //* if user wants list of devices
+        // if user wants list of devices
         const deviceList = await listPlugs()
 
         if (api) return deviceList
@@ -137,9 +137,9 @@ module.exports = {
       }
 
       default: {
-        //* get index of device from name sepcified
+        // get index of device from name sepcified
         const index = devices.findIndex((d) => d.name === args[0])
-        //* if plug name not found
+        // if plug name not found
         if (index === -1) {
           if (api) return `No plug named ${args[0]}.`
 
@@ -148,7 +148,7 @@ module.exports = {
         }
 
         if (args[1]) {
-          //* if on/off specified
+          // if on/off specified
           const status = await setPlug(devices[index].id, devices[index].key, args[1])
 
           if (status !== 'on' && status !== 'off') {
@@ -163,7 +163,7 @@ module.exports = {
             return msg.channel.send({ embed })
           }
         } else {
-          //* if user doesnt specify on/off then toggle device instead
+          // if user doesnt specify on/off then toggle device instead
           const status = await togglePlug(devices[index].id, devices[index].key)
 
           if (api) return `${args[0]} turned ${status}`

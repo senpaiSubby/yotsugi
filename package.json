@@ -2,6 +2,7 @@
   "name": "subby-bot",
   "version": "1.0.0",
   "description": "",
+  "license": "GPLv3",
   "main": "subbyBot.js",
   "scripts": {
     "start": "pm2 start subbyBot.js",

@@ -213,7 +213,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## **Acknowledgements**
 
-- []()
+- [Mellow - Ombi movies/series code](https://github.com/v0idp/Mellow)
 - []()
 - []()
 

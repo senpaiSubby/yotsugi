@@ -1,4 +1,4 @@
-//* This module serves as a custom logger using loglevel
+// This module serves as a custom logger using loglevel
 
 const chalk = require('chalk')
 const log = require('loglevel')

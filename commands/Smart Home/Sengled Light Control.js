@@ -21,10 +21,10 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
 
     const { jsessionid, username, password } = client.config.commands.sengled
     const baseUrl = 'https://us-elements.cloud.sengled.com:443/zigbee'
@@ -33,7 +33,7 @@ module.exports = {
       Cookie: `JSESSIONID=${jsessionid}`
     }
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
 
     const login = async () => {
       const jsonData = {
@@ -94,7 +94,7 @@ module.exports = {
           headers: headers,
           body: JSON.stringify(jsonData)
         })
-        //* const data = await response.json()
+        // const data = await response.json()
         return newState
       } catch (error) {
         logger.warn(error)
@@ -103,7 +103,7 @@ module.exports = {
     }
     const setBrightness = async (deviceID, newBrightness) => {
       try {
-        //* convert 0-100 to 0-255
+        // convert 0-100 to 0-255
         const value = (newBrightness / 100) * 255
 
         const jsonData = {
@@ -116,7 +116,7 @@ module.exports = {
           headers: headers,
           body: JSON.stringify(jsonData)
         })
-        //* const data = await response.json()
+        // const data = await response.json()
         if (response.status === 200) return 'ok'
       } catch (error) {
         logger.warn(error)
@@ -124,7 +124,7 @@ module.exports = {
       }
     }
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
     if (!api) {
@@ -145,12 +145,12 @@ module.exports = {
         return msg.channel.send({ embed })
 
       default: {
-        //* find index based of of key name
+        // find index based of of key name
         const index = devices.findIndex((d) => d.name === args[0])
 
-        //* if light not found
+        // if light not found
         if (index === -1) {
-          //* if device name doesnt exist
+          // if device name doesnt exist
           if (api) return `Could not find a light named ${args[0]}`
 
           embed.setTitle(`:rotating_light: Could not find a light named ${args[0]}`)
@@ -158,7 +158,7 @@ module.exports = {
         } else {
           if (args[1]) {
             if (args[1] === 'on' || args[1] === 'off') {
-              //* toggle power on/off if brightness not specified
+              // toggle power on/off if brightness not specified
               await setBrightness(devices[index].uuid, args[1] === 'on' ? '100' : '0')
 
               if (api) return `${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}`
@@ -166,7 +166,7 @@ module.exports = {
               embed.setTitle(`:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.`)
               return msg.channel.send({ embed })
             } else {
-              //* set light brightness eg: !light desk 100
+              // set light brightness eg: !light desk 100
               await setBrightness(devices[index].uuid, args[1])
 
               if (api) return `${args[0]} light brightness set to ${args[1]}`
@@ -175,7 +175,7 @@ module.exports = {
               return msg.channel.send({ embed })
             }
           } else {
-            //* if no brightness specified then toggle light power
+            // if no brightness specified then toggle light power
 
             const newState = devices[index].status === 'on' ? 'off' : 'on'
 

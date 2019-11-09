@@ -20,7 +20,7 @@ module.exports = {
     cooldown: 5
   },
   async execute (client, msg, args, api) {
-    //* remove original msg
+    // remove original msg
     if (!api) msg.delete()
 
     if (!api) {

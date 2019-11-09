@@ -21,14 +21,14 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const logger = client.logger
 
     if (!api) msg.delete()
 
-    //* ------------------------- Config --------------------------
-    //* ----------------------- Main Logic ------------------------
-    //* ---------------------- Usage Logic ------------------------
+    // ------------------------- Config --------------------------
+    // ----------------------- Main Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
     if (!api) {
       const embed = new Discord.RichEmbed().setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
     }

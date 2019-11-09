@@ -21,15 +21,15 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const { bytesToSize, addSpace, sortByKey } = client.utils
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
 
     const { serielNum, apiKey } = client.config.commands.meraki
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
 
     const networkDevices = async () => {
       try {
@@ -84,7 +84,7 @@ module.exports = {
       }
     }
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
 

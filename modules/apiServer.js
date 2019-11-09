@@ -22,29 +22,29 @@ const apiServer = async (client) => {
   app.post('/', async (req, res) => {
     logger.info(chalk.green(`${chalk.yellow(req.ip)} sent command ${chalk.yellow(req.body.command)}`))
 
-    //* check if all required params are met
+    // check if all required params are met
     if (!req.body.apiKey && !req.body.command) {
       res.status(406).json({ response: "Missing params 'apiKey' and 'command'" })
     }
 
-    //* check if apikey match config
+    // check if apikey match config
     if (req.body.apiKey !== apiKey) {
       res.status(401).json({ response: 'Bad API key.' })
     } else {
-      //* anything after command becomes a list of args
+      // anything after command becomes a list of args
       const args = req.body.command.split(/ +/)
-      //* command name without prefix
+      // command name without prefix
       const command = args.shift().toLowerCase()
       const cmd =
         client.commands.get(command) || client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(command))
 
-      //* if command exists
+      // if command exists
       if (cmd) {
-        //* Check if command is enabled
+        // Check if command is enabled
         if (!cmd.options.enabled) {
           res.status(403).json({ response: 'Command is disabled bot wide.' })
         } else if (!cmd.options.apiEnabled) {
-          //* check if command is enabled in API
+          // check if command is enabled in API
           res.status(403).json({ response: 'Command is disabled for use in the API.' })
         }
         const response = await cmd.execute(client, null, args, 'api')
@@ -62,4 +62,5 @@ const apiServer = async (client) => {
     logger.warn(e)
   }
 }
+
 module.exports = apiServer

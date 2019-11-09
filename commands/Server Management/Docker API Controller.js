@@ -24,14 +24,14 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
 
     const { host } = client.config.commands.docker
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
 
     /**
      *
@@ -50,7 +50,7 @@ module.exports = {
           const { Id, Names, Ports, State, Status } = container
           const exposedports = []
           for (const port of Ports) {
-            //* filter out only exposed host ports
+            // filter out only exposed host ports
             if ('PublicPort' in port) exposedports.push(port.PublicPort)
           }
           containerList.push({
@@ -77,9 +77,9 @@ module.exports = {
       } else if (containers === 'no connection') {
         return 'no connection'
       }
-      //* find index based off of key name
+      // find index based off of key name
       const index = containers.findIndex((c) => c.name === containerName, newState)
-      //* if container name doesnt match
+      // if container name doesnt match
       if (!containers[index].id) return 'no match'
       try {
         const response = await fetch(urljoin(host, `/containers/${containers[index].id}/${newState}`), {
@@ -97,7 +97,7 @@ module.exports = {
       }
     }
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
     if (!api) {

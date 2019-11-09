@@ -22,7 +22,7 @@ module.exports = {
     const logger = client.logger
 
     const routine = args[0]
-    //* command setup
+    // command setup
     let commands
     switch (routine) {
       case 'on':

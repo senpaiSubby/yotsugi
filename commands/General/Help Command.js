@@ -20,14 +20,14 @@ module.exports = {
   },
   async execute (client, msg, args, api) {
     const { commands } = msg.client
-    //* If no specific command is called, show all filtered commands.
+    // If no specific command is called, show all filtered commands.
     if (!args[0]) {
-      //* Filter all commands by which are available for the user's level, using the <Collection>.filter() method.
-      //* const command =
-      //*    commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name))
+      // Filter all commands by which are available for the user's level, using the <Collection>.filter() method.
+      // const command =
+      //    commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name))
 
-      //* Here we have to get the command names only, and we use that array to get the longest name.
-      //* This make the help commands "aligned" in the output.
+      // Here we have to get the command names only, and we use that array to get the longest name.
+      // This make the help commands "aligned" in the output.
       const commandNames = commands.keyArray()
       const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0)
 
@@ -56,11 +56,11 @@ module.exports = {
       })
       msg.channel.send(output, { code: 'css', split: { char: '\u200b' } })
     } else {
-      //* Show individual command's help.
+      // Show individual command's help.
       let command = args[0]
       if (client.commands.has(command)) {
         command = client.commands.get(command)
-        //* if (level < client.levelCache[command.conf.permLevel]) return
+        // if (level < client.levelCache[command.conf.permLevel]) return
         msg.channel.send(
           `= ${command.help.name} = \n\n${
             command.help.description

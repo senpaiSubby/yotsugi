@@ -21,20 +21,20 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const { bytesToSize, sortByKey } = client.utils
     const logger = client.logger
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
 
     const { host, port, ssl } = client.config.commands.transmission
     const trans = new Transmission({
-      host: host, //* default 'localhost'
-      port: port, //* default 9091
-      ssl: ssl, //* default false use https
-      url: '/transmission/rpc' //* default '/transmission/rpc'
+      host: host, // default 'localhost'
+      port: port, // default 9091
+      ssl: ssl, // default false use https
+      url: '/transmission/rpc' // default '/transmission/rpc'
     })
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
 
     const getStatus = (code) => {
       switch (code) {
@@ -97,7 +97,7 @@ module.exports = {
     // todo maybe limit number of results to 5 to a page?
     // todo also give options on how to sort/show
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
 

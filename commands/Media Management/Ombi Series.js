@@ -1,3 +1,9 @@
+/*
+ * License: GNU GPL 3.0
+ * Source: https://github.com/v0idp/Mellow
+ * Changes: modified scheme to fit into SubbyBots's command layout
+ */
+
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
@@ -26,13 +32,13 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
     const { host, apiKey, username, requesttv } = client.config.commands.ombi
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
     const outputTVShow = (show) => {
       const embed = new Discord.RichEmbed()
         .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
@@ -146,7 +152,7 @@ module.exports = {
       }
       return showMsg
     }
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
     const showName = args.join(' ')
 
     if (!showName) {

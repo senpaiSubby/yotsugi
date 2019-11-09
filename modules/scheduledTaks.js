@@ -8,9 +8,9 @@ const scheduledTasks = async (client) => {
   const { logger } = client
   const { runCommand } = client.utils
 
-  //* every morning at 10am
+  // every morning at 10am
   schedule.scheduleJob('0 10 * * *', async () => {
-    //* turn cheetos tank on
+    // turn cheetos tank on
     const tankStatus = await runCommand(client, 'plug tank on')
     if (tankStatus === 'success') {
       logger.info('Turning cheetos tank on')
@@ -19,9 +19,9 @@ const scheduledTasks = async (client) => {
     }
   })
 
-  //* every night at 8pm
+  // every night at 8pm
   schedule.scheduleJob('0 20 * * *', async () => {
-    //* turn cheetos tank off
+    // turn cheetos tank off
     const tankStatus = await runCommand(client, 'plug tank off')
     if (tankStatus === 'success') {
       logger.info('Turning cheetos tank off')

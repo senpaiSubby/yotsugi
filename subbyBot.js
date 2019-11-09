@@ -5,10 +5,7 @@ const shell = require('shelljs')
 const fs = require('fs')
 const config = require('./data/config.js')
 
-const client = new Discord.Client({
-  disableEveryone: false,
-  restTimeOffset: 1000
-})
+const client = new Discord.Client({})
 
 client.commands = new Enmap()
 client.utils = require('./modules/utils')
@@ -17,14 +14,14 @@ client.dateFormat = require('dateformat')
 client.logger = require('./modules/logger')
 
 const setup = () => {
-  //* load commands from ./commands folder
+  // load commands from ./commands folder
   const cmdFiles = client.utils.findNested('./commands', '.js')
   cmdFiles.forEach((file) => {
     const command = require(file)
     client.commands.set(command.help.name, command)
   })
 
-  //* load events from ./events folder
+  // load events from ./events folder
   fs.readdir('./events/', (err, files) => {
     if (err) console.error(err)
     const jsFiles = files.filter((f) => f.split('.').pop() === 'js')
@@ -35,7 +32,7 @@ const setup = () => {
 }
 setup()
 
-//* clear terminal
+// clear terminal
 shell.exec('clear')
 
 process
@@ -47,8 +44,8 @@ process
   .on('error', (error) => console.log(`Error:\n${error.stack}`))
   .on('warn', (error) => console.log(`Warning:\n${error.stack}`))
 
-//* export client for event handlers
-module.exports = { client: client }
+// export client for event handlers
+module.exports = {client: client}
 
-//* login and start the fires
+// login and start the fires
 client.login(config.general.token)

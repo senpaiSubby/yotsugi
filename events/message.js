@@ -2,52 +2,49 @@ const { client } = require('../subbyBot')
 const Discord = require('discord.js')
 const messageLogging = require('../modules/messageLogging')
 const chalk = require('chalk')
-const moment = require('moment')
 
 client.on('message', async (msg) => {
-  // client.emit('guildMemberAdd', msg.member)
-  const time = moment().format('LT')
   const { logger } = client
 
-  //* load config
+  // load config
   const { prefix, ownerId } = client.config.general
-  //* init collection to hold command cooldown checks
+  // init collection to hold command cooldown checks
   const cooldowns = new Discord.Collection()
-  //* assign some variables for convience
+  // assign some variables for convience
 
   const content = msg.content
 
-  //* if msg is sent by bot then ignore
+  // if msg is sent by bot then ignore
   if (msg.author.bot) return
 
-  //* send all messages to our logger
+  // send all messages to our logger
   await messageLogging(client, msg)
 
-  //* if msg doesnt start with prefix then ignore msg
+  // if msg doesnt start with prefix then ignore msg
   if (!content.startsWith(prefix)) return
 
-  //* anything after command becomes a list of args
+  // anything after command becomes a list of args
   const args = content.slice(prefix.length).split(/ +/)
 
-  //* command name without prefix
+  // command name without prefix
   const commandName = args.shift().toLowerCase()
 
-  //* set command name and aliases
+  // set command name and aliases
   const command =
     client.commands.get(commandName) || client.commands.find((cmd) => cmd.help.aliases && cmd.help.aliases.includes(commandName))
 
-  //* if no command or alias do nothing
+  // if no command or alias do nothing
   if (!command) return
 
-  //* Check if command is enabled
+  // Check if command is enabled
   if (!command.options.enabled) return
 
-  //* print to console hwne user runs any command
+  // print to console hwne user runs any command
   logger.info(
     chalk.green(`${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(args.join(' '))}`)
   )
 
-  //* if command is marked 'ownerOnly: true' then don't excecute
+  // if command is marked 'ownerOnly: true' then don't excecute
   if (command.options.ownerOnly && msg.author.id !== ownerId) {
     return msg
       .reply({
@@ -60,12 +57,12 @@ client.on('message', async (msg) => {
       })
   }
 
-  //* if command is marked 'guildOnly: true' then don't excecute
+  // if command is marked 'guildOnly: true' then don't excecute
   if (command.options.guildOnly && msg.channel.type === 'dm' && msg.author.id !== ownerId) {
     return msg.reply({ embed: { title: 'I refuse to do that for you here.' } })
   }
 
-  //* if commands is marked 'args: true' run this if no args sent
+  // if commands is marked 'args: true' run this if no args sent
   if (command.options.args && !args.length) {
     return msg
       .reply({
@@ -84,7 +81,7 @@ client.on('message', async (msg) => {
       })
   }
 
-  //* check if command is on cooldown
+  // check if command is on cooldown
   if (!cooldowns.has(command.help.name)) {
     cooldowns.set(command.help.name, new Discord.Collection())
   }
@@ -108,7 +105,7 @@ client.on('message', async (msg) => {
     setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount)
   }
 
-  //* continue to command execution
+  // continue to command execution
   try {
     msg.channel.startTyping()
     command.execute(client, msg, args, null)

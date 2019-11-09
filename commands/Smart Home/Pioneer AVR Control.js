@@ -22,15 +22,15 @@ module.exports = {
     cooldown: 5
   },
   async execute(client, msg, args, api) {
-    //* -------------------------- Setup --------------------------
+    // -------------------------- Setup --------------------------
     const { sleep } = client.utils
     const logger = client.logger
 
-    //* ------------------------- Config --------------------------
+    // ------------------------- Config --------------------------
 
     const { host } = client.config.commands.pioneerAVR
 
-    //* ----------------------- Main Logic ------------------------
+    // ----------------------- Main Logic ------------------------
 
     const getStatus = async () => {
       const response = await fetch(urljoin(host, '/StatusHandler.asp'))
@@ -48,13 +48,13 @@ module.exports = {
     const setVolume = async (number) => {
       const currentVol = await getVolume()
       if (number >= currentVol) {
-        //* setting the volume higher
+        // setting the volume higher
         const raiseVal = (number - currentVol) * 2
         for (var i = 0; i < raiseVal; i++) {
           await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VU'))
         }
       } else if (number <= currentVol) {
-        //* setting the volume lower
+        // setting the volume lower
         const lowerVal = Math.abs((number - currentVol) * 2)
         for (var i = 0; i < lowerVal; i++) {
           await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VD'))
@@ -74,9 +74,9 @@ module.exports = {
       return status.Z[0].M === 0 ? 'muted' : 'unmuted'
     }
 
-    //* ---------------------- Usage Logic ------------------------
+    // ---------------------- Usage Logic ------------------------
 
-    //* use first argument as our command
+    // use first argument as our command
     const command = args[0]
     const level = args[1]
     const embed = new Discord.RichEmbed()
@@ -87,7 +87,7 @@ module.exports = {
     }
 
     switch (command) {
-      case 'on': //* turn avr on
+      case 'on': // turn avr on
         await setPower('on')
 
         if (api) return 'AVR turned on'
@@ -95,7 +95,7 @@ module.exports = {
         embed.setTitle(':radio: AVR turned on')
         return msg.channel.send({ embed })
 
-      case 'off': //* turn avr off
+      case 'off': // turn avr off
         await setPower('off')
 
         if (api) return 'AVR turned off'
@@ -104,7 +104,7 @@ module.exports = {
         return msg.channel.send({ embed })
 
       case 'mute': {
-        //* mute/unmute avr
+        // mute/unmute avr
         const muteStatus = await toggleMute()
 
         if (api) return `${muteStatus === 'muted' ? ':mute:' : ':speaker:'} AVR ${muteStatus}`
@@ -113,10 +113,10 @@ module.exports = {
         return msg.channel.send({ embed })
       }
 
-      case 'vol': //* set volume
-        //* set volume
+      case 'vol': // set volume
+        // set volume
         if (!level) {
-          //* if no volume specified send current volume
+          // if no volume specified send current volume
           if (api) return `Current volume is ${await getVolume()} / 100`
 
           embed.setTitle(`:speaker: Current volume is ${await getVolume()} / 100`)
@@ -124,14 +124,14 @@ module.exports = {
         }
 
         if (isNaN(level)) {
-          //* is specified volume isnt a number notify
+          // is specified volume isnt a number notify
           if (api) return '!Volume should be a number between 1-100'
 
           embed.setTitle(':rotating_light: !Volume should be a number between 1-100')
           return msg.channel.send({ embed })
         } else {
-          //* set volume to specified level
-          //* run command 3x for lack of api accuracy
+          // set volume to specified level
+          // run command 3x for lack of api accuracy
           for (var i = 0; i < 3; i++) {
             await setVolume(level)
             await sleep(2000)
