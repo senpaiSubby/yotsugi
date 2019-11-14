@@ -7,7 +7,7 @@
     <img src="data/images/logo.png" alt="Logo" width="126" height="126">
   </a>
 
-**<h3 align="center">Subby Bot</h3>**
+**<h2 align="center">Subby Bot</h2>**
 
   <p align="center">
     Home automation, media management and server automation bot.
@@ -21,13 +21,13 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## **About The Project**
+<h2 align="center"><b>About The Project</b></h2>
 
 This bot was made to help me automate and control my lights, computers, smart plugs and various other things. It's really just a all purpose bot for whatever I want it to do really.
 
 <!-- COMMANDS -->
 
-## **Commands**
+<h2 align="center"><b>Commands</b></h2>
 
 | Name     | Status | Web UI Enabled | Description (Click for full details)                                                                                                                                                                                                                                                                                                                              |
 | -------- | ------ | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ This bot was made to help me automate and control my lights, computers, smart pl
 
 <!-- Web UI -->
 
-## **Web UI - work in progress**
+<h2 align="center"><b>Web UI - Work in progress</b></h2>
 
 ![alt text](/data/images/webui.png 'Logo Title Text 1')
 
@@ -58,11 +58,9 @@ This bot was made to help me automate and control my lights, computers, smart pl
 
 SubbyBot has a built in web UI / express api server for remotely running commands. For Web UI enabled commands you can add them as buttons on the Web UI and have nice buttons to click or tap on to control things like your lights / plugs / etc aswell as via HTTP POST requests from your favorite applications like Insomnia or Postman.
 
-## **Getting Started**
+<h2 align="center"><b>Getting Started</b></h2>
 
 To get a local copy up and running follow these simple steps.
-
-### **Installation**
 
 1. Clone the subbyBot
 
@@ -76,14 +74,14 @@ git clone https://github.com/simplysublimee/subbyBot.git
 yarn install
 ```
 
-## **Roadmap**
+<h2 align="center"><b>Roadmap</b></h2>
 
 See the [open issues](https://github.com/simplysublimee/subbyBot/issues) for a
 list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
-## **Contributing**
+<h2 align="center"><b>Contributing</b></h2>
 
 Contributions are what make the open source community such an amazing place to
 be learn, inspire, and create. Any contributions you make are **greatly
@@ -97,19 +95,19 @@ appreciated**.
 
 <!-- LICENSE -->
 
-## **License**
+<h2 align="center"><b>License</b></h2>
 
 Distributed under the GPL3 License. See `LICENSE` for more information. Do whatever you want IDC
 
 <!-- CONTACT -->
 
-## **Contact**
+<h2 align="center"><b>Contact</b></h2>
 
 [![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/simplysublimee/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/simplysublimee?style=for-the-badge)
 
 <!-- ACKNOWLEDGEMENTS -->
 
-## **Acknowledgements**
+<h2 align="center"><b>Acknowledgements</b></h2>
 
 - [Mellow - Ombi movies/series code](https://github.com/v0idp/Mellow)
 - [nwithan8](https://github.com/nwithan8)
