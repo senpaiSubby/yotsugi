@@ -1,9 +1,9 @@
-[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/simplysublimee/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/simplysublimee?style=for-the-badge)
+[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/simplysublimee/subbyBot">
+  <a href="https://github.com/callmekory/subbyBot">
     <img src="data/images/logo.png" alt="Logo" width="126" height="126">
   </a>
 
@@ -13,9 +13,9 @@
     Home automation, media management and server automation bot.
     <br />
     <br />
-    <a href="https://github.com/simplysublimee/subbyBot/issues">Report Bug</a>
+    <a href="https://github.com/callmekory/subbyBot/issues">Report Bug</a>
     ·
-    <a href="https://github.com/simplysublimee/subbyBot/issues">Request Feature</a>
+    <a href="https://github.com/callmekory/subbyBot/issues">Request Feature</a>
   </p>
 </p>
 
@@ -65,7 +65,7 @@ To get a local copy up and running follow these simple steps.
 1. Clone the subbyBot
 
 ```sh
-git clone https://github.com/simplysublimee/subbyBot.git
+git clone https://github.com/callmekory/subbyBot.git
 ```
 
 2. Install NPM packages
@@ -76,7 +76,7 @@ yarn install
 
 <h2 align="center"><b>Roadmap</b></h2>
 
-See the [open issues](https://github.com/simplysublimee/subbyBot/issues) for a
+See the [open issues](https://github.com/callmekory/subbyBot/issues) for a
 list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
@@ -103,7 +103,7 @@ Distributed under the GPL3 License. See `LICENSE` for more information. Do whate
 
 <h2 align="center"><b>Contact</b></h2>
 
-[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/simplysublimee/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/simplysublimee?style=for-the-badge)
+[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
 
 <!-- ACKNOWLEDGEMENTS -->
 
