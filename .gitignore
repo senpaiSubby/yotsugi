@@ -52,5 +52,5 @@ venv
 *.idea
 .vscode
 testing.js
-
+db.json
 config.js

@@ -45,7 +45,7 @@ process
   .on('warn', (error) => console.log(`Warning:\n${error.stack}`))
 
 // export client for event handlers
-module.exports = {client: client}
+module.exports = { client: client }
 
 // login and start the fires
 client.login(config.general.token)

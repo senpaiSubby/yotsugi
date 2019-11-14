@@ -1,5 +1,5 @@
 const { client } = require('../subbyBot')
-const apiServer = require('../modules/apiServer')
+const apiServer = require('../webServer/webServer')
 const scheduledTasks = require('../modules/scheduledTaks')
 const chalk = require('chalk')
 
@@ -21,7 +21,9 @@ client.on('ready', async () => {
   })
 
   // start API server
-  await apiServer(client)
+  if (client.config.general.apiEnabled) {
+    await apiServer(client)
+  }
 
   // start scheduled tasks
   await scheduledTasks(client)
