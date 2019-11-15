@@ -1,13 +1,16 @@
-const fs = require('fs')
-const path = require('path')
-const config = require('./config')
-const { Collection, RichEmbed, Client } = require('discord.js')
+const { Client } = require('discord.js')
+const Enmap = require('enmap')
+const messageLogging = require('../core/utils/messageLogging')
+const chalk = require('chalk')
 
 module.exports = class CommandManager {
   constructor(client) {
     this.client = client
-    this.commands = new Collection()
-    this.aliases = new Collection()
+    this.commands = new Enmap()
+    this.aliases = new Enmap()
+    this.prefix = client.config.general.prefix
+    this.ownerId = client.config.general.ownerId
+    this.logger = client.logger
 
     if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
@@ -44,44 +47,94 @@ module.exports = class CommandManager {
     }
   }
 
-  runCommand(command, message, args, api = false) {
+  runCommand(command, msg, args, api = false) {
     try {
       //Logger.warn('Command Parser', `Matched ${command.name}, Running...`)
-      return command.run(this.client, message, args, api)
+      return command.run(msg, args, api)
     } catch (err) {
       return //error('Command', err)
     }
   }
 
   findCommand(commandName) {
-    const command = this.commands.get(commandName) || this.aliases.get(commandName)
-    return { command, commandName }
+    return this.commands.get(commandName) || this.aliases.get(commandName)
   }
 
-  async handleMessage(message) {
-    // Don't Parse Bot Messages
-    if (message.author.bot) return false
+  async handleMessage(msg) {
+    const content = msg.content
 
-    // Handle Server Configuration
-    const { prefix } = '?'
-    const args = []
+    // if msg is sent by bot then ignore
+    if (msg.author.bot) return
 
-    // Run Command
-    const instance = this.findCommand(message.content)
-    const command = instance.command
-    return this.runCommand(command, message, args)
-    console.log(command)
-  }
+    // send all messages to our logger
+    await messageLogging(this.client, msg)
 
-  getAdministrators(guild) {
-    let owners = ''
+    // if msg doesnt start with prefix then ignore msg
+    if (!content.startsWith(this.prefix)) return
 
-    for (const member of guild.members.values()) {
-      if (member.hasPermission('ADMINISTRATOR')) {
-        owners = owners === '' ? member.user.id : `${owners},${member.user.id}`
-      }
+    // anything after command becomes a list of args
+    const args = content.slice(this.prefix.length).split(/ +/)
+
+    // command name without prefix
+    const commandName = args.shift().toLowerCase()
+
+    // set command name and aliases
+    const instance = this.findCommand(commandName)
+    const command = instance
+
+    // assign variables
+    msg.context = this
+    msg.command = instance.commandName
+    msg.prefix = this.prefix
+
+    // if no command or alias do nothing
+    //if (!command) return
+    // Check if command is enabled
+    if (command.disabled) return
+
+    // print to console hwne user runs any command
+    this.logger.info(
+      chalk.green(
+        `${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(
+          args.join(' ')
+        )}`
+      )
+    )
+
+    // if command is marked 'ownerOnly: true' then don't excecute
+    if (command.ownerOnly && msg.author.id !== this.ownerId) {
+      return msg
+        .reply('Only my master can use that command you fucking weaboo warrior')
+        .then((msg) => {
+          msg.delete(10000)
+        })
     }
 
-    return owners
+    // if command is marked 'guildOnly: true' then don't excecute
+    if (command.guildOnly && msg.channel.type === 'dm' && msg.author.id !== this.ownerId) {
+      return msg.reply({ embed: { title: 'I refuse to do that for you here.' } })
+    }
+
+    // if commands is marked 'args: true' run this if no args sent
+    if (command.args && !command.args.length) {
+      return msg
+        .reply({
+          embed: {
+            title: "You didn't provide any arguments",
+            fields: [
+              {
+                name: '**Example Usage**',
+                value: '```css' + `\n${command.usage.replace(' | ', '\n')}` + '```'
+              }
+            ]
+          }
+        })
+        .then((msg) => {
+          msg.delete(10000)
+        })
+    }
+
+    // Run Command
+    return this.runCommand(command, msg, args)
   }
 }

@@ -1,0 +1,78 @@
+module.exports = {
+  general: {
+    username: 'Subby',
+    ownerId: '',
+    token: '',
+    prefix: '?',
+    welcomeChannel: '',
+    apiPort: 5700,
+    apiKey: 284695
+  },
+  commands: {
+    pihole: {
+      host: 'http://10.0.0.6/',
+      apiKey: ''
+    },
+    docker: {
+      host: 'http://10.0.0.5:2375'
+    },
+    sengled: {
+      username: '',
+      password: '',
+      jsessionid: ''
+    },
+    googleHome: {
+      ip: '',
+      name: 'Subbyhome',
+      language: 'en',
+      accent: 'en'
+    },
+    transmission: {
+      host: '10.0.0.5',
+      port: '9091',
+      ssl: false
+    },
+    sabnzbd: {
+      host: 'https://sabnzbd.domain.io',
+      apiKey: ''
+    },
+    ombi: {
+      host: 'https://ombi.domain.io/',
+      apiKey: '',
+      username: 'sublime',
+      requesttv: true,
+      requestmovie: true
+    },
+    meraki: {
+      serielNum: '',
+      apiKey: ''
+    },
+    pioneerAVR: {
+      host: 'http://10.0.0.127'
+    },
+    systemPowerControl: {
+      apiKey: 123123,
+      devices: [
+        {
+          name: 'DEVICE1',
+          host: 'http://10.0.0.5:5709',
+          mac: ''
+        },
+        {
+          name: 'DEVICE2',
+          host: 'http://10.0.0.7:5709',
+          mac: ''
+        }
+      ]
+    },
+    tuyaPlugControl: {
+      devices: [
+        {
+          name: '',
+          id: '',
+          key: ''
+        }
+      ]
+    }
+  }
+}

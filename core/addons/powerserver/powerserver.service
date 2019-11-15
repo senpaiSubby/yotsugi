@@ -1,0 +1,12 @@
+[Unit]
+Description=Express server to shutdown/restart remote linux systems
+After=network.target
+
+[Service]
+Type=simple
+User=sublime
+ExecStart=/usr/bin/node /home/sublime/git/subby-bot/data/addons/powerserver/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
