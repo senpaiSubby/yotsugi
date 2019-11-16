@@ -1,4 +1,4 @@
-const { Client } = require('discord.js')
+const { Client, RichEmbed } = require('discord.js')
 const Enmap = require('enmap')
 const messageLogging = require('../core/utils/messageLogging')
 const chalk = require('chalk')
@@ -32,7 +32,7 @@ module.exports = class CommandManager {
 
     if (instance.disabled) return
     if (this.commands.has(commandName)) {
-      ////Logger.error('Start Module', `"${commandName}" already exists!`)
+      this.logger.error('Start Module', `"${commandName}" already exists!`)
       throw new Error('Commands cannot have the same name')
     }
 
@@ -49,7 +49,7 @@ module.exports = class CommandManager {
 
   runCommand(command, msg, args, api = false) {
     try {
-      //Logger.warn('Command Parser', `Matched ${command.name}, Running...`)
+      this.logger.info('Command Parser', `Matched ${command.name}, Running...`)
       return command.run(msg, args, api)
     } catch (err) {
       return //error('Command', err)
@@ -80,15 +80,19 @@ module.exports = class CommandManager {
 
     // set command name and aliases
     const instance = this.findCommand(commandName)
+
+    // if no command or alias do nothing
+    if (!instance)
+      return msg.channel.send(`No command: **${commandName}**`).then((msg) => msg.delete(5000))
+
     const command = instance
 
     // assign variables
     msg.context = this
     msg.command = instance.commandName
     msg.prefix = this.prefix
+    msg.getAdministrators = this.getAdministrators
 
-    // if no command or alias do nothing
-    //if (!command) return
     // Check if command is enabled
     if (command.disabled) return
 
@@ -100,13 +104,9 @@ module.exports = class CommandManager {
         )}`
       )
     )
-
-    const adminList = this.getAdministrators(msg.guild)
-    // if command is marked 'adminOnly: true' then don't excecute
-    if (command.adminOnly && !adminList.includes(msg.author.id)) {
-      return msg.reply('Command is reserved for Admins.').then((msg) => {
-        msg.delete(10000)
-      })
+    // if command is marked 'guildOnly: true' then don't excecute
+    if (command.guildOnly && msg.channel.type === 'dm') {
+      return msg.reply({ embed: { title: 'This command cannot be slid into my DM.' } })
     }
 
     // if command is marked 'ownerOnly: true' then don't excecute
@@ -118,32 +118,31 @@ module.exports = class CommandManager {
         })
     }
 
-    // if command is marked 'guildOnly: true' then don't excecute
-    if (command.guildOnly && msg.channel.type === 'dm' && msg.author.id !== this.ownerId) {
-      return msg.reply({ embed: { title: 'I refuse to do that for you here.' } })
+    let adminList
+    if (msg.channel.type !== 'dm') {
+      adminList = this.getAdministrators(msg.guild)
+    }
+    // if command is marked 'adminOnly: true' then don't excecute
+    if (command.adminOnly && !adminList.includes(msg.author.id)) {
+      return msg.reply('Command is reserved for Admins.').then((msg) => {
+        msg.delete(10000)
+      })
     }
 
     // if commands is marked 'args: true' run this if no args sent
-    if (command.args && !command.args.length) {
-      return msg
-        .reply({
-          embed: {
-            title: "You didn't provide any arguments",
-            fields: [
-              {
-                name: '**Example Usage**',
-                value: '```css' + `\n${command.usage.replace(' | ', '\n')}` + '```'
-              }
-            ]
-          }
-        })
-        .then((msg) => {
-          msg.delete(10000)
-        })
+    if (command.args && !args.length) {
+      const embed = new RichEmbed()
+        .setTitle("You didn't provide any arguments")
+        .addField('**Example Usage**', '```css' + `\n${command.usage.replace(' | ', '\n')}` + '```')
+      return msg.reply({ embed }).then((msg) => {
+        msg.delete(10000)
+      })
     }
 
     // Run Command
-    return this.runCommand(command, msg, args)
+    msg.channel.startTyping()
+    await this.runCommand(command, msg, args)
+    return msg.channel.stopTyping()
   }
 
   getAdministrators(guild) {

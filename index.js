@@ -1,5 +1,5 @@
 // Core
-const { Client } = require('discord.js')
+const { Client, RichEmbed } = require('discord.js')
 const config = require('./data/config')
 const CommandManager = require('./core/CommandManager')
 const SubprocessManager = require('./core/SubprocessManager')
@@ -18,9 +18,11 @@ client.logger = require('./core/utils/errorLogger')
 client.utils = require('./core/utils/utils')
 
 const Manager = new CommandManager(client)
+Manager.loadCommands('./commands')
 const Subprocesses = new SubprocessManager(client)
-//client.Subprocesses = Subprocesses
 
+// Handle Discord
+const { prefix } = config.general
 const onReady = () => {
   const { username } = client.config.general
   // log that bot is ready
@@ -33,19 +35,29 @@ const onReady = () => {
   }
 
   // set bot activity status
-  client.user.setActivity('my codebase burn. ;)', {
-    type: 'watching'
+  client.user.setActivity(`${prefix}help`, {
+    type: 'LISTENING'
   })
   Subprocesses.loadModules('./core/subprocesses/')
 }
 
-Manager.loadCommands('./commands')
-// Handle Discord
 client.login(config.general.token)
 client.once('ready', onReady)
 client.on('message', (message) => Manager.handleMessage(message))
 client.on('messageUpdate', (old, _new) => {
   if (old.content !== _new.content) Manager.handleMessage(_new)
+})
+client.on('guildMemberAdd', (member) => {
+  const embed = new RichEmbed()
+  embed.setColor(3447003)
+  embed.setThumbnail(member.guild.iconURL)
+  embed.setAuthor(member.user.username, member.user.avatarURL)
+  embed.setTitle(`Welcome To ${member.guild.name}!`)
+  embed.setDescription(
+    `Please take a look at our rules by typing **${prefix}rules**!\nView our commands with **${prefix}help**\nEnjoy your stay!`
+  )
+  const channel = member.guild.channels.get(client.config.general.welcomeChannel)
+  return channel.send({ embed })
 })
 
 module.exports = { client, Manager }

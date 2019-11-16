@@ -1,3 +1,5 @@
+const Subprocess = require('../../Subprocess')
+
 const schedule = require('node-schedule')
 
 class ScheduledTasks extends Subprocess {
