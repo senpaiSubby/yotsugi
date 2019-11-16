@@ -12,10 +12,8 @@ class GoogleHomeSpeak extends Command {
       description: 'Speak through Google Home',
       usage: `${prefix}say <msg>`,
       aliases: ['speak'],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
       webUI: true
     })
   }

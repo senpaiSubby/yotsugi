@@ -12,10 +12,8 @@ class SengledLightController extends Command {
       description: 'Sengled Light Control',
       usage: `${prefix}lights desk | ${prefix}lights list`,
       aliases: ['light', 'lamp'],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
       webUI: true
     })
   }

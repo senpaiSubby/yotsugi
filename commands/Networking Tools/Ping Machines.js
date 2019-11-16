@@ -11,11 +11,7 @@ class PingMachines extends Command {
       description: 'Check Bot Latency',
       usage: `${prefix}ping`,
       aliases: [],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      webUI: true
     })
   }
 

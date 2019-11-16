@@ -14,10 +14,8 @@ class DockerManagement extends Command {
       description: 'Docker Management',
       usage: `${prefix}docker <state> <name> | ${prefix}docker list <state>`,
       aliases: ['container'],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
       webUI: true
     })
   }

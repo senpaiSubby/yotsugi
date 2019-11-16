@@ -12,10 +12,8 @@ class TuyaPlugController extends Command {
       description: 'Tuya Plug Control',
       usage: `${prefix}plug <name>`,
       aliases: ['socket'],
-      args: false,
-      disabled: false,
-      ownerOnly: false,
-      guildOnly: false,
+      args: true,
+      ownerOnly: true,
       webUI: true
     })
   }
@@ -117,9 +115,6 @@ class TuyaPlugController extends Command {
     // ---------------------- Usage Logic ------------------------
 
     const embed = new Discord.RichEmbed()
-    if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
-    }
 
     switch (args[0]) {
       case 'list': {

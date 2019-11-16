@@ -12,11 +12,8 @@ class TransmissionManagement extends Command {
       description: 'Transmission Management',
       usage: `${prefix}tor list`,
       aliases: ['transmission'],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      args: true,
+      ownerOnly: true
     })
   }
 

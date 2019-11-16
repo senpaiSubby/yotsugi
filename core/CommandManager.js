@@ -101,6 +101,14 @@ module.exports = class CommandManager {
       )
     )
 
+    const adminList = this.getAdministrators(msg.guild)
+    // if command is marked 'adminOnly: true' then don't excecute
+    if (command.adminOnly && !adminList.includes(msg.author.id)) {
+      return msg.reply('Command is reserved for Admins.').then((msg) => {
+        msg.delete(10000)
+      })
+    }
+
     // if command is marked 'ownerOnly: true' then don't excecute
     if (command.ownerOnly && msg.author.id !== this.ownerId) {
       return msg
@@ -136,5 +144,17 @@ module.exports = class CommandManager {
 
     // Run Command
     return this.runCommand(command, msg, args)
+  }
+
+  getAdministrators(guild) {
+    let owners = []
+
+    for (const member of guild.members.values()) {
+      if (member.hasPermission('ADMINISTRATOR')) {
+        owners.push(member.user.id)
+      }
+    }
+
+    return owners
   }
 }

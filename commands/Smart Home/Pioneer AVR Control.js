@@ -13,10 +13,8 @@ class PioneerAVRController extends Command {
       description: 'Pioneer AVR Controller',
       usage: `${prefix}avr vol <1-100> | ${prefix}avr <off/on> | ${prefix}avr <mute>`,
       aliases: ['vol'],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
       webUI: true
     })
   }

@@ -12,11 +12,9 @@ class MerakiAPI extends Command {
       description: 'Meraki network statistics',
       usage: `${prefix}meraki list`,
       aliases: [],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      webUI: true
     })
   }
 

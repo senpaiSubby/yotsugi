@@ -11,10 +11,8 @@ class BotManagement extends Command {
       description: 'Performs bot related functions.',
       usage: `${prefix}bot logout | ${prefix}bot restart | ${prefix}bot uptime`,
       aliases: [],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
       webUI: false
     })
   }

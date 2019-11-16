@@ -13,11 +13,9 @@ class PiHoleController extends Command {
       description: 'PiHole stats and management',
       usage: `${prefix}pihole <on/off> | ${prefix}pihole stats`,
       aliases: ['dns'],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      webUI: true
     })
   }
 

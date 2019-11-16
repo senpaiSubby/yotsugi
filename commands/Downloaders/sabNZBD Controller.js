@@ -13,11 +13,8 @@ class SabnzbdManagement extends Command {
       description: 'sabNZBD Management',
       usage: `${prefix}sab list`,
       aliases: ['nzb'],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      args: true,
+      ownerOnly: true
     })
   }
 

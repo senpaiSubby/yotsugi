@@ -16,11 +16,8 @@ class PortChecker extends Command {
       description: 'Check open/closed and available ports',
       usage: `${prefix}port <80> | ${prefix}port find`,
       aliases: ['ports'],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      args: true,
+      ownerOnly: true
     })
   }
 

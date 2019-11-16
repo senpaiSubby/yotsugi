@@ -31,6 +31,8 @@ module.exports = class Command {
       throw new TypeError('Command aliases must be an array of strings')
     if (typeof this.guildOnly !== 'boolean')
       throw new TypeError('Command guildOnly property must be a boolean')
+    if (typeof this.adminOnly !== 'boolean')
+      throw new TypeError('Command adminOnly property must be a boolean')
     if (typeof this.args !== 'boolean')
       throw new TypeError('Command args property must be a boolean')
     if (typeof this.webUI !== 'boolean')

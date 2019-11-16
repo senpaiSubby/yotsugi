@@ -13,11 +13,7 @@ class SystemIP extends Command {
       description: 'Show Server IP',
       usage: `${prefix}ip <external/local>`,
       aliases: [],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      ownerOnly: true
     })
   }
 

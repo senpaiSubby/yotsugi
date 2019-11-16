@@ -13,10 +13,8 @@ class SystemPowerController extends Command {
       description: 'Power linux systems on/off',
       usage: `${prefix}system gaara off | ${prefix}pc thinkboi reboot`,
       aliases: ['system'],
-      args: false,
-      disabled: false,
+      args: true,
       ownerOnly: true,
-      guildOnly: true,
       webUI: true
     })
   }

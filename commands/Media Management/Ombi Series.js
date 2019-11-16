@@ -22,11 +22,7 @@ class OmbiTV extends Command {
       description: 'Search and Request TV Shows in Ombi.',
       usage: `${prefix}tv <Series Name> | ${prefix}tv tvdb:289590 `,
       aliases: ['shows', 'series'],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      args: true
     })
   }
 

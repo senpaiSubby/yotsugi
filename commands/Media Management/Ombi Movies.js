@@ -22,11 +22,7 @@ class OmbiMovies extends Command {
       description: 'Search and Request Movies in Ombi.',
       usage: `${prefix}movie <Movie Name> | ${prefix}movie tmdb:603`,
       aliases: ['film'],
-      args: false,
-      disabled: false,
-      ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      args: true
     })
   }
 
