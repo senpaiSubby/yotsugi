@@ -1,7 +1,8 @@
 module.exports = {
-  extends: ['prettier'],
+  extends: ['airbnb', 'prettier'],
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': ['error']
+    'prettier/prettier': ['error'],
+    'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement']
   }
 }

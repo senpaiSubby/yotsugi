@@ -160,7 +160,7 @@ class TuyaPlugController extends Command {
           return msg.channel.send({ embed })
         }
         // if user doesnt specify on/off then toggle device instead
-        const status = togglePlug(devices[index].id, devices[index].key)
+        const status = await togglePlug(devices[index].id, devices[index].key)
 
         if (api) return `${args[0]} turned ${status}`
 

@@ -2,14 +2,13 @@
 const ms = require('ms')
 const Command = require('../../core/Command')
 
-class Reminder extends Command {
+class RemindMe extends Command {
   constructor(client) {
     super(client, {
-      name: 'remind',
+      name: 'remindme',
       category: 'Utils',
       description: 'Sets a reminder with a message',
-      usage: 'remind 10s do the dishes | remind 1h make memes | remind 1m get funky with it',
-
+      usage: 'remindme 10s do the dishes | remindme 1h make memes | remindme 1m get funky with it'
     })
   }
 
@@ -36,4 +35,4 @@ class Reminder extends Command {
     }, ms(Timer))
   }
 }
-module.exports = Reminder
+module.exports = RemindMe
