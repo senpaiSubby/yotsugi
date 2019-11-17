@@ -1,7 +1,6 @@
-const Command = require('../../core/Command')
+/* eslint-disable class-methods-use-this */
 const { RichEmbed } = require('discord.js')
-const config = require('../../data/config')
-const { prefix } = config.general
+const Command = require('../../core/Command')
 
 class Rules extends Command {
   constructor(client) {
@@ -12,10 +11,10 @@ class Rules extends Command {
     })
   }
 
-  async run(msg, args, api) {
+  async run(client, msg) {
     const rules = ['1. Dont be a dick', '2. NO REPORTING!']
     const embed = new RichEmbed().setTitle('Rules').setDescription(rules.join('\n'))
-    return msg.reply({ embed }).then((msg) => msg.delete(10000))
+    return msg.reply({ embed }).then((m) => m.delete(10000))
   }
 }
 

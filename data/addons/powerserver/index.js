@@ -4,14 +4,13 @@ const shell = require('shelljs')
 const app = express()
 app.use(express.json())
 const port = 5709
-const apiKey = 284695
 
 // your-username ALL=NOPASSWD: /sbin/shutdown
 
 app.post('/', (req, res) => {
   // check if all required params are met
-  if (!req.body.apiKey && !req.body.command) {
-    res.status(406).json({ response: "Missing params 'apiKey' and 'command'" })
+  if (!req.body.command) {
+    res.status(406).json({ response: "Missing params 'command'" })
   }
 
   // check if params are correct

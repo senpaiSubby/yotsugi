@@ -1,6 +1,4 @@
 const Command = require('../../core/Command')
-const config = require('../../data/config')
-const { prefix } = config.general
 
 class Routines extends Command {
   constructor(client) {
@@ -8,18 +6,15 @@ class Routines extends Command {
       name: 'routine',
       category: 'Smart Home',
       description: 'Routines like good morning or goodnight',
-      usage: `${prefix}routine morning | ${prefix}routine sleep`,
-      aliases: [],
-      args: false,
-      disabled: false,
+      usage: `routine morning | routine sleep`,
       ownerOnly: true,
-      guildOnly: true,
-      webUI: false
+      webUI: true,
+      args: true
     })
   }
 
-  async run(msg, args, api) {
-    const logger = this.client.logger
+  async run(client, msg, args, api) {
+    const logger = client.logger
 
     const routine = args[0]
     // command setup

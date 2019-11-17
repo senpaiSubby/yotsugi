@@ -3,8 +3,8 @@ const path = require('path')
 const attachmentHandler = require('./attachmentHandler')
 
 module.exports = async (client, msg) => {
-  const content = msg.content
-  const guild = msg.guild
+  const { content } = msg
+  const { guild } = msg
 
   // forward all messages to our attachment parser
   await attachmentHandler(client, msg)

@@ -1,7 +1,9 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-param-reassign */
 const { Client, RichEmbed } = require('discord.js')
 const Enmap = require('enmap')
-const messageLogging = require('../core/utils/messageLogging')
 const chalk = require('chalk')
+const messageLogging = require('../core/utils/messageLogging')
 
 module.exports = class CommandManager {
   constructor(client) {
@@ -47,12 +49,12 @@ module.exports = class CommandManager {
     }
   }
 
-  runCommand(command, msg, args, api = false) {
+  runCommand(client, command, msg, args, api = false) {
     try {
       this.logger.info('Command Parser', `Matched ${command.name}, Running...`)
-      return command.run(msg, args, api)
+      return command.run(client, msg, args, api)
     } catch (err) {
-      return //error('Command', err)
+      //error('Command', err)
     }
   }
 
@@ -60,14 +62,14 @@ module.exports = class CommandManager {
     return this.commands.get(commandName) || this.aliases.get(commandName)
   }
 
-  async handleMessage(msg) {
-    const content = msg.content
+  async handleMessage(msg, client) {
+    const { content } = msg
 
     // if msg is sent by bot then ignore
     if (msg.author.bot) return
 
     // send all messages to our logger
-    await messageLogging(this.client, msg)
+    await messageLogging(client, msg)
 
     // if msg doesnt start with prefix then ignore msg
     if (!content.startsWith(this.prefix)) return
@@ -83,6 +85,7 @@ module.exports = class CommandManager {
 
     // if no command or alias do nothing
     if (!instance)
+      // eslint-disable-next-line consistent-return
       return msg.channel.send(`No command: **${commandName}**`).then((msg) => msg.delete(5000))
 
     const command = instance
@@ -104,6 +107,7 @@ module.exports = class CommandManager {
         )}`
       )
     )
+
     // if command is marked 'guildOnly: true' then don't excecute
     if (command.guildOnly && msg.channel.type === 'dm') {
       return msg.reply({ embed: { title: 'This command cannot be slid into my DM.' } })
@@ -112,21 +116,31 @@ module.exports = class CommandManager {
     // if command is marked 'ownerOnly: true' then don't excecute
     if (command.ownerOnly && msg.author.id !== this.ownerId) {
       return msg
-        .reply('Only my master can use that command you fucking weaboo warrior')
-        .then((msg) => {
-          msg.delete(10000)
+        .reply({
+          embed: { title: 'Only my master can use that command you fucking weaboo warrior' }
+        })
+        .then((m) => {
+          m.delete(10000)
         })
     }
 
-    let adminList
+    // check if user has all required perms in permsNeeded
     if (msg.channel.type !== 'dm') {
-      adminList = this.getAdministrators(msg.guild)
-    }
-    // if command is marked 'adminOnly: true' then don't excecute
-    if (command.adminOnly && !adminList.includes(msg.author.id)) {
-      return msg.reply('Command is reserved for Admins.').then((msg) => {
-        msg.delete(10000)
-      })
+      const adminList = this.getAdministrators(msg.guild)
+
+      if (command.permsNeeded && !adminList.includes(msg.author.id)) {
+        const missingPerms = []
+        for (const perm of command.permsNeeded) {
+          if (!msg.member.hasPermission(perm)) {
+            missingPerms.push(perm)
+          }
+        }
+        if (missingPerms.length) {
+          return msg
+            .reply({ embed: { title: `You lack the perms: ${missingPerms.join('\n')}` } })
+            .then((m) => m.delete(10000))
+        }
+      }
     }
 
     // if commands is marked 'args: true' run this if no args sent
@@ -134,19 +148,20 @@ module.exports = class CommandManager {
       const embed = new RichEmbed()
         .setTitle("You didn't provide any arguments")
         .addField('**Example Usage**', '```css' + `\n${command.usage.replace(' | ', '\n')}` + '```')
-      return msg.reply({ embed }).then((msg) => {
-        msg.delete(10000)
+      return msg.reply({ embed }).then((m) => {
+        m.delete(10000)
       })
     }
 
     // Run Command
     msg.channel.startTyping()
-    await this.runCommand(command, msg, args)
+    await this.runCommand(client, command, msg, args)
     return msg.channel.stopTyping()
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getAdministrators(guild) {
-    let owners = []
+    const owners = []
 
     for (const member of guild.members.values()) {
       if (member.hasPermission('ADMINISTRATOR')) {

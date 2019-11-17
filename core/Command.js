@@ -3,10 +3,8 @@ const config = require('../data/config')
 module.exports = class Command {
   constructor(client, data = {}) {
     if (typeof data !== 'object') throw new TypeError('Client data parameter must be an object')
-
     this.client = client
     this.config = config
-
     this.name = data.name
     this.category = data.category || ''
     this.description = data.description
@@ -17,6 +15,7 @@ module.exports = class Command {
     this.guildOnly = data.guildOnly || false
     this.ownerOnly = data.ownerOnly || false
     this.adminOnly = data.adminOnly || false
+    this.permsNeeded = data.permsNeeded || []
     this.disabled = data.disabled || false
 
     if (!this.name) throw new Error('Command Name is required')
@@ -25,6 +24,10 @@ module.exports = class Command {
     if (typeof this.description !== 'string')
       throw new TypeError('Command description must be a string')
     if (typeof this.category !== 'string') throw new TypeError('Command category must be a string')
+    if (!(this.permsNeeded instanceof Array))
+      throw new TypeError('Command permsNeeded must be an array of strings')
+    if (this.permsNeeded.some((perm) => typeof perm !== 'string'))
+      throw new TypeError('Command permsNeeded must be an array of strings')
     if (!(this.aliases instanceof Array))
       throw new TypeError('Command aliases must be an array of strings')
     if (this.aliases.some((alias) => typeof alias !== 'string'))
@@ -43,6 +46,7 @@ module.exports = class Command {
       throw new TypeError('Command disabled property must be a boolean')
   }
 
+  // eslint-disable-next-line class-methods-use-this
   run() {
     throw new Error('Missing Run Method')
   }

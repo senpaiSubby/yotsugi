@@ -1,6 +1,7 @@
 const torrent2magnet = require('torrent2magnet')
 const fs = require('fs')
 const path = require('path')
+const fetch = require('node-fetch')
 /**
  * Handles filtering attachments and sending them where specified
  * to be further handled. EX: adding a torrent to transmission.
@@ -8,7 +9,7 @@ const path = require('path')
  * @param {*} url file url to be parsed
  */
 const attachmentParser = async (client, url) => {
-  const logger = client.logger
+  const { logger } = client
   const { runCommand } = client.utils
 
   const name = url.split('/').pop()
@@ -31,7 +32,7 @@ const attachmentParser = async (client, url) => {
  * @param {*} msg discord.js message object
  */
 const attachmentHandler = async (client, msg) => {
-  const logger = client.logger
+  const { logger } = client
 
   // check if msg contains attachments
   if (msg.attachments.size) {

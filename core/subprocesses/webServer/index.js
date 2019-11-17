@@ -11,8 +11,7 @@ class WebServer extends Subprocess {
   constructor(client) {
     super(client, {
       name: 'Web Server',
-      description: 'Web Server',
-      disabled: false
+      description: 'Web Server'
     })
   }
 
@@ -20,7 +19,7 @@ class WebServer extends Subprocess {
     shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-@')
     /**
      * example API usage
-     *  {   "apiKey": "KEY FROM CONFIG",
+     *  {
      *      "command": "<command> <params>"
      *  }
      */

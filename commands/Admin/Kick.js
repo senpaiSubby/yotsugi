@@ -1,31 +1,25 @@
+/* eslint-disable consistent-return */
+/* eslint-disable class-methods-use-this */
 const Command = require('../../core/Command')
-const config = require('../../data/config')
-const { prefix } = config.general
 
 class KickUsers extends Command {
   constructor(client) {
     super(client, {
       name: 'kick',
-      category: 'Moderation',
+      category: 'Admin',
       description: 'Kick em out',
-      usage: `${prefix}kick <@username>`,
-      aliases: [],
+      usage: `kick <@username>`,
+      guildOnly: true,
       args: true,
-      guildOnly: true
+      permsNeeded: ['KICK_MEMBERS']
     })
   }
 
-  async run(msg, args, api) {
+  async run(client, msg, args) {
     if (msg.mentions.members.size === 0) {
       return msg.reply({ embed: { title: 'Please mention a user to kick' } }).then((msg) => {
         msg.delete(5000)
       })
-    } else if (!msg.guild.me.hasPermission('KICK_MEMBERS')) {
-      return msg
-        .reply({ embed: { title: "I don't have permission to kick users" } })
-        .then((msg) => {
-          msg.delete(5000)
-        })
     }
 
     const kickMember = msg.mentions.members.first()
@@ -34,13 +28,12 @@ class KickUsers extends Command {
       return msg.reply({ embed: { title: 'Please put a reason for the kick' } }).then((msg) => {
         msg.delete(5000)
       })
-    } else {
-      kickMember.kick(args.join(' ')).then(async (member) => {
-        await msg.reply({
-          embed: { title: `${member.user.username} was succesfully kicked.` }
-        })
-      })
     }
+    kickMember.kick(args.join(' ')).then(async (member) => {
+      return msg.reply({
+        embed: { title: `${member.user.username} was succesfully kicked.` }
+      })
+    })
   }
 }
 module.exports = KickUsers

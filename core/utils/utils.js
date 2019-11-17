@@ -26,6 +26,7 @@ const findNested = (dir, pattern) => {
   let results = []
 
   fs.readdirSync(dir).forEach((innerDir) => {
+    // eslint-disable-next-line no-param-reassign
     innerDir = path.resolve(dir, innerDir)
 
     const stat = fs.statSync(innerDir)
@@ -60,13 +61,12 @@ const sortByKey = (array, key) => {
       const y = b[key]
       return x < y ? -1 : x > y ? 1 : 0
     })
-  } else {
-    return array.sort((a, b) => {
-      const x = b[key]
-      const y = a[key]
-      return x < y ? -1 : x > y ? 1 : 0
-    })
   }
+  return array.sort((a, b) => {
+    const x = b[key]
+    const y = a[key]
+    return x < y ? -1 : x > y ? 1 : 0
+  })
 }
 
 const bytesToSize = (bytes, decimals = 1) => {
@@ -75,16 +75,15 @@ const bytesToSize = (bytes, decimals = 1) => {
   const dm = decimals < 0 ? 0 : decimals
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
 const millisecondsToTime = (ms) => {
-  var duration = moment.duration(ms)
+  const duration = moment.duration(ms)
   if (duration.asHours() > 1) {
     return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss')
-  } else {
-    return moment.utc(duration.asMilliseconds()).format('mm:ss')
   }
+  return moment.utc(duration.asMilliseconds()).format('mm:ss')
 }
 
 const sleep = (ms) => {

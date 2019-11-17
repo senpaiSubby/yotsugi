@@ -19,12 +19,14 @@ module.exports = class Subprocess {
       throw new TypeError('Subprocess description must be a string')
     if (typeof this.disabled !== 'boolean')
       throw new TypeError('Subprocess disabled property must be a boolean')
+    // eslint-disable-next-line no-prototype-builtins
     if (this.config && !config.hasOwnProperty(this.config))
       throw new Error('Subprocess Config Object was not found in Config File')
 
     this.config = config[this.config]
   }
 
+  // eslint-disable-next-line class-methods-use-this
   run() {
     throw new Error('Missing Run Method')
   }

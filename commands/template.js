@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const Command = require('../core/Command')
 //const Command = require('../../core/Command')
 
@@ -7,9 +8,9 @@ class Template extends Command {
       name: 'template',
       category: '',
       description: 'Template',
-      usage: '',
+      usage: '|',
       aliases: [],
-      args: false,
+      args: true,
       disabled: false,
       ownerOnly: true,
       guildOnly: true,
@@ -17,7 +18,7 @@ class Template extends Command {
     })
   }
 
-  async run(msg, args, api) {
+  async run(client, msg, args, api) {
     //
   }
 }
