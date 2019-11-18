@@ -47,7 +47,8 @@ class TinyText extends Command {
       category: 'Fun',
       description: 'Makes text tiny',
       usage: 'tiny <text>',
-      args: true
+      args: true,
+      guildOnly: true
     })
   }
 

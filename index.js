@@ -10,7 +10,7 @@ const client = new Client()
 
 client.config = config
 client.dateFormat = require('dateformat')
-client.Log = require('./core/utils/Logger')
+client.Log = require('./core/utils/Log')
 client.Utils = require('./core/utils/Utils')
 
 module.exports = { client }
@@ -23,9 +23,11 @@ eventFiles.forEach((file) => {
 
 //client.on('messageReactionRemove')
 
-process.on('uncaughtException', (err) => {
-  client.Log(err && err.stack ? err.stack : err)
-})
+// Unhandled Promise Rejections
+process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejection', reason, true))
+
+// Unhandled Errors
+process.on('uncaughtException', (error) => client.Log.error('Uncaught Exception', error, true))
 
 // login
 client.login(config.general.token)
