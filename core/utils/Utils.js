@@ -1,7 +1,9 @@
 const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
+const { RichEmbed } = require('discord.js')
 const { Manager } = require('../../index')
+const Log = require('./Log')
 
 class Utils {
   constructor() {
@@ -94,6 +96,20 @@ class Utils {
     return new Promise((resolve) => {
       setTimeout(resolve, ms)
     })
+  }
+
+  // Global Error Function
+  static error(name, message, channel) {
+    const embed = new RichEmbed() // .setColor(config.colours.error)
+      .addField('Module', name, true)
+      .addField('Time', Log.time(), true)
+      .addField('Message', message)
+
+    channel = channel || null
+    Log.error(name, message)
+
+    if (channel) channel.send({ embed })
+    return false
   }
 }
 

@@ -97,7 +97,6 @@ class WebServer extends Subprocess {
       const args = req.body.command.split(/ +/)
       // command name without prefix
       const cmdName = args.shift().toLowerCase()
-      console.log(Manager)
       const cmd = Manager.findCommand(cmdName)
       // if command exists
       if (cmd) {
@@ -116,7 +115,7 @@ class WebServer extends Subprocess {
     })
     try {
       app.listen(webServerPort, () => {
-        Log.info(chalk.green(`API server listening on port ${chalk.yellow(webServerPort)}`))
+        Log.info(`Web Server Up`, `Listening on port ${webServerPort}`)
       })
     } catch (e) {
       Log.warn(e)
