@@ -1,17 +1,16 @@
 const { Client, RichEmbed } = require('discord.js')
 const Enmap = require('enmap')
+const chalk = require('chalk')
 const messageLogging = require('../core/utils/messageLogging')
-const Database = require('./Database')
 
 module.exports = class CommandManager {
   constructor(client) {
     this.client = client
-    this.prefix = client.config.general.prefix
     this.commands = new Enmap()
     this.aliases = new Enmap()
+    this.prefix = client.config.general.prefix
     this.ownerId = client.config.general.ownerId
     this.Log = client.Log
-    this.error = client.Utils.error
 
     if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
@@ -48,41 +47,12 @@ module.exports = class CommandManager {
     }
   }
 
-  reloadCommands() {
-    this.Log.warn('Reload Manager', 'Clearing Module Cache')
-    this.commands = new Enmap()
-    this.aliases = new Enmap()
-
-    this.Log.warn('Reload Manager', 'Reinitialising Modules')
-    this.loadCommands('./commands')
-
-    this.Log.success('Reload Manager', 'Reload Commands Success')
-    return true
-  }
-
-  reloadCommand(commandName) {
-    const existingCommand = this.commands.get(commandName) || this.aliases.get(commandName)
-    if (!existingCommand) return false
-    const { location } = existingCommand
-    for (const alias of existingCommand.aliases) this.aliases.delete(alias)
-    this.commands.delete(commandName)
-    delete require.cache[require.resolve(location)]
-    this.startModule(location, true)
-    return true
-  }
-
-  async runCommand(client, command, msg, args, api = false) {
+  runCommand(client, command, msg, args, api = false) {
     try {
-      msg.channel.startTyping()
-      await command.run(client, msg, args, api)
-      this.Log.info(
-        'Command Parser',
-        `${msg.author.tag} ran command [${command.name} ${args.join(' ')}]`
-      )
-      return msg.channel.stopTyping()
+      this.Log.info('Command Parser', `Matched ${command.name}, Running...`)
+      return command.run(client, msg, args, api)
     } catch (err) {
-      msg.channel.stopTyping()
-      return this.error(command.name, err, msg.channel)
+      this.Log.error(err)
     }
   }
 
@@ -92,13 +62,6 @@ module.exports = class CommandManager {
 
   async handleMessage(msg, client) {
     const { content } = msg
-    const { prefix } = await this.handleServer(msg.guild)
-    this.prefix = prefix
-
-    // reply with prefix when bot is mentioned
-    if (msg.isMentioned(client.user)) {
-      msg.reply(`Waddup G. My command prefix is **${prefix}**`).then((m) => m.delete(10000))
-    }
 
     // if msg is sent by bot then ignore
     if (msg.author.bot) return
@@ -110,7 +73,7 @@ module.exports = class CommandManager {
     if (!content.startsWith(this.prefix)) return
 
     // anything after command becomes a list of args
-    const args = content.slice(prefix.length).split(/ +/)
+    const args = content.slice(this.prefix.length).split(/ +/)
 
     // command name without prefix
     const commandName = args.shift().toLowerCase()
@@ -120,37 +83,35 @@ module.exports = class CommandManager {
 
     // if no command or alias do nothing
     if (!instance)
-      return msg.channel.send(`No command: **${commandName}**`).then((m) => m.delete(5000))
+      return msg.channel.send(`No command: **${commandName}**`).then((msg) => msg.delete(5000))
 
     const command = instance
 
     // assign variables
     msg.context = this
     msg.command = instance.commandName
-    msg.prefix = prefix
+    msg.prefix = this.prefix
+    msg.getAdministrators = this.getAdministrators
 
     // Check if command is enabled
     if (command.disabled) return
 
+    // print to console hwne user runs any command
+    this.Log.info(
+      chalk.green(
+        `${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(
+          args.join(' ')
+        )}`
+      )
+    )
+
     // if command is marked 'guildOnly: true' then don't excecute
     if (command.guildOnly && msg.channel.type === 'dm') {
-      this.Log.warn(
-        'Command Parser',
-        `${msg.author.tag} tried to run [${command.name} ${
-          args.length ? args.join(' ') : ''
-        }] in a DM`
-      )
       return msg.reply({ embed: { title: 'This command cannot be slid into my DM.' } })
     }
 
     // if command is marked 'ownerOnly: true' then don't excecute
     if (command.ownerOnly && msg.author.id !== this.ownerId) {
-      this.Log.warn(
-        'Command Parser',
-        `${msg.author.tag} tried to run ownerOnly command [${command.name} ${
-          args.length ? args.join(' ') : ''
-        }]`
-      )
       return msg
         .reply({
           embed: { title: 'Only my master can use that command you fucking weaboo warrior' }
@@ -160,27 +121,20 @@ module.exports = class CommandManager {
         })
     }
 
-    // check if user and bot has all required perms in permsNeeded
+    // check if user has all required perms in permsNeeded
     if (msg.channel.type !== 'dm') {
-      if (command.permsNeeded) {
-        const userMissingPerms = this.checkPerms(msg.member, command.permsNeeded)
-        const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
+      const adminList = this.getAdministrators(msg.guild)
 
-        if (userMissingPerms) {
-          return msg
-            .reply({ embed: { title: `You lack the perms:\n- ${userMissingPerms.join('\n - ')}` } })
-            .then((m) => m.delete(10000))
+      if (command.permsNeeded && !adminList.includes(msg.author.id)) {
+        const missingPerms = []
+        for (const perm of command.permsNeeded) {
+          if (!msg.member.hasPermission(perm)) {
+            missingPerms.push(perm)
+          }
         }
-
-        if (botMissingPerms) {
-          return msg.channel
-            .send({
-              embed: {
-                title: `I lack the perms needed to perform that action:\n- ${botMissingPerms.join(
-                  '\n - '
-                )}`
-              }
-            })
+        if (missingPerms.length) {
+          return msg
+            .reply({ embed: { title: `You lack the perms: ${missingPerms.join('\n')}` } })
             .then((m) => m.delete(10000))
         }
       }
@@ -197,37 +151,20 @@ module.exports = class CommandManager {
     }
 
     // Run Command
-    return this.runCommand(client, command, msg, args)
+    msg.channel.startTyping()
+    await this.runCommand(client, command, msg, args)
+    return msg.channel.stopTyping()
   }
 
-  async handleServer(guild) {
-    if (!guild) return { prefix: this.prefix }
+  getAdministrators(guild) {
+    const owners = []
 
-    const { id } = guild
-
-    let db = await Database.Models.Config.findOne({ where: { id } })
-
-    if (!db) {
-      db = await Database.Models.Config.create({
-        id,
-        prefix: '?'
-      })
-    }
-
-    const prefix = db.prefix || this.prefix
-    return { prefix }
-  }
-
-  checkPerms(user, permsNeeded) {
-    const missingPerms = []
-    for (const perm of permsNeeded) {
-      if (!user.permissions.has(perm)) {
-        missingPerms.push(perm)
+    for (const member of guild.members.values()) {
+      if (member.hasPermission('ADMINISTRATOR')) {
+        owners.push(member.user.id)
       }
     }
-    if (missingPerms.length) {
-      return missingPerms
-    }
-    return false
+
+    return owners
   }
 }

@@ -1,3 +1,4 @@
+
 const Command = require('../../core/Command')
 
 class SpaceText extends Command {
@@ -7,8 +8,7 @@ class SpaceText extends Command {
       category: 'Fun',
       description: "Spaces out text to look all dramatic n' stuff",
       usage: 'space <text>',
-      args: true,
-      guildOnly: true
+      args: true
     })
   }
 

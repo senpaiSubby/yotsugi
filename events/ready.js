@@ -6,7 +6,8 @@ const SubprocessManager = require('../core/SubprocessManager')
 const Subprocesses = new SubprocessManager(client)
 
 client.once('ready', async () => {
-  client.Log.info('Client Ready', `Connected as ${client.user.username}`)
-  client.user.setActivity(`on ${client.guilds.size} servers`)
+  const { prefix } = client.config.general
+  client.Log.info(chalk.green(`${chalk.yellow(client.user.username)}'s lazers ready to fire.`))
+  client.user.setActivity(`${prefix}help`)
   Subprocesses.loadModules('./core/subprocesses/')
 })

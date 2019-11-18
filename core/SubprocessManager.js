@@ -25,6 +25,7 @@ module.exports = class SubprocessManager {
       const instance = new Process(this.client)
 
       if (instance.disabled) continue
+      this.client.Log.info(`Loaded Process ${instance.name}`)
 
       if (this.processes.has(instance.name)) {
         throw new Error('Subprocesses cannot have the same name')
@@ -40,6 +41,7 @@ module.exports = class SubprocessManager {
 
   startModule(subprocess) {
     try {
+      this.client.Log.info(`Spawning Process ${subprocess.name}`)
       return subprocess.run()
     } catch (err) {
       this.client.Log.error('Subprocess', err)

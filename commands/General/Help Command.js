@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class Help extends Command {
   constructor(client) {
@@ -15,24 +14,21 @@ class Help extends Command {
     msg.delete()
     const user = msg.author
 
-    // get server prefix
-    const { id } = msg.guild
-
-    let db = await Database.Models.Config.findOne({ where: { id } })
-
-    if (!db) {
-      db = await Database.Models.Config.create({
-        id,
-        prefix: '?'
-      })
-    }
-
-    const prefix = db.prefix || this.prefix
-
     const checkPerms = (i) => {
       if (i.permsNeeded.length) {
-        const missingPerms = msg.context.checkPerms(msg.member, i.permsNeeded)
-        if (missingPerms) return false
+        const adminList = msg.getAdministrators(msg.guild)
+
+        if (i.permsNeeded && !adminList.includes(msg.author.id)) {
+          const missingPerms = []
+          for (const perm of i.permsNeeded) {
+            if (!msg.member.hasPermission(perm)) {
+              missingPerms.push(perm)
+            }
+          }
+          if (missingPerms.length) {
+            return false
+          }
+        }
       }
       if (i.ownerOnly) {
         if (user.id === client.config.general.ownerId) {
@@ -42,8 +38,6 @@ class Help extends Command {
       }
       return true
     }
-
-    // filter commands based on user access
     const commands = msg.context.commands.filter((i) => checkPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
@@ -54,7 +48,7 @@ class Help extends Command {
       const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0)
 
       let currentCategory = ''
-      let output = `= Commands =\n\n[Use ${prefix}help <commandname> for details]\n`
+      let output = `= Commands =\n\n[Use ${client.config.general.prefix}help <commandname> for details]\n`
       const sorted = commands
         .array()
         .sort((p, c) =>
@@ -68,7 +62,9 @@ class Help extends Command {
           currentCategory = cat
         }
         if (!c.disabled) {
-          output += `${prefix}${c.name}${' '.repeat(longest - c.name.length)} :: ${c.description}\n`
+          output += `${client.config.general.prefix}${c.name}${' '.repeat(
+            longest - c.name.length
+          )} :: ${c.description}\n`
         }
       })
       await msg
