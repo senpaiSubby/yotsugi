@@ -18,11 +18,6 @@ app.post('/', (req, res) => {
     res.status(406).json({ response: "Valid commands are 'off' or 'reboot'" })
   }
 
-  // check if apikey match config
-  if (req.body.apiKey !== apiKey) {
-    res.sendStatus(401)
-  }
-
   if (req.body.command === 'off') {
     // shutdown system
     if (shell.exec('sudo shutdown -h +1 "Shutting down in 1 minute."').code !== 0) {

@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 // todo change to list external and internal ip's
 const fetch = require('node-fetch')
 const Discord = require('discord.js')

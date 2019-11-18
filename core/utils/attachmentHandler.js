@@ -9,8 +9,8 @@ const fetch = require('node-fetch')
  * @param {*} url file url to be parsed
  */
 const attachmentParser = async (client, url) => {
-  const { logger } = client
-  const { runCommand } = client.utils
+  const { Log } = client
+  const { runCommand } = client.Utils
 
   const name = url.split('/').pop()
 
@@ -20,7 +20,7 @@ const attachmentParser = async (client, url) => {
       const torrent = await torrent2magnet(url)
       runCommand(client, `tor add ${torrent}`)
     } catch (error) {
-      logger.warn(error)
+      Log.warn(error)
     }
   }
 }
@@ -32,7 +32,7 @@ const attachmentParser = async (client, url) => {
  * @param {*} msg discord.js message object
  */
 const attachmentHandler = async (client, msg) => {
-  const { logger } = client
+  const { Log } = client
 
   // check if msg contains attachments
   if (msg.attachments.size) {
@@ -60,7 +60,7 @@ const attachmentHandler = async (client, msg) => {
           })
         })
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
       }
     })
   }

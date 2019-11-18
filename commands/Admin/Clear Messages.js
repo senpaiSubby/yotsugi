@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable class-methods-use-this */
 const Command = require('../../core/Command')
 
 class ClearMessages extends Command {
@@ -17,14 +15,13 @@ class ClearMessages extends Command {
   }
 
   async run(client, msg, args) {
-    // eslint-disable-next-line no-param-reassign
     if (args[0] === '1') args[0] = 2
 
     // .setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
     //* if sent from a DM dont run
     if (msg.channel.type === 'dm') return
     const amount = args[0] //* Amount of messages which should be deleted
-    // eslint-disable-next-line no-restricted-globals
+
     if (isNaN(amount)) {
       return msg.channel
         .send({ embed: { title: 'The amount parameter isn`t a number!' } })

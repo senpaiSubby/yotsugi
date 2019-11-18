@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const Command = require('../../../core/Command')
@@ -18,8 +18,8 @@ class MerakiAPI extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { bytesToSize, addSpace, sortByKey } = client.utils
-    const { logger } = client
+    const { bytesToSize, addSpace, sortByKey } = client.Utils
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -76,7 +76,7 @@ class MerakiAPI extends Command {
           }
         }
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'failure'
       }
     }

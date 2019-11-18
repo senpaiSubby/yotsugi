@@ -1,6 +1,5 @@
-const Subprocess = require('../../Subprocess')
-
 const schedule = require('node-schedule')
+const Subprocess = require('../../Subprocess')
 
 class ScheduledTasks extends Subprocess {
   constructor(client) {
@@ -12,17 +11,17 @@ class ScheduledTasks extends Subprocess {
   }
 
   async run() {
-    const { logger } = this.client
-    const { runCommand } = this.client.utils
+    const { Log } = this.client
+    const { runCommand } = this.client.Utils
 
     // every morning at 10am
     schedule.scheduleJob('0 10 * * *', async () => {
       // turn cheetos tank on
       const tankStatus = await runCommand(this.client, 'plug tank on')
       if (tankStatus === 'success') {
-        logger.info('Turning cheetos tank on')
+        Log.info('Turning cheetos tank on')
       } else if (tankStatus === 'failure') {
-        logger.warn('Failed to turn cheetos tank on')
+        Log.error('Failed to turn cheetos tank on')
       }
     })
 
@@ -31,9 +30,9 @@ class ScheduledTasks extends Subprocess {
       // turn cheetos tank off
       const tankStatus = await runCommand(this.client, 'plug tank off')
       if (tankStatus === 'success') {
-        logger.info('Turning cheetos tank off')
+        Log.info('Turning cheetos tank off')
       } else if (tankStatus === 'failure') {
-        logger.warn('Failed to turn cheetos tank off')
+        Log.error('Failed to turn cheetos tank off')
       }
     })
   }

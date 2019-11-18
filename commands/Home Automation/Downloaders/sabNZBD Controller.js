@@ -1,5 +1,5 @@
-/* eslint-disable consistent-return */
-/* eslint-disable class-methods-use-this */
+
+
 const fetch = require('node-fetch')
 const Discord = require('discord.js')
 const urljoin = require('url-join')
@@ -20,8 +20,8 @@ class SabnzbdManagement extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { sortByKey, addSpace } = client.utils
-    const { logger } = client
+    const { sortByKey, addSpace } = client.Utils
+    const { Log } = client
 
     // ------------------------- Config --------------------------
     const { host, apiKey } = client.config.commands.sabnzbd
@@ -51,7 +51,7 @@ class SabnzbdManagement extends Command {
         }
         return sortByKey(downloadQueue, 'percentage')
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'no connection'
       }
     }

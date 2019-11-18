@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const Discord = require('discord.js')
 const TuyAPI = require('tuyapi')
 const Command = require('../../../core/Command')
@@ -19,7 +18,7 @@ class TuyaPlugController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { logger } = client
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -40,11 +39,11 @@ class TuyaPlugController extends Command {
             id: item.id,
             key: item.key
           })
-          // eslint-disable-next-line no-await-in-loop
+
           await device.find()
-          // eslint-disable-next-line no-await-in-loop
+
           await device.connect()
-          // eslint-disable-next-line no-await-in-loop
+
           const currentStatus = await device.get()
           deviceList.push({
             name: item.name,
@@ -54,7 +53,7 @@ class TuyaPlugController extends Command {
         }
         return deviceList
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }
@@ -78,7 +77,7 @@ class TuyaPlugController extends Command {
         device.disconnect()
         return currentStatus ? 'off' : 'on'
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }
@@ -109,7 +108,7 @@ class TuyaPlugController extends Command {
         device.disconnect()
         return state
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }

@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const Command = require('../../core/Command')
 
 class SetName extends Command {

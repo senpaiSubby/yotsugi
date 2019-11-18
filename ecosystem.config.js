@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'subbyBot',
-      script: 'subbyBot.js',
+      script: 'index.js',
       instances: 1,
       autorestart: true,
       watch: false,

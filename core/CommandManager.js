@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-param-reassign */
 const { Client, RichEmbed } = require('discord.js')
 const Enmap = require('enmap')
 const chalk = require('chalk')
@@ -12,7 +10,7 @@ module.exports = class CommandManager {
     this.aliases = new Enmap()
     this.prefix = client.config.general.prefix
     this.ownerId = client.config.general.ownerId
-    this.logger = client.logger
+    this.Log = client.Log
 
     if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
@@ -20,7 +18,7 @@ module.exports = class CommandManager {
   }
 
   loadCommands(directory) {
-    const cmdFiles = this.client.utils.findNested(directory, '.js')
+    const cmdFiles = this.client.Utils.findNested(directory, '.js')
     cmdFiles.forEach((file) => {
       this.startModule(file)
     })
@@ -34,7 +32,7 @@ module.exports = class CommandManager {
 
     if (instance.disabled) return
     if (this.commands.has(commandName)) {
-      this.logger.error('Start Module', `"${commandName}" already exists!`)
+      this.client.Log.error('Start Module', `"${commandName}" already exists!`)
       throw new Error('Commands cannot have the same name')
     }
 
@@ -51,10 +49,10 @@ module.exports = class CommandManager {
 
   runCommand(client, command, msg, args, api = false) {
     try {
-      this.logger.info('Command Parser', `Matched ${command.name}, Running...`)
+      this.Log.info('Command Parser', `Matched ${command.name}, Running...`)
       return command.run(client, msg, args, api)
     } catch (err) {
-      //error('Command', err)
+      this.Log.error(err)
     }
   }
 
@@ -68,7 +66,7 @@ module.exports = class CommandManager {
     // if msg is sent by bot then ignore
     if (msg.author.bot) return
 
-    // send all messages to our logger
+    // send all messages to our Log
     await messageLogging(client, msg)
 
     // if msg doesnt start with prefix then ignore msg
@@ -85,7 +83,6 @@ module.exports = class CommandManager {
 
     // if no command or alias do nothing
     if (!instance)
-      // eslint-disable-next-line consistent-return
       return msg.channel.send(`No command: **${commandName}**`).then((msg) => msg.delete(5000))
 
     const command = instance
@@ -100,7 +97,7 @@ module.exports = class CommandManager {
     if (command.disabled) return
 
     // print to console hwne user runs any command
-    this.logger.info(
+    this.Log.info(
       chalk.green(
         `${chalk.yellow(msg.author.tag)} ran command ${chalk.yellow(commandName)} ${chalk.yellow(
           args.join(' ')
@@ -159,7 +156,6 @@ module.exports = class CommandManager {
     return msg.channel.stopTyping()
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getAdministrators(guild) {
     const owners = []
 

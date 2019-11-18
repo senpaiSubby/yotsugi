@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const fetch = require('node-fetch')
 const Discord = require('discord.js')
 const urljoin = require('url-join')
@@ -20,7 +20,7 @@ class PiHoleController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { logger } = client
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -42,7 +42,7 @@ class PiHoleController extends Command {
         }
         return 'success'
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'no connection'
       }
     }
@@ -59,7 +59,7 @@ class PiHoleController extends Command {
           adsBlockedToday: data.ads_blocked_today
         }
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'no connection'
       }
     }

@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable class-methods-use-this */
 const Command = require('../../core/Command')
 
 class SetGame extends Command {

@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const Command = require('../../core/Command')
 
 class SpaceText extends Command {
@@ -13,6 +13,7 @@ class SpaceText extends Command {
   }
 
   async run(client, msg, args) {
+    msg.delete()
     const amount = 2
 
     return msg.channel.send(

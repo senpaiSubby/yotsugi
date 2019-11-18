@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 // todo refactor code and functions
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
@@ -21,7 +21,7 @@ class DockerManagement extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { logger } = client
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -61,7 +61,7 @@ class DockerManagement extends Command {
         }
         return containerList
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'no connection'
       }
     }
@@ -95,7 +95,7 @@ class DockerManagement extends Command {
           return 'same state'
         }
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'failure'
       }
     }

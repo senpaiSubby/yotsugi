@@ -14,7 +14,6 @@ module.exports = class SubprocessManager {
   loadModules(dir) {
     const subprocesses = fs.readdirSync(path.join(__dirname, '..', dir))
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const item of subprocesses) {
       const location = path.join(__dirname, '..', dir, item, 'index.js')
       // Location doesn't exist, skip loop
@@ -25,9 +24,8 @@ module.exports = class SubprocessManager {
       const Process = require(location)
       const instance = new Process(this.client)
 
-      // eslint-disable-next-line no-continue
       if (instance.disabled) continue
-      // Logger.info("Loaded Process", toUpper(instance.name));
+      this.client.Log.info(`Loaded Process ${instance.name}`)
 
       if (this.processes.has(instance.name)) {
         throw new Error('Subprocesses cannot have the same name')
@@ -36,19 +34,17 @@ module.exports = class SubprocessManager {
       }
     }
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const subprocess of this.processes.values()) {
       this.startModule(subprocess)
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   startModule(subprocess) {
     try {
-      // Logger.info('Spawning Process', subprocess.name)
+      this.client.Log.info(`Spawning Process ${subprocess.name}`)
       return subprocess.run()
     } catch (err) {
-      // error('Subprocess', err)
+      this.client.Log.error('Subprocess', err)
     }
   }
 }

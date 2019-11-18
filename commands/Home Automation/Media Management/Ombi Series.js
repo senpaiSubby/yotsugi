@@ -26,7 +26,7 @@ class OmbiTV extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const logger = client.logger
+    const Log = client.Log
 
     // ------------------------- Config --------------------------
     const { host, apiKey, username, requesttv } = client.config.commands.ombi
@@ -104,7 +104,7 @@ class OmbiTV extends Command {
           return data[0].id
         }
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return msg.reply('There was an error in your request.')
       }
     }
@@ -138,7 +138,7 @@ class OmbiTV extends Command {
               return msg.reply(`Requested **${show.title}** in Ombi.`)
             }
           } catch (error) {
-            logger.warn(error)
+            Log.warn(error)
             return msg.reply('There was an error in your request.')
           }
         } catch {

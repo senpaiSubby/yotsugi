@@ -26,7 +26,7 @@ class OmbiMovies extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const logger = client.logger
+    const Log = client.Log
 
     // ------------------------- Config --------------------------
     const { host, apiKey, username, requestmovie } = client.config.commands.ombi
@@ -108,7 +108,7 @@ class OmbiMovies extends Command {
           return data[0].id
         }
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return msg.reply('There was an error in your request.')
       }
     }
@@ -144,7 +144,7 @@ class OmbiMovies extends Command {
               return msg.reply(`Requested **${movie.title}** in Ombi.`)
             }
           } catch (error) {
-            logger.warn(error)
+            Log.warn(error)
             return msg.reply('There was an error in your request.')
           }
         } catch {
@@ -182,7 +182,7 @@ class OmbiMovies extends Command {
         const dataMsg = await outputMovie(data)
         await requestMovie(dataMsg, data)
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return msg.reply('There was an error in your request.')
       }
     }

@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const Transmission = require('transmission-promise')
 const Discord = require('discord.js')
 const Command = require('../../../core/Command')
@@ -18,8 +18,8 @@ class TransmissionManagement extends Command {
 
   async run(client, msg, args) {
     // -------------------------- Setup --------------------------
-    const { bytesToSize, sortByKey } = client.utils
-    const { logger } = client
+    const { bytesToSize, sortByKey } = client.Utils
+    const { Log } = client
     // ------------------------- Config --------------------------
 
     const { host, port, ssl } = client.config.commands.transmission
@@ -81,7 +81,7 @@ class TransmissionManagement extends Command {
         }
         return sortByKey(downloadQueue, 'percentage')
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'no connection'
       }
     }
@@ -91,7 +91,7 @@ class TransmissionManagement extends Command {
         const response = await trans.addUrl(magnet)
         return response.name
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
       }
     }
     // todo need to add some type of pagination logic here

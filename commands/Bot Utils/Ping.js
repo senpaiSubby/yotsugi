@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const Discord = require('discord.js')
 const Command = require('../../core/Command')
 

@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const Discord = require('discord.js')
 const portscanner = require('portscanner')
 const Command = require('../../../core/Command')
@@ -46,7 +45,6 @@ class PortChecker extends Command {
         break
 
       default: {
-        // eslint-disable-next-line no-restricted-globals
         if (isNaN(command)) {
           // check if port is a number
           embed.setTitle('Port should be a number.')

@@ -1,11 +1,11 @@
-const Subprocess = require('../../Subprocess')
 const express = require('express')
 const chalk = require('chalk')
 const cors = require('cors')
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const shortid = require('shortid')
-const { Manager } = require('../../../index')
+const Subprocess = require('../../Subprocess')
+const { Manager } = require('../../../events/message')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -25,7 +25,7 @@ class WebServer extends Subprocess {
      */
 
     const { webServerPort } = this.client.config.general
-    const { logger } = this.client
+    const { Log } = this.client
 
     const app = express()
     app.use(express.json())
@@ -35,7 +35,7 @@ class WebServer extends Subprocess {
         origin: ['http://127.0.0.1:3000']
       })
     )
-    app.use(express.static(__dirname + '/app/build'))
+    app.use(express.static(`${__dirname}/app/build`))
 
     app.get('/ui/db', (req, res) => {
       const adapter = new FileSync('./data/db.json')
@@ -66,13 +66,13 @@ class WebServer extends Subprocess {
     })
 
     app.get('/api/info', (req, res) => {
-      const upTime = this.client.utils.millisecondsToTime(this.client.uptime)
+      const upTime = this.client.Utils.millisecondsToTime(this.client.uptime)
       const data = {
         username: this.client.user.username,
         id: this.client.user.id,
         avatarId: this.client.user.avatar,
         status: this.client.status,
-        upTime: upTime,
+        upTime,
         presence: this.client.user.localPresence.game,
         avatar: this.client.user.avatarURL
       }
@@ -80,46 +80,46 @@ class WebServer extends Subprocess {
     })
 
     app.get('/', (req, res) => {
-      console.log('hit')
       res.sendFile('/index.html')
     })
 
     app.post('/api/commands', async (req, res) => {
-      logger.info(
+      Log.info(
         chalk.green(`${chalk.yellow(req.ip)} sent command ${chalk.yellow(req.body.command)}`)
       )
 
       // check if all required params are met
       if (!req.body.command) {
-        res.status(406).json({ response: "Missing params 'apiKey' and 'command'" })
+        res.status(406).json({ response: "Missing params 'command'" })
       }
 
       // anything after command becomes a list of args
       const args = req.body.command.split(/ +/)
       // command name without prefix
-      const commandName = args.shift().toLowerCase()
-      const cmd = Manager.findCommand(commandName)
+      const cmdName = args.shift().toLowerCase()
+      console.log(Manager)
+      const cmd = Manager.findCommand(cmdName)
       // if command exists
       if (cmd) {
         // Check if command is enabled
         if (cmd.disabled) {
           return res.status(403).json({ response: 'Command is disabled bot wide.' })
-        } else if (!cmd.webUI) {
+        }
+        if (!cmd.webUI) {
           // check if command is enabled in API
           return res.status(403).json({ response: 'Command is disabled for use in the API.' })
         }
-        const response = await Manager.runCommand(cmd, null, args, 'api')
-        return res.status(200).json({ response: response })
-      } else {
-        return res.status(406).json({ response: `Command '${req.body.command}' not found.` })
+        const response = await Manager.runCommand(this.client, cmd, null, args, true)
+        return res.status(200).json({ response })
       }
+      return res.status(406).json({ response: `Command '${req.body.command}' not found.` })
     })
     try {
       app.listen(webServerPort, () => {
-        logger.info(chalk.green(`API server listening on port ${chalk.yellow(webServerPort)}`))
+        Log.info(chalk.green(`API server listening on port ${chalk.yellow(webServerPort)}`))
       })
     } catch (e) {
-      logger.warn(e)
+      Log.warn(e)
     }
   }
 }

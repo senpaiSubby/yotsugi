@@ -1,4 +1,5 @@
 const Command = require('../../core/Command')
+const { Manager } = require('../../index')
 
 class Routines extends Command {
   constructor(client) {
@@ -14,7 +15,7 @@ class Routines extends Command {
   }
 
   async run(client, msg, args, api) {
-    const logger = client.logger
+    const Log = client.Log
 
     const routine = args[0]
     // command setup
@@ -45,21 +46,21 @@ class Routines extends Command {
     try {
       for (const item of commands) {
         const params = item[1].trim().split(' ')
-        const cmd =
-          client.commands.get(item[0]) ||
-          client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(item[0]))
+        console.log(item[0])
+
+        const cmd = Manager.findCommand(item[0])
         try {
           if (api) {
-            await cmd.execute(client, msg, params, 'expressAPI')
+            await Manager.runCommand(this.client, cmd, null, args, true)
           }
-          await cmd.execute(client, msg, params, api)
+          await Manager.runCommand(this.client, cmd, msg, args)
         } catch {
           console.log(`${item[0]} ${params}`)
         }
       }
       return 'success'
     } catch (error) {
-      logger.warn(error)
+      Log.warn(error)
       return 'failure'
     }
   }

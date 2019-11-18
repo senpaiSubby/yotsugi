@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const { RichEmbed } = require('discord.js')
 const Command = require('../../core/Command')
 
@@ -34,7 +33,7 @@ class UserInfo extends Command {
       .setTimestamp()
       .setThumbnail(user.user.avatarURL)
       .addField('Created At', client.dateFormat(user.user.createdAt), true)
-      .addField('Status', client.utils.capitalize(user.user.presence.status), true)
+      .addField('Status', client.Utils.capitalize(user.user.presence.status), true)
 
     if (inGuild) {
       const member = msg.guild.members.get(user.user.id)
@@ -45,9 +44,8 @@ class UserInfo extends Command {
         })
         .array()
       let position = 0
-      // eslint-disable-next-line no-plusplus
+
       for (let i = 0; i < memSort.length; i++) {
-        // eslint-disable-next-line no-plusplus
         position++
         if (memSort[i].id === user.id) break
       }

@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const Command = require('../../core/Command')
 
 const mappings = ((object) => {
@@ -54,7 +53,7 @@ class TinyText extends Command {
 
   async run(client, msg, args) {
     let output = args.join(' ')
-    // eslint-disable-next-line no-return-assign
+
     mappings.forEach((replacer) => (output = output.replace(replacer.regex, replacer.replacement)))
 
     msg.delete()

@@ -46,7 +46,6 @@ module.exports = class Command {
       throw new TypeError('Command disabled property must be a boolean')
   }
 
-  // eslint-disable-next-line class-methods-use-this
   run() {
     throw new Error('Missing Run Method')
   }

@@ -1,5 +1,5 @@
-/* eslint-disable consistent-return */
-/* eslint-disable class-methods-use-this */
+
+
 const Discord = require('discord.js')
 const Command = require('../../core/Command')
 
@@ -38,7 +38,7 @@ class BotManagement extends Command {
         }
 
         case 'uptime': {
-          const upTime = client.utils.millisecondsToTime(client.uptime)
+          const upTime = client.Utils.millisecondsToTime(client.uptime)
           embed.setTitle(`Up for ${upTime}`)
           const message = await msg.channel.send({ embed })
           return message.delete(10000)

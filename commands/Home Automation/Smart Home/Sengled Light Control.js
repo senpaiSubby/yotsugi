@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const Command = require('../../../core/Command')
@@ -19,7 +19,7 @@ class SengledLightController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { logger } = client
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -49,7 +49,7 @@ class SengledLightController extends Command {
         const data = await response.json()
         return data
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }
@@ -76,7 +76,7 @@ class SengledLightController extends Command {
         }
         return deviceList
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }
@@ -95,7 +95,7 @@ class SengledLightController extends Command {
         // const data = await response.json()
         return newState
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }
@@ -117,7 +117,7 @@ class SengledLightController extends Command {
         // const data = await response.json()
         if (response.status === 200) return 'ok'
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return error
       }
     }

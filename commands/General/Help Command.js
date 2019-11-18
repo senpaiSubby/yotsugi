@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const Command = require('../../core/Command')
 
 class Help extends Command {
@@ -12,6 +11,7 @@ class Help extends Command {
   }
 
   async run(client, msg, args) {
+    msg.delete()
     const user = msg.author
 
     const checkPerms = (i) => {
@@ -49,11 +49,12 @@ class Help extends Command {
 
       let currentCategory = ''
       let output = `= Commands =\n\n[Use ${client.config.general.prefix}help <commandname> for details]\n`
-      const sorted = commands.array().sort((p, c) =>
-        // eslint-disable-next-line no-nested-ternary
-        p.category > c.category ? 1 : p.name > c.name && p.category === c.category ? 1 : -1
-      )
-      // eslint-disable-next-line array-callback-return
+      const sorted = commands
+        .array()
+        .sort((p, c) =>
+          p.category > c.category ? 1 : p.name > c.name && p.category === c.category ? 1 : -1
+        )
+
       sorted.map((c) => {
         const cat = c.category
         if (currentCategory !== cat) {

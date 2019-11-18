@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const Command = require('../../core/Command')
 
 class Evaluator extends Command {
@@ -25,9 +24,8 @@ class Evaluator extends Command {
       `🚫 **Error:**\n\`\`\`js\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
     try {
-      // eslint-disable-next-line no-eval
       let output = eval(args.join(' '))
-      // eslint-disable-next-line global-require
+
       if (typeof output !== 'string') output = require('util').inspect(output, { depth: 1 })
       const response = `📤 **Output:**\n\`\`\`js\n${output.replace(regex, '[Token]')}\n\`\`\``
       if (input.length + response.length > 1900) throw new Error('Output too long!')

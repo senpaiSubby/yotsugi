@@ -1,5 +1,5 @@
-/* eslint-disable consistent-return */
-/* eslint-disable class-methods-use-this */
+
+
 const Command = require('../../core/Command')
 
 class KickUsers extends Command {

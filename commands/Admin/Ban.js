@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const { RichEmbed } = require('discord.js')
 const Command = require('../../core/Command')
 

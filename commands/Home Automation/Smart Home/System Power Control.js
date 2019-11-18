@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const fetch = require('node-fetch')
 const wol = require('wol')
 const Discord = require('discord.js')
@@ -20,7 +20,7 @@ class SystemPowerController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { logger } = client
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -46,7 +46,7 @@ class SystemPowerController extends Command {
             return `${text}`
           }
         } catch (error) {
-          logger.warn(error)
+          Log.warn(error)
           return 'error'
         }
       } else if (command === 'on') {

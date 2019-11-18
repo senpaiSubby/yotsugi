@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const math = require('math-expression-evaluator')
 const Command = require('../../core/Command')
 

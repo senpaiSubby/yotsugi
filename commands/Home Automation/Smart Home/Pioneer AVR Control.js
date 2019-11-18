@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const fetch = require('node-fetch')
 const Discord = require('discord.js')
 const urljoin = require('url-join')
@@ -20,8 +19,8 @@ class PioneerAVRController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { sleep } = client.utils
-    const { logger } = client
+    const { sleep } = client.Utils
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -47,17 +46,14 @@ class PioneerAVRController extends Command {
       if (number >= currentVol) {
         // setting the volume higher
         const raiseVal = (number - currentVol) * 2
-        // eslint-disable-next-line no-plusplus
         for (let i = 0; i < raiseVal; i++) {
-          // eslint-disable-next-line no-await-in-loop
           await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VU'))
         }
       } else if (number <= currentVol) {
         // setting the volume lower
         const lowerVal = Math.abs((number - currentVol) * 2)
-        // eslint-disable-next-line no-plusplus
+
         for (let i = 0; i < lowerVal; i++) {
-          // eslint-disable-next-line no-await-in-loop
           await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VD'))
         }
       }
@@ -124,7 +120,6 @@ class PioneerAVRController extends Command {
           return msg.channel.send({ embed })
         }
 
-        // eslint-disable-next-line no-restricted-globals
         if (isNaN(level)) {
           // is specified volume isnt a number notify
           if (api) return '!Volume should be a number between 1-100'
@@ -134,11 +129,10 @@ class PioneerAVRController extends Command {
         }
         // set volume to specified level
         // run command 3x for lack of api accuracy
-        // eslint-disable-next-line no-plusplus
+
         for (let i = 0; i < 3; i++) {
-          // eslint-disable-next-line no-await-in-loop
           await setVolume(level)
-          // eslint-disable-next-line no-await-in-loop
+
           await sleep(2000)
         }
         if (api) return `Volume set to ${level}`

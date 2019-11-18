@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+
 const { Device } = require('google-home-notify-client')
 const Discord = require('discord.js')
 const Command = require('../../../core/Command')
@@ -19,7 +19,7 @@ class GoogleHomeSpeak extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { logger } = client
+    const { Log } = client
 
     // ------------------------- Config --------------------------
 
@@ -38,7 +38,7 @@ class GoogleHomeSpeak extends Command {
         await device.notify(speach)
         return 'success'
       } catch (error) {
-        logger.warn(error)
+        Log.warn(error)
         return 'no connection'
       }
     }
