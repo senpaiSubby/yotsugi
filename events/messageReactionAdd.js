@@ -1,4 +1,3 @@
-
 const { RichEmbed } = require('discord.js')
 
 const { client } = require('../index')
@@ -41,10 +40,12 @@ client.on('messageReactionAdd', async (reaction, user) => {
     const image =
       message.attachments.size > 0 ? await extension(message.attachments.array()[0].url) : ''
     const embed = new RichEmbed()
+      .setColor('RANDOM')
       .setColor(foundStar.color)
       .setDescription(foundStar.description)
       .setAuthor(message.author.tag, message.author.displayAvatarURL)
       .setTimestamp()
+      // eslint-disable-next-line radix
       .setFooter(`⭐ ${parseInt(star[1]) + 1} | ${message.id}`)
       .setImage(image)
     const starMsg = await starChannel.fetchMessage(stars.id)
@@ -61,6 +62,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
     }
 
     const embed = new RichEmbed()
+      .setColor('RANDOM')
       .setColor(15844367)
       .setDescription(message.cleanContent)
       .setAuthor(message.author.tag, message.author.displayAvatarURL)

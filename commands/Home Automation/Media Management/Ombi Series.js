@@ -4,7 +4,7 @@
  * Changes: modified scheme to fit into SubbyBots's command layout
  */
 const Command = require('../../../core/Command')
-const Discord = require('discord.js')
+const { RichEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
 
@@ -27,16 +27,18 @@ class OmbiTV extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const Log = client.Log
+    const { Utils } = client
+    const { author, channel } = msg
 
     // ------------------------- Config --------------------------
     const { host, apiKey, username, requesttv } = client.config.commands.ombi
 
     // ----------------------- Main Logic ------------------------
     const outputTVShow = (show) => {
-      const embed = new Discord.RichEmbed()
+      const embed = Utils.embed(msg)
         .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
         .setDescription(show.overview.substr(0, 255) + '(...)')
-        .setFooter(msg.author.username, msg.author.avatarURL)
+        .setFooter(author.username, author.avatarURL)
         .setTimestamp(new Date())
         .setImage(show.banner)
         .setURL(`https://www.thetvdb.com/?id=${show.id}&tab=series`)
@@ -51,7 +53,7 @@ class OmbiTV extends Command {
       if (show.plexUrl) embed.addField('__Plex__', `[Watch now](${show.plexUrl})`, true)
       if (show.embyUrl) embed.addField('__Emby__', `[Watch now](${show.embyUrl})`, true)
 
-      return msg.channel.send(embed)
+      return channel.send(embed)
     }
     const getTVDBID = async (name) => {
       try {
@@ -71,17 +73,17 @@ class OmbiTV extends Command {
             fieldContent += `[[TheTVDb](https://www.thetvdb.com/?id=${show.id}&tab=series)]\n`
           })
 
-          const embed = new Discord.RichEmbed()
+          const embed = Utils.embed(msg)
             .setTitle('Ombi TV Show Search')
             .setDescription('Please select one of the search results. To abort answer **cancel**')
             .addField('__Search Results__', fieldContent)
 
           await msg.reply({ embed })
           try {
-            const collected = await msg.channel.awaitMessages(
+            const collected = await channel.awaitMessages(
               (m) =>
                 (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) &&
-                m.author.id === msg.author.id,
+                m.author.id === author.id,
               { max: 1, time: 120000, errors: ['time'] }
             )
 
@@ -120,7 +122,7 @@ class OmbiTV extends Command {
         await showMsg.react('⬇')
         try {
           const collected = await showMsg.awaitReactions(
-            (reaction, user) => reaction.emoji.name === '⬇' && user.id === msg.author.id,
+            (reaction, user) => reaction.emoji.name === '⬇' && user.id === author.id,
             { max: 1, time: 120000 }
           )
           try {
@@ -130,7 +132,7 @@ class OmbiTV extends Command {
                 headers: {
                   'Content-Type': 'application/json',
                   ApiKey: apiKey,
-                  ApiAlias: `${msg.author.username}#${msg.author.discriminator}`,
+                  ApiAlias: `${author.username}#${author.discriminator}`,
                   UserName: username || undefined
                 },
                 body: JSON.stringify({ tvDbId: show.id, requestAll: true })

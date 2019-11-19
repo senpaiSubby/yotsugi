@@ -1,6 +1,5 @@
-
 const Command = require('../core/Command')
-//const Command = require('../../core/Command')
+//  const Command = require('../../core/Command')
 
 class Template extends Command {
   constructor(client) {
@@ -11,7 +10,7 @@ class Template extends Command {
       usage: '|',
       aliases: [],
       args: true,
-      disabled: false,
+      disabled: true,
       ownerOnly: true,
       guildOnly: true,
       webUI: false
@@ -19,7 +18,8 @@ class Template extends Command {
   }
 
   async run(client, msg, args, api) {
-    //
+    //const { Utils } = client
+    //const { author, channel } = msg
   }
 }
 module.exports = Template

@@ -1,5 +1,3 @@
-
-
 const Command = require('../../core/Command')
 
 class KickUsers extends Command {
@@ -16,23 +14,29 @@ class KickUsers extends Command {
   }
 
   async run(client, msg, args) {
+    const { Utils } = client
+
     if (msg.mentions.members.size === 0) {
-      return msg.reply({ embed: { title: 'Please mention a user to kick' } }).then((msg) => {
-        msg.delete(5000)
-      })
+      return msg
+        .reply(Utils.embed(msg, 'yellow').setDescription('Please mention a user to kick'))
+        .then((m) => {
+          m.delete(10000)
+        })
     }
 
     const kickMember = msg.mentions.members.first()
 
     if (!args[1]) {
-      return msg.reply({ embed: { title: 'Please put a reason for the kick' } }).then((msg) => {
-        msg.delete(5000)
-      })
+      return msg
+        .reply(Utils.embed(msg, 'yellow').setDescription("Please put a reason for the kick'"))
+        .then((m) => {
+          m.delete(10000)
+        })
     }
     kickMember.kick(args.join(' ')).then(async (member) => {
-      return msg.reply({
-        embed: { title: `${member.user.username} was succesfully kicked.` }
-      })
+      return msg.reply(
+        Utils.embed(msg, 'yellow').setDescription(`${member.user.username} was succesfully kicked.`)
+      )
     })
   }
 }

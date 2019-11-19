@@ -1,4 +1,3 @@
-
 const math = require('math-expression-evaluator')
 const Command = require('../../core/Command')
 
@@ -14,6 +13,8 @@ class Calculator extends Command {
   }
 
   async run(client, msg, args) {
+    const { channel } = msg
+
     const question = args.join(' ')
 
     let answer
@@ -23,7 +24,7 @@ class Calculator extends Command {
       msg.reply('Invalid math equation')
     }
 
-    return msg.channel.send(
+    return channel.send(
       '**Equation:**\n' +
         '```css\n' +
         `${question}\n` +

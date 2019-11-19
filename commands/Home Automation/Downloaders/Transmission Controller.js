@@ -1,6 +1,4 @@
-
 const Transmission = require('transmission-promise')
-const Discord = require('discord.js')
 const Command = require('../../../core/Command')
 
 class TransmissionManagement extends Command {
@@ -20,6 +18,8 @@ class TransmissionManagement extends Command {
     // -------------------------- Setup --------------------------
     const { bytesToSize, sortByKey } = client.Utils
     const { Log } = client
+    const { Utils } = client
+    const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { host, port, ssl } = client.config.commands.transmission
@@ -100,7 +100,7 @@ class TransmissionManagement extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
 
     switch (args[0]) {
       case 'list': {
@@ -109,11 +109,11 @@ class TransmissionManagement extends Command {
         const dlQueue = await getQueue()
         if (dlQueue === 'no connection') {
           embed.setTitle('No connection to Transmission')
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
 
         if (dlQueue.length) {
-          embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+          embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
 
           for (const item of dlQueue) {
             if (item.status === 'downloading') {
@@ -129,16 +129,16 @@ class TransmissionManagement extends Command {
               )
             }
           }
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         embed.setTitle("Nothing in Transmission's download queue.")
-        return msg.channel.send({ embed }).then((m) => m.delete(5000))
+        return channel.send({ embed }).then((m) => m.delete(10000))
       }
 
       case 'add': {
         const status = await addTorrent(args[1])
         embed.setTitle(`**${status}**\nAdded to Transmission`)
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
       default:
         break

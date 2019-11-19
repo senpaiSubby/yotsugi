@@ -1,4 +1,3 @@
-const { RichEmbed } = require('discord.js')
 const Command = require('../../core/Command')
 
 class UserInfo extends Command {
@@ -14,11 +13,14 @@ class UserInfo extends Command {
   }
 
   async run(client, msg, args) {
-    const user = args[0] ? msg.mentions.members.first() : msg.author
+    const { Utils } = client
+    const { author, channel } = msg
+
+    const user = args[0] ? msg.mentions.members.first() : author
     if (!user) {
       return client.functions.get('argFix')(
         client,
-        msg.channel,
+        channel,
         1,
         'Did not find a user with that query.'
       )
@@ -26,11 +28,8 @@ class UserInfo extends Command {
 
     const inGuild = msg.guild.members.has(user.id)
 
-    const embed = new RichEmbed()
-      .setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+    const embed = Utils.embed(msg)
       .setTitle(`${user.user.tag}'s User Info`)
-      .setColor(inGuild ? msg.guild.members.get(user.user.id).displayHexColor : 0xa2ba00)
-      .setTimestamp()
       .setThumbnail(user.user.avatarURL)
       .addField('Created At', client.dateFormat(user.user.createdAt), true)
       .addField('Status', client.Utils.capitalize(user.user.presence.status), true)
@@ -57,7 +56,7 @@ class UserInfo extends Command {
 
     if (user.user.presence.activity) embed.addField('Game', user.user.presence.activity.name)
 
-    return msg.channel.send(embed)
+    return channel.send(embed)
   }
 }
 module.exports = UserInfo

@@ -13,6 +13,8 @@ class SetAvatar extends Command {
   }
 
   async run(client, msg, args) {
+    msg.delete()
+
     return client.user
       .setAvatar(args[1])
       .then((user) => console.log(`--> New avatar: ${user.avatarURL}`))

@@ -1,6 +1,4 @@
-
 const { Device } = require('google-home-notify-client')
-const Discord = require('discord.js')
 const Command = require('../../../core/Command')
 
 class GoogleHomeSpeak extends Command {
@@ -20,7 +18,8 @@ class GoogleHomeSpeak extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log } = client
-
+    const { Utils } = client
+    const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { ip, name, language, accent } = client.config.commands.googleHome
@@ -47,18 +46,18 @@ class GoogleHomeSpeak extends Command {
 
     const command = args.join(' ')
     const status = await googleSpeak(command)
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
 
-    if (!api) embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+    if (!api) embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
 
     if (status === 'success') {
       if (api) return `Told Google Home to say: ${command}`
       embed.setTitle(`Told Google Home to say: **${command}**`)
-      return msg.channel.send({ embed })
+      return channel.send({ embed })
     }
     if (api) return 'No connection to Google Home.'
     embed.setTitle('No connection to Google Home.')
-    return msg.channel.send({ embed })
+    return channel.send({ embed })
   }
 }
 module.exports = GoogleHomeSpeak

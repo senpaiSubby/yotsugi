@@ -1,6 +1,4 @@
-
 const fetch = require('node-fetch')
-const Discord = require('discord.js')
 const urljoin = require('url-join')
 const Command = require('../../../core/Command')
 
@@ -21,6 +19,8 @@ class PiHoleController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log } = client
+    const { Utils } = client
+    const { author, channel } = msg
 
     // ------------------------- Config --------------------------
 
@@ -66,9 +66,9 @@ class PiHoleController extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     switch (args[0]) {
@@ -81,25 +81,25 @@ class PiHoleController extends Command {
             if (api) return `PiHole turned ${args[0]}.`
 
             embed.setTitle(`:ok_hand: PiHole turned ${args[0]}.`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'bad key':
             if (api) return 'API key is incorrect.'
 
             embed.setTitle(':rotating_light: API key is incorrect.')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'bad params':
             if (api) return 'Valid options are `on/off/stats.'
 
             embed.setTitle(':rotating_light: Valid options are `on/off/stats`.')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'no connection':
             if (api) return 'No connection to PiHole.'
 
             embed.setTitle(':rotating_light: No connection to PiHole.')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           default:
             break
         }
@@ -119,12 +119,12 @@ class PiHoleController extends Command {
           embed.addField('Total Queries', status.totalQueries)
           embed.addField('Queries Today', status.queriesToday)
           embed.addField('Ads Blocked Today', status.adsBlockedToday)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         if (api) return 'No connection to PiHole.'
 
         embed.setTitle(':rotating_light: No connection to PiHole.')
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
       default:
         break

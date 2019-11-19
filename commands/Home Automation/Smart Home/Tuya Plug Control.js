@@ -1,4 +1,3 @@
-const Discord = require('discord.js')
 const TuyAPI = require('tuyapi')
 const Command = require('../../../core/Command')
 
@@ -19,7 +18,8 @@ class TuyaPlugController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log } = client
-
+    const { Utils } = client
+    const { channel } = msg
     // ------------------------- Config --------------------------
 
     const { devices } = client.config.commands.tuyaPlugControl
@@ -115,7 +115,7 @@ class TuyaPlugController extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
 
     switch (args[0]) {
       case 'list': {
@@ -129,7 +129,7 @@ class TuyaPlugController extends Command {
         for (const device of deviceList) {
           embed.addField(`${device.name}`, `Status: ${device.status}`)
         }
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
 
       default: {
@@ -140,7 +140,7 @@ class TuyaPlugController extends Command {
           if (api) return `No plug named ${args[0]}.`
 
           embed.setTitle(`:rotating_light: No plug named **${args[0]}**.`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
 
         if (args[1]) {
@@ -151,12 +151,12 @@ class TuyaPlugController extends Command {
             if (api) return `${args[0]} is ${status}`
 
             embed.setTitle(`:electric_plug: ${args[0]} is ${status}`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           }
           if (api) return `${args[0]} turned ${status}.`
 
           embed.setTitle(`:electric_plug: ${args[0]} turned ${status}.`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         // if user doesnt specify on/off then toggle device instead
         const status = await togglePlug(devices[index].id, devices[index].key)
@@ -164,7 +164,7 @@ class TuyaPlugController extends Command {
         if (api) return `${args[0]} turned ${status}`
 
         embed.setTitle(`:electric_plug: ${args[0]} turned ${status}`)
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
     }
   }

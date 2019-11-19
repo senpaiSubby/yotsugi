@@ -1,7 +1,5 @@
-
 // todo change to list external and internal ip's
 const fetch = require('node-fetch')
-const Discord = require('discord.js')
 const Command = require('../../../core/Command')
 
 class SystemIP extends Command {
@@ -17,15 +15,18 @@ class SystemIP extends Command {
   }
 
   async run(client, msg, args, api) {
-    const embed = new Discord.RichEmbed()
+    const { Utils } = client
+    const { author, channel } = msg
+
+    const embed = Utils.embed(msg)
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     const response = await fetch('https://ifconfig.co/json')
     const data = await response.json()
     embed.setTitle(`${data.ip}`)
-    return msg.channel.send({ embed }).then((m) => m.delete(10000))
+    return channel.send({ embed }).then((m) => m.delete(10000))
   }
 }
 module.exports = SystemIP

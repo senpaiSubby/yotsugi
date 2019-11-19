@@ -1,6 +1,3 @@
-
-
-const Discord = require('discord.js')
 const fs = require('fs')
 const util = require('util')
 const Command = require('../../core/Command')
@@ -21,7 +18,8 @@ class ImgReactions extends Command {
 
   async run(client, msg, args, api) {
     //* -------------------------- Setup --------------------------
-
+    const { Utils } = client
+    const { author, channel } = msg
     if (!api) msg.delete()
 
     //* ------------------------- Config --------------------------
@@ -69,10 +67,7 @@ class ImgReactions extends Command {
 
     //* ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed().setFooter(
-      `Requested by: ${msg.author.username}`,
-      msg.author.avatarURL
-    )
+    const embed = Utils.embed(msg)
 
     switch (args[0]) {
       case 'list': {
@@ -84,22 +79,22 @@ class ImgReactions extends Command {
         }
         embed.setTitle('Reaction Images')
         embed.addField('Here are my images', fileList)
-        return msg.channel.send({ embed }).then((m) => {
-          m.delete(5000)
+        return channel.send({ embed }).then((m) => {
+          m.delete(10000)
         })
       }
 
       default: {
         const file = await findImage(args[0])
         if (file) {
-          embed.setTitle(`${msg.author.username} said ${args[0]}`)
+          embed.setTitle(`${author.username} said ${args[0]}`)
           embed.attachFile(file[0])
           embed.setImage(`attachment://${file[1]}`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         embed.setTitle(`No reactions for ${args[0]}`)
-        return msg.channel.send({ embed }).then((m) => {
-          m.delete(5000)
+        return channel.send({ embed }).then((m) => {
+          m.delete(10000)
         })
       }
     }

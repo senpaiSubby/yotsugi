@@ -4,7 +4,6 @@
  * Changes: modified scheme to fit into SubbyBots's command layout
  */
 const Command = require('../../../core/Command')
-const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
 
@@ -32,7 +31,7 @@ class OmbiMovies extends Command {
     const { host, apiKey, username, requestmovie } = client.config.commands.ombi
     // ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
-      const movieEmbed = new Discord.RichEmbed()
+      const movieEmbed = Utils.embed(msg)
         .setTitle(
           `${movie.title} ${
             movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
@@ -40,8 +39,8 @@ class OmbiMovies extends Command {
         )
         .setDescription(movie.overview.substr(0, 255) + '(...)')
         .setFooter(
-          msg.author.username,
-          `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png`
+          author.username,
+          `https://cdn.discordapp.com/avatars/${author.id}/${author.avatar}.png`
         )
         .setTimestamp(new Date())
         .setImage('https://image.tmdb.org/t/p/w500' + movie.posterPath)
@@ -55,7 +54,7 @@ class OmbiMovies extends Command {
       if (movie.plexUrl) movieEmbed.addField('__Plex__', `[Watch now](${movie.plexUrl})`, true)
       if (movie.embyUrl) movieEmbed.addField('__Emby__', `[Watch now](${movie.embyUrl})`, true)
 
-      return msg.channel.send({ embed: movieEmbed })
+      return channel.send({ embed: movieEmbed })
     }
     const getTMDbID = async (name) => {
       try {
@@ -76,16 +75,16 @@ class OmbiMovies extends Command {
             fieldContent += `[[TheMovieDb](https://www.themoviedb.org/movie/${movie.theMovieDbId})]\n`
           })
 
-          const embed = new Discord.RichEmbed()
+          const embed = Utils.embed(msg)
             .setTitle('Ombi Movie Search')
             .setDescription('Please select one of the search results. To abort answer **cancel**')
             .addField('__Search Results__', fieldContent)
           await msg.reply({ embed })
           try {
-            const collected = await msg.channel.awaitMessages(
+            const collected = await channel.awaitMessages(
               (m) =>
                 (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) &&
-                m.author.id === msg.author.id,
+                m.author.id === author.id,
               { max: 1, time: 120000, errors: ['time'] }
             )
 
@@ -125,7 +124,7 @@ class OmbiMovies extends Command {
 
         try {
           const collected = await movieMsg.awaitReactions(
-            (reaction, user) => reaction.emoji.name === '⬇' && user.id === msg.author.id,
+            (reaction, user) => reaction.emoji.name === '⬇' && user.id === author.id,
             { max: 1, time: 120000 }
           )
           try {
@@ -136,7 +135,7 @@ class OmbiMovies extends Command {
                   accept: 'application/json',
                   'Content-Type': 'application/json',
                   ApiKey: apiKey,
-                  ApiAlias: `${msg.author.username}#${msg.author.discriminator}`,
+                  ApiAlias: `${author.username}#${author.discriminator}`,
                   UserName: username || undefined
                 },
                 body: JSON.stringify({ theMovieDbId: movie.theMovieDbId })

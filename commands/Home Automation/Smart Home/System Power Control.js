@@ -1,7 +1,5 @@
-
 const fetch = require('node-fetch')
 const wol = require('wol')
-const Discord = require('discord.js')
 const Command = require('../../../core/Command')
 
 class SystemPowerController extends Command {
@@ -21,7 +19,8 @@ class SystemPowerController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log } = client
-
+    const { Utils } = client
+    const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { devices } = client.config.commands.systemPowerControl
@@ -57,15 +56,15 @@ class SystemPowerController extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     switch (args[0]) {
       case 'list': {
         // todo add listing functionality
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
 
       default: {
@@ -81,25 +80,25 @@ class SystemPowerController extends Command {
             if (api) return `Told ${system} to ${status}`
 
             embed.setTitle(`:desktop: Told ${system} to ${status}`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'on':
             if (api) return `Sent  WOL to ${system}`
 
             embed.setTitle(`:desktop: Sent  WOL to ${system}`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'bad params':
             if (api) return 'Valid options are `reboot, off, on`'
 
             embed.setTitle(':interrobang: Valid options are `reboot, off, on`')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           default:
             if (api) return `Failed to connect to ${system}`
 
             embed.setTitle(`:desktop: Failed to connect to ${system}`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
         }
       }
     }

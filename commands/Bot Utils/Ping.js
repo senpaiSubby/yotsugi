@@ -1,5 +1,3 @@
-
-const Discord = require('discord.js')
 const Command = require('../../core/Command')
 
 class Ping extends Command {
@@ -15,12 +13,15 @@ class Ping extends Command {
   }
 
   async run(client, msg, args, api) {
-    const embed = new Discord.RichEmbed()
+    const { Utils } = client
+    const { author, channel } = msg
+
+    const embed = Utils.embed(msg)
 
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
       embed.setTitle(`Pong! Your ping is ${Date.now() - msg.createdTimestamp} ms`)
-      return msg.channel.send({ embed })
+      return channel.send({ embed })
     }
     return `Pong! Your ping is ${Date.now() - msg.createdTimestamp} ms`
   }

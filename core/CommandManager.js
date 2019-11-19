@@ -97,7 +97,9 @@ module.exports = class CommandManager {
 
     // reply with prefix when bot is mentioned
     if (msg.isMentioned(client.user)) {
-      msg.reply(`Waddup G. My command prefix is **${prefix}**`).then((m) => m.delete(10000))
+      msg
+        .reply({ embed: { description: `Waddup my G. My command prefix is **${prefix}**` } })
+        .then((m) => m.delete(10000))
     }
 
     // if msg is sent by bot then ignore
@@ -120,7 +122,7 @@ module.exports = class CommandManager {
 
     // if no command or alias do nothing
     if (!instance)
-      return msg.channel.send(`No command: **${commandName}**`).then((m) => m.delete(5000))
+      return msg.channel.send(`No command: **${commandName}**`).then((m) => m.delete(10000))
 
     const command = instance
 
@@ -140,7 +142,7 @@ module.exports = class CommandManager {
           args.length ? args.join(' ') : ''
         }] in a DM`
       )
-      return msg.reply({ embed: { title: 'This command cannot be slid into my DM.' } })
+      return msg.reply({ embed: { description: 'This command cannot be slid into my DM.' } })
     }
 
     // if command is marked 'ownerOnly: true' then don't excecute
@@ -151,13 +153,7 @@ module.exports = class CommandManager {
           args.length ? args.join(' ') : ''
         }]`
       )
-      return msg
-        .reply({
-          embed: { title: 'Only my master can use that command you fucking weaboo warrior' }
-        })
-        .then((m) => {
-          m.delete(10000)
-        })
+      return
     }
 
     // check if user and bot has all required perms in permsNeeded
@@ -168,7 +164,9 @@ module.exports = class CommandManager {
 
         if (userMissingPerms) {
           return msg
-            .reply({ embed: { title: `You lack the perms:\n- ${userMissingPerms.join('\n - ')}` } })
+            .reply({
+              embed: { description: `You lack the perms:\n- ${userMissingPerms.join('\n - ')}` }
+            })
             .then((m) => m.delete(10000))
         }
 
@@ -176,7 +174,7 @@ module.exports = class CommandManager {
           return msg.channel
             .send({
               embed: {
-                title: `I lack the perms needed to perform that action:\n- ${botMissingPerms.join(
+                description: `I lack the perms needed to perform that action:\n- ${botMissingPerms.join(
                   '\n - '
                 )}`
               }
@@ -189,10 +187,13 @@ module.exports = class CommandManager {
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
       const embed = new RichEmbed()
-        .setTitle("You didn't provide any arguments")
+        .setColor('RANDOM')
+        .setTitle(
+          "You didn't provide any arguments\nYou can edit your last message with the correct command to continue"
+        )
         .addField('**Example Usage**', '```css' + `\n${command.usage.replace(' | ', '\n')}` + '```')
       return msg.reply({ embed }).then((m) => {
-        m.delete(10000)
+        m.delete(20000)
       })
     }
 

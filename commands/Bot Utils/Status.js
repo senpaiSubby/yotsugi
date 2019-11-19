@@ -1,7 +1,6 @@
 const moment = require('moment')
 require('moment-duration-format')
 const worker = require('core-worker')
-const { RichEmbed } = require('discord.js')
 const Command = require('../../core/Command')
 
 class Status extends Command {
@@ -15,9 +14,12 @@ class Status extends Command {
   }
 
   async run(client, msg) {
+    const { Utils } = client
+    const { channel } = msg
+
     const npmv = await worker.process('npm -v').death()
 
-    const embed = new RichEmbed()
+    const embed = Utils.embed(msg)
       .setTitle(`${client.user.username} Status`)
       .setThumbnail(client.user.avatarURL)
       .addField('Uptime', moment.duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
@@ -29,9 +31,11 @@ class Status extends Command {
       .addField('Node Version', process.version.replace('v', ''), true)
       .addField('NPM Version', npmv.data.replace('\n', ''), true)
       .addField('Servers', client.guilds.size, true)
+      .addField('Commands', msg.context.commands.size, true)
+      .setFooter(`Created by https://github.com/callmekory`)
     // .addField('Users', client.users.size, true)
 
-    return msg.channel.send({ embed })
+    return channel.send({ embed })
   }
 }
 

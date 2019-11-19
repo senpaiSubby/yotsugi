@@ -13,7 +13,8 @@ class Help extends Command {
 
   async run(client, msg, args) {
     msg.delete()
-    const user = msg.author
+    const { Utils } = client
+    const { author, channel } = msg
 
     // get server prefix
     const { id } = msg.guild
@@ -35,7 +36,7 @@ class Help extends Command {
         if (missingPerms) return false
       }
       if (i.ownerOnly) {
-        if (user.id === client.config.general.ownerId) {
+        if (author.id === client.config.general.ownerId) {
           return true
         }
         return false
@@ -43,11 +44,11 @@ class Help extends Command {
       return true
     }
 
-    // filter commands based on user access
+    // filter commands based on author access
     const commands = msg.context.commands.filter((i) => checkPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
-      // Filter all commands by which are available for the user's level, using the <Collection>.filter() method.
+      // Filter all commands by which are available for the author's level, using the <Collection>.filter() method.
 
       const commandNames = commands.keyArray()
       // console.log(commands)
@@ -71,24 +72,26 @@ class Help extends Command {
           output += `${prefix}${c.name}${' '.repeat(longest - c.name.length)} :: ${c.description}\n`
         }
       })
-      await msg
-        .reply({ embed: { title: 'Sent you a message with the commands you have access to.' } })
-        .then((m) => m.delete(5000))
-      return msg.author.send(output, { code: 'css', split: { char: '\u200b' } })
+
+      const embed = Utils.embed(msg).setDescription(
+        'Sent you a message with the commands you have access to.'
+      )
+      channel.send({ embed }).then((m) => m.delete(10000))
+      return author.send(output, { code: 'css', split: { char: '\u200b' } })
     }
     // Show individual command's help.
     const command = msg.context.commands.filter((i) => checkPerms(i) && i.name === args[0])
 
     if (command) {
       command.forEach((i) => {
-        return msg.channel
+        return channel
           .send(
             `= ${i.name} = \n\n${i.description}\n\nusage:\n\n${i.usage.replace(' | ', '\n')}\n\n${
               i.aliases.length ? `aliases: ${i.aliases.join(', ')}` : ''
             }`,
-            { code: 'css' }
+            { code: 'css', split: true }
           )
-          .then((m) => m.delete(5000))
+          .then((m) => m.delete(30000))
       })
     }
   }

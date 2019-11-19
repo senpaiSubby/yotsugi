@@ -1,4 +1,4 @@
-
+/* eslint-disable radix */
 const { RichEmbed } = require('discord.js')
 
 const { client } = require('../index')
@@ -33,6 +33,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
     const image =
       message.attachments.size > 0 ? await extension(message.attachments.array()[0].url) : ''
     const embed = new RichEmbed()
+      .setColor('RANDOM')
       .setColor(foundStar.color)
       .setDescription(foundStar.description)
       .setAuthor(message.author.tag, message.author.displayAvatarURL)

@@ -13,6 +13,13 @@ client.dateFormat = require('dateformat')
 client.Log = require('./core/utils/Log')
 client.Utils = require('./core/utils/Utils')
 
+client.colors = {
+  red: '#cc241d',
+  green: '#b8bb26',
+  blue: '#458588',
+  yellow: '#d79921'
+}
+
 module.exports = { client }
 
 // setup event handlers

@@ -53,12 +53,13 @@ class TinyText extends Command {
   }
 
   async run(client, msg, args) {
+    const { channel } = msg
+
     let output = args.join(' ')
 
     mappings.forEach((replacer) => (output = output.replace(replacer.regex, replacer.replacement)))
 
-    msg.delete()
-    return msg.channel.send(output)
+    return channel.send(output)
   }
 }
 module.exports = TinyText

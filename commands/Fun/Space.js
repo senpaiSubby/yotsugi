@@ -13,10 +13,11 @@ class SpaceText extends Command {
   }
 
   async run(client, msg, args) {
-    msg.delete()
+    const { channel } = msg
+
     const amount = 2
 
-    return msg.channel.send(
+    return channel.send(
       `**${args
         .join(' '.repeat(amount / 2))
         .split('')

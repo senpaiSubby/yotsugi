@@ -1,4 +1,3 @@
-
 const Command = require('../../core/Command')
 
 class SetName extends Command {
@@ -14,6 +13,8 @@ class SetName extends Command {
   }
 
   async run(client, msg, args) {
+    msg.delete()
+
     const username = args.join(' ')
     return client.user
       .setUsername(username)

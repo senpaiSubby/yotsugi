@@ -1,4 +1,3 @@
-const { RichEmbed } = require('discord.js')
 const Command = require('../../core/Command')
 
 class Invite extends Command {
@@ -10,9 +9,12 @@ class Invite extends Command {
     })
   }
 
-  async run(client, msg, args) {
+  async run(client, msg) {
+    const { Utils } = client
+    const { channel } = msg
+
     const invite = await client.generateInvite(['MANAGE_MESSAGES'])
-    const embed = new RichEmbed()
+    const embed = Utils.embed(msg)
       .setTitle('SubbyBot')
       .setDescription(
         'Thanks for showing interest in SubbyBot! Click the\nlink below to invite her to your server.'
@@ -20,7 +22,7 @@ class Invite extends Command {
       .setThumbnail(client.user.avatarURL)
       .addField('\u200b', `[Click Here](${invite})`)
 
-    return msg.channel.send({ embed })
+    return channel.send({ embed })
   }
 }
 

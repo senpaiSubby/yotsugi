@@ -1,7 +1,4 @@
-
-
 const fetch = require('node-fetch')
-const Discord = require('discord.js')
 const urljoin = require('url-join')
 const Command = require('../../../core/Command')
 
@@ -21,6 +18,8 @@ class SabnzbdManagement extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { sortByKey, addSpace } = client.Utils
+    const { Utils } = client
+    const { author, channel } = msg
     const { Log } = client
 
     // ------------------------- Config --------------------------
@@ -58,10 +57,10 @@ class SabnzbdManagement extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
 
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     const status = await getQueue()
@@ -86,10 +85,10 @@ class SabnzbdManagement extends Command {
                   }\n**Time Left:** ${addSpace(4)} ${item.time.left}`
                 )
               }
-              return msg.channel.send({ embed })
+              return channel.send({ embed })
             }
             embed.setTitle("Nothing in sabNZBD's download queue.")
-            return msg.channel.send({ embed }).then((m) => m.delete(5000))
+            return channel.send({ embed }).then((m) => m.delete(10000))
         }
       default:
         break

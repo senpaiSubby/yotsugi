@@ -1,5 +1,3 @@
-
-const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const Command = require('../../../core/Command')
 
@@ -20,7 +18,8 @@ class SengledLightController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log } = client
-
+    const { Utils } = client
+    const { channel } = msg
     // ------------------------- Config --------------------------
 
     const { jsessionid, username, password } = client.config.commands.sengled
@@ -32,6 +31,7 @@ class SengledLightController extends Command {
 
     // ----------------------- Main Logic ------------------------
 
+    // eslint-disable-next-line no-unused-vars
     const login = async () => {
       const jsonData = {
         uuid: 'xxx',
@@ -124,7 +124,7 @@ class SengledLightController extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
 
     const devices = await getDevices()
 
@@ -140,7 +140,7 @@ class SengledLightController extends Command {
             `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`
           )
         }
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
 
       default: {
         // find index based of of key name
@@ -152,7 +152,7 @@ class SengledLightController extends Command {
           if (api) return `Could not find a light named ${args[0]}`
 
           embed.setTitle(`:rotating_light: Could not find a light named ${args[0]}`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         if (args[1]) {
           if (args[1] === 'on' || args[1] === 'off') {
@@ -164,7 +164,7 @@ class SengledLightController extends Command {
             embed.setTitle(
               `:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.`
             )
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           }
           // set light brightness eg: !light desk 100
           await setBrightness(devices[index].uuid, args[1])
@@ -172,7 +172,7 @@ class SengledLightController extends Command {
           if (api) return `${args[0]} light brightness set to ${args[1]}`
 
           embed.setTitle(`:flashlight: ${args[0]} light brightness set to ${args[1]}`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         // if no brightness specified then toggle light power
 
@@ -182,7 +182,7 @@ class SengledLightController extends Command {
         if (api) return `${args[0]} light turned ${newState}.`
         embed.setTitle(`:flashlight: ${args[0]} light turned ${newState}.`)
 
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
     }
   }

@@ -29,6 +29,21 @@ class Utils {
     }
   }
 
+  // split array into equal chuncks
+  static chunkArray(myArray, chunkSize) {
+    let index = 0
+    const arrayLength = myArray.length
+    const tempArray = []
+    let myChunk
+    for (index = 0; index < arrayLength; index += chunkSize) {
+      myChunk = myArray.slice(index, index + chunkSize)
+      // Do something if you want with the group
+      tempArray.push(myChunk)
+    }
+
+    return tempArray
+  }
+
   static findNested(dir, pattern) {
     let results = []
 
@@ -75,12 +90,22 @@ class Utils {
     })
   }
 
+  static makeShellSafe(text) {
+    return text
+      .replace(/ /g, '\\ ')
+      .replace(/\(/g, '\\(')
+      .replace(/\)/g, '\\)')
+      .replace(/\[/g, '\\[')
+      .replace(/\]/g, '\\]')
+  }
+
   static bytesToSize(bytes, decimals = 1) {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
     const dm = decimals < 0 ? 0 : decimals
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
+    // eslint-disable-next-line no-restricted-properties
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
   }
 
@@ -100,7 +125,8 @@ class Utils {
 
   // Global Error Function
   static error(name, message, channel) {
-    const embed = new RichEmbed() // .setColor(config.colours.error)
+    const embed = new RichEmbed()
+      .setColor('#cc241d') // .setColor(config.colours.error)
       .addField('Module', name, true)
       .addField('Time', Log.time(), true)
       .addField('Message', message)
@@ -110,6 +136,18 @@ class Utils {
 
     if (channel) channel.send({ embed })
     return false
+  }
+
+  // global embed template
+  static embed(msg, color = 'green') {
+    const { colors } = msg.context.client
+    const { author } = msg
+    const embed = new RichEmbed()
+      .setColor(colors[color])
+      .setFooter(`Requested by: ${author.tag}`, author.avatarURL)
+      .setTimestamp()
+
+    return embed
   }
 }
 

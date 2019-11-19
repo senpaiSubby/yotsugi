@@ -12,7 +12,10 @@ class Error extends Command {
   }
 
   async run(client, msg) {
-    return client.Utils.error('Test Error', 'Error Triggered by Admin', msg.channel)
+    const { Utils } = client
+    const { channel } = msg
+
+    return Utils.error('Test Error', 'Error Triggered by Admin', channel)
   }
 }
 

@@ -1,6 +1,3 @@
-
-
-const Discord = require('discord.js')
 const Command = require('../../core/Command')
 
 class BotManagement extends Command {
@@ -16,31 +13,34 @@ class BotManagement extends Command {
   }
 
   async run(client, msg, args, api) {
+    const { Utils } = client
+    const { channel } = msg
+
     // remove original msg
     if (!api) msg.delete()
 
     if (!api) {
-      const embed = new Discord.RichEmbed().setFooter(`Requested by: ${msg.author.username}`)
+      const embed = Utils.embed(msg)
 
       switch (args[0]) {
         case 'logout': {
           embed.setTitle('Logging out..')
-          const message = await msg.channel.send({ embed })
-          await message.delete(5000)
+          const message = await channel.send({ embed })
+          await message.delete(10000)
           return client.destroy()
         }
 
         case 'restart': {
           embed.setTitle('Restarting..')
-          const message = await msg.channel.send({ embed })
-          await message.delete(5000)
+          const message = await channel.send({ embed })
+          await message.delete(10000)
           return process.exit()
         }
 
         case 'uptime': {
           const upTime = client.Utils.millisecondsToTime(client.uptime)
           embed.setTitle(`Up for ${upTime}`)
-          const message = await msg.channel.send({ embed })
+          const message = await channel.send({ embed })
           return message.delete(10000)
         }
         default:

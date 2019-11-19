@@ -13,35 +13,38 @@ class Prefix extends Command {
   }
 
   async run(client, msg, args) {
+    const { Utils } = client
+
     msg.delete(10000)
     const db = await Database.Models.Config.findOne({ where: { id: msg.guild.id } })
 
     if (!db) {
       return msg
-        .reply({
-          embed: {
-            title:
-              "your server doesn't exist in the database! This is most likely an internal error. Run the command again, and if it fails again, please contact <@132368482120499201>."
-          }
-        })
+        .reply(
+          Utils.embed(msg, 'red').setDescription(
+            "your server doesn't exist in the database! This is most likely an internal error. Run the command again, and if it fails again, please contact <@302306624284917760>."
+          )
+        )
         .then((m) => m.delete(10000))
     }
 
     if (args.length === 0) {
       return msg
-        .reply({ embed: { title: `the prefix for this server is: **${db.prefix}**` } })
+        .reply(Utils.embed(msg).setDescription(`the prefix for this server is: **${db.prefix}**`))
         .then((m) => m.delete(10000))
     }
 
     if (args.length > 1) {
       return msg
-        .reply({ embed: { title: 'only 1 argument is accepted for this command.' } })
+        .reply(
+          Utils.embed(msg, 'yellow').setDescription('only 1 argument is accepted for this command.')
+        )
         .then((m) => m.delete(10000))
     }
 
     await db.update({ prefix: args[0] })
     return msg
-      .reply({ embed: { title: `prefix successfully changed to **${args[0]}**` } })
+      .reply(Utils.embed(msg).setDescription(`prefix successfully changed to **${args[0]}**`))
       .then((m) => m.delete(10000))
   }
 }

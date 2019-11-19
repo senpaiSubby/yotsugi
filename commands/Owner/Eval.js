@@ -11,6 +11,8 @@ class Evaluator extends Command {
   }
 
   async run(client, msg, args) {
+    const { channel } = msg
+
     const regex = new RegExp(
       client.config.general.token
         .replace(/\./g, '\\.')
@@ -29,13 +31,13 @@ class Evaluator extends Command {
       if (typeof output !== 'string') output = require('util').inspect(output, { depth: 1 })
       const response = `📤 **Output:**\n\`\`\`js\n${output.replace(regex, '[Token]')}\n\`\`\``
       if (input.length + response.length > 1900) throw new Error('Output too long!')
-      return msg.channel
+      return channel
         .send(`${input}\n${response}`)
-        .catch((err) => msg.channel.send(`${input}\n${error(err)}`))
+        .catch((err) => channel.send(`${input}\n${error(err)}`))
     } catch (err) {
-      return msg.channel
+      return channel
         .send(`${input}\n${error(err)}`)
-        .catch((err) => msg.channel.send(`${input}\n${error(err)}`))
+        .catch((e) => channel.send(`${input}\n${error(e)}`))
     }
   }
 }

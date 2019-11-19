@@ -1,5 +1,4 @@
 const fetch = require('node-fetch')
-const Discord = require('discord.js')
 const urljoin = require('url-join')
 const Command = require('../../../core/Command')
 
@@ -20,8 +19,8 @@ class PioneerAVRController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { sleep } = client.Utils
-    const { Log } = client
-
+    const { Utils } = client
+    const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { host } = client.config.commands.pioneerAVR
@@ -76,11 +75,11 @@ class PioneerAVRController extends Command {
     // use first argument as our command
     const command = args[0]
     const level = args[1]
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
     if (!api) {
       // embed.attachFile('./data/images/icons/pioneer.png')
       // embed.setThumbnail('attachment://pioneer.png')
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     switch (command) {
@@ -90,7 +89,7 @@ class PioneerAVRController extends Command {
         if (api) return 'AVR turned on'
 
         embed.setTitle(':radio: AVR turned on')
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
 
       case 'off': // turn avr off
         await setPower('off')
@@ -98,7 +97,7 @@ class PioneerAVRController extends Command {
         if (api) return 'AVR turned off'
 
         embed.setTitle(':radio: AVR turned off')
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
 
       case 'mute': {
         // mute/unmute avr
@@ -107,7 +106,7 @@ class PioneerAVRController extends Command {
         if (api) return `AVR ${muteStatus}`
 
         embed.setTitle(`${muteStatus === 'muted' ? ':mute:' : ':speaker:'} AVR ${muteStatus}`)
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
 
       case 'vol': // set volume
@@ -117,7 +116,7 @@ class PioneerAVRController extends Command {
           if (api) return `Current volume is ${await getVolume()} / 100`
 
           embed.setTitle(`:speaker: Current volume is ${await getVolume()} / 100`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
 
         if (isNaN(level)) {
@@ -125,7 +124,7 @@ class PioneerAVRController extends Command {
           if (api) return '!Volume should be a number between 1-100'
 
           embed.setTitle(':rotating_light: !Volume should be a number between 1-100')
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         // set volume to specified level
         // run command 3x for lack of api accuracy
@@ -138,7 +137,7 @@ class PioneerAVRController extends Command {
         if (api) return `Volume set to ${level}`
 
         embed.setTitle(`:speaker: Volume set to ${level}`)
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
 
       default:
         break

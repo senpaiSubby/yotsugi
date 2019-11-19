@@ -1,4 +1,3 @@
-
 const ms = require('ms')
 const Command = require('../../core/Command')
 
@@ -13,29 +12,32 @@ class RemindMe extends Command {
   }
 
   async run(client, msg, args) {
+    const { Utils } = client
+    const { author, channel } = msg
+
     msg.delete(10000)
-    msg.channel.stopTyping()
+    channel.stopTyping()
     const Timer = args[0]
     const notice = args.splice(1, 1000).join(' ')
 
-    msg.channel
-      .send({
-        embed: {
-          title: `:white_check_mark:  I'll DM you in: **${ms(ms(Timer), {
+    channel
+      .send(
+        Utils.embed(msg).setDescription(
+          `:white_check_mark:  I'll DM you in: **${ms(ms(Timer), {
             long: true
           })}** to **${notice}**`
-        }
-      })
-      .then((m) => m.delete(5000))
+        )
+      )
+      .then((m) => m.delete(10000))
 
     setTimeout(() => {
-      return msg.author.send({
-        embed: {
-          title: `It's been **${ms(ms(Timer), {
+      return author.send(
+        Utils.embed(msg).setDescription(
+          `It's been **${ms(ms(Timer), {
             long: true
           })}** Here's your reminder to **${notice}**`
-        }
-      })
+        )
+      )
     }, ms(Timer))
   }
 }

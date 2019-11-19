@@ -1,5 +1,3 @@
-
-const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const Command = require('../../../core/Command')
 
@@ -20,6 +18,8 @@ class MerakiAPI extends Command {
     // -------------------------- Setup --------------------------
     const { bytesToSize, addSpace, sortByKey } = client.Utils
     const { Log } = client
+    const { Utils } = client
+    const { author, channel } = msg
 
     // ------------------------- Config --------------------------
 
@@ -83,10 +83,10 @@ class MerakiAPI extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
 
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
     switch (args[0]) {
       case 'list': {
@@ -97,7 +97,7 @@ class MerakiAPI extends Command {
             if (api) return 'Failure connection to Meraki API'
 
             embed.setTitle('Failure connection to Meraki API')
-            msg.channel.send('Failure connection to Meraki API')
+            channel.send('Failure connection to Meraki API')
             break
           default: {
             if (api) return status
@@ -109,7 +109,7 @@ class MerakiAPI extends Command {
                 true
               )
             }
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           }
         }
         break

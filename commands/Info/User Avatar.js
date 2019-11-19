@@ -1,5 +1,3 @@
-
-const { RichEmbed } = require('discord.js')
 const Command = require('../../core/Command')
 
 class UserAvatar extends Command {
@@ -14,16 +12,18 @@ class UserAvatar extends Command {
   }
 
   async run(client, msg) {
-    const member = msg.mentions.members.first() || msg.author
-    if (!member.user.avatar) return msg.channel.send('This user does not have an avatar!')
+    const { Utils } = client
+    const { author, channel } = msg
+
+    const member = msg.mentions.members.first() || author
+    if (!member.user.avatar) return channel.send('This user does not have an avatar!')
     const avatar = member.user.avatarURL
 
-    const embed = new RichEmbed()
+    const embed = Utils.embed(msg)
       .setAuthor(`${member.user.tag}`, avatar)
-      .setColor(member.displayHexColor ? member.displayHexColor : '#D0C7FF')
       .setDescription(`[Avatar URL](${avatar})`)
       .setImage(avatar)
-    return msg.channel.send({ embed })
+    return channel.send({ embed })
   }
 }
 module.exports = UserAvatar

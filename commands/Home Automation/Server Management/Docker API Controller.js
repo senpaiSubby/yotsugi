@@ -1,6 +1,4 @@
-
 // todo refactor code and functions
-const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../../core/Command')
@@ -22,7 +20,8 @@ class DockerManagement extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log } = client
-
+    const { Utils } = client
+    const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { host } = client.config.commands.docker
@@ -102,9 +101,9 @@ class DockerManagement extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     switch (args[0]) {
@@ -117,13 +116,13 @@ class DockerManagement extends Command {
           embed.setTitle(
             ':rotating_light: Valid options are `running, paused, exited, created, restarting, dead`'
           )
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
         if (containers === 'no connection') {
           if (api) return 'Could not connect to the docker daemon.'
 
           embed.setTitle(':rotating_light: Could not connect to the docker daemon.')
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         }
 
         if (api) return containers
@@ -135,7 +134,7 @@ class DockerManagement extends Command {
           embed.addField(`${name}`, `${state}\n${ports.length ? ports.join(', ') : '---'}`, true)
         }
 
-        return msg.channel.send({ embed })
+        return channel.send({ embed })
       }
       default: {
         const containerName = args[1]
@@ -147,13 +146,13 @@ class DockerManagement extends Command {
             if (api) return 'Valid options are `start, restart, stop'
 
             embed.setTitle(':rotating_light: Valid options are `start, restart, stop`')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'no match':
             if (api) return `No container named: ${containerName} found.`
 
             embed.setTitle(`:rotating_light: No container named: ${containerName} found.`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'success':
             if (api) return `Container: ${containerName} has been ${newState}ed successfully.`
@@ -161,7 +160,7 @@ class DockerManagement extends Command {
             embed.setTitle(
               `:ok_hand: Container: ${containerName} has been ${newState}ed successfully.`
             )
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'same state':
             if (api) {
@@ -175,13 +174,13 @@ class DockerManagement extends Command {
                 newState === 'stop' ? 'ped' : 'ed'
               }.`
             )
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
 
           case 'failure':
             if (api) return 'Action could not be completed.'
 
             embed.setTitle(':rotating_light: Action could not be completed.')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           default:
             break
         }

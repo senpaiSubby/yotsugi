@@ -14,6 +14,8 @@ class SetGame extends Command {
   }
 
   async run(client, msg, args) {
+    msg.delete()
+
     const gameName = args.join(' ')
 
     return client.user

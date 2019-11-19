@@ -11,10 +11,13 @@ class Reload extends Command {
   }
 
   async run(client, msg, args) {
+    const { Utils } = client
+    const { channel } = msg
+
     const module = args[0]
 
     if (!module) {
-      const msg1 = await msg.channel.send('Reloading all modules...')
+      const msg1 = await channel.send('Reloading all modules...')
       await msg.context.reloadCommands()
       await msg1.edit('Reloading all modules... done!')
       return false
@@ -23,10 +26,14 @@ class Reload extends Command {
     const run = await msg.context.reloadCommand(module)
 
     if (run) {
-      return msg.channel.send(`Reloaded **${module}**`).then((m) => m.delete(10000))
+      return channel
+        .send(Utils.embed(msg).setDescription(`Reloaded **${module}**`))
+        .then((m) => m.delete(10000))
     }
 
-    return msg.channel.send(`Module **${module}** doesn't exist!`).then((m) => m.delete(10000))
+    return channel
+      .send(Utils.embed(msg).setDescription(`Module **${module}** doesn't exist!`))
+      .then((m) => m.delete(10000))
   }
 }
 

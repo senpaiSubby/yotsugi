@@ -1,4 +1,3 @@
-const Discord = require('discord.js')
 const portscanner = require('portscanner')
 const Command = require('../../../core/Command')
 
@@ -21,7 +20,8 @@ class PortChecker extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-
+    const { Utils } = client
+    const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const targetIP = '10.0.0.5'
@@ -31,16 +31,16 @@ class PortChecker extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = new Discord.RichEmbed()
+    const embed = Utils.embed(msg)
     if (!api) {
-      embed.setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     switch (command) {
       case 'find': // if command is "find" then we'll find us a random open port
         portscanner.findAPortNotInUse(3000, 4000).then(async (port) => {
           embed.setTitle(`Port ${port} is available for use.`)
-          return msg.channel.send({ embed })
+          return channel.send({ embed })
         })
         break
 
@@ -54,16 +54,16 @@ class PortChecker extends Command {
         portscanner.checkPortStatus(args[0], targetIP, async (error, status) => {
           if (error) {
             embed.setTitle('No connection to host')
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           }
           // Status is 'open' if currently in use or 'closed' if available
           if (status === 'open') {
             embed.setTitle(`Port ${args[0]} is open and in use.`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           }
           if (status === 'closed') {
             embed.setTitle(`Port ${args[0]} is closed and available.`)
-            return msg.channel.send({ embed })
+            return channel.send({ embed })
           }
         })
         break

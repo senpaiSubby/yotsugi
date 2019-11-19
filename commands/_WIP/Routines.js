@@ -15,7 +15,7 @@ class Routines extends Command {
   }
 
   async run(client, msg, args, api) {
-    const Log = client.Log
+    const { Log } = client
 
     const routine = args[0]
     // command setup
@@ -42,7 +42,7 @@ class Routines extends Command {
       default:
         return
     }
-    // .setFooter(`Requested by: ${msg.author.username}`, msg.author.avatarURL)
+    // .setFooter(`Requested by: ${author.username}`, author.avatarURL)
     try {
       for (const item of commands) {
         const params = item[1].trim().split(' ')
@@ -54,8 +54,8 @@ class Routines extends Command {
             await Manager.runCommand(this.client, cmd, null, args, true)
           }
           await Manager.runCommand(this.client, cmd, msg, args)
-        } catch {
-          console.log(`${item[0]} ${params}`)
+        } catch (err) {
+          console.log(`${item[0]} ${params} ${err}`)
         }
       }
       return 'success'
