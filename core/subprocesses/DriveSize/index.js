@@ -27,10 +27,10 @@ class DriveSize extends Subprocess {
           const size = this.client.Utils.bytesToSize(response.bytes)
 
           this.client.channels
-            .get('646232872356937738')
+            .get('646309179354513420')
             .setName(`📰\u2009\u2009\u2009ғiles\u2009\u2009\u2009${count}`)
           this.client.channels
-            .get('646233131296489492')
+            .get('646309200686874643')
             .setName(
               `📁\u2009\u2009\u2009size\u2009\u2009\u2009${size
                 .replace('.', '_')

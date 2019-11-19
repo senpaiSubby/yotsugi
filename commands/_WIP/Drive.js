@@ -18,7 +18,7 @@ class Drive extends Command {
     const { author, channel } = msg
 
     const command = args.shift()
-    const dirPath = Utils.makeShellSafe(args.join(' '))
+    const dirPath = args.join(' ')
 
     switch (command) {
       case 'size': {
@@ -29,7 +29,7 @@ class Drive extends Command {
         )
 
         const startTime = performance.now()
-        exec(`rclone size --json goog:${dirPath}`, { silent: true }, async (code, stdout) => {
+        exec(`rclone size --json goog:"${dirPath}"`, { silent: true }, async (code, stdout) => {
           await editMessage.delete()
           const stopTime = performance.now()
           // 3 doesnt exist 0 good
@@ -65,7 +65,7 @@ class Drive extends Command {
             .setTitle(`:file_cabinet: Directory\n- **${dirPath}**`)
             .setDescription(`:hourglass:  This may take some time...`)
         )
-        exec(`rclone lsjson goog:${dirPath}`, { silent: true }, async (code, stdout) => {
+        exec(`rclone lsjson goog:"${dirPath}"`, { silent: true }, async (code, stdout) => {
           // 3 doesnt exist 0 good
 
           if (code === 0) {
@@ -101,7 +101,7 @@ class Drive extends Command {
             let run = true
             let page = 0
             const items = sorted.length
-            const totalPages = Utils.chunkArray(sorted, 15)
+            const totalPages = Utils.chunkArray(sorted, 10)
             // msg we will edit
 
             while (run) {
