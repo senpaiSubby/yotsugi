@@ -37,7 +37,6 @@ class Utils {
     let myChunk
     for (index = 0; index < arrayLength; index += chunkSize) {
       myChunk = myArray.slice(index, index + chunkSize)
-      // Do something if you want with the group
       tempArray.push(myChunk)
     }
 
@@ -88,6 +87,16 @@ class Utils {
       const y = a[key]
       return x < y ? -1 : x > y ? 1 : 0
     })
+  }
+
+  // sorts an array into multiple arrays based off propery
+  static groupBy(array, property) {
+    const hash = []
+    for (let i = 0; i < array.length; i++) {
+      if (!hash[array[i][property]]) hash[array[i][property]] = []
+      hash[array[i][property]].push(array[i])
+    }
+    return hash
   }
 
   static makeShellSafe(text) {

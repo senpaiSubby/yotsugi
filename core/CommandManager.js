@@ -1,4 +1,4 @@
-const { Client, RichEmbed } = require('discord.js')
+const { Client } = require('discord.js')
 const Enmap = require('enmap')
 const messageLogging = require('../core/utils/messageLogging')
 const Database = require('./Database')
@@ -6,12 +6,10 @@ const Database = require('./Database')
 module.exports = class CommandManager {
   constructor(client) {
     this.client = client
-    this.prefix = client.config.general.prefix
     this.commands = new Enmap()
     this.aliases = new Enmap()
+    this.prefix = '?'
     this.ownerId = client.config.general.ownerId
-    this.Log = client.Log
-    this.error = client.Utils.error
 
     if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
@@ -75,14 +73,14 @@ module.exports = class CommandManager {
     try {
       msg.channel.startTyping()
       await command.run(client, msg, args, api)
-      this.Log.info(
+      client.Log.info(
         'Command Parser',
         `${msg.author.tag} ran command [${command.name} ${args.join(' ')}]`
       )
       return msg.channel.stopTyping()
     } catch (err) {
       msg.channel.stopTyping()
-      return this.error(command.name, err, msg.channel)
+      return client.Utils.error(command.name, err, msg.channel)
     }
   }
 
@@ -91,25 +89,32 @@ module.exports = class CommandManager {
   }
 
   async handleMessage(msg, client) {
-    const { content } = msg
+    // assign variables
+    msg.context = this
+
+    const { content, author } = msg
     const { prefix } = await this.handleServer(msg.guild)
     this.prefix = prefix
+    msg.prefix = prefix
+    const { Utils, colors, Log } = client
 
-    // reply with prefix when bot is mentioned
-    if (msg.isMentioned(client.user)) {
-      msg
-        .reply({ embed: { description: `Waddup my G. My command prefix is **${prefix}**` } })
-        .then((m) => m.delete(10000))
+    // reply with prefix when bot is the only thing mentioned
+    if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
+      await msg.delete()
+      const m = await msg.reply(
+        Utils.embed(msg).setDescription(`Waddup my G. My command prefix is **${prefix}**`)
+      )
+      return m.delete(10000)
     }
 
     // if msg is sent by bot then ignore
-    if (msg.author.bot) return
+    if (author.bot) return
 
     // send all messages to our Log
     await messageLogging(client, msg)
 
     // if msg doesnt start with prefix then ignore msg
-    if (!content.startsWith(this.prefix)) return
+    if (!content.startsWith(prefix) || content.length < 2) return
 
     // anything after command becomes a list of args
     const args = content.slice(prefix.length).split(/ +/)
@@ -121,39 +126,43 @@ module.exports = class CommandManager {
     const instance = this.findCommand(commandName)
 
     // if no command or alias do nothing
-    if (!instance)
-      return msg.channel.send(`No command: **${commandName}**`).then((m) => m.delete(10000))
+    if (!instance) {
+      const m = await msg.channel.send(
+        Utils.embed(msg)
+          .setColor(colors.red)
+          .setDescription(`No command: **${commandName}**`)
+      )
+      return m.delete(10000)
+    }
 
     const command = instance
-
-    // assign variables
-    msg.context = this
     msg.command = instance.commandName
-    msg.prefix = prefix
 
     // Check if command is enabled
     if (command.disabled) return
 
-    // if command is marked 'guildOnly: true' then don't excecute
-    if (command.guildOnly && msg.channel.type === 'dm') {
-      this.Log.warn(
-        'Command Parser',
-        `${msg.author.tag} tried to run [${command.name} ${
-          args.length ? args.join(' ') : ''
-        }] in a DM`
-      )
-      return msg.reply({ embed: { description: 'This command cannot be slid into my DM.' } })
-    }
-
     // if command is marked 'ownerOnly: true' then don't excecute
-    if (command.ownerOnly && msg.author.id !== this.ownerId) {
-      this.Log.warn(
+    if (command.ownerOnly && author.id !== this.ownerId) {
+      Log.warn(
         'Command Parser',
-        `${msg.author.tag} tried to run ownerOnly command [${command.name} ${
+        `${author.tag} tried to run ownerOnly command [${command.name} ${
           args.length ? args.join(' ') : ''
         }]`
       )
       return
+    }
+
+    // if command is marked 'guildOnly: true' then don't excecute
+    if (command.guildOnly && msg.channel.type === 'dm') {
+      Log.warn(
+        'Command Parser',
+        `${author.tag} tried to run [${command.name} ${args.length ? args.join(' ') : ''}] in a DM`
+      )
+      return msg.reply(
+        Utils.embed(msg)
+          .setColor(colors.yellow)
+          .setDescription('This command cannot be slid into my DM.')
+      )
     }
 
     // check if user and bot has all required perms in permsNeeded
@@ -163,38 +172,34 @@ module.exports = class CommandManager {
         const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
 
         if (userMissingPerms) {
-          return msg
-            .reply({
-              embed: { description: `You lack the perms:\n- ${userMissingPerms.join('\n - ')}` }
-            })
-            .then((m) => m.delete(10000))
+          const m = await msg.reply(
+            Utils.embed(msg, 'red')
+              .setTitle('You lack the perms')
+              .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
+          )
+          return m.delete(20000)
         }
 
         if (botMissingPerms) {
-          return msg.channel
-            .send({
-              embed: {
-                description: `I lack the perms needed to perform that action:\n- ${botMissingPerms.join(
-                  '\n - '
-                )}`
-              }
-            })
-            .then((m) => m.delete(10000))
+          const m = await msg.channel.send(
+            Utils.embed(msg, 'red')
+              .setTitle('I lack the perms needed to perform that action')
+              .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
+          )
+
+          return m.delete(30000)
         }
       }
     }
 
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
-      const embed = new RichEmbed()
-        .setColor('RANDOM')
-        .setTitle(
-          "You didn't provide any arguments\nYou can edit your last message with the correct command to continue"
-        )
-        .addField('**Example Usage**', '```css' + `\n${command.usage.replace(' | ', '\n')}` + '```')
-      return msg.reply({ embed }).then((m) => {
-        m.delete(20000)
-      })
+      const embed = Utils.embed(msg, 'yellow')
+        .setTitle("You didn't provide any arguments")
+        .setDescription('Edit your last message with the correct params')
+        .addField('**Example Usage**', `\`\`\`css\n${command.usage.replace(/ \| /g, '\n')}\`\`\``)
+      const m = await msg.reply({ embed })
+      return m.delete(30000)
     }
 
     // Run Command
@@ -203,18 +208,16 @@ module.exports = class CommandManager {
 
   async handleServer(guild) {
     if (!guild) return { prefix: this.prefix }
-
     const { id } = guild
-
-    let db = await Database.Models.Config.findOne({ where: { id } })
-
+    let db = await Database.Models.serverConfig.findOne({ where: { id } })
     if (!db) {
-      db = await Database.Models.Config.create({
+      db = await Database.Models.serverConfig.create({
         id,
-        prefix: '?'
+        prefix: '?',
+        welcomeChannel: '',
+        starboardChannel: ''
       })
     }
-
     const prefix = db.prefix || this.prefix
     return { prefix }
   }
@@ -222,13 +225,9 @@ module.exports = class CommandManager {
   checkPerms(user, permsNeeded) {
     const missingPerms = []
     for (const perm of permsNeeded) {
-      if (!user.permissions.has(perm)) {
-        missingPerms.push(perm)
-      }
+      if (!user.permissions.has(perm)) missingPerms.push(perm)
     }
-    if (missingPerms.length) {
-      return missingPerms
-    }
+    if (missingPerms.length) return missingPerms
     return false
   }
 }
