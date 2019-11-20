@@ -23,7 +23,7 @@ class PiHoleController extends Command {
 
     // ------------------------- Config --------------------------
 
-    const { host, apiKey } = client.config.pihole
+    const { host, apiKey } = JSON.parse(client.settings.pihole)
 
     // ----------------------- Main Logic ------------------------
 

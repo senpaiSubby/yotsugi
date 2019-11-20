@@ -18,10 +18,10 @@ class GoogleHomeSpeak extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log, Utils, colors } = client
-    const { author, channel } = msg
+    const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { ip, name, language, accent } = client.config.googleHome
+    const { ip, name, language } = JSON.parse(client.settings.googleHome)
 
     // ----------------------- Main Logic ------------------------
 
@@ -32,7 +32,7 @@ class GoogleHomeSpeak extends Command {
      */
     const googleSpeak = async (speach) => {
       try {
-        const device = new Device(ip, name, language, accent)
+        const device = new Device(ip, name, language)
         await device.notify(speach)
         return 'success'
       } catch (error) {

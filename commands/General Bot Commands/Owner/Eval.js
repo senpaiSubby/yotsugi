@@ -14,7 +14,7 @@ class Evaluator extends Command {
     const { channel } = msg
 
     const regex = new RegExp(
-      client.config.general.token
+      client.config.token
         .replace(/\./g, '\\.')
         .split('')
         .join('.?'),

@@ -20,10 +20,10 @@ class DockerManagement extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log, Utils, colors } = client
-    const { author, channel } = msg
+    const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { host } = client.config.docker
+    const { host } = JSON.parse(client.settings.docker)
 
     // ----------------------- Main Logic ------------------------
 

@@ -17,7 +17,7 @@ class Executor extends Command {
     const { Utils } = client
 
     const regex = new RegExp(
-      client.config.general.token
+      client.config.token
         .replace(/\./g, '\\.')
         .split('')
         .join('.?'),

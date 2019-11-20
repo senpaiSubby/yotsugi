@@ -21,7 +21,7 @@ class TuyaPlugController extends Command {
     const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { devices } = client.config.tuyaPlugControl
+    const devices = JSON.parse(client.settings.tuyaPlugControl)
 
     // ----------------------- Main Logic ------------------------
 

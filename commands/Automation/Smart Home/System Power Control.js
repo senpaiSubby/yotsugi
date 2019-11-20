@@ -19,10 +19,10 @@ class SystemPowerController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { Log, Utils, colors } = client
-    const { author, channel } = msg
+    const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { devices } = client.config.systemPowerControl
+    const devices = JSON.parse(client.settings.systemPowerControl)
 
     // ----------------------- Main Logic ------------------------
 

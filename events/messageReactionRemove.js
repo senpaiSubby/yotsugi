@@ -15,7 +15,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
   const { message } = reaction
   if (message.author.id === user.id) return
   if (reaction.emoji.name !== '⭐') return
-  const { starboardChannel } = client.config.general
+  const { starboardChannel } = client.config
   const starChannel = message.guild.channels.find((channel) => channel.name === starboardChannel)
   if (!starChannel)
     return message.channel.send(

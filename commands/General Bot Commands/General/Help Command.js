@@ -29,7 +29,7 @@ class Help extends Command {
         if (missingPerms) return false
       }
       if (i.ownerOnly) {
-        if (author.id === client.config.general.ownerId) return true
+        if (author.id === client.config.ownerID) return true
         return false
       }
       if (i.disabled) return false

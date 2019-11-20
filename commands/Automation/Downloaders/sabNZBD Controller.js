@@ -22,7 +22,7 @@ class SabnzbdManagement extends Command {
     const { channel } = msg
 
     // ------------------------- Config --------------------------
-    const { host, apiKey } = client.config.sabnzbd
+    const { host, apiKey } = JSON.parse(client.settings.sabnzbd)
 
     // ----------------------- Main Logic ------------------------
     /**

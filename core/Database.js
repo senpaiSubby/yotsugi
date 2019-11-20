@@ -15,7 +15,7 @@ class Database {
   static get Models() {
     return {
       serverConfig: require('./Structures/serverConfig'),
-      mainConfig: require('./Structures/mainConfig')
+      generalConfig: require('./Structures/generalConfig')
     }
   }
 }

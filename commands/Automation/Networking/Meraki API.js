@@ -18,11 +18,11 @@ class MerakiAPI extends Command {
     // -------------------------- Setup --------------------------
     const { bytesToSize, addSpace, sortByKey } = client.Utils
     const { Log, Utils, colors } = client
-    const { author, channel } = msg
+    const { channel } = msg
 
     // ------------------------- Config --------------------------
 
-    const { serielNum, apiKey } = client.config.meraki
+    const { serielNum, apiKey } = JSON.parse(client.settings.meraki)
 
     // ----------------------- Main Logic ------------------------
 

@@ -20,7 +20,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
   }
 
   if (message.author.bot) return message.channel.send(`${user}, you cannot star bot messages.`)
-  const { starboardChannel } = client.config.general
+  const { starboardChannel } = client.config
   const starChannel = message.guild.channels.find((channel) => channel.name === starboardChannel)
 
   if (!starChannel) {

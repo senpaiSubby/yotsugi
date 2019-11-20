@@ -28,8 +28,6 @@ eventFiles.forEach((file) => {
   require(file)
 })
 
-//client.on('messageReactionRemove')
-
 // Unhandled Promise Rejections
 process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejection', reason, true))
 
@@ -37,4 +35,4 @@ process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejecti
 process.on('uncaughtException', (error) => client.Log.error('Uncaught Exception', error, true))
 
 // login
-client.login(config.general.token)
+client.login(config.token)

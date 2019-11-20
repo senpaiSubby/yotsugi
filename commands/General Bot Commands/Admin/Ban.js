@@ -19,13 +19,13 @@ class BanUser extends Command {
 
     const target = msg.guild.member(msg.mentions.users.first() || msg.guild.members.get(args[0]))
     const reason = args.slice(1).join(' ')
-    const logs = msg.guild.channels.find('name', client.config.general.logsChannel)
+    const logs = msg.guild.channels.find('name', client.config.logsChannel)
 
     if (!target) return msg.reply('please specify a member to ban!')
     if (!reason) return msg.reply('please specify a reason for this ban!')
     if (!logs)
       return msg.reply(
-        `please create a channel called ${client.config.general.logsChannel} to log the bans!`
+        `please create a channel called ${client.config.logsChannel} to log the bans!`
       )
 
     const embed = Utils.embed(msg)

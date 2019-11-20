@@ -9,7 +9,7 @@ module.exports = class CommandManager {
     this.commands = new Enmap()
     this.aliases = new Enmap()
     this.prefix = '?'
-    this.ownerId = client.config.general.ownerId
+    this.ownerID = client.config.ownerID
 
     if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
@@ -92,6 +92,12 @@ module.exports = class CommandManager {
     // assign variables
     msg.context = this
 
+    // set db configs
+    const generalConfig = await Database.Models.generalConfig.findOne({
+      where: { id: client.config.ownerID }
+    })
+    client.settings = generalConfig.dataValues
+
     const { content, author } = msg
     const { prefix } = await this.handleServer(msg.guild)
     this.prefix = prefix
@@ -142,7 +148,7 @@ module.exports = class CommandManager {
     if (command.disabled) return
 
     // if command is marked 'ownerOnly: true' then don't excecute
-    if (command.ownerOnly && author.id !== this.ownerId) {
+    if (command.ownerOnly && author.id !== this.ownerID) {
       Log.warn(
         'Command Parser',
         `${author.tag} tried to run ownerOnly command [${command.name} ${
@@ -207,15 +213,46 @@ module.exports = class CommandManager {
   }
 
   async handleServer(guild) {
+    const { id, ownerID, name, owner } = guild
+    // setup DB
+
+    const generalConfig = await Database.Models.generalConfig.findOne({
+      where: { id: this.ownerID }
+    })
+
+    if (!generalConfig) {
+      await Database.Models.generalConfig.create({
+        username: owner.user.tag,
+        id: ownerID,
+        pihole: JSON.stringify({ host: null, apiKey: null }),
+        rclone: JSON.stringify({ remote: null }),
+        emby: JSON.stringify({ host: null, apiKey: null }),
+        docker: JSON.stringify({ host: null }),
+        sengled: JSON.stringify({ username: null, password: null, jsessionid: null }),
+        googleHome: JSON.stringify({ name: null, ip: null, language: null }),
+        transmission: JSON.stringify({ host: null, apiKey: null, ssl: false }),
+        sabnzbd: JSON.stringify({ host: null, apiKey: null }),
+        ombi: JSON.stringify({ host: null, apiKey: null, username: null }),
+        meraki: JSON.stringify({ serielNum: null, apiKey: null }),
+        pioneerAVR: JSON.stringify({ host: null }),
+        systemPowerControl: JSON.stringify([]),
+        tuyaPlugControl: JSON.stringify([])
+      })
+    }
+
+    // per server config
     if (!guild) return { prefix: this.prefix }
-    const { id } = guild
+
     let db = await Database.Models.serverConfig.findOne({ where: { id } })
+
     if (!db) {
       db = await Database.Models.serverConfig.create({
+        serverName: name,
         id,
         prefix: '?',
-        welcomeChannel: '',
-        starboardChannel: ''
+        ownerID,
+        welcomeChannel: null,
+        starboardChannel: null
       })
     }
     const prefix = db.prefix || this.prefix

@@ -31,7 +31,7 @@ class OmbiTV extends Command {
     const { author, channel } = msg
 
     // ------------------------- Config --------------------------
-    const { host, apiKey, username, requesttv } = client.config.ombi
+    const { host, apiKey, username } = JSON.parse(client.settings.ombi)
 
     // ----------------------- Main Logic ------------------------
     const outputTVShow = (show) => {
@@ -113,7 +113,7 @@ class OmbiTV extends Command {
 
     const requestTVShow = async (showMsg, show) => {
       if (
-        (!requesttv || msg.member.roles.some((role) => role.name === 'requesttv')) &&
+        msg.member.roles.some((role) => role.name === 'requesttv') &&
         !show.available &&
         !show.requested &&
         !show.approved

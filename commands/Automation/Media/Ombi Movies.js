@@ -28,7 +28,7 @@ class OmbiMovies extends Command {
     const Log = client.Log
 
     // ------------------------- Config --------------------------
-    const { host, apiKey, username, requestmovie } = client.config.ombi
+    const { host, apiKey, username } = JSON.parse(client.settings.ombi)
     // ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
       const movieEmbed = Utils.embed(msg)
@@ -114,7 +114,7 @@ class OmbiMovies extends Command {
 
     const requestMovie = async (movieMsg, movie) => {
       if (
-        (!requestmovie || msg.member.roles.some((role) => role.name === 'requestmovie')) &&
+        msg.member.roles.some((role) => role.name === 'requestmovie') &&
         !movie.available &&
         !movie.requested &&
         !movie.approved

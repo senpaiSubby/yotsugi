@@ -21,7 +21,7 @@ class SengledLightController extends Command {
     const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { jsessionid, username, password } = client.config.sengled
+    const { jsessionid, username, password } = JSON.parse(client.settings.sengled)
     const baseUrl = 'https://us-elements.cloud.sengled.com:443/zigbee'
     const headers = {
       'Content-Type': 'application/json',

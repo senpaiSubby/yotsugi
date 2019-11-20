@@ -24,7 +24,7 @@ class WebServer extends Subprocess {
      *  }
      */
 
-    const { webServerPort } = this.client.config.general
+    const { webServerPort } = this.client.config
     const { Log } = this.client
 
     const app = express()

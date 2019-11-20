@@ -18,7 +18,7 @@ class PortChecker extends Command {
     })
   }
 
-  async run(client, msg, argsi) {
+  async run(client, msg, args) {
     // -------------------------- Setup --------------------------
     const { Utils, colors } = client
     const { channel } = msg

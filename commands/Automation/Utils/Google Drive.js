@@ -18,6 +18,8 @@ class Drive extends Command {
     const { Utils } = client
     const { author, channel } = msg
 
+    const { remote } = JSON.parse(client.settings.rclone)
+
     const command = args.shift()
     const dirPath = args.join(' ')
 
@@ -30,35 +32,39 @@ class Drive extends Command {
         )
 
         const startTime = performance.now()
-        exec(`rclone size --json goog:"${dirPath}"`, { silent: true }, async (code, stdout) => {
-          await editMessage.delete()
-          const stopTime = performance.now()
-          // 3 doesnt exist 0 good
-          const embed = Utils.embed(msg)
-          if (code === 0) {
-            const response = JSON.parse(stdout)
-            const { count } = response
-            const size = Utils.bytesToSize(response.bytes)
-            embed.setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
-            embed.addField('Files', `:newspaper: ${count}`)
-            embed.addField('Size', `:file_folder: ${size}`)
-            embed.setDescription(`Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}`)
+        exec(
+          `rclone size --json ${remote}:"${dirPath}"`,
+          { silent: true },
+          async (code, stdout) => {
+            await editMessage.delete()
+            const stopTime = performance.now()
+            // 3 doesnt exist 0 good
+            const embed = Utils.embed(msg)
+            if (code === 0) {
+              const response = JSON.parse(stdout)
+              const { count } = response
+              const size = Utils.bytesToSize(response.bytes)
+              embed.setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
+              embed.addField('Files', `:newspaper: ${count}`)
+              embed.addField('Size', `:file_folder: ${size}`)
+              embed.setDescription(`Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}`)
 
-            return msg.reply({ embed })
-          }
+              return msg.reply({ embed })
+            }
 
-          if (code === 3) {
-            embed.setTitle(`Directory | :file_folder: ${dirPath} | does not exist! `)
-            embed.setColor(client.colors.yellow)
-            const m = await msg.reply({ embed })
+            if (code === 3) {
+              embed.setTitle(`Directory | :file_folder: ${dirPath} | does not exist! `)
+              embed.setColor(client.colors.yellow)
+              const m = await msg.reply({ embed })
+              return m.delete(10000)
+            }
+
+            const m = await msg.reply(
+              Utils.embed(msg, 'red').setDescription('A error occured with Rclone')
+            )
             return m.delete(10000)
           }
-
-          const m = await msg.reply(
-            Utils.embed(msg, 'red').setDescription('A error occured with Rclone')
-          )
-          return m.delete(10000)
-        })
+        )
         break
       }
 
@@ -68,7 +74,7 @@ class Drive extends Command {
             .setTitle(`:file_cabinet: Directory\n- **${dirPath}**`)
             .setDescription(`:hourglass:  This may take some time...`)
         )
-        exec(`rclone lsjson goog:"${dirPath}"`, { silent: true }, async (code, stdout) => {
+        exec(`rclone lsjson ${remote}:"${dirPath}"`, { silent: true }, async (code, stdout) => {
           // 3 doesnt exist 0 good
 
           if (code === 0) {

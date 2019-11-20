@@ -22,7 +22,7 @@ class TransmissionManagement extends Command {
     const { author, channel } = msg
     // ------------------------- Config --------------------------
 
-    const { host, port, ssl } = client.config.transmission
+    const { host, port, ssl } = JSON.parse(client.settings.transmission)
     const trans = new Transmission({
       host, // default 'localhost'
       port, // default 9091

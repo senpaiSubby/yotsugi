@@ -23,7 +23,7 @@ class PioneerAVRController extends Command {
     const { author, channel } = msg
     // ------------------------- Config --------------------------
 
-    const { host } = client.config.pioneerAVR
+    const { host } = JSON.parse(client.settings.pioneerAVR)
 
     // ----------------------- Main Logic ------------------------
 

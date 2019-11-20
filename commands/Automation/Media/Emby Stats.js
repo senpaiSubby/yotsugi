@@ -16,7 +16,7 @@ class EmbyStats extends Command {
 
   async run(client, msg, args, api) {
     const { Utils } = client
-    const { apiKey, host } = client.config.emby
+    const { apiKey, host } = JSON.parse(client.settings.emby)
 
     const headers = { 'X-Emby-Token': apiKey }
 

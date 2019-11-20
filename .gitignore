@@ -26,6 +26,7 @@
 logs
 *.sql
 *.sqlite
+*.sqlite-journal
 *.sqlite3
 *.sqlite3*
 
