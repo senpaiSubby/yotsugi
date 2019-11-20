@@ -68,8 +68,13 @@ To get a local copy up and running follow these simple steps.
 git clone https://github.com/callmekory/subbyBot.git
 ```
 
-2. Install NPM packages
+2. Install Yarn
 
+```curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -```
+```echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list```
+```sudo apt install yarn```
+
+3: Install NPM packages 
 ```sh
 yarn install
 ```
