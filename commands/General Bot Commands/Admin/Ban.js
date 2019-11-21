@@ -7,7 +7,7 @@ class BanUser extends Command {
       name: 'ban',
       category: 'Admin',
       description: 'Ban a user',
-      usage: 'ban @user',
+      usage: 'ban @user <reason for ban>',
       guildOnly: true,
       args: true,
       permsNeeded: ['BAN_MEMBERS']
@@ -47,8 +47,8 @@ class BanUser extends Command {
       .addField('Banned Reason', reason)
       .setFooter('Banned user information', target.user.displayAvatarURL)
 
-    channel.send(`${target.user.username} was banned by ${author} for ${reason}`)
-    target.ban(reason)
+    await target.ban(reason)
+    await channel.send(`${target.user.username} was banned by ${author} for ${reason}`)
     return serverLogsChannel.send(embed)
   }
 }

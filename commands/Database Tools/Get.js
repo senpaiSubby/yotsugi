@@ -14,6 +14,8 @@ class Get extends Command {
   }
 
   async run(client, msg, args) {
+    console.log(args)
+    console.log(msg.flags)
     const { Utils } = client
 
     switch (args[0]) {

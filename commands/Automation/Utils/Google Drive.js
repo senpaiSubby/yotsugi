@@ -9,8 +9,7 @@ class Drive extends Command {
       category: 'Utils',
       description: 'Gets info on the gdrive folder you specify',
       usage: 'drive size /Unsorted | drive ls /folder/to/check',
-      args: true,
-      permsNeeded: ['ADMINISTRATOR']
+      args: true
     })
   }
 

@@ -99,7 +99,7 @@ module.exports = class CommandManager {
     client.settings = generalConfig.dataValues
 
     const { content, author } = msg
-    const { prefix } = await this.handleServer(msg.guild)
+    const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     this.prefix = prefix
     msg.prefix = prefix
     const { Utils, colors, Log } = client
@@ -226,7 +226,7 @@ module.exports = class CommandManager {
         id: ownerID,
         pihole: JSON.stringify({ host: null, apiKey: null }),
         rclone: JSON.stringify({ remote: null }),
-        emby: JSON.stringify({ host: null, apiKey: null }),
+        emby: JSON.stringify({ host: null, apiKey: null, userID: null }),
         docker: JSON.stringify({ host: null }),
         sengled: JSON.stringify({ username: null, password: null, jsessionid: null }),
         googleHome: JSON.stringify({ name: null, ip: null, language: null }),
@@ -258,7 +258,7 @@ module.exports = class CommandManager {
       })
     }
     const prefix = db.prefix || this.prefix
-    return { prefix }
+    return prefix
   }
 
   checkPerms(user, permsNeeded) {
