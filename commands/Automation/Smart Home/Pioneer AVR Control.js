@@ -19,11 +19,24 @@ class PioneerAVRController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { sleep } = client.Utils
-    const { Utils, colors } = client
+    const { p, Utils, colors } = client
     const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { host } = JSON.parse(client.settings.pioneerAVR)
+
+    if (!host) {
+      const settings = [`${p}db set pioneerAVR host <http://ip>`]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Pioneer DB config!')
+          .setDescription(
+            `**${p}db get pioneerAVR** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
 
     // ----------------------- Main Logic ------------------------
 

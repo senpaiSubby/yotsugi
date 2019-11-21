@@ -25,7 +25,7 @@ class OmbiMovies extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils } = client
+    const { p, Log, Utils } = client
     const { author, channel } = msg
     const role = msg.guild.roles.find('name', 'requestmovie')
     if (!role) {
@@ -41,6 +41,22 @@ class OmbiMovies extends Command {
 
     // ------------------------- Config --------------------------
     const { host, apiKey, username } = JSON.parse(client.settings.ombi)
+    if ((!host, apiKey, username)) {
+      const settings = [
+        `${p}db set ombi host <http://ip>`,
+        `${p}db set ombi apiKey <APIKEY>`,
+        `${p}db set ombi username <USER>`
+      ]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Ombi DB config!')
+          .setDescription(
+            `**${p}db get ombi** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
     // ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
       const movieEmbed = Utils.embed(msg, 'green')

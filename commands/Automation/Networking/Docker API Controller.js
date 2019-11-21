@@ -19,12 +19,23 @@ class DockerManagement extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors } = client
+    const { p, Log, Utils, colors } = client
     const { channel } = msg
     // ------------------------- Config --------------------------
 
     const { host } = JSON.parse(client.settings.docker)
-
+    if (!host) {
+      const settings = [`${p}db set docker host <http://ip>`]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Docker DB config!')
+          .setDescription(
+            `**${p}db get docker** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
     // ----------------------- Main Logic ------------------------
 
     /**

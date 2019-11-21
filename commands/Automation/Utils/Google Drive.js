@@ -14,12 +14,18 @@ class Drive extends Command {
   }
 
   async run(client, msg, args) {
-    const { Utils } = client
+    const { Utils, p } = client
     const { author, channel } = msg
 
     const { remote } = JSON.parse(client.settings.rclone)
-    if (!remote)
-      return channel.send(Utils.embed(msg, 'red').setDescription('Missing Rclone remote config.'))
+    if (!remote) {
+      const settings = [`${p}db set rclone remote <remote>`]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Rclone DB config!')
+          .setDescription(`Set them like so..\n\`\`\`css\n${settings.join('\n')}\n\`\`\``)
+      )
+    }
 
     const command = args.shift()
     const dirPath = args.join(' ')

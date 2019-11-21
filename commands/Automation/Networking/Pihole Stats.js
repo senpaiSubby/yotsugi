@@ -18,12 +18,24 @@ class PiHoleController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors } = client
+    const { p, Log, Utils, colors } = client
     const { channel } = msg
 
     // ------------------------- Config --------------------------
 
     const { host, apiKey } = JSON.parse(client.settings.pihole)
+    if ((!host, apiKey)) {
+      const settings = [`${p}db set pihole host <PIHOLEURL>`, `${p}db set pihole apiKey <APIKEY>`]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing PiHole DB config!')
+          .setDescription(
+            `**${p}db get pihole** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
 
     // ----------------------- Main Logic ------------------------
 

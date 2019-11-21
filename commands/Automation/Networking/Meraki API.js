@@ -17,12 +17,24 @@ class MerakiAPI extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { bytesToSize, addSpace, sortByKey } = client.Utils
-    const { Log, Utils, colors } = client
+    const { p, Log, Utils, colors } = client
     const { channel } = msg
 
     // ------------------------- Config --------------------------
 
     const { serielNum, apiKey } = JSON.parse(client.settings.meraki)
+    if ((!serielNum, apiKey)) {
+      const settings = [`${p}db set meraki serielNum <SERIEL>`, `${p}db set meraki apiKey <APIKEY>`]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Meraki DB config!')
+          .setDescription(
+            `**${p}db get meraki** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
 
     // ----------------------- Main Logic ------------------------
 

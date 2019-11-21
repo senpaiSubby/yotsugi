@@ -18,11 +18,23 @@ class SabnzbdManagement extends Command {
   async run(client, msg, args) {
     // -------------------------- Setup --------------------------
     const { sortByKey, addSpace } = client.Utils
-    const { Log, Utils, colors } = client
+    const { p, Log, Utils, colors } = client
     const { channel } = msg
 
     // ------------------------- Config --------------------------
     const { host, apiKey } = JSON.parse(client.settings.sabnzbd)
+    if ((!host, apiKey)) {
+      const settings = [`${p}db set sabnzbd host <http://ip>`, `${p}db set sabnzbd apiKey <APIKEY>`]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing sabNZBD DB config!')
+          .setDescription(
+            `**${p}db get sabnzbd** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
 
     // ----------------------- Main Logic ------------------------
     /**

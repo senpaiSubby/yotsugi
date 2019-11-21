@@ -17,11 +17,29 @@ class SengledLightController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors } = client
+    const { Log, Utils, colors, p } = client
     const { channel } = msg
     // ------------------------- Config --------------------------
 
     const { jsessionid, username, password } = JSON.parse(client.settings.sengled)
+
+    if ((!jsessionid, username, password)) {
+      const settings = [
+        `${p}db set sengled jsessionid <id>`,
+        `${p}db set sengled username <user>`,
+        `${p}db set sengled password <pass>`
+      ]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Sengled DB config!')
+          .setDescription(
+            `**${p}db get sengled** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
+
     const baseUrl = 'https://us-elements.cloud.sengled.com:443/zigbee'
     const headers = {
       'Content-Type': 'application/json',

@@ -17,12 +17,30 @@ class TransmissionManagement extends Command {
   async run(client, msg, args) {
     // -------------------------- Setup --------------------------
     const { bytesToSize, sortByKey } = client.Utils
-    const { Log } = client
+    const { Log, p } = client
     const { Utils } = client
     const { author, channel } = msg
     // ------------------------- Config --------------------------
 
     const { host, port, ssl } = JSON.parse(client.settings.transmission)
+
+    if ((!host, port, ssl)) {
+      const settings = [
+        `${p}db set emby host <http://ip>`,
+        `${p}db set emby port <port>`,
+        `${p}db set emby ssl <true/false>`
+      ]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Transmission DB config!')
+          .setDescription(
+            `**${p}db get transmission** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
+
     const trans = new Transmission({
       host, // default 'localhost'
       port, // default 9091

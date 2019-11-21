@@ -17,11 +17,28 @@ class GoogleHomeSpeak extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors } = client
+    const { p, Log, Utils, colors } = client
     const { channel } = msg
     // ------------------------- Config --------------------------
 
     const { ip, name, language } = JSON.parse(client.settings.googleHome)
+
+    if ((!ip, name, language)) {
+      const settings = [
+        `${p}db set googleHome name <name>`,
+        `${p}db set googleHome ip <ip addy>`,
+        `${p}db set googleHome language <en/fr>`
+      ]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Google Home DB config!')
+          .setDescription(
+            `**${p}db get googleHome** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
 
     // ----------------------- Main Logic ------------------------
 

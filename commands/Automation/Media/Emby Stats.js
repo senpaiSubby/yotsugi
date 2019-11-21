@@ -15,8 +15,24 @@ class EmbyStats extends Command {
   }
 
   async run(client, msg, args, api) {
-    const { Utils } = client
+    const { p, Utils } = client
     const { apiKey, host, userID } = JSON.parse(client.settings.emby)
+    if ((!host, apiKey, userID)) {
+      const settings = [
+        `${p}db set emby host <http://ip>`,
+        `${p}db set emby apiKey <APIKEY>`,
+        `${p}db set emby userID <USERID>`
+      ]
+      return channel.send(
+        Utils.embed(msg, 'red')
+          .setTitle(':rotating_light: Missing Emby DB config!')
+          .setDescription(
+            `**${p}db get emby** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
+              '\n'
+            )}\n\`\`\``
+          )
+      )
+    }
 
     const headers = { 'X-Emby-Token': apiKey }
 

@@ -94,7 +94,7 @@ module.exports = class CommandManager {
 
     const { content, author, channel } = msg
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
-    this.prefix = prefix
+    client.p = prefix
     msg.prefix = prefix
     const { Utils, colors, Log } = client
 
