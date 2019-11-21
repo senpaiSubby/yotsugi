@@ -92,17 +92,17 @@ module.exports = class CommandManager {
     // assign variables
     msg.context = this
 
-    // set db configs
-    const generalConfig = await Database.Models.generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
-    client.settings = generalConfig.dataValues
-
     const { content, author } = msg
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     this.prefix = prefix
     msg.prefix = prefix
     const { Utils, colors, Log } = client
+
+    // set db configs
+    const generalConfig = await Database.Models.generalConfig.findOne({
+      where: { id: client.config.ownerID }
+    })
+    client.settings = generalConfig.dataValues
 
     // reply with prefix when bot is the only thing mentioned
     if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
