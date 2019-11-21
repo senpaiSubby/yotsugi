@@ -31,9 +31,11 @@ class OmbiMovies extends Command {
     if (!role) {
       await msg.guild.createRole({ name: 'requestmovie' })
       return msg.channel.send(
-        Utils.embed(msg, 'yellow').setDescription(
-          'I created a role called **requestmovie**. Assign this role to members to let them request movies!'
-        )
+        Utils.embed(msg, 'yellow')
+          .setTitle('Missing role [requestmovie]')
+          .setDescription(
+            'I created a role called **requestmovie**. Assign this role to members to let them request movies!'
+          )
       )
     }
 

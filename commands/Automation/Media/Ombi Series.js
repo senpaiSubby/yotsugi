@@ -33,9 +33,11 @@ class OmbiTV extends Command {
     if (!role) {
       await msg.guild.createRole({ name: 'requesttv' })
       return msg.channel.send(
-        Utils.embed(msg, 'yellow').setDescription(
-          'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
-        )
+        Utils.embed(msg, 'yellow')
+          .setTitle('Missing role [requesttv]')
+          .setDescription(
+            'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
+          )
       )
     }
 
