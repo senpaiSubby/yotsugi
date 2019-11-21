@@ -8,7 +8,7 @@ class EmbyStats extends Command {
       name: 'emby',
       category: 'Media',
       description: 'Gets library stats on Emby.',
-      usage: 'emby streams | emby stats',
+      usage: 'emby streams | emby stats | emby recent <movies/series>',
       args: true,
       webUI: true
     })
@@ -120,7 +120,7 @@ class EmbyStats extends Command {
       case 'recent': {
         const options = ['series', 'movies']
         if (!args[1] || !options.includes(args[1])) {
-          msg.reply(embed.setDescription(`Valid options are \`${options.join(' / ')}\``))
+          return msg.reply(embed.setDescription(`Valid options are \`${options.join(' / ')}\``))
         }
         const mediaType = args[1] === 'movies' ? 'Movie' : args[1] === 'series' ? 'Episode' : ''
 

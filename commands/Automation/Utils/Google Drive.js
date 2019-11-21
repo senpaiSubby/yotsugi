@@ -18,6 +18,8 @@ class Drive extends Command {
     const { author, channel } = msg
 
     const { remote } = JSON.parse(client.settings.rclone)
+    if (!remote)
+      return channel.send(Utils.embed(msg, 'red').setDescription('Missing Rclone remote config.'))
 
     const command = args.shift()
     const dirPath = args.join(' ')
