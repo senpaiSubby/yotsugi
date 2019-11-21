@@ -56,7 +56,7 @@ class SabnzbdManagement extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     const status = await getQueue()
 

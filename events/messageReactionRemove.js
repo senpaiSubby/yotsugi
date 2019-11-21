@@ -1,6 +1,6 @@
 /* eslint-disable radix */
 const { RichEmbed } = require('discord.js')
-
+const Database = require('../core/Database')
 const { client } = require('../index')
 
 client.on('messageReactionRemove', async (reaction, user) => {
@@ -12,33 +12,37 @@ client.on('messageReactionRemove', async (reaction, user) => {
     return attachment
   }
 
-  const { message } = reaction
-  if (message.author.id === user.id) return
+  const { msg } = reaction
   if (reaction.emoji.name !== '⭐') return
-  const { starboardChannel } = client.config
-  const starChannel = message.guild.channels.find((channel) => channel.name === starboardChannel)
+
+  const serverConfig = await Database.Models.serverConfig.findOne({
+    where: { id: msg.guild.id }
+  })
+  const { prefix, starboardChannel } = serverConfig.dataValues
+
+  if (reaction.emoji.name !== '⭐') return
+  const starChannel = msg.guild.channels.get(starboardChannel)
   if (!starChannel)
-    return message.channel.send(
-      `It appears that you do not have a \`${starboardChannel}\` channel.`
+    return msg.channel.send(
+      `It appears that you do not have a StarBoard channel. Please set one with **${prefix}server set starBoard <channelID>**`
     )
+
   const fetchedMessages = await starChannel.fetchMessages({ limit: 100 })
   const stars = fetchedMessages.find(
     (m) =>
-      m.embeds[0].footer.text.startsWith('⭐') &&
-      m.embeds[0].footer.text.endsWith(reaction.message.id)
+      m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(reaction.msg.id)
   )
   if (stars) {
     const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text)
     const foundStar = stars.embeds[0]
-    const image =
-      message.attachments.size > 0 ? await extension(message.attachments.array()[0].url) : ''
+    const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
     const embed = new RichEmbed()
       .setColor('RANDOM')
       .setColor(foundStar.color)
       .setDescription(foundStar.description)
-      .setAuthor(message.author.tag, message.author.displayAvatarURL)
+      .setAuthor(msg.author.tag, msg.author.displayAvatarURL)
       .setTimestamp()
-      .setFooter(`⭐ ${parseInt(star[1]) - 1} | ${message.id}`)
+      .setFooter(`⭐ ${parseInt(star[1]) - 1} | ${msg.id}`)
       .setImage(image)
     const starMsg = await starChannel.fetchMessage(stars.id)
     await starMsg.edit({ embed })

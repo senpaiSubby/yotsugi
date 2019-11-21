@@ -28,7 +28,7 @@ class UserInfo extends Command {
 
     const inGuild = msg.guild.members.has(user.id)
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
       .setTitle(`${user.user.tag}'s User Info`)
       .setThumbnail(user.user.avatarURL)
       .addField('Created At', client.dateFormat(user.user.createdAt), true)

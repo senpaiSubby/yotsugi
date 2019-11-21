@@ -31,7 +31,7 @@ class PortChecker extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     switch (command) {
       case 'find': {

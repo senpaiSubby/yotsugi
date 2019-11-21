@@ -18,7 +18,7 @@ class SystemIP extends Command {
     const { Utils, colors } = client
     const { author, channel } = msg
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     const response = await fetch('https://ifconfig.co/json')
     const data = await response.json()

@@ -14,7 +14,7 @@ class Invite extends Command {
     const { channel } = msg
 
     const invite = await client.generateInvite(['MANAGE_MESSAGES'])
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
       .setTitle('SubbyBot')
       .setDescription(
         'Thanks for showing interest in SubbyBot! Click the\nlink below to invite her to your server.'

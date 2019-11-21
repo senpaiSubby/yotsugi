@@ -148,13 +148,11 @@ class Utils {
   }
 
   // global embed template
-  static embed(msg, color = 'green') {
+  static embed(msg, color = 'green', footer = false) {
     const { colors } = msg.context.client
     const { author } = msg
-    const embed = new RichEmbed()
-      .setColor(colors[color])
-      .setFooter(`Requested by: ${author.tag}`, author.avatarURL)
-      .setTimestamp()
+    const embed = new RichEmbed().setColor(colors[color])
+    if (footer) embed.setFooter(`Requested by: ${author.tag}`, author.avatarURL)
 
     return embed
   }

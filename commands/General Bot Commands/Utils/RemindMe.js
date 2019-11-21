@@ -21,7 +21,7 @@ class RemindMe extends Command {
     const notice = args.splice(1, 1000).join(' ')
 
     const m = await channel.send(
-      Utils.embed(msg).setDescription(
+      Utils.embed(msg, 'green').setDescription(
         `:white_check_mark:  I'll DM you in: **${ms(ms(Timer), {
           long: true
         })}** to **${notice}**`
@@ -31,7 +31,7 @@ class RemindMe extends Command {
 
     setTimeout(() => {
       return author.send(
-        Utils.embed(msg).setDescription(
+        Utils.embed(msg, 'green').setDescription(
           `It's been **${ms(ms(Timer), {
             long: true
           })}** Here's your reminder to **${notice}**`

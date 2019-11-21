@@ -1,4 +1,5 @@
 const Command = require('../../../core/Command')
+const Database = require('../../../core/Database')
 
 class BanUser extends Command {
   constructor(client) {
@@ -17,21 +18,30 @@ class BanUser extends Command {
     const { Utils } = client
     const { author, channel } = msg
 
+    const serverConfig = await Database.Models.serverConfig.findOne({
+      where: { id: msg.guild.id }
+    })
+    const { prefix, logsChannel } = serverConfig.dataValues
+
+    const serverLogsChannel = msg.guild.channels.get(logsChannel)
+
+    if (!serverLogsChannel)
+      return msg.channel.send(
+        Utils.embed(msg, 'yellow').setDescription(
+          `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
+        )
+      )
+
     const target = msg.guild.member(msg.mentions.users.first() || msg.guild.members.get(args[0]))
     const reason = args.slice(1).join(' ')
-    const logs = msg.guild.channels.find('name', client.config.logsChannel)
 
     if (!target) return msg.reply('please specify a member to ban!')
     if (!reason) return msg.reply('please specify a reason for this ban!')
-    if (!logs)
-      return msg.reply(
-        `please create a channel called ${client.config.logsChannel} to log the bans!`
-      )
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'red')
       .setThumbnail(target.user.avatarURL)
-      .addField('Banned Member', `${target.user.username} with an ID: ${target.user.id}`)
-      .addField('Banned By', `${author.username} with an ID: ${author.id}`)
+      .addField('Banned Member', `**${target.user.username}** with an ID: ${target.user.id}`)
+      .addField('Banned By', `**${author.username}** with an ID: ${author.id}`)
       .addField('Banned Time', msg.createdAt)
       .addField('Banned At', channel)
       .addField('Banned Reason', reason)
@@ -39,7 +49,7 @@ class BanUser extends Command {
 
     channel.send(`${target.user.username} was banned by ${author} for ${reason}`)
     target.ban(reason)
-    return logs.send(embed)
+    return serverLogsChannel.send(embed)
   }
 }
 module.exports = BanUser

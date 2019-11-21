@@ -108,7 +108,7 @@ module.exports = class CommandManager {
     if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
       await msg.delete()
       const m = await msg.reply(
-        Utils.embed(msg).setDescription(`Waddup my G. My command prefix is **${prefix}**`)
+        Utils.embed(msg, 'green').setDescription(`Waddup my G. My command prefix is **${prefix}**`)
       )
       return m.delete(10000)
     }
@@ -134,7 +134,7 @@ module.exports = class CommandManager {
     // if no command or alias do nothing
     if (!instance) {
       const m = await msg.channel.send(
-        Utils.embed(msg)
+        Utils.embed(msg, 'green')
           .setColor(colors.red)
           .setDescription(`No command: **${commandName}**`)
       )
@@ -165,7 +165,7 @@ module.exports = class CommandManager {
         `${author.tag} tried to run [${command.name} ${args.length ? args.join(' ') : ''}] in a DM`
       )
       return msg.reply(
-        Utils.embed(msg)
+        Utils.embed(msg, 'green')
           .setColor(colors.yellow)
           .setDescription('This command cannot be slid into my DM.')
       )
@@ -252,7 +252,9 @@ module.exports = class CommandManager {
         prefix: '?',
         ownerID,
         welcomeChannel: null,
-        starboardChannel: null
+        logsChannel: null,
+        starboardChannel: null,
+        rules: JSON.stringify([])
       })
     }
     const prefix = db.prefix || this.prefix

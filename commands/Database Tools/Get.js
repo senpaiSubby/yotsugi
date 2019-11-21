@@ -39,24 +39,28 @@ class Get extends Command {
         break
       case 'general': {
         const generalConfig = await Database.Models.generalConfig.findOne({
-          where: { id: client.config.ownerID }
+          where: { id: msg.author.id }
         })
-        const values = generalConfig.dataValues
-        const key1 = args[1]
-        let x = ''
-        if (!key1) {
-          Object.keys(values).forEach((key) => {
-            x += `${key}\n${values[key]}\n`
-          })
-          return msg.reply(x, { code: 'json' })
+
+        if (generalConfig) {
+          const values = generalConfig.dataValues
+          const key1 = args[1]
+          let x = ''
+          if (!key1) {
+            Object.keys(values).forEach((key) => {
+              x += `${key}\n${values[key]}\n`
+            })
+            return msg.reply(x, { code: 'json' })
+          }
+          if (key1 in values) {
+            x = `${values[key1]}`
+            return msg.reply(x, { code: 'json' })
+          }
+          return msg.channel.send(
+            Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
+          )
         }
-        if (key1 in values) {
-          x = `${values[key1]}`
-          return msg.reply(x, { code: 'json' })
-        }
-        return msg.channel.send(
-          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
-        )
+        break
       }
       default:
         break

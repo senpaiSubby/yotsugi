@@ -67,7 +67,7 @@ class ImgReactions extends Command {
 
     //* ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     switch (args[0]) {
       case 'list': {

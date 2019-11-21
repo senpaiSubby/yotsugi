@@ -45,7 +45,7 @@ class GoogleHomeSpeak extends Command {
 
     const command = args.join(' ')
     const status = await googleSpeak(command)
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     if (status === 'success') {
       if (api) return `Told Google Home to say: ${command}`

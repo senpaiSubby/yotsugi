@@ -10,7 +10,9 @@ const serverConfig = Database.db.define('serverConfig', {
   ownerID: Sequelize.STRING,
   prefix: Sequelize.STRING,
   welcomeChannel: Sequelize.STRING,
-  starboardChannel: Sequelize.STRING
+  starboardChannel: Sequelize.STRING,
+  rules: Sequelize.STRING,
+  logsChannel: Sequelize.STRING
 })
 
 serverConfig.sync()

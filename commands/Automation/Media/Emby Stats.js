@@ -23,28 +23,30 @@ class EmbyStats extends Command {
     // post /Library/Refresh library scan
 
     const fetchStats = async (endPoint) => {
-      const response = await fetch(`${urljoin(host, endPoint)}`, { headers })
+      try {
+        const response = await fetch(`${urljoin(host, endPoint)}`, { headers })
 
-      switch (response.status) {
-        case 200: {
-          const json = await response.json()
-          if (api) return json
-          return json
+        switch (response.status) {
+          case 200: {
+            const json = await response.json()
+            if (api) return json
+            return json
+          }
+          case 401: {
+            if (api) return 'Bad API key'
+            const m = await msg.channel.send(
+              Utils.embed(msg, 'red').setDescription(':key: Bad API key')
+            )
+            return m.delete(10000)
+          }
+          default:
         }
-        case 401: {
-          if (api) return 'Bad API key'
-          const m = await msg.channel.send(Utils.embed(msg, 'red').setDescription('Bad API key'))
-          m.delete(10000)
-          break
-        }
-        default: {
-          if (api) return 'Failed to connect'
-          const m = await msg.channel.send(
-            Utils.embed(msg, 'red').setDescription('Failed to connect to Emby')
-          )
-          m.delete(10000)
-          break
-        }
+      } catch {
+        if (api) return 'Failed to connect'
+        const m = await msg.channel.send(
+          Utils.embed(msg, 'red').setDescription(':rotating_light: Failed to connect to Emby')
+        )
+        return m.delete(10000)
       }
     }
 
@@ -69,7 +71,7 @@ class EmbyStats extends Command {
           })
 
           if (api) return { currentStreamCount, currentStreams }
-          const embed = Utils.embed(msg)
+          const embed = Utils.embed(msg, 'green')
             .setTitle(`Emby Stats - Current Streams [${currentStreamCount}]`)
             .setThumbnail('https://emby.media/community/public/style_images/master/meta_image1.png')
           currentStreams.forEach((i) => {
@@ -85,7 +87,7 @@ class EmbyStats extends Command {
         case 'stats': {
           const { MovieCount, SeriesCount, EpisodeCount, ArtistCount, SongCount, BookCount } = stats
           return msg.channel.send(
-            Utils.embed(msg)
+            Utils.embed(msg, 'green')
               .setTitle('Emby Stats')
               .setThumbnail(
                 'https://emby.media/community/public/style_images/master/meta_image1.png'

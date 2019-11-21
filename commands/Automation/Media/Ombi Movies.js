@@ -31,7 +31,7 @@ class OmbiMovies extends Command {
     const { host, apiKey, username } = JSON.parse(client.settings.ombi)
     // ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
-      const movieEmbed = Utils.embed(msg)
+      const movieEmbed = Utils.embed(msg, 'green')
         .setTitle(
           `${movie.title} ${
             movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
@@ -75,7 +75,7 @@ class OmbiMovies extends Command {
             fieldContent += `[[TheMovieDb](https://www.themoviedb.org/movie/${movie.theMovieDbId})]\n`
           })
 
-          const embed = Utils.embed(msg)
+          const embed = Utils.embed(msg, 'green')
             .setTitle('Ombi Movie Search')
             .setDescription('Please select one of the search results. To abort answer **cancel**')
             .addField('__Search Results__', fieldContent)

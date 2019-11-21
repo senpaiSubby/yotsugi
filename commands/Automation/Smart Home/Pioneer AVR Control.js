@@ -75,7 +75,7 @@ class PioneerAVRController extends Command {
     // use first argument as our command
     const command = args[0]
     const level = args[1]
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
     if (!api) {
       // embed.attachFile('./data/images/icons/pioneer.png')
       // embed.setThumbnail('attachment://pioneer.png')

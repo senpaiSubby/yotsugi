@@ -25,16 +25,11 @@ class Set extends Command {
           })
           const values = serverConfig.dataValues
           const keyToChange = args[1]
-          const key1 = args[2]
-          const val1 = args[3]
+          const val1 = args[2]
           if (keyToChange in values) {
-            const tempObject = JSON.parse(values[args[1]])
-            tempObject[key1] = val1
-            await serverConfig.update({ [keyToChange]: JSON.stringify(tempObject) })
+            await serverConfig.update({ [keyToChange]: val1 })
             return msg.channel.send(
-              Utils.embed(msg).setDescription(
-                `Key **${keyToChange}.${key1}** changed to **${val1}**`
-              )
+              Utils.embed(msg, 'green').setDescription(`Server **${keyToChange}** changed to **${val1}**`)
             )
           }
         }
@@ -53,7 +48,7 @@ class Set extends Command {
             tempObject[key1] = val1
             await generalConfig.update({ [keyToChange]: JSON.stringify(tempObject) })
             return msg.channel.send(
-              Utils.embed(msg).setDescription(
+              Utils.embed(msg, 'green').setDescription(
                 `Key **${keyToChange}.${key1}** changed to **${val1}**`
               )
             )

@@ -26,12 +26,12 @@ class Reload extends Command {
     const run = await msg.context.reloadCommand(module)
 
     if (run) {
-      const m = await channel.send(Utils.embed(msg).setDescription(`Reloaded **${module}**`))
+      const m = await channel.send(Utils.embed(msg, 'green').setDescription(`Reloaded **${module}**`))
       return m.delete(10000)
     }
 
     const m = await channel.send(
-      Utils.embed(msg).setDescription(`Module **${module}** doesn't exist!`)
+      Utils.embed(msg, 'green').setDescription(`Module **${module}** doesn't exist!`)
     )
     return m.delete(10000)
   }

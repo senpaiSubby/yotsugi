@@ -35,7 +35,7 @@ class OmbiTV extends Command {
 
     // ----------------------- Main Logic ------------------------
     const outputTVShow = (show) => {
-      const embed = Utils.embed(msg)
+      const embed = Utils.embed(msg, 'green')
         .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
         .setDescription(show.overview.substr(0, 255) + '(...)')
         .setFooter(author.username, author.avatarURL)
@@ -73,7 +73,7 @@ class OmbiTV extends Command {
             fieldContent += `[[TheTVDb](https://www.thetvdb.com/?id=${show.id}&tab=series)]\n`
           })
 
-          const embed = Utils.embed(msg)
+          const embed = Utils.embed(msg, 'green')
             .setTitle('Ombi TV Show Search')
             .setDescription('Please select one of the search results. To abort answer **cancel**')
             .addField('__Search Results__', fieldContent)

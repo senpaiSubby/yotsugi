@@ -21,7 +21,7 @@ class SetChannelName extends Command {
     const newName = args.join(' ').replace(/ /g, '\u2009')
 
     client.channels.get(channel).setName(newName)
-    const embed = Utils.embed(msg).setDescription(`Channel name changed to ${newName}`)
+    const embed = Utils.embed(msg, 'green').setDescription(`Channel name changed to ${newName}`)
     msg.channel.send({ embed })
   }
 }

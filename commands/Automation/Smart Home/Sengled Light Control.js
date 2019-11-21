@@ -123,7 +123,7 @@ class SengledLightController extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     const devices = await getDevices()
 

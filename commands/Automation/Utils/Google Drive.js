@@ -26,7 +26,7 @@ class Drive extends Command {
     switch (command) {
       case 'size': {
         const editMessage = await channel.send(
-          Utils.embed(msg)
+          Utils.embed(msg, 'green')
             .setTitle(`:file_cabinet: Checking folder size of\n- **${dirPath}**`)
             .setDescription(`:hourglass: This may take some time...`)
         )
@@ -39,7 +39,7 @@ class Drive extends Command {
             await editMessage.delete()
             const stopTime = performance.now()
             // 3 doesnt exist 0 good
-            const embed = Utils.embed(msg)
+            const embed = Utils.embed(msg, 'green')
             if (code === 0) {
               const response = JSON.parse(stdout)
               const { count } = response
@@ -70,7 +70,7 @@ class Drive extends Command {
 
       case 'ls': {
         const editMessage = await channel.send(
-          Utils.embed(msg)
+          Utils.embed(msg, 'green')
             .setTitle(`:file_cabinet: Directory\n- **${dirPath}**`)
             .setDescription(`:hourglass:  This may take some time...`)
         )
@@ -131,7 +131,7 @@ class Drive extends Command {
             let run = true
             // run our loop to wait for user input
             while (run) {
-              const embed = Utils.embed(msg)
+              const embed = Utils.embed(msg, 'green')
                 .setTitle(`:file_cabinet: ${dirPath}`)
                 .setDescription(
                   `:page_facing_up: ${page + 1}/${totalPages.length} | :card_box: ${

@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const { client } = require('../index')
 
 const SubprocessManager = require('../core/SubprocessManager')

@@ -48,7 +48,7 @@ class Help extends Command {
         )
 
       const newSorted = Utils.groupBy(sorted, 'category')
-      const e = Utils.embed(msg).setTitle('Commands')
+      const e = Utils.embed(msg, 'green').setTitle('Commands')
       Object.keys(newSorted).forEach((key) => {
         let cmds = ''
         cmds += `\n\n`
@@ -58,7 +58,7 @@ class Help extends Command {
         e.addField(`${newSorted[key][0].category || '--'}`, cmds)
       })
 
-      const embed = Utils.embed(msg).setDescription(
+      const embed = Utils.embed(msg, 'green').setDescription(
         'Sent you a message with the commands you have access to.'
       )
 
@@ -72,7 +72,7 @@ class Help extends Command {
 
     if (command) {
       const m = await channel.send(
-        Utils.embed(msg)
+        Utils.embed(msg, 'green')
           .setTitle(`= ${command.name} =`)
           .setDescription(`**${command.description}**`)
           .addField(

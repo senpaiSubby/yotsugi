@@ -19,7 +19,7 @@ class BotManagement extends Command {
     const { Utils, user } = client
     const { channel, author } = msg
 
-    const embed = Utils.embed(msg)
+    const embed = Utils.embed(msg, 'green')
 
     switch (args[0]) {
       case 'restart': {
