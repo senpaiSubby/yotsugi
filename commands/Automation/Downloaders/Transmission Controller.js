@@ -24,7 +24,7 @@ class TransmissionManagement extends Command {
 
     const { host, port, ssl } = JSON.parse(client.settings.transmission)
 
-    if ((!host, port, ssl)) {
+    if (!host || !port) {
       const settings = [
         `${p}db set emby host <http://ip>`,
         `${p}db set emby port <port>`,
@@ -131,8 +131,6 @@ class TransmissionManagement extends Command {
         }
 
         if (dlQueue.length) {
-          embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
-
           for (const item of dlQueue) {
             if (item.status === 'downloading') {
               const netStats =

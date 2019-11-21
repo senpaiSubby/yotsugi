@@ -17,7 +17,7 @@ class EmbyStats extends Command {
   async run(client, msg, args, api) {
     const { p, Utils } = client
     const { apiKey, host, userID } = JSON.parse(client.settings.emby)
-    if ((!host, apiKey, userID)) {
+    if (!host || !apiKey || !userID) {
       const settings = [
         `${p}db set emby host <http://ip>`,
         `${p}db set emby apiKey <APIKEY>`,

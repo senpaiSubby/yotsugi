@@ -23,7 +23,7 @@ class GoogleHomeSpeak extends Command {
 
     const { ip, name, language } = JSON.parse(client.settings.googleHome)
 
-    if ((!ip, name, language)) {
+    if (!ip || !name || !language) {
       const settings = [
         `${p}db set googleHome name <name>`,
         `${p}db set googleHome ip <ip addy>`,

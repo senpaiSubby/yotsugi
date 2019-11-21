@@ -23,7 +23,7 @@ class MerakiAPI extends Command {
     // ------------------------- Config --------------------------
 
     const { serielNum, apiKey } = JSON.parse(client.settings.meraki)
-    if ((!serielNum, apiKey)) {
+    if (!serielNum || !apiKey) {
       const settings = [`${p}db set meraki serielNum <SERIEL>`, `${p}db set meraki apiKey <APIKEY>`]
       return channel.send(
         Utils.embed(msg, 'red')

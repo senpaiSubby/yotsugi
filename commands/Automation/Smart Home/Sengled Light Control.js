@@ -23,7 +23,7 @@ class SengledLightController extends Command {
 
     const { jsessionid, username, password } = JSON.parse(client.settings.sengled)
 
-    if ((!jsessionid, username, password)) {
+    if (!jsessionid || !username || !password) {
       const settings = [
         `${p}db set sengled jsessionid <id>`,
         `${p}db set sengled username <user>`,
@@ -67,7 +67,7 @@ class SengledLightController extends Command {
         return data
       } catch (error) {
         Log.warn(error)
-        return error
+        return false
       }
     }
 

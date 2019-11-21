@@ -23,7 +23,7 @@ class SabnzbdManagement extends Command {
 
     // ------------------------- Config --------------------------
     const { host, apiKey } = JSON.parse(client.settings.sabnzbd)
-    if ((!host, apiKey)) {
+    if (!host || !apiKey) {
       const settings = [`${p}db set sabnzbd host <http://ip>`, `${p}db set sabnzbd apiKey <APIKEY>`]
       return channel.send(
         Utils.embed(msg, 'red')

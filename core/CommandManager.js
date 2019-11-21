@@ -71,16 +71,19 @@ module.exports = class CommandManager {
 
   async runCommand(client, command, msg, args, api = false) {
     try {
-      msg.channel.startTyping()
+      if (msg) msg.channel.startTyping()
       await command.run(client, msg, args, api)
       client.Log.info(
         'Command Parser',
         `${msg.author.tag} ran command [${command.name} ${args.join(' ')}]`
       )
-      return msg.channel.stopTyping()
+      if (msg) return msg.channel.stopTyping()
+      return
     } catch (err) {
-      msg.channel.stopTyping()
-      return client.Utils.error(command.name, err, msg.channel)
+      if (msg) {
+        msg.channel.stopTyping()
+        return client.Utils.error(command.name, err, msg.channel)
+      }
     }
   }
 
@@ -224,6 +227,7 @@ module.exports = class CommandManager {
       await Database.Models.generalConfig.create({
         username: owner.user.tag,
         id: ownerID,
+        webUI: JSON.stringify([]),
         pihole: JSON.stringify({ host: null, apiKey: null }),
         rclone: JSON.stringify({ remote: null }),
         emby: JSON.stringify({ host: null, apiKey: null, userID: null }),

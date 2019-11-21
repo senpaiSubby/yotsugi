@@ -24,7 +24,7 @@ class PiHoleController extends Command {
     // ------------------------- Config --------------------------
 
     const { host, apiKey } = JSON.parse(client.settings.pihole)
-    if ((!host, apiKey)) {
+    if (!host || !apiKey) {
       const settings = [`${p}db set pihole host <PIHOLEURL>`, `${p}db set pihole apiKey <APIKEY>`]
       return channel.send(
         Utils.embed(msg, 'red')

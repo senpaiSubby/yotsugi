@@ -92,7 +92,6 @@ class PioneerAVRController extends Command {
     if (!api) {
       // embed.attachFile('./data/images/icons/pioneer.png')
       // embed.setThumbnail('attachment://pioneer.png')
-      embed.setFooter(`Requested by: ${author.username}`, author.avatarURL)
     }
 
     switch (command) {

@@ -7,6 +7,7 @@ const generalConfig = Database.db.define('generalConfig', {
     type: Sequelize.STRING,
     primaryKey: true
   },
+  webUI: Sequelize.STRING,
   pihole: Sequelize.STRING,
   rclone: Sequelize.STRING,
   emby: Sequelize.STRING,
