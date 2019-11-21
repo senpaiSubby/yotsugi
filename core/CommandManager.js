@@ -92,7 +92,7 @@ module.exports = class CommandManager {
     // assign variables
     msg.context = this
 
-    const { content, author } = msg
+    const { content, author, channel } = msg
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     this.prefix = prefix
     msg.prefix = prefix
@@ -133,7 +133,7 @@ module.exports = class CommandManager {
 
     // if no command or alias do nothing
     if (!instance) {
-      const m = await msg.channel.send(
+      const m = await channel.send(
         Utils.embed(msg, 'green')
           .setColor(colors.red)
           .setDescription(`No command: **${commandName}**`)
@@ -159,7 +159,7 @@ module.exports = class CommandManager {
     }
 
     // if command is marked 'guildOnly: true' then don't excecute
-    if (command.guildOnly && msg.channel.type === 'dm') {
+    if (command.guildOnly && channel.type === 'dm') {
       Log.warn(
         'Command Parser',
         `${author.tag} tried to run [${command.name} ${args.length ? args.join(' ') : ''}] in a DM`
@@ -172,7 +172,7 @@ module.exports = class CommandManager {
     }
 
     // check if user and bot has all required perms in permsNeeded
-    if (msg.channel.type !== 'dm') {
+    if (channel.type !== 'dm') {
       if (command.permsNeeded) {
         const userMissingPerms = this.checkPerms(msg.member, command.permsNeeded)
         const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
@@ -187,7 +187,7 @@ module.exports = class CommandManager {
         }
 
         if (botMissingPerms) {
-          const m = await msg.channel.send(
+          const m = await channel.send(
             Utils.embed(msg, 'red')
               .setTitle('I lack the perms needed to perform that action')
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
@@ -259,6 +259,24 @@ module.exports = class CommandManager {
     }
     const prefix = db.prefix || this.prefix
     return prefix
+  }
+
+  async handleUuser(msg) {
+    const { author, channel } = msg
+    // setup DB
+
+    const memberConfig = await Database.Models.memberConfig.findOne({
+      where: { id: author.id }
+    })
+
+    if (!memberConfig) {
+      await Database.Models.memberConfig.create({
+        username: author.user.tag,
+        id: author.id,
+        todos: JSON.stringify([]),
+        messages: JSON.stringify([])
+      })
+    }
   }
 
   checkPerms(user, permsNeeded) {

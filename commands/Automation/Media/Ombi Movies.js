@@ -25,7 +25,17 @@ class OmbiMovies extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const Log = client.Log
+    const { Log, Utils } = client
+    const { author, channel } = msg
+    const role = msg.guild.roles.find('name', 'requestmovie')
+    if (!role) {
+      await msg.guild.createRole({ name: 'requestmovie' })
+      return msg.channel.send(
+        Utils.embed(msg, 'yellow').setDescription(
+          'I created a role called **requestmovie**. Assign this role to members to let them request movies!'
+        )
+      )
+    }
 
     // ------------------------- Config --------------------------
     const { host, apiKey, username } = JSON.parse(client.settings.ombi)
@@ -37,7 +47,7 @@ class OmbiMovies extends Command {
             movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
           }`
         )
-        .setDescription(movie.overview.substr(0, 255) + '(...)')
+        .setDescription(movie.overview.substring(0, 255) + '(...)')
         .setFooter(
           author.username,
           `https://cdn.discordapp.com/avatars/${author.id}/${author.avatar}.png`

@@ -26,9 +26,18 @@ class OmbiTV extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const Log = client.Log
-    const { Utils } = client
+    const { Utils, Log } = client
     const { author, channel } = msg
+
+    const role = msg.guild.roles.find('name', 'requesttv')
+    if (!role) {
+      await msg.guild.createRole({ name: 'requesttv' })
+      return msg.channel.send(
+        Utils.embed(msg, 'yellow').setDescription(
+          'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
+        )
+      )
+    }
 
     // ------------------------- Config --------------------------
     const { host, apiKey, username } = JSON.parse(client.settings.ombi)

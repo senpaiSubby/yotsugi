@@ -1,5 +1,5 @@
-const Command = require('../../core/Command')
-const Database = require('../../core/Database')
+const Command = require('../../../core/Command')
+const Database = require('../../../core/Database')
 
 class DatabaseManagement extends Command {
   constructor(client) {
@@ -7,7 +7,7 @@ class DatabaseManagement extends Command {
       name: 'db',
       category: 'Database',
       description: 'Get/Set data in the DB',
-      usage: 'db get | db get emby | db set | db set emby host https://emby.url',
+      usage: 'db get | db get emby | db set emby host https://emby.url',
       ownerOnly: true,
       args: true
     })
@@ -15,6 +15,7 @@ class DatabaseManagement extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { channel } = msg
 
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
@@ -29,15 +30,19 @@ class DatabaseManagement extends Command {
           Object.keys(values).forEach((key) => {
             x += `${key}\n${values[key]}\n`
           })
-          return msg.reply(x, { code: 'json' })
+          return channel.send(x, { code: 'json' })
         }
         if (key1 in values) {
           x = `${values[key1]}`
-          return msg.reply(x, { code: 'json' })
+          return msg.reply(
+            x
+              .replace(/,/g, ',\n')
+              .replace(/\{/g, '{\n')
+              .replace(/\}/g, '\n}'),
+            { code: 'json' }
+          )
         }
-        return msg.channel.send(
-          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
-        )
+        return channel.send(Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`))
       }
       case 'set': {
         const keyToChange = args[1]
@@ -47,18 +52,16 @@ class DatabaseManagement extends Command {
           const tempObject = JSON.parse(values[args[1]])
           tempObject[key1] = val1
           await generalConfig.update({ [keyToChange]: JSON.stringify(tempObject) })
-          return msg.channel.send(
+          return channel.send(
             Utils.embed(msg, 'green').setDescription(
               `Key **${keyToChange}.${key1}** changed to **${val1}**`
             )
           )
         }
-        return msg.channel.send(
-          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
-        )
+        return channel.send(Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`))
       }
       default:
-        return msg.channel.send(
+        return channel.send(
           Utils.embed(msg, 'green').setDescription(`Valid options are **[get/set]**`)
         )
     }

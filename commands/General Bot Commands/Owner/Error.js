@@ -3,7 +3,7 @@ const Command = require('../../../core/Command')
 class Error extends Command {
   constructor(client) {
     super(client, {
-      name: 'Error',
+      name: 'error',
       category: 'Owner',
       description: 'Triggers an Error',
       aliases: ['err'],
