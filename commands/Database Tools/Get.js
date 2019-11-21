@@ -8,7 +8,6 @@ class Get extends Command {
       category: 'Database',
       description: 'Gets data from the DB',
       usage: 'get | get <key>',
-      args: true,
       ownerOnly: true
     })
   }

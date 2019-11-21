@@ -8,7 +8,6 @@ class Set extends Command {
       category: 'Database',
       description: 'Sets data in the DB',
       usage: 'set <key1> <key2> <value>',
-      args: true,
       ownerOnly: true
     })
   }
