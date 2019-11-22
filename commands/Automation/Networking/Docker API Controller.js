@@ -120,21 +120,21 @@ class DockerManagement extends Command {
         if (containers === 'bad params') {
           if (api) return 'Valid options are `running, paused, exited, created, restarting, dead`'
           embed.setColor(colors.yellow)
-          embed.setTitle(
-            ':rotating_light: Valid options are `running, paused, exited, created, restarting, dead`'
+          embed.setDescription(
+            '**:rotating_light: Valid options are `running, paused, exited, created, restarting, dead`**'
           )
           return channel.send({ embed })
         }
         if (containers === 'no connection') {
           if (api) return 'Could not connect to the docker daemon.'
           embed.setColor(colors.red)
-          embed.setTitle(':rotating_light: Could not connect to the docker daemon.')
+          embed.setDescription('**:rotating_light: Could not connect to the docker daemon.**')
           return channel.send({ embed })
         }
 
         if (api) return containers
 
-        embed.setTitle('Docker Containers')
+        embed.setDescription('Docker Containers')
 
         for (const container of containers) {
           const { name, ports, state } = container
@@ -152,20 +152,20 @@ class DockerManagement extends Command {
           case 'bad params':
             if (api) return 'Valid options are `start, restart, stop'
             embed.setColor(colors.yellow)
-            embed.setTitle(':rotating_light: Valid options are `start, restart, stop`')
+            embed.setDescription('**:rotating_light: Valid options are `start, restart, stop`**')
             return channel.send({ embed })
 
           case 'no match':
             if (api) return `No container named: ${containerName} found.`
             embed.setColor(colors.red)
-            embed.setTitle(`:rotating_light: No container named: ${containerName} found.`)
+            embed.setDescription(`**:rotating_light: No container named: ${containerName} found.**`)
             return channel.send({ embed })
 
           case 'success':
             if (api) return `Container: ${containerName} has been ${newState}ed successfully.`
 
-            embed.setTitle(
-              `:ok_hand: Container: ${containerName} has been ${newState}ed successfully.`
+            embed.setDescription(
+              `**:ok_hand: Container: ${containerName} has been ${newState}ed successfully.**`
             )
             return channel.send({ embed })
 
@@ -177,10 +177,10 @@ class DockerManagement extends Command {
             }
 
             embed.setColor(colors.yellow)
-            embed.setTitle(
-              `:warning: Container: ${containerName} is already ${newState}${
+            embed.setDescription(
+              `**:warning: Container: ${containerName} is already ${newState}${
                 newState === 'stop' ? 'ped' : 'ed'
-              }.`
+              }.**`
             )
             return channel.send({ embed })
 
@@ -188,7 +188,7 @@ class DockerManagement extends Command {
             if (api) return 'Action could not be completed.'
 
             embed.setColor(colors.red)
-            embed.setTitle(':rotating_light: Action could not be completed.')
+            embed.setDescription('**:rotating_light: Action could not be completed.**')
             return channel.send({ embed })
           default:
             break

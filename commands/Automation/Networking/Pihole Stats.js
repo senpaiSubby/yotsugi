@@ -88,25 +88,25 @@ class PiHoleController extends Command {
           case 'success':
             if (api) return `PiHole turned ${args[0]}.`
 
-            embed.setTitle(`:ok_hand: PiHole turned ${args[0]}.`)
+            embed.setDescription(`**:ok_hand: PiHole turned ${args[0]}.**`)
             return channel.send({ embed })
 
           case 'bad key':
             if (api) return 'API key is incorrect.'
             embed.setColor(colors.red)
-            embed.setTitle(':rotating_light: API key is incorrect.')
+            embed.setDescription('**:rotating_light: API key is incorrect.**')
             return channel.send({ embed })
 
           case 'bad params':
             if (api) return 'Valid options are `on/off/stats.'
             embed.setColor(colors.yellow)
-            embed.setTitle(':rotating_light: Valid options are `on/off/stats`.')
+            embed.setDescription('**:rotating_light: Valid options are `on/off/stats`.**')
             return channel.send({ embed })
 
           case 'no connection':
             if (api) return 'No connection to PiHole.'
             embed.setColor(colors.red)
-            embed.setTitle(':rotating_light: No connection to PiHole.')
+            embed.setDescription('**:rotating_light: No connection to PiHole.**')
             return channel.send({ embed })
           default:
             break

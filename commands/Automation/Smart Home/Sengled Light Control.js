@@ -168,7 +168,7 @@ class SengledLightController extends Command {
           // if device name doesnt exist
           if (api) return `Could not find a light named ${args[0]}`
           embed.setColor(colors.yellow)
-          embed.setTitle(`:rotating_light: Could not find a light named ${args[0]}`)
+          embed.setDescription(`**:rotating_light: Could not find a light named ${args[0]}**`)
           return channel.send({ embed })
         }
         if (args[1]) {
@@ -178,8 +178,8 @@ class SengledLightController extends Command {
 
             if (api) return `${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}`
 
-            embed.setTitle(
-              `:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.`
+            embed.setDescription(
+              `**:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.**`
             )
             return channel.send({ embed })
           }
@@ -188,7 +188,7 @@ class SengledLightController extends Command {
 
           if (api) return `${args[0]} light brightness set to ${args[1]}`
 
-          embed.setTitle(`:flashlight: ${args[0]} light brightness set to ${args[1]}`)
+          embed.setDescription(`**:flashlight: ${args[0]} light brightness set to ${args[1]}**`)
           return channel.send({ embed })
         }
         // if no brightness specified then toggle light power
@@ -197,7 +197,7 @@ class SengledLightController extends Command {
 
         await setLight(devices[index].uuid, newState)
         if (api) return `${args[0]} light turned ${newState}.`
-        embed.setTitle(`:flashlight: ${args[0]} light turned ${newState}.`)
+        embed.setDescription(`**:flashlight: ${args[0]} light turned ${newState}.**`)
 
         return channel.send({ embed })
       }

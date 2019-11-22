@@ -66,12 +66,12 @@ class GoogleHomeSpeak extends Command {
 
     if (status === 'success') {
       if (api) return `Told Google Home to say: ${command}`
-      embed.setTitle(`Told Google Home to say: **${command}**`)
+      embed.setDescription(`**Told Google Home to say: **${command}****`)
       return channel.send({ embed })
     }
     if (api) return 'No connection to Google Home.'
     embed.setColor(colors.red)
-    embed.setTitle('No connection to Google Home.')
+    embed.setDescription('**No connection to Google Home.**')
     return channel.send({ embed })
   }
 }

@@ -37,30 +37,30 @@ class PortChecker extends Command {
       case 'find': {
         // if command is "find" then we'll find us a random open port
         const port = await portscanner.findAPortNotInUse(3000, 4000)
-        embed.setTitle(`Port ${port} is available for use.`)
+        embed.setDescription(`**Port ${port} is available for use.**`)
         return channel.send({ embed })
       }
       default: {
         if (isNaN(command)) {
           // check if port is a number
-          embed.setTitle('Port should be a number.')
+          embed.setDescription('**Port should be a number.**')
           embed.setColor(colors.yellow)
         }
 
         // Checks the status of a single port
         portscanner.checkPortStatus(args[0], targetIP, async (error, status) => {
           if (error) {
-            embed.setTitle('No connection to host')
+            embed.setDescription('**No connection to host**')
             embed.setColor(colors.red)
             return channel.send({ embed })
           }
           // Status is 'open' if currently in use or 'closed' if available
           if (status === 'open') {
-            embed.setTitle(`Port ${args[0]} is open and in use.`)
+            embed.setDescription(`**Port ${args[0]} is open and in use.**`)
             return channel.send({ embed })
           }
           if (status === 'closed') {
-            embed.setTitle(`Port ${args[0]} is closed and available.`)
+            embed.setDescription(`**Port ${args[0]} is closed and available.**`)
             embed.setColor(colors.yellow)
             return channel.send({ embed })
           }

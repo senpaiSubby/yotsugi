@@ -100,7 +100,7 @@ class PioneerAVRController extends Command {
 
         if (api) return 'AVR turned on'
 
-        embed.setTitle(':radio: AVR turned on')
+        embed.setDescription('**:radio: AVR turned on**')
         return channel.send({ embed })
 
       case 'off': // turn avr off
@@ -108,7 +108,7 @@ class PioneerAVRController extends Command {
 
         if (api) return 'AVR turned off'
 
-        embed.setTitle(':radio: AVR turned off')
+        embed.setDescription('**:radio: AVR turned off**')
         return channel.send({ embed })
 
       case 'mute': {
@@ -117,7 +117,9 @@ class PioneerAVRController extends Command {
 
         if (api) return `AVR ${muteStatus}`
 
-        embed.setTitle(`${muteStatus === 'muted' ? ':mute:' : ':speaker:'} AVR ${muteStatus}`)
+        embed.setDescription(
+          `**${muteStatus === 'muted' ? ':mute:' : ':speaker:'} AVR ${muteStatus}**`
+        )
         return channel.send({ embed })
       }
 
@@ -127,7 +129,7 @@ class PioneerAVRController extends Command {
           // if no volume specified send current volume
           if (api) return `Current volume is ${await getVolume()} / 100`
 
-          embed.setTitle(`:speaker: Current volume is ${await getVolume()} / 100`)
+          embed.setDescription(`**:speaker: Current volume is ${await getVolume()} / 100**`)
           return channel.send({ embed })
         }
 
@@ -135,7 +137,7 @@ class PioneerAVRController extends Command {
           // is specified volume isnt a number notify
           if (api) return '!Volume should be a number between 1-100'
           embed.setColor(colors.yellow)
-          embed.setTitle(':rotating_light: !Volume should be a number between 1-100')
+          embed.setDescription('**:rotating_light: !Volume should be a number between 1-100**')
           return channel.send({ embed })
         }
         // set volume to specified level
@@ -148,7 +150,7 @@ class PioneerAVRController extends Command {
         }
         if (api) return `Volume set to ${level}`
 
-        embed.setTitle(`:speaker: Volume set to ${level}`)
+        embed.setDescription(`**:speaker: Volume set to ${level}**`)
         return channel.send({ embed })
 
       default:

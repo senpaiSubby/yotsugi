@@ -186,14 +186,17 @@ module.exports = class CommandManager {
             Utils.embed(msg, 'red')
               .setTitle('You lack the perms')
               .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
+              .setFooter('Message will self destruct in 30 seconds')
           )
-          return m.delete(20000)
+          return m.delete(30000)
         }
 
         if (botMissingPerms) {
           const m = await channel.send(
             Utils.embed(msg, 'red')
               .setTitle('I lack the perms needed to perform that action')
+              .setFooter('Message will self destruct in 30 seconds')
+
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
           )
 
@@ -205,9 +208,14 @@ module.exports = class CommandManager {
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
       const embed = Utils.embed(msg, 'yellow')
-        .setTitle("You didn't provide any arguments")
-        .setDescription('Edit your last message with the correct params')
-        .addField('**Example Usage**', `\`\`\`css\n${command.usage.replace(/ \| /g, '\n')}\`\`\``)
+        .setTitle('Command requires parameters')
+        .setFooter('Message will self destruct in 30 seconds')
+        .setDescription(
+          `**__You can edit your last message instead of sending a new one!__**\n\n**Example Usage**\n\`\`\`css\n${command.usage.replace(
+            / \| /g,
+            '\n'
+          )}\`\`\``
+        )
       const m = await msg.reply({ embed })
       return m.delete(30000)
     }

@@ -81,19 +81,19 @@ class SystemPowerController extends Command {
           case 'on':
             if (api) return `Sent  WOL to ${system}`
 
-            embed.setTitle(`:desktop: Sent  WOL to ${system}`)
+            embed.setDescription(`**:desktop: Sent  WOL to ${system}**`)
             return channel.send({ embed })
 
           case 'bad params':
             if (api) return 'Valid options are `reboot, off, on`'
             embed.setColor(colors.yellow)
-            embed.setTitle(':interrobang: Valid options are `reboot, off, on`')
+            embed.setDescription('**:interrobang: Valid options are `reboot, off, on`**')
             return channel.send({ embed })
 
           default:
             if (api) return `Failed to connect to ${system}`
             embed.setColor(colors.red)
-            embed.setTitle(`:desktop: Failed to connect to ${system}`)
+            embed.setDescription(`**:desktop: Failed to connect to ${system}**`)
             return channel.send({ embed })
         }
       }
