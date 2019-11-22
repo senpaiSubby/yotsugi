@@ -13,7 +13,6 @@ class Help extends Command {
   }
 
   async run(client, msg, args) {
-    msg.delete(10000)
     const { Utils } = client
     const { author, channel } = msg
 
@@ -41,6 +40,7 @@ class Help extends Command {
     const commands = msg.context.commands.filter((i) => checkPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
+      msg.delete(10000)
       // Filter all commands by which are available for the author's level, using the <Collection>.filter() method.
       const sorted = commands
         .array()
@@ -112,18 +112,22 @@ class Help extends Command {
       }
     }
     // Show individual command's help.
-    const command = msg.context.commands.filter((i) => checkPerms(i) && i.name === args[0])
+    const command = msg.context.findCommand(args[0])
 
-    if (command) {
+    msg.delete(10000)
+    if (command && checkPerms(command)) {
       const m = await channel.send(
         Utils.embed(msg, 'green')
-          .setTitle(`= ${command.name} =`)
-          .setDescription(`**${command.description}**`)
-          .addField(
-            `**Usage**`,
-            `**${command.usage.replace(/ \| /g, '\n')}\n\n${
-              command.aliases.length ? `aliases: ${command.aliases.join(', ')}` : ''
-            }**`
+          .setTitle(`Help - ${Utils.capitalize(command.name)}`)
+          .setDescription(
+            `**${command.description}**\n\`\`\`css\n${command.usage.replace(
+              / \| /g,
+              '\n'
+            )}\n\`\`\`\n${
+              command.aliases.length
+                ? `Aliases\n\`\`\`css\n${command.aliases.join(', ')}\n\`\`\``
+                : ''
+            }`
           )
       )
       return m.delete(30000)
