@@ -4,11 +4,11 @@ const Command = require('../../../core/Command')
 class Calculator extends Command {
   constructor(client) {
     super(client, {
-      name: 'calculator',
+      name: 'calc',
       category: 'Utils',
       description: 'Calculates maths',
       usage: 'calc 2+2',
-      aliases: ['calc']
+      aliases: ['calculator']
     })
   }
 

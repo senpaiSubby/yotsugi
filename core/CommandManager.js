@@ -96,6 +96,7 @@ module.exports = class CommandManager {
     msg.context = this
 
     const { content, author, channel } = msg
+    await this.handleUuser(msg)
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     client.p = prefix
     msg.prefix = prefix
@@ -239,8 +240,8 @@ module.exports = class CommandManager {
         ombi: JSON.stringify({ host: null, apiKey: null, username: null }),
         meraki: JSON.stringify({ serielNum: null, apiKey: null }),
         pioneerAVR: JSON.stringify({ host: null }),
-        systemPowerControl: JSON.stringify([]),
-        tuyaPlugControl: JSON.stringify([])
+        systemPowerControl: JSON.stringify([{ host: null, mac: null, name: null }]),
+        tuyaPlugControl: JSON.stringify([{ id: null, key: null, name: null }])
       })
     }
 
@@ -266,7 +267,7 @@ module.exports = class CommandManager {
   }
 
   async handleUuser(msg) {
-    const { author, channel } = msg
+    const { author } = msg
     // setup DB
 
     const memberConfig = await Database.Models.memberConfig.findOne({
@@ -275,7 +276,7 @@ module.exports = class CommandManager {
 
     if (!memberConfig) {
       await Database.Models.memberConfig.create({
-        username: author.user.tag,
+        username: author.tag,
         id: author.id,
         todos: JSON.stringify([]),
         messages: JSON.stringify([])

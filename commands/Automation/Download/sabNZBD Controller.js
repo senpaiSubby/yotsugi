@@ -6,7 +6,7 @@ class SabnzbdManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'sab',
-      category: 'Downloaders',
+      category: 'Download',
       description: 'sabNZBD Management',
       usage: `sab list`,
       aliases: ['nzb'],

@@ -4,6 +4,7 @@ class Reload extends Command {
   constructor(client) {
     super(client, {
       name: 'Reload',
+      category: 'Bot Utils',
       description: 'Reloads Commands',
       aliases: ['reset', 'flush'],
       ownerOnly: true
@@ -26,7 +27,9 @@ class Reload extends Command {
     const run = await msg.context.reloadCommand(module)
 
     if (run) {
-      const m = await channel.send(Utils.embed(msg, 'green').setDescription(`Reloaded **${module}**`))
+      const m = await channel.send(
+        Utils.embed(msg, 'green').setDescription(`Reloaded **${module}**`)
+      )
       return m.delete(10000)
     }
 

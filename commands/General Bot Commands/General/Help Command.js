@@ -5,6 +5,7 @@ class Help extends Command {
   constructor(client) {
     super(client, {
       name: 'help',
+      category: 'General',
       description: 'Gets Help On Commands',
       aliases: ['halp'],
       guildOnly: true
@@ -48,24 +49,67 @@ class Help extends Command {
         )
 
       const newSorted = Utils.groupBy(sorted, 'category')
-      const e = Utils.embed(msg, 'green').setTitle('Commands')
+      const embedList = []
       Object.keys(newSorted).forEach((key) => {
-        let cmds = ''
-        cmds += `\n\n`
+        const e = Utils.embed(msg, 'green', true)
+          .setTitle(`SubbyBot Help - ${key} Commands`)
+          .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
-          cmds += `**${prefix}${i.name}** | ${i.description}\n`
+          e.addField(`**${prefix}${i.name}**`, `${i.description}`, true)
         })
-        e.addField(`${newSorted[key][0].category || '--'}`, cmds)
+        embedList.push(e)
       })
 
-      const embed = Utils.embed(msg, 'green').setDescription(
-        'Sent you a message with the commands you have access to.'
-      )
+      const totalPages = embedList.length
 
-      const m = await channel.send({ embed })
-      m.delete(10000)
+      // start page at 0
+      let page = 0
+      let run = true
+      // run our loop to wait for user input
+      const editMessage = await msg.channel.send('|')
+      while (run) {
+        await editMessage.edit(
+          embedList[page].setDescription(`:blue_book: **Page ${page + 1}/${totalPages}**`)
+        )
 
-      return author.send(e)
+        if (totalPages.length !== 1) {
+          if (page === 0) {
+            await editMessage.react('➡️')
+          } else if (page + 1 === totalPages.length) {
+            await editMessage.react('⬅️')
+          } else {
+            await editMessage.react('⬅️')
+            await editMessage.react('➡️')
+          }
+        }
+
+        const collected = await editMessage.awaitReactions(
+          (reaction, user) =>
+            ['⬅️', '➡️'].includes(reaction.emoji.name) &&
+            user.id === author.id &&
+            user.id !== client.user.id,
+          { max: 1, time: 60000 }
+        )
+        const reaction = collected.first()
+        if (reaction) {
+          await editMessage.clearReactions()
+
+          switch (reaction.emoji.name) {
+            case '⬅️':
+              page--
+              break
+            case '➡️':
+              page++
+              break
+            default:
+              break
+          }
+        } else {
+          run = false
+          return
+        }
+        await editMessage.clearReactions()
+      }
     }
     // Show individual command's help.
     const command = msg.context.commands.filter((i) => checkPerms(i) && i.name === args[0])

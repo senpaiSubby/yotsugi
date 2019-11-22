@@ -29,8 +29,8 @@ class Rules extends Command {
     const serverConfig = await Database.Models.serverConfig.findOne({
       where: { id: msg.guild.id }
     })
-    const { prefix, rules, logsChannel } = serverConfig.dataValues
-    const currentRules = JSON.parse(rules)
+    const { prefix, logsChannel } = serverConfig.dataValues
+    const rules = JSON.parse(serverConfig.dataValues.rules)
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
@@ -43,15 +43,15 @@ class Rules extends Command {
 
     switch (args[0]) {
       case 'add': {
-        currentRules.push(rule)
-        await serverConfig.update({ rules: JSON.stringify(currentRules) })
+        rules.push(rule)
+        await serverConfig.update({ rules: JSON.stringify(rules) })
         return msg.reply(Utils.embed(msg, 'green').setDescription(`**${rule}** added to rules`))
       }
       case 'remove': {
         const item = args[1] - 1
-        const name = currentRules[item]
-        currentRules.splice(item, 1)
-        await serverConfig.update({ rules: JSON.stringify(currentRules) })
+        const name = rules[item]
+        rules.splice(item, 1)
+        await serverConfig.update({ rules: JSON.stringify(rules) })
         if (name) {
           return msg.reply(
             Utils.embed(msg, 'green').setDescription(`**${name}** removed from rules`)
@@ -62,16 +62,16 @@ class Rules extends Command {
         )
       }
       default: {
-        if (!rules) {
+        if (!rules.length) {
           return msg.reply(
             Utils.embed(msg, 'yellow')
-              .setTitle(`There are no rule!`)
+              .setTitle(`There are no rules!`)
               .setDescription(`\`${prefix}rules add <rule to add>\`\nTo add some!`)
           )
         }
 
         let ruleList = ''
-        JSON.parse(rules).forEach((i, index) => {
+        rules.forEach((i, index) => {
           ruleList += `${index + 1} | ${i}\n`
         })
         return msg.reply(

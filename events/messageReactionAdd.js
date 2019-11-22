@@ -4,7 +4,6 @@ const { client } = require('../index')
 
 client.on('messageReactionAdd', async (reaction, user) => {
   const { message } = reaction
-  console.log(message)
   if (reaction.emoji.name !== '⭐') return
 
   const serverConfig = await Database.Models.serverConfig.findOne({
@@ -20,10 +19,15 @@ client.on('messageReactionAdd', async (reaction, user) => {
     return attachment
   }
 
-  if (message.author.id === user.id)
-    return message.channel.send(`${user}, you cannot star your own messages.`)
+  if (message.author.id === user.id) {
+    const m = await message.channel.send(`${user}, you cannot star your own messages.`)
+    return m.delete(10000)
+  }
 
-  if (message.author.bot) return message.channel.send(`${user}, you cannot star bot messages.`)
+  if (message.author.bot) {
+    const m = await message.channel.send(`${user}, you cannot star bot messages.`)
+    return m.delete(10000)
+  }
   const starChannel = message.guild.channels.get(starboardChannel)
 
   if (!starChannel)
@@ -60,7 +64,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
         ? await extension(reaction, message.attachments.array()[0].url)
         : ''
     if (image === '' && message.cleanContent.length < 1) {
-      return message.channel.send(`${user}, you cannot star an empty message.`)
+      const m = await message.channel.send(`${user}, you cannot star an empty message.`)
+      return m.delete(10000)
     }
 
     const embed = new RichEmbed()

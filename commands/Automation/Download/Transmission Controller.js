@@ -5,7 +5,7 @@ class TransmissionManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'tor',
-      category: 'Downloaders',
+      category: 'Download',
       description: 'Transmission Management',
       usage: `tor list`,
       aliases: ['transmission'],

@@ -5,7 +5,7 @@ class DatabaseManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'db',
-      category: 'Database',
+      category: 'Owner',
       description: 'Get/Set data in the DB',
       usage: 'db get | db get emby | db set emby host https://emby.url',
       ownerOnly: true,
@@ -16,6 +16,8 @@ class DatabaseManagement extends Command {
   async run(client, msg, args) {
     const { Utils } = client
     const { channel } = msg
+
+    msg.delete(10000)
 
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
@@ -30,19 +32,24 @@ class DatabaseManagement extends Command {
           Object.keys(values).forEach((key) => {
             x += `${key}\n${values[key]}\n`
           })
-          return channel.send(x, { code: 'json' })
+          const m = await channel.send(x, { code: 'json' })
+          return m.delete(30000)
         }
         if (key1 in values) {
           x = `${values[key1]}`
-          return msg.reply(
+          const m = await msg.reply(
             x
               .replace(/,/g, ',\n')
               .replace(/\{/g, '{\n')
               .replace(/\}/g, '\n}'),
             { code: 'json' }
           )
+          return m.delete(20000)
         }
-        return channel.send(Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`))
+        const m = await channel.send(
+          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
+        )
+        return m.delete(10000)
       }
       case 'set': {
         const keyToChange = args[1]
@@ -52,18 +59,24 @@ class DatabaseManagement extends Command {
           const tempObject = JSON.parse(values[args[1]])
           tempObject[key1] = val1
           await generalConfig.update({ [keyToChange]: JSON.stringify(tempObject) })
-          return channel.send(
+          const m = await channel.send(
             Utils.embed(msg, 'green').setDescription(
               `Key **${keyToChange}.${key1}** changed to **${val1}**`
             )
           )
+          return m.delete(10000)
         }
-        return channel.send(Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`))
+        const m = await channel.send(
+          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
+        )
+        return m.delete(10000)
       }
-      default:
-        return channel.send(
+      default: {
+        const m = await channel.send(
           Utils.embed(msg, 'green').setDescription(`Valid options are **[get/set]**`)
         )
+        return m.delete(10000)
+      }
     }
   }
 }

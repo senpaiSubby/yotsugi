@@ -6,7 +6,8 @@ class Ping extends Command {
     super(client, {
       name: 'ping',
       category: 'Bot Utils',
-      description: 'Check discord latency.'
+      description: 'Check discord latency.',
+      ownerOnly: true
     })
   }
 
