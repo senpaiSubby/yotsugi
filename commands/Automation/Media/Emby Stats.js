@@ -147,20 +147,17 @@ class EmbyStats extends Command {
         switch (args[1]) {
           case 'movies': {
             embed.setTitle('Recently added movies')
-            for (let key of stats) {
-              embed.setDescription(`**${key.Name}**`, `- [Link](${getLink(key)})`, true)
-            }
+            let text = ''
+            stats.forEach((key, index) => {
+              text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`
+            })
+            embed.setDescription(text)
             return msg.channel.send(embed)
           }
           case 'series': {
             embed.setTitle('Recently added series')
-            let recentEpisodes = ''
             for (let key of stats) {
-              embed.addField(
-                `**${key.SeriesName}**`,
-                `- ${key.Name}\n- [Link](${getLink(key)})`,
-                true
-              )
+              embed.addField(`${key.SeriesName}`, `- ${key.Name}\n- [Link](${getLink(key)})`, true)
             }
             return msg.channel.send(embed)
           }

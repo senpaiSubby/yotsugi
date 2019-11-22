@@ -55,7 +55,7 @@ class Help extends Command {
           .setTitle(`SubbyBot Help - ${key} Commands`)
           .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
-          e.addField(`**${prefix}${i.name}**`, `${i.description}`, true)
+          e.addField(`${prefix}${i.name}`, `${i.description}`, true)
         })
         embedList.push(e)
       })

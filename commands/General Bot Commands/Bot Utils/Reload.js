@@ -3,7 +3,7 @@ const Command = require('../../../core/Command')
 class Reload extends Command {
   constructor(client) {
     super(client, {
-      name: 'Reload',
+      name: 'reload',
       category: 'Bot Utils',
       description: 'Reloads Commands',
       aliases: ['reset', 'flush'],
