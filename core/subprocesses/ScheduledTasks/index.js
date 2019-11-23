@@ -17,7 +17,7 @@ class ScheduledTasks extends Subprocess {
     // every morning at 10am
     schedule.scheduleJob('0 10 * * *', async () => {
       // turn cheetos tank on
-      const tankStatus = await runCommand(this.client, 'plug tank on')
+      const tankStatus = await runCommand('plug tank on')
       if (tankStatus === 'success') {
         Log.info('Turning cheetos tank on')
       } else if (tankStatus === 'failure') {
@@ -28,7 +28,7 @@ class ScheduledTasks extends Subprocess {
     // every night at 8pm
     schedule.scheduleJob('0 20 * * *', async () => {
       // turn cheetos tank off
-      const tankStatus = await runCommand(this.client, 'plug tank off')
+      const tankStatus = await runCommand('plug tank off')
       if (tankStatus === 'success') {
         Log.info('Turning cheetos tank off')
       } else if (tankStatus === 'failure') {

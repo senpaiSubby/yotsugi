@@ -27,7 +27,7 @@ class SabnzbdManagement extends Command {
       const settings = [`${p}db set sabnzbd host <http://ip>`, `${p}db set sabnzbd apiKey <APIKEY>`]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing sabNZBD DB config!')
+          .setTitle(':gear: Missing sabNZBD DB config!')
           .setDescription(
             `**${p}db get sabnzbd** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'
@@ -48,9 +48,8 @@ class SabnzbdManagement extends Command {
         const response = await fetch(urljoin(host, endpoint, `&apikey=${apiKey}`))
         const data = await response.json()
         const downloadQueue = []
-        const results = data.queue
 
-        for (const key of results.slots) {
+        data.queue.slots.forEach((key) => {
           downloadQueue.push({
             filename: key.filename,
             status: key.status,
@@ -58,7 +57,7 @@ class SabnzbdManagement extends Command {
             time: { left: key.timeleft, eta: key.eta },
             size: { total: key.size, left: key.sizeleft }
           })
-        }
+        })
         return sortByKey(downloadQueue, 'percentage')
       } catch (error) {
         Log.warn(error)
@@ -82,7 +81,7 @@ class SabnzbdManagement extends Command {
 
           default: {
             if (status.length) {
-              for (const item of status) {
+              status.forEach((item) => {
                 embed.addField(
                   item.filename,
                   `**Status:** ${addSpace(9)} ${item.status}\n**Percentage:** ${
@@ -91,12 +90,12 @@ class SabnzbdManagement extends Command {
                     item.size.total
                   }\n**Time Left:** ${addSpace(4)} ${item.time.left}`
                 )
-              }
+              })
               return channel.send({ embed })
             }
             embed.setColor(colors.yellow)
             embed.setTitle("Nothing in sabNZBD's download queue.")
-            const m = await channel.send({ embed })
+            const m = await channel.send(embed)
             return m.delete(10000)
           }
         }

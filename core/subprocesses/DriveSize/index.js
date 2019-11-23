@@ -13,23 +13,23 @@ class DriveSize extends Subprocess {
   }
 
   async run() {
-    const { Log } = this.client
+    const { Log, channels, Utils } = this.client
 
     const checkNewStats = () => {
       Log.info('Drive Stats', 'Started Update')
       const startTime = performance.now()
-      shell.exec(`rclone size --json goog:/`, { silent: true }, async (code, stdout, stderr) => {
+      shell.exec(`rclone size --json goog:/`, { silent: true }, async (code, stdout) => {
         const stopTime = performance.now()
         // 3 doesnt exist 0 good
         if (code === 0) {
           const response = JSON.parse(stdout)
           const { count } = response
-          const size = this.client.Utils.bytesToSize(response.bytes)
+          const size = Utils.bytesToSize(response.bytes)
 
-          this.client.channels
+          channels
             .get('646309179354513420')
             .setName(`📰\u2009\u2009\u2009ғiles\u2009\u2009\u2009${count}`)
-          this.client.channels
+          channels
             .get('646309200686874643')
             .setName(
               `📁\u2009\u2009\u2009size\u2009\u2009\u2009${size
@@ -38,7 +38,7 @@ class DriveSize extends Subprocess {
             )
           Log.info(
             'Drive Stats',
-            `Updated GDrive stats in ${this.client.Utils.millisecondsToTime(stopTime - startTime)}`
+            `Updated GDrive stats in ${Utils.millisecondsToTime(stopTime - startTime)}`
           )
         }
       })

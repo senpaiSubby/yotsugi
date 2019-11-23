@@ -41,6 +41,7 @@
     "sequelize": "^5.21.2",
     "shelljs": "^0.8.3",
     "shortid": "^2.2.15",
+    "speedtest-net": "^1.6.0",
     "sqlite3": "^4.1.0",
     "torrent2magnet": "^1.0.0",
     "transmission-promise": "^1.1.4",

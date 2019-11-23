@@ -51,7 +51,7 @@ class Help extends Command {
       const newSorted = Utils.groupBy(sorted, 'category')
       const embedList = []
       Object.keys(newSorted).forEach((key) => {
-        const e = Utils.embed(msg, 'green', true)
+        const e = Utils.embed(msg, 'green')
           .setTitle(`SubbyBot Help - ${key} Commands`)
           .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
@@ -60,56 +60,7 @@ class Help extends Command {
         embedList.push(e)
       })
 
-      const totalPages = embedList.length
-
-      // start page at 0
-      let page = 0
-      let run = true
-      // run our loop to wait for user input
-      const editMessage = await msg.channel.send('|')
-      while (run) {
-        await editMessage.edit(
-          embedList[page].setDescription(`:blue_book: **Page ${page + 1}/${totalPages}**`)
-        )
-
-        if (totalPages.length !== 1) {
-          if (page === 0) {
-            await editMessage.react('➡️')
-          } else if (page + 1 === totalPages.length) {
-            await editMessage.react('⬅️')
-          } else {
-            await editMessage.react('⬅️')
-            await editMessage.react('➡️')
-          }
-        }
-
-        const collected = await editMessage.awaitReactions(
-          (reaction, user) =>
-            ['⬅️', '➡️'].includes(reaction.emoji.name) &&
-            user.id === author.id &&
-            user.id !== client.user.id,
-          { max: 1, time: 60000 }
-        )
-        const reaction = collected.first()
-        if (reaction) {
-          await editMessage.clearReactions()
-
-          switch (reaction.emoji.name) {
-            case '⬅️':
-              page--
-              break
-            case '➡️':
-              page++
-              break
-            default:
-              break
-          }
-        } else {
-          run = false
-          return
-        }
-        await editMessage.clearReactions()
-      }
+      return Utils.paginate(client, msg, embedList, 1)
     }
     // Show individual command's help.
     const command = msg.context.findCommand(args[0])

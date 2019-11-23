@@ -27,7 +27,7 @@ class MerakiAPI extends Command {
       const settings = [`${p}db set meraki serielNum <SERIEL>`, `${p}db set meraki apiKey <APIKEY>`]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Meraki DB config!')
+          .setTitle(':gear: Missing Meraki DB config!')
           .setDescription(
             `**${p}db get meraki** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'

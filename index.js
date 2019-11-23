@@ -20,6 +20,18 @@ client.colors = {
   yellow: '#d79921'
 }
 
+client.e = {
+  on: ':full_moon:',
+  off: ':new_moon:',
+  file: ':page_facing_up:',
+  folder: ':file_folder: ',
+  alert: ':rotating_light:',
+  check: ':white_check_mark:',
+  plug: ':electric_plug:',
+  light: ':bulb:',
+  setting: ':gear:'
+}
+
 module.exports = { client }
 
 // setup event handlers

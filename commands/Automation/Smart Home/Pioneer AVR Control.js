@@ -29,7 +29,7 @@ class PioneerAVRController extends Command {
       const settings = [`${p}db set pioneerAVR host <http://ip>`]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Pioneer DB config!')
+          .setTitle(':gear: Missing Pioneer DB config!')
           .setDescription(
             `**${p}db get pioneerAVR** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'

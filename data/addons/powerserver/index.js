@@ -10,28 +10,26 @@ const port = 5709
 app.post('/', (req, res) => {
   // check if all required params are met
   if (!req.body.command) {
-    res.status(406).json({ response: "Missing params 'command'" })
+    return res.status(406).json({ response: "Missing params 'command'" })
   }
 
   // check if params are correct
   if (req.body.command !== 'off' && req.body.command === 'reboot') {
-    res.status(406).json({ response: "Valid commands are 'off' or 'reboot'" })
+    return res.status(406).json({ response: "Valid commands are 'off' or 'reboot'" })
   }
 
   if (req.body.command === 'off') {
     // shutdown system
     if (shell.exec('sudo shutdown -h +1 "Shutting down in 1 minute."').code !== 0) {
-      res.status(500).json({ response: "Can't run shutdown" })
-    } else {
-      res.status(200).json({ response: 'Success' })
+      return res.status(500).json({ response: "Can't run shutdown" })
     }
-  } else if (req.body.command === 'reboot') {
-    // reboot system
+    return res.status(200).json({ response: 'Success' })
+  }
+  if (req.body.command === 'reboot') {
     if (shell.exec('sudo shutdown -r +1 "Rebooting in 1 minute."').code !== 0) {
-      res.status(500).json({ response: "Can't run reboot" })
-    } else {
-      res.status(200).json({ response: 'Success' })
+      return res.status(500).json({ response: "Can't run reboot" })
     }
+    return res.status(200).json({ response: 'Success' })
   }
 })
 

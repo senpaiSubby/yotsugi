@@ -1,8 +1,3 @@
-/*
- * License: GNU GPL 3.0
- * Source: https://github.com/v0idp/Mellow
- * Changes: modified scheme to fit into SubbyBots's command layout
- */
 const Command = require('../../../core/Command')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
@@ -26,7 +21,7 @@ class OmbiMovies extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { p, Log, Utils } = client
-    const { author, channel } = msg
+    const { author, channel, member } = msg
     const role = msg.guild.roles.find('name', 'requestmovie')
     if (!role) {
       await msg.guild.createRole({ name: 'requestmovie' })
@@ -49,7 +44,7 @@ class OmbiMovies extends Command {
       ]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Ombi DB config!')
+          .setTitle(':gear: Missing Ombi DB config!')
           .setDescription(
             `**${p}db get ombi** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'
@@ -59,30 +54,24 @@ class OmbiMovies extends Command {
     }
     // ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
-      const movieEmbed = Utils.embed(msg, 'green')
+      const embed = Utils.embed(msg, 'green')
         .setTitle(
           `${movie.title} ${
             movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
           }`
         )
         .setDescription(movie.overview.substring(0, 255) + '(...)')
-        .setFooter(
-          author.username,
-          `https://cdn.discordapp.com/avatars/${author.id}/${author.avatar}.png`
-        )
-        .setTimestamp(new Date())
-        .setImage('https://image.tmdb.org/t/p/w500' + movie.posterPath)
+        .setThumbnail('https://image.tmdb.org/t/p/w500' + movie.posterPath)
         .setURL('https://www.themoviedb.org/movie/' + movie.theMovieDbId)
-        .setThumbnail('https://i.imgur.com/EQhANAP.png')
 
-      if (movie.available) movieEmbed.addField('__Available__', '✅', true)
-      if (movie.quality) movieEmbed.addField('__Quality__', movie.quality, true)
-      if (movie.requested) movieEmbed.addField('__Requested__', '✅', true)
-      if (movie.approved) movieEmbed.addField('__Approved__', '✅', true)
-      if (movie.plexUrl) movieEmbed.addField('__Plex__', `[Watch now](${movie.plexUrl})`, true)
-      if (movie.embyUrl) movieEmbed.addField('__Emby__', `[Watch now](${movie.embyUrl})`, true)
+      if (movie.available) embed.addField('__Available__', '✅', true)
+      if (movie.quality) embed.addField('__Quality__', movie.quality, true)
+      if (movie.requested) embed.addField('__Requested__', '✅', true)
+      if (movie.approved) embed.addField('__Approved__', '✅', true)
+      if (movie.plexUrl) embed.addField('__Plex__', `[Watch now](${movie.plexUrl})`, true)
+      if (movie.embyUrl) embed.addField('__Emby__', `[Watch now](${movie.embyUrl})`, true)
 
-      return channel.send({ embed: movieEmbed })
+      return embed
     }
     const getTMDbID = async (name) => {
       try {
@@ -93,125 +82,101 @@ class OmbiMovies extends Command {
             'User-Agent': `Mellow/${process.env.npm_package_version}`
           }
         })
-        const data = await response.json()
-
-        if (data.length > 1) {
-          let fieldContent = ''
-          data.forEach((movie, i) => {
-            fieldContent += `${i + 1}) ${movie.title} `
-            if (movie.releaseDate) fieldContent += `(${movie.releaseDate.substring(0, 4)}) `
-            fieldContent += `[[TheMovieDb](https://www.themoviedb.org/movie/${movie.theMovieDbId})]\n`
-          })
-
-          const embed = Utils.embed(msg, 'green')
-            .setTitle('Ombi Movie Search')
-            .setDescription('Please select one of the search results. To abort answer **cancel**')
-            .addField('__Search Results__', fieldContent)
-          await msg.reply({ embed })
-          try {
-            const collected = await channel.awaitMessages(
-              (m) =>
-                (!isNaN(parseInt(m.content)) || m.content.startsWith('cancel')) &&
-                m.author.id === author.id,
-              { max: 1, time: 120000, errors: ['time'] }
-            )
-
-            const message = collected.first().content
-            const selection = parseInt(message)
-
-            if (message.startsWith('cancel')) {
-              return msg.reply('Cancelled command.')
-            } else if (selection > 0 && selection <= data.length) {
-              return data[selection - 1].id
-            } else {
-              return msg.reply('Please enter a valid selection!')
-            }
-          } catch {
-            return msg.reply('Cancelled command.')
-          }
-        } else if (!data.length) {
-          return msg.reply("Couldn't find the movie you were looking for. Is the name correct?")
-        } else {
-          return data[0].id
-        }
-      } catch (error) {
-        Log.warn(error)
-        return msg.reply('There was an error in your request.')
+        return response.json()
+      } catch {
+        return msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
       }
     }
 
-    const requestMovie = async (movieMsg, movie) => {
-      if (
-        msg.member.roles.some((role) => role.name === 'requestmovie') &&
-        !movie.available &&
-        !movie.requested &&
-        !movie.approved
-      ) {
-        await msg.reply('If you want to request this movie please click on the ⬇ reaction.')
-        await movieMsg.react('⬇')
-
-        try {
-          const collected = await movieMsg.awaitReactions(
-            (reaction, user) => reaction.emoji.name === '⬇' && user.id === author.id,
-            { max: 1, time: 120000 }
+    const requestMovie = async (movie) => {
+      if (!member.roles.some((r) => r.name === 'requestmovie')) {
+        return msg.reply(
+          Utils.embed(msg, 'yellow').setDescription(
+            ':octagonal_sign: **You must be part of the `requestmovie` role to request movies.**'
           )
-          try {
-            if (collected.first()) {
-              await fetch(urljoin(host, '/api/v1/Request/movie/'), {
-                method: 'POST',
-                headers: {
-                  accept: 'application/json',
-                  'Content-Type': 'application/json',
-                  ApiKey: apiKey,
-                  ApiAlias: `${author.username}#${author.discriminator}`,
-                  UserName: username || undefined
-                },
-                body: JSON.stringify({ theMovieDbId: movie.theMovieDbId })
-              })
-              return msg.reply(`Requested **${movie.title}** in Ombi.`)
-            }
-          } catch (error) {
-            Log.warn(error)
-            return msg.reply('There was an error in your request.')
-          }
+        )
+      }
+
+      if (movie.available) {
+        const m = await msg.reply(
+          Utils.embed(msg, 'yellow').setDescription(
+            `:white_check_mark: **${movie.title}** is already available in Ombi`
+          )
+        )
+        return m.delete(20000)
+      }
+
+      if (movie.approved) {
+        const m = await msg.reply(
+          Utils.embed(msg, 'yellow').setDescription(
+            `:white_check_mark: **${movie.title}** is already approved in Ombi`
+          )
+        )
+        return m.delete(20000)
+      }
+
+      if (movie.requested) {
+        const m = await msg.reply(
+          Utils.embed(msg, 'yellow').setDescription(
+            `:white_check_mark: **${movie.title}** is already requested in Ombi`
+          )
+        )
+        return m.delete(20000)
+      }
+
+      if (!movie.available && !movie.requested && !movie.approved) {
+        try {
+          await fetch(urljoin(host, '/api/v1/Request/movie/'), {
+            method: 'POST',
+            headers: {
+              accept: 'application/json',
+              'Content-Type': 'application/json',
+              ApiKey: apiKey,
+              ApiAlias: `${author.username}#${author.discriminator}`,
+              UserName: username || undefined
+            },
+            body: JSON.stringify({ theMovieDbId: movie.theMovieDbId })
+          })
+          return msg.reply(
+            Utils.embed(msg, 'green').setDescription(`Requested **${movie.title}** in Ombi.`)
+          )
         } catch {
-          return movieMsg
+          const m = await msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
+          return m.delete(20000)
         }
       }
-      return movieMsg
     }
     // ---------------------- Usage Logic ------------------------
     const movieName = args.join(' ')
 
     if (!movieName) {
-      return msg.reply('Please enter a valid movie name!')
+      const m = await msg.reply(
+        Utils.embed(msg, 'yellow').setDescription('**Please enter a valid TV show name!**')
+      )
+      return m.delete(20000)
     }
 
-    let tmdbid = null
+    const results = await getTMDbID(movieName)
 
-    if (movieName.startsWith('tmdb:')) {
-      const matches = /^tmdb:(\d+)$/.exec(movieName)
-      if (matches) {
-        tmdbid = matches[1]
-      } else {
-        return msg.reply('Please enter a valid TMDb ID!')
+    if (results) {
+      const embedList = []
+      for (const movie of results) {
+        try {
+          const response = await fetch(
+            urljoin(host, '/api/v1/Search/movie/info/', String(movie.id)),
+            {
+              headers: { ApiKey: apiKey, accept: 'application/json' }
+            }
+          )
+          const data = await response.json()
+          embedList.push(outputMovie(data))
+        } catch {
+          const m = await msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
+          return m.delete(20000)
+        }
       }
-    } else {
-      tmdbid = await getTMDbID(movieName)
-    }
-
-    if (tmdbid) {
-      try {
-        const response = await fetch(urljoin(host, '/api/v1/Search/movie/info/', String(tmdbid)), {
-          headers: { ApiKey: apiKey, accept: 'application/json' }
-        })
-        const data = await response.json()
-        const dataMsg = await outputMovie(data)
-        await requestMovie(dataMsg, data)
-      } catch (error) {
-        Log.warn(error)
-        return msg.reply('There was an error in your request.')
-      }
+      const itemPicked = await Utils.paginate(client, msg, embedList, 2, true)
+      return requestMovie(results[itemPicked])
     }
   }
 }

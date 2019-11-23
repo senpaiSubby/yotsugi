@@ -25,7 +25,7 @@ class EmbyStats extends Command {
       ]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Emby DB config!')
+          .setTitle(':gear: Missing Emby DB config!')
           .setDescription(
             `**${p}db get emby** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'
@@ -156,9 +156,9 @@ class EmbyStats extends Command {
           }
           case 'series': {
             embed.setTitle('Recently added series')
-            for (let key of stats) {
+            stats.forEach((key) => {
               embed.addField(`${key.SeriesName}`, `- ${key.Name}\n- [Link](${getLink(key)})`, true)
-            }
+            })
             return msg.channel.send(embed)
           }
           default:

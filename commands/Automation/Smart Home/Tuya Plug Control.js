@@ -138,7 +138,9 @@ class TuyaPlugController extends Command {
         if (index === -1) {
           if (api) return `No plug named ${args[0]}.`
           embed.setColor(colors.yellow)
-          embed.setDescription(`**:rotating_light: No plug named **${args[0]}**.**`)
+          embed.setDescription(
+            `**:rotating_light: No plug named **${Utils.capitalize(args[0])}**.**`
+          )
           return channel.send({ embed })
         }
 
@@ -149,12 +151,12 @@ class TuyaPlugController extends Command {
           if (status !== 'on' && status !== 'off') {
             if (api) return `${args[0]} is ${status}`
 
-            embed.setDescription(`**:electric_plug: ${args[0]} is ${status}**`)
+            embed.setDescription(`**:electric_plug: ${Utils.capitalize(args[0])} is ${status}**`)
             return channel.send({ embed })
           }
           if (api) return `${args[0]} turned ${status}.`
 
-          embed.setDescription(`**:electric_plug: ${args[0]} turned ${status}.**`)
+          embed.setDescription(`**:electric_plug: ${Utils.capitalize(args[0])} turned ${status}.**`)
           return channel.send({ embed })
         }
         // if user doesnt specify on/off then toggle device instead
@@ -162,7 +164,7 @@ class TuyaPlugController extends Command {
 
         if (api) return `${args[0]} turned ${status}`
 
-        embed.setDescription(`**:electric_plug: ${args[0]} turned ${status}**`)
+        embed.setDescription(`**:electric_plug: ${Utils.capitalize(args[0])} turned ${status}**`)
         return channel.send({ embed })
       }
     }

@@ -41,9 +41,8 @@ class WebServer extends Subprocess {
       const generalConfig = await Database.Models.generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
-      const values = JSON.parse(generalConfig.dataValues.webUI)
       const data = {
-        uiButtons: values
+        uiButtons: JSON.parse(generalConfig.dataValues.webUI)
       }
       return res.status(200).json(data)
     })
@@ -57,6 +56,7 @@ class WebServer extends Subprocess {
       if (req.body[0] && req.body[1]) {
         values.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
         await generalConfig.update({ webUI: JSON.stringify(values) })
+        return res.status(200)
       }
     })
 
@@ -120,13 +120,10 @@ class WebServer extends Subprocess {
       }
       return res.status(406).json({ response: `Command '${req.body.command}' not found.` })
     })
-    try {
-      app.listen(webServerPort, () => {
-        Log.info(`Web Server Up`, `Listening on port ${webServerPort}`)
-      })
-    } catch (e) {
-      Log.warn(e)
-    }
+
+    app.listen(webServerPort, () => {
+      Log.info(`Web Server Up`, `Listening on port ${webServerPort}`)
+    })
   }
 }
 module.exports = WebServer

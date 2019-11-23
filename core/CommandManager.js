@@ -196,7 +196,6 @@ module.exports = class CommandManager {
             Utils.embed(msg, 'red')
               .setTitle('I lack the perms needed to perform that action')
               .setFooter('Message will self destruct in 30 seconds')
-
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
           )
 

@@ -31,7 +31,7 @@ class SengledLightController extends Command {
       ]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Sengled DB config!')
+          .setTitle(':gear: Missing Sengled DB config!')
           .setDescription(
             `**${p}db get sengled** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'
@@ -149,7 +149,7 @@ class SengledLightController extends Command {
       case 'list':
         if (api) return devices
 
-        embed.setTitle(':flashlight: Lights')
+        embed.setTitle(':bulb: Lights')
 
         for (const device of devices) {
           embed.addField(
@@ -179,7 +179,9 @@ class SengledLightController extends Command {
             if (api) return `${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}`
 
             embed.setDescription(
-              `**:flashlight: ${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}.**`
+              `${args[1] === 'on' ? ':full_moon:' : ':new_moon:'} **${args[0]} light turned ${
+                args[1] === 'on' ? 'on' : 'off'
+              }.**`
             )
             return channel.send({ embed })
           }
@@ -188,7 +190,9 @@ class SengledLightController extends Command {
 
           if (api) return `${args[0]} light brightness set to ${args[1]}`
 
-          embed.setDescription(`**:flashlight: ${args[0]} light brightness set to ${args[1]}**`)
+          embed.setDescription(
+            `**:bulb: ${Utils.capitalize(args[0])} light brightness set to ${args[1]}**`
+          )
           return channel.send({ embed })
         }
         // if no brightness specified then toggle light power
@@ -197,7 +201,11 @@ class SengledLightController extends Command {
 
         await setLight(devices[index].uuid, newState)
         if (api) return `${args[0]} light turned ${newState}.`
-        embed.setDescription(`**:flashlight: ${args[0]} light turned ${newState}.**`)
+        embed.setDescription(
+          `${newState === 'on' ? ':full_moon:' : ':new_moon:'} **${Utils.capitalize(
+            args[0]
+          )} light turned ${newState}.**`
+        )
 
         return channel.send({ embed })
       }

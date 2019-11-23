@@ -32,7 +32,7 @@ class TransmissionManagement extends Command {
       ]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Transmission DB config!')
+          .setTitle(':gear: Missing Transmission DB config!')
           .setDescription(
             `**${p}db get transmission** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'
@@ -79,7 +79,7 @@ class TransmissionManagement extends Command {
         const { torrents } = response
         const downloadQueue = []
 
-        for (const item of torrents) {
+        torrents.forEach((item) => {
           downloadQueue.push({
             name: item.name,
             id: item.id,
@@ -96,7 +96,7 @@ class TransmissionManagement extends Command {
               complete: item.sizeWhenDone ? bytesToSize(item.sizeWhenDone) : 0
             }
           })
-        }
+        })
         return sortByKey(downloadQueue, 'percentage')
       } catch (error) {
         Log.warn(error)
@@ -125,13 +125,11 @@ class TransmissionManagement extends Command {
         embed.setTitle('Transmission Downloads')
 
         const dlQueue = await getQueue()
-        if (dlQueue === 'no connection') {
-          embed.setTitle('No connection to Transmission')
-          return channel.send({ embed })
-        }
+        if (dlQueue === 'no connection')
+          return channel.send(embed.setTitle('No connection to Transmission'))
 
         if (dlQueue.length) {
-          for (const item of dlQueue) {
+          dlQueue.forEach((item) => {
             if (item.status === 'downloading') {
               const netStats =
                 item.rate.up && item.rate.down === 0
@@ -144,7 +142,7 @@ class TransmissionManagement extends Command {
                 }% | ${item.size.current}/${item.size.complete} ${netStats}`
               )
             }
-          }
+          })
           return channel.send({ embed })
         }
         embed.setTitle("Nothing in Transmission's download queue.")

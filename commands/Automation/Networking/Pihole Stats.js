@@ -28,7 +28,7 @@ class PiHoleController extends Command {
       const settings = [`${p}db set pihole host <PIHOLEURL>`, `${p}db set pihole apiKey <APIKEY>`]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing PiHole DB config!')
+          .setTitle(':gear: Missing PiHole DB config!')
           .setDescription(
             `**${p}db get pihole** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'

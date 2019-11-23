@@ -31,7 +31,7 @@ class GoogleHomeSpeak extends Command {
       ]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Google Home DB config!')
+          .setTitle(':gear: Missing Google Home DB config!')
           .setDescription(
             `**${p}db get googleHome** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'

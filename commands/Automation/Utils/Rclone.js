@@ -7,7 +7,7 @@ class Drive extends Command {
     super(client, {
       name: 'drive',
       category: 'Utils',
-      description: 'Gets info on the gdrive folder you specify',
+      description: 'Gets info on the Rclone folder you specify',
       usage: 'drive size /Unsorted | drive ls /folder/to/check',
       args: true
     })
@@ -22,7 +22,7 @@ class Drive extends Command {
       const settings = [`${p}db set rclone remote <remote>`]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Rclone DB config!')
+          .setTitle(':gear: Missing Rclone DB config!')
           .setDescription(`Set them like so..\n\`\`\`css\n${settings.join('\n')}\n\`\`\``)
       )
     }
@@ -33,9 +33,10 @@ class Drive extends Command {
     switch (command) {
       case 'size': {
         const editMessage = await channel.send(
-          Utils.embed(msg, 'green')
-            .setTitle(`:file_cabinet: Checking folder size of\n- **${dirPath}**`)
-            .setDescription(`:hourglass: This may take some time...`)
+          Utils.embed(msg, 'green').setDescription(
+            `**:file_cabinet: Checking folder size of**\n\n- **${dirPath ||
+              '/'}**\n\n:hourglass: This may take some time...`
+          )
         )
 
         const startTime = performance.now()
@@ -52,22 +53,24 @@ class Drive extends Command {
               const { count } = response
               const size = Utils.bytesToSize(response.bytes)
               embed.setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
-              embed.addField('Files', `:newspaper: ${count}`)
-              embed.addField('Size', `:file_folder: ${size}`)
-              embed.setDescription(`Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}`)
+              embed.addField('Files', `:newspaper: ${count}`, true)
+              embed.addField('Size', `:file_folder: ${size}`, true)
+              embed.setDescription(
+                `**Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}**`
+              )
 
               return msg.reply({ embed })
             }
 
             if (code === 3) {
-              embed.setTitle(`Directory | :file_folder: ${dirPath} | does not exist! `)
+              embed.setDescription(`**Directory | :file_folder: ${dirPath} | does not exist!**`)
               embed.setColor(client.colors.yellow)
               const m = await msg.reply({ embed })
               return m.delete(10000)
             }
 
             const m = await msg.reply(
-              Utils.embed(msg, 'red').setDescription('A error occured with Rclone')
+              Utils.embed(msg, 'red').setDescription('**A error occured with Rclone**')
             )
             return m.delete(10000)
           }
@@ -77,9 +80,10 @@ class Drive extends Command {
 
       case 'ls': {
         const editMessage = await channel.send(
-          Utils.embed(msg, 'green')
-            .setTitle(`:file_cabinet: Directory\n- **${dirPath}**`)
-            .setDescription(`:hourglass:  This may take some time...`)
+          Utils.embed(msg, 'green').setDescription(
+            `**:file_cabinet: Getting Directory**\n\n- **${dirPath ||
+              '/'}**\n\n:hourglass: This may take some time...`
+          )
         )
         exec(`rclone lsjson ${remote}:"${dirPath}"`, { silent: true }, async (code, stdout) => {
           // 3 doesnt exist 0 good
@@ -124,76 +128,31 @@ class Drive extends Command {
               let sizeInRange = true
               // eslint-disable-next-line no-loop-func
               totalPages.forEach((i) => {
-                if (i.join().length > 1024) {
-                  sizeInRange = false
-                }
+                if (i.join().length > 1024) sizeInRange = false
               })
               if (sizeInRange) willFit = true
               pageSize--
               totalPages = Utils.chunkArray(sorted, pageSize)
             }
 
-            // start page at 0
-            let page = 0
-            let run = true
-            // run our loop to wait for user input
-            while (run) {
-              const embed = Utils.embed(msg, 'green')
-                .setTitle(`:file_cabinet: ${dirPath}`)
-                .setDescription(
-                  `:page_facing_up: ${page + 1}/${totalPages.length} | :card_box: ${
-                    sorted.length
-                  } | Page Size ${pageSize}`
-                )
+            const embedList = []
+            Object.keys(totalPages).forEach((key, index) => {
+              const e = Utils.embed(msg, 'green')
+                .setTitle(`:file_cabinet: ${dirPath || '/'}`)
                 .setThumbnail(
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
                 )
-                .addField('Files', totalPages[page].join('\n'))
-              await editMessage.edit({ embed })
+                .addField('Files', totalPages[index].join('\n'), true)
 
-              if (totalPages.length !== 1) {
-                if (page === 0) {
-                  await editMessage.react('➡️')
-                } else if (page + 1 === totalPages.length) {
-                  await editMessage.react('⬅️')
-                } else {
-                  await editMessage.react('⬅️')
-                  await editMessage.react('➡️')
-                }
-              }
+              embedList.push(e)
+            })
 
-              const collected = await editMessage.awaitReactions(
-                (reaction, user) =>
-                  ['⬅️', '➡️'].includes(reaction.emoji.name) &&
-                  user.id === author.id &&
-                  user.id !== client.user.id,
-                { max: 1, time: 120000 }
-              )
-              const reaction = collected.first()
-              if (reaction) {
-                await editMessage.clearReactions()
-
-                switch (reaction.emoji.name) {
-                  case '⬅️':
-                    page--
-                    break
-                  case '➡️':
-                    page++
-                    break
-                  default:
-                    break
-                }
-              } else {
-                run = false
-              }
-              await editMessage.clearReactions()
-            }
-            return
+            return Utils.paginate(client, msg, embedList, 1)
           }
 
           if (code === 3) {
             const embed = Utils.embed(msg, 'yellow')
-            embed.setTitle(`Folder | :file_folder: ${dirPath} | does not exist! `)
+            embed.setTitle(`Folder | :file_folder: ${dirPath || '/'} | does not exist! `)
             const m = await channel.send({ embed })
             return m.delete(10000)
           }
@@ -206,7 +165,7 @@ class Drive extends Command {
         const m = await channel.send(
           Utils.embed(msg, 'yellow').setDescription('Valid options are [ls] or [size].')
         )
-        m.delete(10000)
+        return m.delete(10000)
       }
     }
   }

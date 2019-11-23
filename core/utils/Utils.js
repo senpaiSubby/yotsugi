@@ -10,14 +10,14 @@ class Utils {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
   }
 
-  static runCommand(client, cmdString) {
+  static runCommand(cmdString) {
     const commandName = cmdString.split(' ').shift()
     const cmd = Manager.findCommand(commandName)
     const args = cmdString.split(' ').slice(1)
     if (cmd) {
       if (!cmd.disabled) {
         try {
-          Manager.runCommand(cmd, null, args, 'api')
+          Manager.runCommand(cmd, null, args, true)
           return 'success'
         } catch (error) {
           Log.warn(error)
@@ -26,6 +26,70 @@ class Utils {
       } else {
         return 'command disabled'
       }
+    }
+  }
+
+  // paginates embeds
+  static async paginate(client, msg, embedList, topBottom = 1, acceptButton = false) {
+    // topBottom 1 = page status in description else in footer
+    // start page at 0
+    let page = 0
+    let run = true
+    const { author } = msg
+    const totalPages = embedList.length
+
+    // run our loop to wait for user input
+    const editMessage = await msg.channel.send('|')
+    while (run) {
+      await editMessage.edit(
+        topBottom === 1
+          ? embedList[page].setDescription(`:blue_book: **Page ${page + 1}/${totalPages}**`)
+          : embedList[page].setFooter(`Page ${page + 1}/${totalPages}`)
+      )
+
+      if (totalPages !== 1) {
+        if (page === 0) {
+          await editMessage.react('➡️')
+          if (acceptButton) await editMessage.react('✅')
+        } else if (page + 1 === totalPages) {
+          await editMessage.react('⬅️')
+          if (acceptButton) await editMessage.react('✅')
+        } else {
+          await editMessage.react('⬅️')
+          await editMessage.react('➡️')
+          if (acceptButton) await editMessage.react('✅')
+        }
+      }
+
+      const collected = await editMessage.awaitReactions(
+        (reaction, user) =>
+          ['⬅️', '➡️', '✅'].includes(reaction.emoji.name) &&
+          user.id === author.id &&
+          user.id !== client.user.id,
+        { max: 1, time: 60000 }
+      )
+
+      const reaction = collected.first()
+      if (reaction) {
+        switch (reaction.emoji.name) {
+          case '⬅️':
+            page--
+            break
+          case '➡️':
+            page++
+            break
+          case '✅':
+            run = false
+            await editMessage.clearReactions()
+            return page
+          default:
+            break
+        }
+      } else {
+        run = false
+        return
+      }
+      await editMessage.clearReactions()
     }
   }
 

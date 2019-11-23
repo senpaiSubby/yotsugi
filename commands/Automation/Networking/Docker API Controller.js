@@ -28,7 +28,7 @@ class DockerManagement extends Command {
       const settings = [`${p}db set docker host <http://ip>`]
       return channel.send(
         Utils.embed(msg, 'red')
-          .setTitle(':rotating_light: Missing Docker DB config!')
+          .setTitle(':gear: Missing Docker DB config!')
           .setDescription(
             `**${p}db get docker** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
               '\n'
