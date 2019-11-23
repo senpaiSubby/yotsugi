@@ -16,13 +16,13 @@ class SetChannelName extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { standardMessage } = Utils
 
     const channel = args.shift()
     const newName = args.join(' ').replace(/ /g, '\u2009')
 
-    client.channels.get(channel).setName(newName)
-    const embed = Utils.embed(msg, 'green').setDescription(`Channel name changed to ${newName}`)
-    msg.channel.send({ embed })
+    await client.channels.get(channel).setName(newName)
+    return standardMessage(msg, `Channel name changed to ${newName}`)
   }
 }
 module.exports = SetChannelName

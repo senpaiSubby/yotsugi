@@ -12,13 +12,13 @@ class SpeedTest extends Command {
 
   async run(client, msg, args) {
     const { Utils, p } = client
+    const { errorMessage, warningMessage, validOptions, standardMessage } = Utils
     const { author, channel } = msg
 
     const test = speedTest({ maxTime: 5000 })
-    const m = await channel.send(
-      Utils.embed(msg, 'green').setDescription(
-        `:desktop: **Testing network throughput.\n\n:hourglass: Be back in a few seconds.**`
-      )
+    const m = await standardMessage(
+      msg,
+      `:desktop: Testing network throughput.\n\n:hourglass: Be back in a few seconds`
     )
 
     test.on('data', async (data) => {
@@ -37,9 +37,7 @@ class SpeedTest extends Command {
     })
 
     test.on('error', async () => {
-      return m.edit(
-        Utils.embed(msg, 'green').setDescription(`:rotating_light: ** Failed to test **`)
-      )
+      return errorMessage(msg, `Failed to speedtest`)
     })
   }
 }

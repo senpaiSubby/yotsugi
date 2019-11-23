@@ -15,6 +15,7 @@ class Get extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { warningMessage, validOptions, standardMessage } = Utils
     const { author } = msg
     const option = args[0]
     const key = args[1]
@@ -50,24 +51,16 @@ class Get extends Command {
           ['serverName', 'id', 'ownerID', 'createdAt', 'updatedAt'].includes(key) &&
           author.id !== client.config.ownerID
         ) {
-          return msg.channel.send(
-            Utils.embed(msg, 'red').setDescription(
-              `:rotating_light:  DB value **${key}** cannot be edited`
-            )
-          )
+          return warningMessage(msg, `DB value [${key}] cannot be edited`)
         }
         if (key in values) {
           await serverConfig.update({ [key]: value })
-          return msg.channel.send(
-            Utils.embed(msg, 'green').setDescription(`Server **${key}** changed to **${value}**`)
-          )
+          return standardMessage(msg, `Server [${key}] changed to [${value}]`)
         }
-        return msg.channel.send(
-          Utils.embed(msg, 'red').setDescription(`:rotating_light:  **${key}** does not exist`)
-        )
+        return warningMessage(msg, `[${key}] does not exist`)
       }
       default:
-        break
+        return validOptions(msg, ['get', 'set'])
     }
   }
 }

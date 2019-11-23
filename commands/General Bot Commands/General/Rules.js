@@ -12,16 +12,12 @@ class Rules extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
-    const { member, channel } = msg
+    const { warningMessage, standardMessage } = Utils
+    const { member } = msg
 
     if (args[0]) {
       if (!member.permissions.has(['ADMINISTRATOR'])) {
-        const m = await channel.send(
-          Utils.embed(msg, 'red').setDescription(
-            `You must have ['ADMINISTRATOR'] perms to ${args[0]} rules`
-          )
-        )
-        return m.delete(10000)
+        return warningMessage(msg, `You must have ['ADMINISTRATOR'] perms to ${args[0]} rules`)
       }
     }
     const rule = args.slice(1).join(' ')
@@ -35,17 +31,16 @@ class Rules extends Command {
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
     if (!serverLogsChannel)
-      return msg.channel.send(
-        Utils.embed(msg, 'yellow').setDescription(
-          `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
-        )
+      return warningMessage(
+        msg,
+        `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
 
     switch (args[0]) {
       case 'add': {
         rules.push(rule)
         await serverConfig.update({ rules: JSON.stringify(rules) })
-        return msg.reply(Utils.embed(msg, 'green').setDescription(`**${rule}** added to rules`))
+        return standardMessage(msg, `${rule}\n\nAdded to rules`)
       }
       case 'remove': {
         const item = args[1] - 1
@@ -53,13 +48,9 @@ class Rules extends Command {
         rules.splice(item, 1)
         await serverConfig.update({ rules: JSON.stringify(rules) })
         if (name) {
-          return msg.reply(
-            Utils.embed(msg, 'green').setDescription(`**${name}** removed from rules`)
-          )
+          return standardMessage(msg, `${name}\n\nRemoved from rules`)
         }
-        return msg.reply(
-          Utils.embed(msg, 'red').setDescription(`:rotating_light: **Rule does not exist**`)
-        )
+        return warningMessage(msg, `Rule does not exist`)
       }
       default: {
         if (!rules.length) {

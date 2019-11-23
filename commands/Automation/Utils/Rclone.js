@@ -15,7 +15,8 @@ class Drive extends Command {
 
   async run(client, msg, args) {
     const { Utils, p } = client
-    const { author, channel } = msg
+    const { errorMessage, warningMessage, validOptions, standardMessage } = Utils
+    const { channel } = msg
 
     const { remote } = JSON.parse(client.settings.rclone)
     if (!remote) {
@@ -30,13 +31,13 @@ class Drive extends Command {
     const command = args.shift()
     const dirPath = args.join(' ')
 
+    const caseOptions = ['ls', 'size']
     switch (command) {
       case 'size': {
-        const editMessage = await channel.send(
-          Utils.embed(msg, 'green').setDescription(
-            `**:file_cabinet: Checking folder size of**\n\n- **${dirPath ||
-              '/'}**\n\n:hourglass: This may take some time...`
-          )
+        const waitMessage = await standardMessage(
+          msg,
+          `:file_cabinet: Checking folder size of\n\n- ${dirPath ||
+            '/'}\n\n:hourglass: This may take some time...`
         )
 
         const startTime = performance.now()
@@ -44,7 +45,7 @@ class Drive extends Command {
           `rclone size --json ${remote}:"${dirPath}"`,
           { silent: true },
           async (code, stdout) => {
-            await editMessage.delete()
+            await waitMessage.delete()
             const stopTime = performance.now()
             // 3 doesnt exist 0 good
             const embed = Utils.embed(msg, 'green')
@@ -59,33 +60,27 @@ class Drive extends Command {
                 `**Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}**`
               )
 
-              return msg.reply({ embed })
+              return msg.reply(embed)
             }
 
             if (code === 3) {
-              embed.setDescription(`**Directory | :file_folder: ${dirPath} | does not exist!**`)
-              embed.setColor(client.colors.yellow)
-              const m = await msg.reply({ embed })
-              return m.delete(10000)
+              return warningMessage(msg, `Directory | :file_folder: ${dirPath} | does not exist!`)
             }
 
-            const m = await msg.reply(
-              Utils.embed(msg, 'red').setDescription('**A error occured with Rclone**')
-            )
-            return m.delete(10000)
+            return errorMessage(msg, `A error occured with Rclone`)
           }
         )
         break
       }
 
       case 'ls': {
-        const editMessage = await channel.send(
-          Utils.embed(msg, 'green').setDescription(
-            `**:file_cabinet: Getting Directory**\n\n- **${dirPath ||
-              '/'}**\n\n:hourglass: This may take some time...`
-          )
+        const waitMessage = await standardMessage(
+          msg,
+          `:file_cabinet: Getting Directory**\n\n- ${dirPath ||
+            '/'}\n\n:hourglass: This may take some time...`
         )
         exec(`rclone lsjson ${remote}:"${dirPath}"`, { silent: true }, async (code, stdout) => {
+          await waitMessage.delete()
           // 3 doesnt exist 0 good
 
           if (code === 0) {
@@ -118,54 +113,35 @@ class Drive extends Command {
             }
 
             response = sorted.join()
-            // initial page size
-            let pageSize = 40
-            // split array into multiple even arrays
-            let totalPages = Utils.chunkArray(sorted, pageSize)
-            // dynamically adjust page size based on length of each array
-            let willFit = false
-            while (!willFit) {
-              let sizeInRange = true
-              // eslint-disable-next-line no-loop-func
-              totalPages.forEach((i) => {
-                if (i.join().length > 1024) sizeInRange = false
-              })
-              if (sizeInRange) willFit = true
-              pageSize--
-              totalPages = Utils.chunkArray(sorted, pageSize)
-            }
+            const splitArray = Utils.arraySplitter(sorted)
 
             const embedList = []
-            Object.keys(totalPages).forEach((key, index) => {
+            Object.keys(splitArray).forEach((key, index) => {
               const e = Utils.embed(msg, 'green')
                 .setTitle(`:file_cabinet: ${dirPath || '/'}`)
                 .setThumbnail(
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
                 )
-                .addField('Files', totalPages[index].join('\n'), true)
+                .addField('Files', `${splitArray[index].join('\n')}`)
 
               embedList.push(e)
             })
-
             return Utils.paginate(client, msg, embedList, 1)
           }
 
           if (code === 3) {
-            const embed = Utils.embed(msg, 'yellow')
-            embed.setTitle(`Folder | :file_folder: ${dirPath || '/'} | does not exist! `)
-            const m = await channel.send({ embed })
-            return m.delete(10000)
+            return warningMessage(
+              msg,
+              `Folder | :file_folder: ${dirPath || '/'} | does not exist! `
+            )
           }
 
-          return channel.send(Utils.embed(msg, 'red').setDescription('A error occured with RClone'))
+          return errorMessage(msg, 'A error occured with RClone')
         })
         break
       }
       default: {
-        const m = await channel.send(
-          Utils.embed(msg, 'yellow').setDescription('Valid options are [ls] or [size].')
-        )
-        return m.delete(10000)
+        return validOptions(msg, caseOptions)
       }
     }
   }

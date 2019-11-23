@@ -16,24 +16,16 @@ class MerakiAPI extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { bytesToSize, addSpace, sortByKey } = client.Utils
-    const { p, Log, Utils, colors } = client
-    const { channel } = msg
+    const { bytesToSize, sortByKey } = client.Utils
+    const { p, Log, Utils } = client
+    const { errorMessage, validOptions, missingConfig } = Utils
 
     // ------------------------- Config --------------------------
 
     const { serielNum, apiKey } = JSON.parse(client.settings.meraki)
     if (!serielNum || !apiKey) {
       const settings = [`${p}db set meraki serielNum <SERIEL>`, `${p}db set meraki apiKey <APIKEY>`]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Meraki DB config!')
-          .setDescription(
-            `**${p}db get meraki** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'meraki', settings)
     }
 
     // ----------------------- Main Logic ------------------------
@@ -94,8 +86,6 @@ class MerakiAPI extends Command {
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg, 'green')
-
     switch (args[0]) {
       case 'list': {
         const status = await networkDevices()
@@ -103,27 +93,31 @@ class MerakiAPI extends Command {
         switch (status) {
           case 'failure':
             if (api) return 'Failure connection to Meraki API'
-            embed.setColor(colors.red)
-            embed.setTitle('Failure connection to Meraki API')
-            channel.send('Failure connection to Meraki API')
-            break
+            return errorMessage(msg`Failed to connect to Meraki API`)
           default: {
             if (api) return status
 
-            for (const item of status.devices) {
-              embed.addField(
-                `**== ${item.name} ==**`,
-                `**IP:** ${addSpace(5)} ${item.ip}\n**Sent:** ${item.sent}\n**Recv:** ${item.recv}`,
-                true
-              )
-            }
-            return channel.send({ embed })
+            const embedList = []
+            status.devices.forEach((i) => {
+              const e = Utils.embed(msg, 'green')
+                .setTitle('Meraki Devices')
+                .setThumbnail(
+                  'https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000'
+                )
+                .addField('Name', i.name, true)
+                .addField('IP', i.ip, true)
+                .addField('VLAN', i.vlan, true)
+                .addField('Sent', i.sent, true)
+                .addField('Recv', i.recv, true)
+              embedList.push(e)
+            })
+            return Utils.paginate(client, msg, embedList)
           }
         }
-        break
       }
-      default:
-        break
+      default: {
+        return validOptions(msg, ['list'])
+      }
     }
   }
 }

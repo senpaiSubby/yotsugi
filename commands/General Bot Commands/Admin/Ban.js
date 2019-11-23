@@ -16,6 +16,7 @@ class BanUser extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { warningMessage, standardMessage } = Utils
     const { author, channel } = msg
 
     const serverConfig = await Database.Models.serverConfig.findOne({
@@ -26,17 +27,15 @@ class BanUser extends Command {
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
     if (!serverLogsChannel)
-      return msg.channel.send(
-        Utils.embed(msg, 'yellow').setDescription(
-          `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
-        )
+      return warningMessage(
+        msg,
+        `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
-
     const target = msg.guild.member(msg.mentions.users.first() || msg.guild.members.get(args[0]))
     const reason = args.slice(1).join(' ')
 
-    if (!target) return msg.reply('please specify a member to ban!')
-    if (!reason) return msg.reply('please specify a reason for this ban!')
+    if (!target) return warningMessage(msg, `Please specify a member to ban!`)
+    if (!reason) return warningMessage(msg, `Please specify a reason for this ban!`)
 
     const embed = Utils.embed(msg, 'red')
       .setThumbnail(target.user.avatarURL)
@@ -48,7 +47,7 @@ class BanUser extends Command {
       .setFooter('Banned user information', target.user.displayAvatarURL)
 
     await target.ban(reason)
-    await channel.send(`${target.user.username} was banned by ${author} for ${reason}`)
+    await standardMessage(msg, `${target.user.username} was banned by ${author} for ${reason}`)
     return serverLogsChannel.send(embed)
   }
 }

@@ -14,16 +14,12 @@ class UserInfo extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { warningMessage } = Utils
     const { author, channel } = msg
 
     const user = args[0] ? msg.mentions.members.first() : author
     if (!user) {
-      return client.functions.get('argFix')(
-        client,
-        channel,
-        1,
-        'Did not find a user with that query.'
-      )
+      return warningMessage(msg, `Did not find a user with that query`)
     }
 
     const inGuild = msg.guild.members.has(user.id)

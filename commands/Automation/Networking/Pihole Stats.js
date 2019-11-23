@@ -19,6 +19,7 @@ class PiHoleController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { p, Log, Utils, colors } = client
+    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
     const { channel } = msg
 
     // ------------------------- Config --------------------------
@@ -26,15 +27,7 @@ class PiHoleController extends Command {
     const { host, apiKey } = JSON.parse(client.settings.pihole)
     if (!host || !apiKey) {
       const settings = [`${p}db set pihole host <PIHOLEURL>`, `${p}db set pihole apiKey <APIKEY>`]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing PiHole DB config!')
-          .setDescription(
-            `**${p}db get pihole** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'pihole', settings)
     }
 
     // ----------------------- Main Logic ------------------------
@@ -79,6 +72,7 @@ class PiHoleController extends Command {
 
     const embed = Utils.embed(msg, 'green')
 
+    const caseOptions = ['on', 'off', 'stats']
     switch (args[0]) {
       case 'on':
       case 'off': {
@@ -86,28 +80,19 @@ class PiHoleController extends Command {
 
         switch (status) {
           case 'success':
-            if (api) return `PiHole turned ${args[0]}.`
+            if (api) return `PiHole turned ${args[0]}`
 
-            embed.setDescription(`**:ok_hand: PiHole turned ${args[0]}.**`)
-            return channel.send({ embed })
-
+            return standardMessage(msg, `PiHole turned ${args[0]}`)
           case 'bad key':
-            if (api) return 'API key is incorrect.'
-            embed.setColor(colors.red)
-            embed.setDescription('**:rotating_light: API key is incorrect.**')
-            return channel.send({ embed })
-
+            if (api) return 'API key is incorrect'
+            return warningMessage(`API key is incorrect`)
           case 'bad params':
-            if (api) return 'Valid options are `on/off/stats.'
-            embed.setColor(colors.yellow)
-            embed.setDescription('**:rotating_light: Valid options are `on/off/stats`.**')
-            return channel.send({ embed })
+            if (api) return 'Valid options are `on/off/stats'
+            return validOptions(msg, ['on', 'off', 'stats'])
 
           case 'no connection':
-            if (api) return 'No connection to PiHole.'
-            embed.setColor(colors.red)
-            embed.setDescription('**:rotating_light: No connection to PiHole.**')
-            return channel.send({ embed })
+            if (api) return 'No connection to PiHole'
+            return errorMessage(msg, `No connection to PiHole`)
           default:
             break
         }
@@ -129,14 +114,15 @@ class PiHoleController extends Command {
           embed.addField('Ads Blocked Today', status.adsBlockedToday)
           return channel.send({ embed })
         }
-        if (api) return 'No connection to PiHole.'
+        if (api) return 'No connection to PiHole'
         embed.setColor(colors.red)
-        embed.setTitle(':rotating_light: No connection to PiHole.')
+        embed.setTitle(':rotating_light: No connection to PiHole')
         return channel.send({ embed })
       }
       default:
         break
     }
+    return validOptions(msg, caseOptions)
   }
 }
 module.exports = PiHoleController

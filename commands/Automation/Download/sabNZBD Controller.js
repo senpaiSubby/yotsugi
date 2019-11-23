@@ -17,23 +17,16 @@ class SabnzbdManagement extends Command {
 
   async run(client, msg, args) {
     // -------------------------- Setup --------------------------
-    const { sortByKey, addSpace } = client.Utils
-    const { p, Log, Utils, colors } = client
+    const { sortByKey } = client.Utils
+    const { p, Utils } = client
+    const { errorMessage, warningMessage, validOptions, missingConfig } = Utils
     const { channel } = msg
 
     // ------------------------- Config --------------------------
     const { host, apiKey } = JSON.parse(client.settings.sabnzbd)
     if (!host || !apiKey) {
       const settings = [`${p}db set sabnzbd host <http://ip>`, `${p}db set sabnzbd apiKey <APIKEY>`]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing sabNZBD DB config!')
-          .setDescription(
-            `**${p}db get sabnzbd** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'sabnzbd', settings)
     }
 
     // ----------------------- Main Logic ------------------------
@@ -59,48 +52,44 @@ class SabnzbdManagement extends Command {
           })
         })
         return sortByKey(downloadQueue, 'percentage')
-      } catch (error) {
-        Log.warn(error)
-        return 'no connection'
+      } catch {
+        return errorMessage(msg, 'Could not connect to sabNZBD')
       }
     }
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg, 'green')
+    const data = await getQueue()
 
-    const status = await getQueue()
-
+    const caseOptions = ['list']
     switch (args[0]) {
-      case 'list':
-        embed.setTitle('sabNZBD Downloads')
-        // todo limit to 25 fields
-        switch (status) {
-          case 'no connection':
-            return
-
-          default: {
-            if (status.length) {
-              status.forEach((item) => {
-                embed.addField(
-                  item.filename,
-                  `**Status:** ${addSpace(9)} ${item.status}\n**Percentage:** ${
-                    item.percentage
-                  }%\n**Size:** ${addSpace(14)} ${item.size.left}/${
-                    item.size.total
-                  }\n**Time Left:** ${addSpace(4)} ${item.time.left}`
-                )
-              })
-              return channel.send({ embed })
-            }
-            embed.setColor(colors.yellow)
-            embed.setTitle("Nothing in sabNZBD's download queue.")
-            const m = await channel.send(embed)
-            return m.delete(10000)
-          }
+      case 'list': {
+        if (!data.length > 0) {
+          return warningMessage(msg, `Nothing in download Queue`)
         }
-      default:
-        break
+        const embedList = []
+        data.forEach((item) => {
+          const { filename, status, percentage, time, size } = item
+          const embed = Utils.embed(msg, 'green')
+            .setTitle('SabNZBD Queue')
+            .setThumbnail(
+              'https://dashboard.snapcraft.io/site_media/appmedia/2018/10/icon.svg_WxcxD3g.png'
+            )
+            .addField('__Filename__', `${filename}`, false)
+            .addField('__Status__', `${status}`, true)
+            .addField('__Percentage__', `${percentage}`, true)
+            .addField('__Size Total__', `${size.total}`, true)
+            .addField('__Size Left__', `${size.left}`, true)
+            .addField('__Time Left__', `${time.left}`, true)
+            .addField('__ETA__', `${time.eta}`, true)
+          embedList.push(embed)
+        })
+        return Utils.paginate(client, msg, embedList, 1)
+      }
+
+      default: {
+        return validOptions(msg, caseOptions)
+      }
     }
   }
 }

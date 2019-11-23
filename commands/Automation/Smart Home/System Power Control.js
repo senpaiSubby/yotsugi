@@ -18,7 +18,8 @@ class SystemPowerController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors } = client
+    const { Log, Utils } = client
+    const { errorMessage, validOptions, standardMessage } = Utils
     const { channel } = msg
     // ------------------------- Config --------------------------
 
@@ -75,26 +76,19 @@ class SystemPowerController extends Command {
           case 'power off':
             if (api) return `Told ${system} to ${status}`
 
-            embed.setTitle(`:desktop: Told ${system} to ${status}`)
-            return channel.send({ embed })
+            return standardMessage(msg, `:desktop: Told ${system} to ${status}`)
 
           case 'on':
             if (api) return `Sent  WOL to ${system}`
 
-            embed.setDescription(`**:desktop: Sent  WOL to ${system}**`)
-            return channel.send({ embed })
+            return standardMessage(msg, `:desktop: Sent  WOL to ${system}`)
 
           case 'bad params':
-            if (api) return 'Valid options are `reboot, off, on`'
-            embed.setColor(colors.yellow)
-            embed.setDescription('**:interrobang: Valid options are `reboot, off, on`**')
-            return channel.send({ embed })
+            return validOptions(msg, ['on', 'off', 'reboot'])
 
           default:
             if (api) return `Failed to connect to ${system}`
-            embed.setColor(colors.red)
-            embed.setDescription(`**:desktop: Failed to connect to ${system}**`)
-            return channel.send({ embed })
+            return errorMessage(msg, `Failed to connect to ${system}`)
         }
       }
     }

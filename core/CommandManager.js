@@ -71,7 +71,7 @@ module.exports = class CommandManager {
 
   async runCommand(client, command, msg, args, api = false) {
     try {
-      if (msg) msg.channel.startTyping()
+      if (msg) await msg.channel.startTyping()
       await command.run(client, msg, args, api)
       client.Log.info(
         'Command Parser',
@@ -81,7 +81,7 @@ module.exports = class CommandManager {
       return
     } catch (err) {
       if (msg) {
-        msg.channel.stopTyping()
+        await msg.channel.stopTyping()
         return client.Utils.error(command.name, err, msg.channel)
       }
     }
@@ -92,6 +92,7 @@ module.exports = class CommandManager {
   }
 
   async handleMessage(msg, client) {
+    const { errorMessage, warningMessage, standardMessage } = client.Utils
     // assign variables
     msg.context = this
 
@@ -110,11 +111,7 @@ module.exports = class CommandManager {
 
     // reply with prefix when bot is the only thing mentioned
     if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
-      await msg.delete()
-      const m = await msg.reply(
-        Utils.embed(msg, 'green').setDescription(`Waddup my G. My command prefix is **${prefix}**`)
-      )
-      return m.delete(10000)
+      return warningMessage(msg, `My command prefix is ${prefix}`)
     }
 
     // if msg is sent by bot then ignore
@@ -136,14 +133,7 @@ module.exports = class CommandManager {
     const instance = this.findCommand(commandName)
 
     // if no command or alias do nothing
-    if (!instance) {
-      const m = await channel.send(
-        Utils.embed(msg, 'green')
-          .setColor(colors.red)
-          .setDescription(`No command: **${commandName}**`)
-      )
-      return m.delete(10000)
-    }
+    if (!instance) return errorMessage(msg, `No command: ${commandName}`)
 
     const command = instance
     msg.command = instance.commandName
@@ -168,11 +158,7 @@ module.exports = class CommandManager {
         'Command Parser',
         `${author.tag} tried to run [${command.name} ${args.length ? args.join(' ') : ''}] in a DM`
       )
-      return msg.reply(
-        Utils.embed(msg, 'green')
-          .setColor(colors.yellow)
-          .setDescription('This command cannot be slid into my DM.')
-      )
+      return standardMessage(msg, `This command cannot be slid into my DM`)
     }
 
     // check if user and bot has all required perms in permsNeeded

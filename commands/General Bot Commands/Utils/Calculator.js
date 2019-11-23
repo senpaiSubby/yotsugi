@@ -14,6 +14,8 @@ class Calculator extends Command {
 
   async run(client, msg, args) {
     const { channel } = msg
+    const { Utils } = client
+    const { warningMessage } = Utils
 
     const question = args.join(' ')
 
@@ -21,7 +23,7 @@ class Calculator extends Command {
     try {
       answer = math.eval(question)
     } catch (err) {
-      msg.reply('Invalid math equation')
+      return warningMessage(`Invalid math equation`)
     }
 
     return channel.send(

@@ -13,6 +13,7 @@ class RemindMe extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { standardMessage } = Utils
     const { author, channel } = msg
 
     msg.delete(10000)
@@ -20,12 +21,11 @@ class RemindMe extends Command {
     const Timer = args[0]
     const notice = args.splice(1, 1000).join(' ')
 
-    const m = await channel.send(
-      Utils.embed(msg, 'green').setDescription(
-        `:white_check_mark:  I'll DM you in: **${ms(ms(Timer), {
-          long: true
-        })}** to **${notice}**`
-      )
+    const m = await standardMessage(
+      msg,
+      `:white_check_mark:  I'll DM you in [${ms(ms(Timer), {
+        long: true
+      })}] to [${notice}]`
     )
     m.delete(10000)
 

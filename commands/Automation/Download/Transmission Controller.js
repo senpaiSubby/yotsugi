@@ -16,29 +16,27 @@ class TransmissionManagement extends Command {
 
   async run(client, msg, args) {
     // -------------------------- Setup --------------------------
-    const { bytesToSize, sortByKey } = client.Utils
-    const { Log, p } = client
-    const { Utils } = client
-    const { author, channel } = msg
+    const { p, Utils } = client
+    const {
+      bytesToSize,
+      sortByKey,
+      errorMessage,
+      warningMessage,
+      validOptions,
+      standardMessage,
+      missingConfig
+    } = Utils
     // ------------------------- Config --------------------------
 
     const { host, port, ssl } = JSON.parse(client.settings.transmission)
 
     if (!host || !port) {
       const settings = [
-        `${p}db set emby host <http://ip>`,
-        `${p}db set emby port <port>`,
-        `${p}db set emby ssl <true/false>`
+        `${p}db set transmission host <http://ip>`,
+        `${p}db set transmission port <port>`,
+        `${p}db set transmission ssl <true/false>`
       ]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Transmission DB config!')
-          .setDescription(
-            `**${p}db get transmission** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'transmission', settings)
     }
 
     const trans = new Transmission({
@@ -98,65 +96,55 @@ class TransmissionManagement extends Command {
           })
         })
         return sortByKey(downloadQueue, 'percentage')
-      } catch (error) {
-        Log.warn(error)
-        return 'no connection'
+      } catch {
+        return errorMessage(msg, `Failed to connect to Transmission`)
       }
     }
 
     const addTorrent = async (magnet) => {
       try {
         const response = await trans.addUrl(magnet)
-        return response.name
-      } catch (error) {
-        Log.warn(error)
+
+        return standardMessage(msg, `${response.name}\nAdded to Transmission`)
+      } catch {
+        return errorMessage(msg, `Failed to connect to Transmission`)
       }
     }
-    // todo need to add some type of pagination logic here
-    // todo maybe limit number of results to 5 to a page?
-    // todo also give options on how to sort/show
 
     // ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg, 'green')
-
+    const caseOptions = ['list', 'add']
     switch (args[0]) {
       case 'list': {
-        embed.setTitle('Transmission Downloads')
-
-        const dlQueue = await getQueue()
-        if (dlQueue === 'no connection')
-          return channel.send(embed.setTitle('No connection to Transmission'))
-
-        if (dlQueue.length) {
-          dlQueue.forEach((item) => {
-            if (item.status === 'downloading') {
-              const netStats =
-                item.rate.up && item.rate.down === 0
-                  ? `- [U ${item.rate.up} | D ${item.rate.down}]`
-                  : ''
-              embed.addField(
-                `${item.id} | ${item.name}`,
-                `${item.percentage >= 100 ? ':white_check_mark:' : ':arrow_down:'} ${
-                  item.percentage
-                }% | ${item.size.current}/${item.size.complete} ${netStats}`
-              )
-            }
-          })
-          return channel.send({ embed })
+        const data = await getQueue()
+        if (!data.length > 0) {
+          return warningMessage(msg, `Nothing in download Queue`)
         }
-        embed.setTitle("Nothing in Transmission's download queue.")
-        const m = await channel.send({ embed })
-        return m.delete(10000)
+        const embedList = []
+        data.forEach((item) => {
+          const { name, id, status, percentage, rate, size } = item
+          const embed = Utils.embed(msg, 'green')
+            .setTitle('Transmission Queue')
+            .setThumbnail(
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transmission_Icon.svg/1200px-Transmission_Icon.svg.png'
+            )
+            .addField('__Filename__', `[${id}] ${name}`, false)
+            .addField('__Status__', `${status}`, true)
+            .addField('__Percentage__', `${percentage}`, true)
+            .addField('__Size Total__', `${size.complete}`, true)
+            .addField('__Size Current__', `${size.current}`, true)
+            .addField('__Rate Down__', `${rate.down}`, true)
+            .addField('__Rate Upload__', `${rate.up}`, true)
+          embedList.push(embed)
+        })
+        return Utils.paginate(client, msg, embedList, 1)
       }
 
       case 'add': {
-        const status = await addTorrent(args[1])
-        embed.setTitle(`**${status}**\nAdded to Transmission`)
-        return channel.send({ embed })
+        return addTorrent(args[1])
       }
       default:
-        break
+        return validOptions(msg, caseOptions)
     }
   }
 }

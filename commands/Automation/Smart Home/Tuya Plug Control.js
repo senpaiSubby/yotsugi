@@ -17,7 +17,8 @@ class TuyaPlugController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors } = client
+    const { Log, Utils } = client
+    const { errorMessage, warningMessage, standardMessage } = Utils
     const { channel } = msg
     // ------------------------- Config --------------------------
 
@@ -137,11 +138,7 @@ class TuyaPlugController extends Command {
         // if plug name not found
         if (index === -1) {
           if (api) return `No plug named ${args[0]}.`
-          embed.setColor(colors.yellow)
-          embed.setDescription(
-            `**:rotating_light: No plug named **${Utils.capitalize(args[0])}**.**`
-          )
-          return channel.send({ embed })
+          return warningMessage(msg, `No plug named **${Utils.capitalize(args[0])}`)
         }
 
         if (args[1]) {
@@ -151,21 +148,21 @@ class TuyaPlugController extends Command {
           if (status !== 'on' && status !== 'off') {
             if (api) return `${args[0]} is ${status}`
 
-            embed.setDescription(`**:electric_plug: ${Utils.capitalize(args[0])} is ${status}**`)
-            return channel.send({ embed })
+            return standardMessage(msg, `:electric_plug: ${Utils.capitalize(args[0])} is ${status}`)
           }
           if (api) return `${args[0]} turned ${status}.`
 
-          embed.setDescription(`**:electric_plug: ${Utils.capitalize(args[0])} turned ${status}.**`)
-          return channel.send({ embed })
+          return standardMessage(
+            msg,
+            `:electric_plug: ${Utils.capitalize(args[0])} turned ${status}.`
+          )
         }
         // if user doesnt specify on/off then toggle device instead
         const status = await togglePlug(devices[index].id, devices[index].key)
 
         if (api) return `${args[0]} turned ${status}`
 
-        embed.setDescription(`**:electric_plug: ${Utils.capitalize(args[0])} turned ${status}**`)
-        return channel.send({ embed })
+        return standardMessage(msg, `:electric_plug: ${Utils.capitalize(args[0])} turned ${status}`)
       }
     }
   }

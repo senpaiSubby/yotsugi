@@ -16,6 +16,7 @@ class EmbyStats extends Command {
 
   async run(client, msg, args, api) {
     const { p, Utils } = client
+    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
     const { apiKey, host, userID } = JSON.parse(client.settings.emby)
     if (!host || !apiKey || !userID) {
       const settings = [
@@ -23,15 +24,7 @@ class EmbyStats extends Command {
         `${p}db set emby apiKey <APIKEY>`,
         `${p}db set emby userID <USERID>`
       ]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Emby DB config!')
-          .setDescription(
-            `**${p}db get emby** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'emby', settings)
     }
 
     const headers = { 'X-Emby-Token': apiKey }
@@ -48,7 +41,6 @@ class EmbyStats extends Command {
     }
 
     const fetchStats = async (endPoint) => {
-      console.log(endPoint)
       try {
         const response = await fetch(`${urljoin(host, endPoint)}`, { headers })
 
@@ -60,19 +52,13 @@ class EmbyStats extends Command {
           }
           case 401: {
             if (api) return 'Bad API key'
-            const m = await msg.channel.send(
-              Utils.embed(msg, 'red').setDescription(':key: Bad API key')
-            )
-            return m.delete(10000)
+            return warningMessage(msg, 'Bad API key')
           }
           default:
         }
       } catch {
         if (api) return 'Failed to connect'
-        const m = await msg.channel.send(
-          Utils.embed(msg, 'red').setDescription(':rotating_light: Failed to connect to Emby')
-        )
-        return m.delete(10000)
+        return errorMessage(msg, 'No connection to Emby')
       }
     }
 
@@ -83,6 +69,7 @@ class EmbyStats extends Command {
       )
     }
 
+    const caseOptions = ['streams', 'stats', 'recent']
     switch (args[0]) {
       case 'streams': {
         const nowPlaying = await fetchStats('/Sessions')
@@ -104,7 +91,7 @@ class EmbyStats extends Command {
         if (api) return { currentStreamCount, currentStreams }
 
         if (!currentStreamCount) {
-          return msg.channel.send(embed.setTitle(`Nothing is playing.`))
+          return standardMessage(msg, 'Nothing is playing')
         }
         embed.setTitle(`Emby Stats - Current Streams [${currentStreamCount}]`)
 
@@ -134,10 +121,8 @@ class EmbyStats extends Command {
         )
       }
       case 'recent': {
-        const options = ['series', 'movies']
-        if (!args[1] || !options.includes(args[1])) {
-          return msg.reply(embed.setDescription(`Valid options are \`${options.join(' / ')}\``))
-        }
+        const caseOptions = ['series', 'movies']
+
         const mediaType = args[1] === 'movies' ? 'Movie' : args[1] === 'series' ? 'Episode' : ''
 
         const endpoint = `/Users/${userID}/Items/Latest`
@@ -162,15 +147,12 @@ class EmbyStats extends Command {
             return msg.channel.send(embed)
           }
           default:
-            break
+            return validOptions(msg, caseOptions)
         }
       }
 
       default: {
-        const m = await msg.channel.reply(
-          Utils.embed(msg, 'yellow').setDescription('Valid params are [streams] || [stats]')
-        )
-        return m.delete(10000)
+        return validOptions(msg, caseOptions)
       }
     }
   }

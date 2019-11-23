@@ -29,6 +29,27 @@ class Utils {
     }
   }
 
+  // make embed fields always fit within limits after spliiting
+  static arraySplitter(array) {
+    // initial page size
+    let pageSize = 40
+    // split array into multiple even arrays
+    let splitArray = Utils.chunkArray(array, pageSize)
+    // dynamically adjust page size based on length of each array
+    let willFit = false
+    while (!willFit) {
+      let sizeInRange = true
+      // eslint-disable-next-line no-loop-func
+      splitArray.forEach((i) => {
+        if (i.join().length > 1024) sizeInRange = false
+      })
+      if (sizeInRange) willFit = true
+      pageSize--
+      splitArray = Utils.chunkArray(array, pageSize)
+    }
+    return splitArray
+  }
+
   // paginates embeds
   static async paginate(client, msg, embedList, topBottom = 1, acceptButton = false) {
     // topBottom 1 = page status in description else in footer
@@ -212,13 +233,51 @@ class Utils {
   }
 
   // global embed template
-  static embed(msg, color = 'green', footer = false) {
+  static embed(msg, color = 'green') {
     const { colors } = msg.context.client
-    const { author } = msg
-    const embed = new RichEmbed().setColor(colors[color])
-    if (footer) embed.setFooter(`Requested by: ${author.tag}`, author.avatarURL)
+    return new RichEmbed().setColor(colors[color] ? colors[color] : color)
+  }
 
-    return embed
+  static async missingConfig(msg, name, params) {
+    return msg.channel.send(
+      Utils.embed(msg, 'red')
+        .setTitle(`:gear: Missing ${name} DB config!`)
+        .setDescription(
+          `${
+            msg.prefix
+          }db get ${name} for current config.\n\nSet them like so..\n\`\`\`css\n${params.join(
+            '\n'
+          )}\n\`\`\``
+        )
+    )
+  }
+
+  static async errorMessage(msg, text) {
+    const m = await msg.channel.send(
+      Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`)
+    )
+    return m.delete(20000)
+  }
+
+  static async warningMessage(msg, text) {
+    const m = await msg.channel.send(
+      Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`)
+    )
+    return m.delete(20000)
+  }
+
+  static async standardMessage(msg, text) {
+    return msg.channel.send(Utils.embed(msg, 'green').setDescription(`**${text}**`))
+  }
+
+  // standard valid options return
+  static async validOptions(msg, options) {
+    const m = await msg.channel.send(
+      Utils.embed(msg, 'yellow').setDescription(
+        `:grey_question: **Valid options are:\n\n- ${options.join('\n- ')}**`
+      )
+    )
+    return m.delete(20000)
   }
 }
 

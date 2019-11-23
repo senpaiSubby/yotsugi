@@ -17,8 +17,8 @@ class GoogleHomeSpeak extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { p, Log, Utils, colors } = client
-    const { channel } = msg
+    const { p, Log, Utils } = client
+    const { errorMessage, missingConfig, standardMessage } = Utils
     // ------------------------- Config --------------------------
 
     const { ip, name, language } = JSON.parse(client.settings.googleHome)
@@ -29,15 +29,7 @@ class GoogleHomeSpeak extends Command {
         `${p}db set googleHome ip <ip addy>`,
         `${p}db set googleHome language <en/fr>`
       ]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Google Home DB config!')
-          .setDescription(
-            `**${p}db get googleHome** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'googleHome', settings)
     }
 
     // ----------------------- Main Logic ------------------------
@@ -62,17 +54,13 @@ class GoogleHomeSpeak extends Command {
 
     const command = args.join(' ')
     const status = await googleSpeak(command)
-    const embed = Utils.embed(msg, 'green')
 
     if (status === 'success') {
       if (api) return `Told Google Home to say: ${command}`
-      embed.setDescription(`**Told Google Home to say: **${command}****`)
-      return channel.send({ embed })
+      return standardMessage(msg, `Told Google Home to say: ${command}`)
     }
     if (api) return 'No connection to Google Home.'
-    embed.setColor(colors.red)
-    embed.setDescription('**No connection to Google Home.**')
-    return channel.send({ embed })
+    return errorMessage(msg, `No connection to Google Home`)
   }
 }
 module.exports = GoogleHomeSpeak

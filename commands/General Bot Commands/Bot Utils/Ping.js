@@ -13,13 +13,9 @@ class Ping extends Command {
 
   async run(client, msg) {
     const { Utils } = client
-    const { channel, author } = msg
+    const { standardMessage } = Utils
 
-    return channel.send(
-      Utils.embed(msg, 'green')
-        .setFooter(`Requested by: ${author.username}`, author.avatarURL)
-        .setTitle(`Pong! Your ping is ${Date.now() - msg.createdTimestamp} ms`)
-    )
+    return standardMessage(msg, `Pong! Your ping is ${Date.now() - msg.createdTimestamp} ms`)
   }
 }
 module.exports = Ping

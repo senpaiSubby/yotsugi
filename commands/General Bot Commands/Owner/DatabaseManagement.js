@@ -15,6 +15,7 @@ class DatabaseManagement extends Command {
 
   async run(client, msg, args) {
     const { Utils } = client
+    const { warningMessage, validOptions, standardMessage } = Utils
     const { channel } = msg
 
     msg.delete(10000)
@@ -46,10 +47,7 @@ class DatabaseManagement extends Command {
           )
           return m.delete(20000)
         }
-        const m = await channel.send(
-          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
-        )
-        return m.delete(10000)
+        return warningMessage(msg, `Key [${key1}] doesnt exist`)
       }
       case 'set': {
         const keyToChange = args[1]
@@ -59,23 +57,13 @@ class DatabaseManagement extends Command {
           const tempObject = JSON.parse(values[args[1]])
           tempObject[key1] = val1
           await generalConfig.update({ [keyToChange]: JSON.stringify(tempObject) })
-          const m = await channel.send(
-            Utils.embed(msg, 'green').setDescription(
-              `Key **${keyToChange}.${key1}** changed to **${val1}**`
-            )
-          )
+          const m = await standardMessage(msg, `Key [${keyToChange}.${key1}] changed to [${val1}]`)
           return m.delete(10000)
         }
-        const m = await channel.send(
-          Utils.embed(msg, 'red').setDescription(`Key **${key1}** doesnt exist.`)
-        )
-        return m.delete(10000)
+        return warningMessage(msg, `Key [${key1}] doesnt exist`)
       }
       default: {
-        const m = await channel.send(
-          Utils.embed(msg, 'green').setDescription(`Valid options are **[get/set]**`)
-        )
-        return m.delete(10000)
+        return validOptions(msg, ['get', 'set'])
       }
     }
   }

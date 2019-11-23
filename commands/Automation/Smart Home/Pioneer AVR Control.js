@@ -19,23 +19,15 @@ class PioneerAVRController extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { sleep } = client.Utils
-    const { p, Utils, colors } = client
-    const { author, channel } = msg
+    const { p, Utils } = client
+    const { missingConfig, warningMessage, validOptions, standardMessage } = Utils
     // ------------------------- Config --------------------------
 
     const { host } = JSON.parse(client.settings.pioneerAVR)
 
     if (!host) {
       const settings = [`${p}db set pioneerAVR host <http://ip>`]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Pioneer DB config!')
-          .setDescription(
-            `**${p}db get pioneerAVR** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'pioneerAVR', settings)
     }
 
     // ----------------------- Main Logic ------------------------
@@ -88,28 +80,22 @@ class PioneerAVRController extends Command {
     // use first argument as our command
     const command = args[0]
     const level = args[1]
-    const embed = Utils.embed(msg, 'green')
-    if (!api) {
-      // embed.attachFile('./data/images/icons/pioneer.png')
-      // embed.setThumbnail('attachment://pioneer.png')
-    }
 
+    const caseOptions = ['on', 'off', 'vol', 'mute']
     switch (command) {
       case 'on': // turn avr on
         await setPower('on')
 
         if (api) return 'AVR turned on'
 
-        embed.setDescription('**:radio: AVR turned on**')
-        return channel.send({ embed })
+        return standardMessage(msg, `:radio: AVR turned on`)
 
       case 'off': // turn avr off
         await setPower('off')
 
         if (api) return 'AVR turned off'
 
-        embed.setDescription('**:radio: AVR turned off**')
-        return channel.send({ embed })
+        return standardMessage(msg, `:radio: AVR turned off`)
 
       case 'mute': {
         // mute/unmute avr
@@ -117,10 +103,10 @@ class PioneerAVRController extends Command {
 
         if (api) return `AVR ${muteStatus}`
 
-        embed.setDescription(
-          `**${muteStatus === 'muted' ? ':mute:' : ':speaker:'} AVR ${muteStatus}**`
+        return standardMessage(
+          msg,
+          `${muteStatus === 'muted' ? ':mute:' : ':speaker:'} AVR ${muteStatus}`
         )
-        return channel.send({ embed })
       }
 
       case 'vol': // set volume
@@ -129,16 +115,13 @@ class PioneerAVRController extends Command {
           // if no volume specified send current volume
           if (api) return `Current volume is ${await getVolume()} / 100`
 
-          embed.setDescription(`**:speaker: Current volume is ${await getVolume()} / 100**`)
-          return channel.send({ embed })
+          return standardMessage(msg, `:speaker: Current volume is ${await getVolume()} / 100`)
         }
 
         if (isNaN(level)) {
           // is specified volume isnt a number notify
           if (api) return '!Volume should be a number between 1-100'
-          embed.setColor(colors.yellow)
-          embed.setDescription('**:rotating_light: !Volume should be a number between 1-100**')
-          return channel.send({ embed })
+          return warningMessage(msg, `Volume should be a number between 1-100`)
         }
         // set volume to specified level
         // run command 3x for lack of api accuracy
@@ -150,11 +133,10 @@ class PioneerAVRController extends Command {
         }
         if (api) return `Volume set to ${level}`
 
-        embed.setDescription(`**:speaker: Volume set to ${level}**`)
-        return channel.send({ embed })
+        return standardMessage(msg, `:speaker: Volume set to ${level}`)
 
       default:
-        break
+        return validOptions(msg, caseOptions)
     }
   }
 }

@@ -12,11 +12,10 @@ class restart extends Command {
 
   async run(client, msg) {
     const { Utils } = client
-    const { channel } = msg
+    const { warningMessage } = Utils
 
-    const m = await channel.send(Utils.embed(msg, 'green').setTitle('Restarting in 10 seconds..'))
-    await m.delete(10000)
-    await channel.send(Utils.embed(msg, 'yellow').setTitle('Restarting..'))
+    await warningMessage(msg, `Restarting in 10 seconds..`)
+    await warningMessage(msg, `Restarting..`)
     return process.exit()
   }
 }

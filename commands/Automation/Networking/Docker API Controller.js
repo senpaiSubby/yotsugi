@@ -20,21 +20,14 @@ class DockerManagement extends Command {
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
     const { p, Log, Utils, colors } = client
+    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
     const { channel } = msg
     // ------------------------- Config --------------------------
 
     const { host } = JSON.parse(client.settings.docker)
     if (!host) {
       const settings = [`${p}db set docker host <http://ip>`]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Docker DB config!')
-          .setDescription(
-            `**${p}db get docker** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'docker', settings)
     }
     // ----------------------- Main Logic ------------------------
 
@@ -120,16 +113,11 @@ class DockerManagement extends Command {
         if (containers === 'bad params') {
           if (api) return 'Valid options are `running, paused, exited, created, restarting, dead`'
           embed.setColor(colors.yellow)
-          embed.setDescription(
-            '**:rotating_light: Valid options are `running, paused, exited, created, restarting, dead`**'
-          )
-          return channel.send({ embed })
+          return validOptions(msg, ['running', 'paused', 'exited', 'created', 'restarting', 'dead'])
         }
         if (containers === 'no connection') {
-          if (api) return 'Could not connect to the docker daemon.'
-          embed.setColor(colors.red)
-          embed.setDescription('**:rotating_light: Could not connect to the docker daemon.**')
-          return channel.send({ embed })
+          if (api) return 'Could not connect to the docker daemon'
+          return errorMessage(msg, `Could not connect to the docker daemon`)
         }
 
         if (api) return containers
@@ -149,47 +137,41 @@ class DockerManagement extends Command {
         const status = await setContainerState(newState, containerName)
 
         switch (status) {
-          case 'bad params':
+          case 'bad params': {
             if (api) return 'Valid options are `start, restart, stop'
-            embed.setColor(colors.yellow)
-            embed.setDescription('**:rotating_light: Valid options are `start, restart, stop`**')
-            return channel.send({ embed })
+            return validOptions(msg, ['start', 'restart', 'stop'])
+          }
 
           case 'no match':
             if (api) return `No container named: ${containerName} found.`
-            embed.setColor(colors.red)
-            embed.setDescription(`**:rotating_light: No container named: ${containerName} found.**`)
-            return channel.send({ embed })
+            return warningMessage(msg, `No container named: ${containerName} found`)
 
           case 'success':
-            if (api) return `Container: ${containerName} has been ${newState}ed successfully.`
+            if (api) return `Container: ${containerName} has been ${newState}ed successfully`
 
-            embed.setDescription(
-              `**:ok_hand: Container: ${containerName} has been ${newState}ed successfully.**`
+            return standardMessage(
+              msg,
+              `Container ${containerName} has been ${newState}ed successfully`
             )
-            return channel.send({ embed })
 
           case 'same state':
             if (api) {
               return `Container: ${containerName} is already ${newState}${
                 newState === 'stop' ? 'ped' : 'ed'
-              }.`
+              }`
             }
 
-            embed.setColor(colors.yellow)
-            embed.setDescription(
-              `**:warning: Container: ${containerName} is already ${newState}${
+            return warningMessage(
+              msg,
+              `Container ${containerName} is already ${newState}${
                 newState === 'stop' ? 'ped' : 'ed'
-              }.**`
+              }`
             )
-            return channel.send({ embed })
 
           case 'failure':
-            if (api) return 'Action could not be completed.'
+            if (api) return 'Action could not be completed'
 
-            embed.setColor(colors.red)
-            embed.setDescription('**:rotating_light: Action could not be completed.**')
-            return channel.send({ embed })
+            return errorMessage(msg`Action could not be completed`)
           default:
             break
         }

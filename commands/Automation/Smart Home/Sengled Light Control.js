@@ -17,7 +17,8 @@ class SengledLightController extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { Log, Utils, colors, p } = client
+    const { Log, Utils, p } = client
+    const { missingConfig, warningMessage, standardMessage } = Utils
     const { channel } = msg
     // ------------------------- Config --------------------------
 
@@ -29,15 +30,7 @@ class SengledLightController extends Command {
         `${p}db set sengled username <user>`,
         `${p}db set sengled password <pass>`
       ]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Sengled DB config!')
-          .setDescription(
-            `**${p}db get sengled** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'sengled', settings)
     }
 
     const baseUrl = 'https://us-elements.cloud.sengled.com:443/zigbee'
@@ -154,7 +147,8 @@ class SengledLightController extends Command {
         for (const device of devices) {
           embed.addField(
             `${device.name}`,
-            `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`
+            `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
+            true
           )
         }
         return channel.send({ embed })
@@ -167,9 +161,7 @@ class SengledLightController extends Command {
         if (index === -1) {
           // if device name doesnt exist
           if (api) return `Could not find a light named ${args[0]}`
-          embed.setColor(colors.yellow)
-          embed.setDescription(`**:rotating_light: Could not find a light named ${args[0]}**`)
-          return channel.send({ embed })
+          return warningMessage(msg, `Could not find a light named ${args[0]}`)
         }
         if (args[1]) {
           if (args[1] === 'on' || args[1] === 'off') {
@@ -178,36 +170,35 @@ class SengledLightController extends Command {
 
             if (api) return `${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}`
 
-            embed.setDescription(
+            return standardMessage(
+              msg,
               `${args[1] === 'on' ? ':full_moon:' : ':new_moon:'} **${args[0]} light turned ${
                 args[1] === 'on' ? 'on' : 'off'
-              }.**`
+              }`
             )
-            return channel.send({ embed })
           }
           // set light brightness eg: !light desk 100
           await setBrightness(devices[index].uuid, args[1])
 
           if (api) return `${args[0]} light brightness set to ${args[1]}`
 
-          embed.setDescription(
-            `**:bulb: ${Utils.capitalize(args[0])} light brightness set to ${args[1]}**`
+          return standardMessage(
+            msg,
+            `:bulb: ${Utils.capitalize(args[0])} light brightness set to ${args[1]}`
           )
-          return channel.send({ embed })
         }
         // if no brightness specified then toggle light power
 
         const newState = devices[index].status === 'on' ? 'off' : 'on'
 
         await setLight(devices[index].uuid, newState)
-        if (api) return `${args[0]} light turned ${newState}.`
-        embed.setDescription(
-          `${newState === 'on' ? ':full_moon:' : ':new_moon:'} **${Utils.capitalize(
+        if (api) return `${args[0]} light turned ${newState}`
+        return standardMessage(
+          msg,
+          `${newState === 'on' ? ':full_moon:' : ':new_moon:'} ${Utils.capitalize(
             args[0]
-          )} light turned ${newState}.**`
+          )} light turned ${newState}`
         )
-
-        return channel.send({ embed })
       }
     }
   }

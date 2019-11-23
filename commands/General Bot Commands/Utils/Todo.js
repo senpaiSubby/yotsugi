@@ -13,7 +13,8 @@ class Todo extends Command {
 
   async run(client, msg, args) {
     const { p, Utils } = client
-    const { author, channel } = msg
+    const { warningMessage, standardMessage } = Utils
+    const { author } = msg
 
     const todo = args.slice(1).join(' ')
 
@@ -26,7 +27,7 @@ class Todo extends Command {
       case 'add': {
         todos.push(todo)
         await memberConfig.update({ todos: JSON.stringify(todos) })
-        return msg.reply(Utils.embed(msg, 'green').setDescription(`**${todo}** added to todo list`))
+        return standardMessage(msg, `${todo}\n\nAdded to todo list`)
       }
       case 'remove': {
         const item = args[1] - 1
@@ -34,13 +35,9 @@ class Todo extends Command {
         todos.splice(item, 1)
         await memberConfig.update({ todos: JSON.stringify(todos) })
         if (name) {
-          return msg.reply(
-            Utils.embed(msg, 'green').setDescription(`**${name}** removed from todo list`)
-          )
+          return standardMessage(msg, `${name}\n\nRemoved from todo list`)
         }
-        return msg.reply(
-          Utils.embed(msg, 'red').setDescription(`:rotating_light: **Rule does not exist**`)
-        )
+        return warningMessage(msg, `Rule does not exist`)
       }
       default: {
         if (!todos.length) {

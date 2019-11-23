@@ -20,7 +20,8 @@ class OmbiMovies extends Command {
 
   async run(client, msg, args, api) {
     // -------------------------- Setup --------------------------
-    const { p, Log, Utils } = client
+    const { p, Utils } = client
+    const { errorMessage, warningMessage, missingConfig, standardMessage } = Utils
     const { author, channel, member } = msg
     const role = msg.guild.roles.find('name', 'requestmovie')
     if (!role) {
@@ -42,15 +43,7 @@ class OmbiMovies extends Command {
         `${p}db set ombi apiKey <APIKEY>`,
         `${p}db set ombi username <USER>`
       ]
-      return channel.send(
-        Utils.embed(msg, 'red')
-          .setTitle(':gear: Missing Ombi DB config!')
-          .setDescription(
-            `**${p}db get ombi** for current config.\n\nSet them like so..\n\`\`\`css\n${settings.join(
-              '\n'
-            )}\n\`\`\``
-          )
-      )
+      return missingConfig(msg, 'ombi', settings)
     }
     // ----------------------- Main Logic ------------------------
     const outputMovie = (movie) => {
@@ -84,44 +77,25 @@ class OmbiMovies extends Command {
         })
         return response.json()
       } catch {
-        return msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
+        return errorMessage(msg, `No connection to Ombi`)
       }
     }
 
     const requestMovie = async (movie) => {
       if (!member.roles.some((r) => r.name === 'requestmovie')) {
-        return msg.reply(
-          Utils.embed(msg, 'yellow').setDescription(
-            ':octagonal_sign: **You must be part of the `requestmovie` role to request movies.**'
-          )
-        )
+        return warningMessage(msg, 'You must be part of the `requestmovie` role to request movies.')
       }
 
       if (movie.available) {
-        const m = await msg.reply(
-          Utils.embed(msg, 'yellow').setDescription(
-            `:white_check_mark: **${movie.title}** is already available in Ombi`
-          )
-        )
-        return m.delete(20000)
+        return warningMessage(msg, `${movie.title} is already available in Ombi`)
       }
 
       if (movie.approved) {
-        const m = await msg.reply(
-          Utils.embed(msg, 'yellow').setDescription(
-            `:white_check_mark: **${movie.title}** is already approved in Ombi`
-          )
-        )
-        return m.delete(20000)
+        return warningMessage(msg, `${movie.title} is already approved in Ombi`)
       }
 
       if (movie.requested) {
-        const m = await msg.reply(
-          Utils.embed(msg, 'yellow').setDescription(
-            `:white_check_mark: **${movie.title}** is already requested in Ombi`
-          )
-        )
-        return m.delete(20000)
+        return warningMessage(msg, `${movie.title} is already requested in Ombi`)
       }
 
       if (!movie.available && !movie.requested && !movie.approved) {
@@ -137,12 +111,9 @@ class OmbiMovies extends Command {
             },
             body: JSON.stringify({ theMovieDbId: movie.theMovieDbId })
           })
-          return msg.reply(
-            Utils.embed(msg, 'green').setDescription(`Requested **${movie.title}** in Ombi.`)
-          )
+          return standardMessage(msg, `Requested ${movie.title} in Ombi.`)
         } catch {
-          const m = await msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
-          return m.delete(20000)
+          return errorMessage(msg, `No connection to Ombi`)
         }
       }
     }
@@ -150,10 +121,7 @@ class OmbiMovies extends Command {
     const movieName = args.join(' ')
 
     if (!movieName) {
-      const m = await msg.reply(
-        Utils.embed(msg, 'yellow').setDescription('**Please enter a valid TV show name!**')
-      )
-      return m.delete(20000)
+      return warningMessage(msg, `Please enter a valid TV show name!`)
     }
 
     const results = await getTMDbID(movieName)
@@ -171,8 +139,7 @@ class OmbiMovies extends Command {
           const data = await response.json()
           embedList.push(outputMovie(data))
         } catch {
-          const m = await msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
-          return m.delete(20000)
+          return errorMessage(msg, `No connection to Ombi`)
         }
       }
       const itemPicked = await Utils.paginate(client, msg, embedList, 2, true)
