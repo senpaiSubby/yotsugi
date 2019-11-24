@@ -1,7 +1,7 @@
 const Command = require('../../../core/Command')
 const Database = require('../../../core/Database')
 
-class DatabaseManagement extends Command {
+class DBManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'db',
@@ -68,4 +68,4 @@ class DatabaseManagement extends Command {
     }
   }
 }
-module.exports = DatabaseManagement
+module.exports = DBManagement
