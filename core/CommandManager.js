@@ -144,7 +144,8 @@ module.exports = class CommandManager {
 
     let disabled = false
     disabledCommands.forEach((c) => {
-      if (instance.name === c.command || instance.aliases.includes(commandName)) {
+      if (instance.name === c.command || c.aliases.includes(commandName)) {
+        console.log(c)
         disabled = true
       }
     })
