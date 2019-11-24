@@ -55,6 +55,8 @@ class EmbyStats extends Command {
             return warningMessage(msg, 'Bad API key')
           }
           default:
+            if (api) return 'Failed to connect'
+            return errorMessage(msg, 'No connection to Emby')
         }
       } catch {
         if (api) return 'Failed to connect'

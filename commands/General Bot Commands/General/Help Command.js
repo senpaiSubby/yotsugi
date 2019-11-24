@@ -20,10 +20,20 @@ class Help extends Command {
     const { id } = msg.guild
 
     const db = await Database.Models.serverConfig.findOne({ where: { id } })
-
     const prefix = db.prefix || this.prefix
 
+    const generalConfig = await Database.Models.generalConfig.findOne({
+      where: { id: client.config.ownerID }
+    })
+    const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
+
     const checkPerms = (i) => {
+      let disabled = false
+      disabledCommands.forEach((c) => {
+        if (i.name === c.command) disabled = true
+      })
+      if (disabled) return false
+
       if (i.permsNeeded.length) {
         const missingPerms = msg.context.checkPerms(msg.member, i.permsNeeded)
         if (missingPerms) return false

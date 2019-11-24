@@ -101,12 +101,13 @@ module.exports = class CommandManager {
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     client.p = prefix
     msg.prefix = prefix
-    const { Utils, colors, Log } = client
+    const { Utils, Log } = client
 
     // set db configs
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
+    const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
     client.settings = generalConfig.dataValues
 
     // reply with prefix when bot is the only thing mentioned
@@ -140,6 +141,14 @@ module.exports = class CommandManager {
 
     // Check if command is enabled
     if (command.disabled) return
+
+    let disabled = false
+    disabledCommands.forEach((c) => {
+      if (instance.name === c.command || instance.aliases.includes(commandName)) {
+        disabled = true
+      }
+    })
+    if (disabled) return warningMessage(msg, `Command [${commandName}] is disabled`)
 
     // if command is marked 'ownerOnly: true' then don't excecute
     if (command.ownerOnly && author.id !== this.ownerID) {
@@ -234,7 +243,8 @@ module.exports = class CommandManager {
         meraki: JSON.stringify({ serielNum: null, apiKey: null }),
         pioneerAVR: JSON.stringify({ host: null }),
         systemPowerControl: JSON.stringify([{ host: null, mac: null, name: null }]),
-        tuyaPlugControl: JSON.stringify([{ id: null, key: null, name: null }])
+        tuyaPlugControl: JSON.stringify([{ id: null, key: null, name: null }]),
+        disabledCommands: JSON.stringify([])
       })
     }
 

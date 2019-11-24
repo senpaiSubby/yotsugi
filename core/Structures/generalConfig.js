@@ -20,7 +20,8 @@ const generalConfig = Database.db.define('generalConfig', {
   meraki: Sequelize.STRING,
   pioneerAVR: Sequelize.STRING,
   systemPowerControl: Sequelize.STRING,
-  tuyaPlugControl: Sequelize.STRING
+  tuyaPlugControl: Sequelize.STRING,
+  disabledCommands: Sequelize.STRING
 })
 
 generalConfig.sync()
