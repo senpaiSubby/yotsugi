@@ -8,7 +8,7 @@ module.exports = class CommandManager {
     this.client = client
     this.commands = new Enmap()
     this.aliases = new Enmap()
-    this.prefix = '?'
+    this.prefix = '//'
     this.ownerID = client.config.ownerID
 
     if (!this.client || !(this.client instanceof Client)) {
@@ -258,7 +258,7 @@ module.exports = class CommandManager {
       db = await Database.Models.serverConfig.create({
         serverName: name,
         id,
-        prefix: '?',
+        prefix: '//',
         ownerID,
         welcomeChannel: null,
         logsChannel: null,
