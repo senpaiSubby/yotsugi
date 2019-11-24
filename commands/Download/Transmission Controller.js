@@ -28,7 +28,7 @@ class TransmissionManagement extends Command {
     } = Utils
     // ------------------------- Config --------------------------
 
-    const { host, port, ssl } = JSON.parse(client.settings.transmission)
+    const { host, port, ssl } = JSON.parse(client.db.general.transmission)
 
     if (!host || !port) {
       const settings = [

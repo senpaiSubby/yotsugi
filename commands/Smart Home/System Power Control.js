@@ -23,7 +23,7 @@ class SystemPowerController extends Command {
     const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const devices = JSON.parse(client.settings.systemPowerControl)
+    const devices = JSON.parse(client.db.general.systemPowerControl)
 
     // ----------------------- Main Logic ------------------------
 

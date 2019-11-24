@@ -24,7 +24,7 @@ class PiHoleController extends Command {
 
     // ------------------------- Config --------------------------
 
-    const { host, apiKey } = JSON.parse(client.settings.pihole)
+    const { host, apiKey } = JSON.parse(client.db.general.pihole)
     if (!host || !apiKey) {
       const settings = [`${p}db set pihole host <PIHOLEURL>`, `${p}db set pihole apiKey <APIKEY>`]
       return missingConfig(msg, 'pihole', settings)

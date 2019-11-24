@@ -37,7 +37,7 @@ class OmbiTV extends Command {
     }
 
     // ------------------------- Config --------------------------
-    const { host, apiKey, username } = JSON.parse(client.settings.ombi)
+    const { host, apiKey, username } = JSON.parse(client.db.general.ombi)
 
     if (!host || !apiKey || !username) {
       const settings = [

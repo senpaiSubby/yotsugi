@@ -24,7 +24,7 @@ class DockerManagement extends Command {
     const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { host } = JSON.parse(client.settings.docker)
+    const { host } = JSON.parse(client.db.general.docker)
     if (!host) {
       const settings = [`${p}db set docker host <http://ip>`]
       return missingConfig(msg, 'docker', settings)

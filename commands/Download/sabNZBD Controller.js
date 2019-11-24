@@ -23,7 +23,7 @@ class SabnzbdManagement extends Command {
     const { channel } = msg
 
     // ------------------------- Config --------------------------
-    const { host, apiKey } = JSON.parse(client.settings.sabnzbd)
+    const { host, apiKey } = JSON.parse(client.db.general.sabnzbd)
     if (!host || !apiKey) {
       const settings = [`${p}db set sabnzbd host <http://ip>`, `${p}db set sabnzbd apiKey <APIKEY>`]
       return missingConfig(msg, 'sabnzbd', settings)
@@ -45,13 +45,14 @@ class SabnzbdManagement extends Command {
         data.queue.slots.forEach((key) => {
           downloadQueue.push({
             filename: key.filename,
+            index: key.index,
             status: key.status,
             percentage: key.percentage,
             time: { left: key.timeleft, eta: key.eta },
             size: { total: key.size, left: key.sizeleft }
           })
         })
-        return sortByKey(downloadQueue, 'percentage')
+        return sortByKey(downloadQueue, '-index')
       } catch {
         return errorMessage(msg, 'Could not connect to sabNZBD')
       }

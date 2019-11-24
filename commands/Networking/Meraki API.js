@@ -22,7 +22,7 @@ class MerakiAPI extends Command {
 
     // ------------------------- Config --------------------------
 
-    const { serielNum, apiKey } = JSON.parse(client.settings.meraki)
+    const { serielNum, apiKey } = JSON.parse(client.db.general.meraki)
     if (!serielNum || !apiKey) {
       const settings = [`${p}db set meraki serielNum <SERIEL>`, `${p}db set meraki apiKey <APIKEY>`]
       return missingConfig(msg, 'meraki', settings)

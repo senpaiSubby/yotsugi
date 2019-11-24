@@ -108,7 +108,8 @@ module.exports = class CommandManager {
       where: { id: client.config.ownerID }
     })
     const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
-    client.settings = generalConfig.dataValues
+    client.db = []
+    client.db.general = generalConfig.dataValues
 
     // reply with prefix when bot is the only thing mentioned
     if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {

@@ -46,7 +46,7 @@ class DriveSize extends Subprocess {
 
     checkNewStats()
 
-    setInterval(checkNewStats, 3600000)
+    setInterval(checkNewStats, 14400000)
   }
 }
 

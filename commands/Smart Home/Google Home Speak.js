@@ -21,7 +21,7 @@ class GoogleHomeSpeak extends Command {
     const { errorMessage, missingConfig, standardMessage } = Utils
     // ------------------------- Config --------------------------
 
-    const { ip, name, language } = JSON.parse(client.settings.googleHome)
+    const { ip, name, language } = JSON.parse(client.db.general.googleHome)
 
     if (!ip || !name || !language) {
       const settings = [

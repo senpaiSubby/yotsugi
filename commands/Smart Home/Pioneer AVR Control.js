@@ -23,7 +23,7 @@ class PioneerAVRController extends Command {
     const { missingConfig, warningMessage, validOptions, standardMessage } = Utils
     // ------------------------- Config --------------------------
 
-    const { host } = JSON.parse(client.settings.pioneerAVR)
+    const { host } = JSON.parse(client.db.general.pioneerAVR)
 
     if (!host) {
       const settings = [`${p}db set pioneerAVR host <http://ip>`]

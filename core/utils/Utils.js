@@ -64,7 +64,11 @@ class Utils {
     while (run) {
       await editMessage.edit(
         topBottom === 1
-          ? embedList[page].setDescription(`:blue_book: **Page ${page + 1}/${totalPages}**`)
+          ? totalPages === 1
+            ? embedList[page]
+            : embedList[page].setDescription(`:blue_book: **Page ${page + 1}/${totalPages}**`)
+          : totalPages === 1
+          ? embedList[page]
           : embedList[page].setFooter(`Page ${page + 1}/${totalPages}`)
       )
 

@@ -22,7 +22,7 @@ class SengledLightController extends Command {
     const { channel } = msg
     // ------------------------- Config --------------------------
 
-    const { jsessionid, username, password } = JSON.parse(client.settings.sengled)
+    const { jsessionid, username, password } = JSON.parse(client.db.general.sengled)
 
     if (!jsessionid || !username || !password) {
       const settings = [
