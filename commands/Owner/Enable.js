@@ -7,28 +7,32 @@ class Enable extends Command {
       name: 'enable',
       category: 'Owner',
       description: 'Enable commands you have disabled',
-      usage: 'enable emby | enable plex',
+      usage: 'enable <command name> | enable all',
       args: true,
       ownerOnly: true
     })
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage } = Utils
     const { channel } = msg
+
+    // * ------------------ Config --------------------
 
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
     const values = JSON.parse(generalConfig.dataValues.disabledCommands)
 
+    // * ------------------ Logic --------------------
+
     const checkIfDisabled = async (command) => {
       let isDisabled = false
       values.forEach((i) => {
-        if (command === i.command || i.aliases.includes(command)) {
-          isDisabled = true
-        }
+        if (command === i.command || i.aliases.includes(command)) isDisabled = true
       })
       if (isDisabled) return true
       return false
@@ -51,9 +55,8 @@ class Enable extends Command {
           await values.forEach(async (c, index) => {
             const { aliases, command } = c
 
-            if (aliases.includes(i) || command === i) {
-              values.splice(index, 1)
-            }
+            if (aliases.includes(i) || command === i) values.splice(index, 1)
+
             await generalConfig.update({ disabledCommands: JSON.stringify(values) })
           })
         }
@@ -68,15 +71,24 @@ class Enable extends Command {
         m.delete(20000)
       }
 
-      if (willEnable.length) {
+      if (willEnable.length)
         await channel.send(
           Utils.embed(msg)
             .setTitle('Enabled the Commands')
             .setDescription(`**- ${willEnable.join('\n- ')}**`)
         )
-      }
     }
-    return enableCommands(args)
+
+    // * ------------------ Usage Logic --------------------
+
+    switch (args[0]) {
+      case 'all': {
+        const commandList = msg.context.commands.map((i) => i.name)
+        return enableCommands(commandList)
+      }
+      default:
+        return enableCommands(args)
+    }
   }
 }
 module.exports = Enable

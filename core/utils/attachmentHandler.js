@@ -15,14 +15,13 @@ const attachmentParser = async (client, url) => {
   const name = url.split('/').pop()
 
   // if file is torrent then add to Transmission
-  if (name.endsWith('.torrent')) {
+  if (name.endsWith('.torrent'))
     try {
       const torrent = await torrent2magnet(url)
       runCommand(client, `tor add ${torrent}`)
     } catch (error) {
       Log.warn(error)
     }
-  }
 }
 
 /**
@@ -35,7 +34,7 @@ const attachmentHandler = async (client, msg) => {
   const { Log } = client
 
   // check if msg contains attachments
-  if (msg.attachments.size) {
+  if (msg.attachments.size)
     // save all attachements sent on server
     msg.attachments.forEach(async (a) => {
       try {
@@ -44,26 +43,20 @@ const attachmentHandler = async (client, msg) => {
         const name = a.url.split('/').pop()
         const dir = `./data/logs/attachments/${name}`
         // check if dir exists and create if not
-        if (!fs.existsSync(path.dirname(dir))) {
-          fs.mkdirSync(path.dirname(dir), { recursive: true })
-        }
+        if (!fs.existsSync(path.dirname(dir))) fs.mkdirSync(path.dirname(dir), { recursive: true })
+
         const res = await fetch(a.url)
         const fileStream = fs.createWriteStream(dir)
 
         await new Promise((resolve, reject) => {
           res.body.pipe(fileStream)
-          res.body.on('error', (err) => {
-            reject(err)
-          })
-          fileStream.on('finish', () => {
-            resolve()
-          })
+          res.body.on('error', (err) => reject(err))
+          fileStream.on('finish', () => resolve())
         })
       } catch (error) {
         Log.warn(error)
       }
     })
-  }
 }
 
 module.exports = attachmentHandler

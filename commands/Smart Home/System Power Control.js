@@ -17,21 +17,26 @@ class SystemPowerController extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
-    const { Log, Utils } = client
+    // * ------------------ Setup --------------------
+
+    const { Utils } = client
     const { errorMessage, validOptions, standardMessage } = Utils
     const { channel } = msg
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const devices = JSON.parse(client.db.general.systemPowerControl)
 
-    // ----------------------- Main Logic ------------------------
+    // * ------------------ Logic --------------------
 
-    const sendCommand = async (host, mac, command) => {
+    const sendCommand = async (device, command) => {
+      const { host, mac, name } = device
+
       const options = ['reboot', 'off', 'on']
       if (!options.includes(command)) {
-        return 'bad params'
+        return validOptions(msg, options)
       }
+
       if (command === 'reboot' || command === 'off') {
         try {
           const response = await fetch(`${host}`, {
@@ -39,29 +44,32 @@ class SystemPowerController extends Command {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ command })
           })
+
           const statusCode = response.status
+
           if (statusCode === 200) {
             const text = command === 'reboot' ? 'reboot' : 'power off'
-            return `${text}`
+            if (api) return `Told ${name} to ${text}`
+            return standardMessage(msg, `:desktop: Told ${name} to ${text}`)
           }
-        } catch (error) {
-          Log.warn(error)
-          return 'error'
+        } catch {
+          if (api) return `Failed to connect to ${name}`
+          return errorMessage(msg, `Failed to connect to ${name}`)
         }
       } else if (command === 'on') {
         await wol.wake(mac)
-        return 'on'
+        if (api) return `Sent  WOL to ${name}`
+        return standardMessage(msg, `:desktop: Sent  WOL to ${name}`)
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
-
-    const embed = Utils.embed(msg, 'green')
+    // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
       case 'list': {
         // todo add listing functionality
-        return channel.send({ embed })
+        const embed = Utils.embed(msg)
+        return channel.send(embed)
       }
 
       default: {
@@ -69,27 +77,7 @@ class SystemPowerController extends Command {
         const command = args[1]
         const index = devices.findIndex((d) => d.name === system)
         const host = devices[index]
-        const status = await sendCommand(host.host, host.mac, command)
-
-        switch (status) {
-          case 'reboot':
-          case 'power off':
-            if (api) return `Told ${system} to ${status}`
-
-            return standardMessage(msg, `:desktop: Told ${system} to ${status}`)
-
-          case 'on':
-            if (api) return `Sent  WOL to ${system}`
-
-            return standardMessage(msg, `:desktop: Sent  WOL to ${system}`)
-
-          case 'bad params':
-            return validOptions(msg, ['on', 'off', 'reboot'])
-
-          default:
-            if (api) return `Failed to connect to ${system}`
-            return errorMessage(msg, `Failed to connect to ${system}`)
-        }
+        return sendCommand(host, command)
       }
     }
   }

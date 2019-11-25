@@ -14,16 +14,22 @@ class DBManagement extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage, validOptions, standardMessage } = Utils
     const { channel } = msg
 
     msg.delete(10000)
 
+    // * ------------------ Config --------------------
+
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
     const values = generalConfig.dataValues
+
+    // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
       case 'get': {

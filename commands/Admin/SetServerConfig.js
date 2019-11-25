@@ -14,12 +14,16 @@ class Get extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage, validOptions, standardMessage } = Utils
     const { author } = msg
     const option = args[0]
     const key = args[1]
     const value = args[2]
+
+    // * ------------------ Logic --------------------
 
     switch (option) {
       case 'get':
@@ -50,9 +54,9 @@ class Get extends Command {
         if (
           ['serverName', 'id', 'ownerID', 'createdAt', 'updatedAt'].includes(key) &&
           author.id !== client.config.ownerID
-        ) {
+        )
           return warningMessage(msg, `DB value [${key}] cannot be edited`)
-        }
+
         if (key in values) {
           await serverConfig.update({ [key]: value })
           return standardMessage(msg, `Server [${key}] changed to [${value}]`)

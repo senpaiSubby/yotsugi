@@ -15,9 +15,13 @@ class UnbanUser extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage } = Utils
     const { author, channel, guild } = msg
+
+    // * ------------------ Config --------------------
 
     const serverConfig = await Database.Models.serverConfig.findOne({
       where: { id: msg.guild.id }
@@ -26,11 +30,15 @@ class UnbanUser extends Command {
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
+    // * ------------------ Check Config --------------------
+
     if (!serverLogsChannel)
       return warningMessage(
         msg,
         `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
+
+    // * ------------------ Logic --------------------
 
     let target
     const bans = await msg.guild.fetchBans()
@@ -43,7 +51,7 @@ class UnbanUser extends Command {
     if (!target) return warningMessage(msg, `Please specify a member to unban!`)
     if (!reason) return warningMessage(msg, `Please specify a reason for this unban!`)
 
-    const embed = Utils.embed(msg, 'green')
+    const embed = Utils.embed(msg)
       .addField('Unbanned Member', `**${target.username}** with an ID: ${target.id}`)
       .addField('Unbanned By', `**${author.username}** with an ID: ${author.id}`)
       .addField('Unbanned Time', msg.createdAt)

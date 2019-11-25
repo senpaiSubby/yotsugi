@@ -15,16 +15,24 @@ class BanUser extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage, standardMessage } = Utils
     const { author, channel } = msg
+
+    // * ------------------ Config --------------------
 
     const serverConfig = await Database.Models.serverConfig.findOne({
       where: { id: msg.guild.id }
     })
     const { prefix, logsChannel } = serverConfig.dataValues
 
+    // * ------------------ Check Config --------------------
+
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
+
+    // * ------------------ Logic --------------------
 
     if (!serverLogsChannel)
       return warningMessage(

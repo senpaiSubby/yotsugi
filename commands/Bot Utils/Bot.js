@@ -11,8 +11,12 @@ class restart extends Command {
   }
 
   async run(client, msg) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage } = Utils
+
+    // * ------------------ Logic --------------------
 
     await warningMessage(msg, `Restarting in 10 seconds..`)
     await warningMessage(msg, `Restarting..`)

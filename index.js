@@ -1,35 +1,24 @@
 const { Client } = require('discord.js')
-const shell = require('shelljs')
+const { exec } = require('shelljs')
 const config = require('./data/config')
 
 // clear terminal
-shell.exec('clear')
+exec('clear')
 
 // Initialise
 const client = new Client()
 
 client.config = config
-client.dateFormat = require('dateformat')
 client.Log = require('./core/utils/Log')
 client.Utils = require('./core/utils/Utils')
+
+client.db = []
 
 client.colors = {
   red: '#cc241d',
   green: '#b8bb26',
   blue: '#458588',
   yellow: '#d79921'
-}
-
-client.e = {
-  on: ':full_moon:',
-  off: ':new_moon:',
-  file: ':page_facing_up:',
-  folder: ':file_folder: ',
-  alert: ':rotating_light:',
-  check: ':white_check_mark:',
-  plug: ':electric_plug:',
-  light: ':bulb:',
-  setting: ':gear:'
 }
 
 module.exports = { client }

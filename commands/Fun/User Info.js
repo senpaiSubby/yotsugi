@@ -1,4 +1,5 @@
-const moment = require('moment')
+const { utc } = require('moment')
+const dateFormat = require('dateformat')
 const Command = require('../../core/Command')
 
 class UserInfo extends Command {
@@ -14,20 +15,21 @@ class UserInfo extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage } = Utils
     const { member, channel } = msg
 
+    // * ------------------ Logic --------------------
+
     const user = args[0] ? msg.mentions.members.first() : member
-    console.log(user)
-    if (!user) {
-      return warningMessage(msg, `Did not find a user with that query`)
-    }
+    if (!user) return warningMessage(msg, `Did not find a user with that query`)
 
     const inGuild = msg.guild.members.has(user.id)
     const roles = user.roles.map((role) => role.name)
 
-    const embed = Utils.embed(msg, 'green')
+    const embed = Utils.embed(msg)
       .setTitle(`${user.user.tag}'s User Info`)
       .setThumbnail(user.user.avatarURL)
       .addField('ID:', `${user.id}`, true)
@@ -35,11 +37,11 @@ class UserInfo extends Command {
       .addField('Status:', `${user.presence.status}`, true)
       .addField('In Server', user.guild.name, true)
       .addField('Bot:', `${user.user.bot ? 'True' : 'False'}`, true)
-      .addField('Joined', `${moment.utc(user.joinedAt).format('MMMM DD YY')}`, true)
+      .addField('Joined', `${utc(user.joinedAt).format('MMMM DD YY')}`, true)
       .addField('Roles', `- ${roles.join('\n- ')}`, true)
 
     if (inGuild) {
-      const member = msg.guild.members.get(user.user.id)
+      const rMember = msg.guild.members.get(user.user.id)
 
       const memSort = msg.guild.members
         .sort((a, b) => {
@@ -54,7 +56,7 @@ class UserInfo extends Command {
       }
 
       embed
-        .addField('Joined At', client.dateFormat(member.joinedAt), true)
+        .addField('Joined At', dateFormat(rMember.joinedAt), true)
         .addField('Joined Position', position, true)
     }
 

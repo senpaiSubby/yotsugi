@@ -10,23 +10,19 @@ class Utils {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
   }
 
-  static runCommand(cmdString) {
+  static async runCommand(cmdString) {
     const commandName = cmdString.split(' ').shift()
     const cmd = Manager.findCommand(commandName)
     const args = cmdString.split(' ').slice(1)
-    if (cmd) {
+    if (cmd)
       if (!cmd.disabled) {
         try {
-          Manager.runCommand(cmd, null, args, true)
-          return 'success'
-        } catch (error) {
-          Log.warn(error)
-          return 'failure'
+          await Manager.runCommand(cmd, null, args, true)
+          return 1
+        } catch {
+          return 0
         }
-      } else {
-        return 'command disabled'
       }
-    }
   }
 
   // make embed fields always fit within limits after spliiting
@@ -72,7 +68,7 @@ class Utils {
           : embedList[page].setFooter(`Page ${page + 1}/${totalPages}`)
       )
 
-      if (totalPages !== 1) {
+      if (totalPages !== 1)
         if (page === 0) {
           await editMessage.react('➡️')
           if (acceptButton) await editMessage.react('✅')
@@ -84,7 +80,6 @@ class Utils {
           await editMessage.react('➡️')
           if (acceptButton) await editMessage.react('✅')
         }
-      }
 
       const collected = await editMessage.awaitReactions(
         (reaction, user) =>
@@ -95,7 +90,7 @@ class Utils {
       )
 
       const reaction = collected.first()
-      if (reaction) {
+      if (reaction)
         switch (reaction.emoji.name) {
           case '⬅️':
             page--
@@ -110,7 +105,7 @@ class Utils {
           default:
             break
         }
-      } else {
+      else {
         run = false
         return
       }
@@ -140,12 +135,9 @@ class Utils {
 
       const stat = fs.statSync(innerDir)
 
-      if (stat.isDirectory()) {
-        results = results.concat(this.findNested(innerDir, pattern))
-      }
-      if (stat.isFile() && innerDir.endsWith(pattern)) {
-        results.push(innerDir)
-      }
+      if (stat.isDirectory()) results = results.concat(this.findNested(innerDir, pattern))
+
+      if (stat.isFile() && innerDir.endsWith(pattern)) results.push(innerDir)
     })
     return results
   }
@@ -164,13 +156,13 @@ class Utils {
       sortOrder = -1
       key = key.substr(1)
     }
-    if (sortOrder === -1) {
+    if (sortOrder === -1)
       return array.sort((a, b) => {
         const x = a[key]
         const y = b[key]
         return x < y ? -1 : x > y ? 1 : 0
       })
-    }
+
     return array.sort((a, b) => {
       const x = b[key]
       const y = a[key]
@@ -209,9 +201,9 @@ class Utils {
 
   static millisecondsToTime(ms) {
     const duration = moment.duration(ms)
-    if (duration.asHours() > 1) {
+    if (duration.asHours() > 1)
       return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss')
-    }
+
     return moment.utc(duration.asMilliseconds()).format('mm:ss')
   }
 
@@ -271,7 +263,7 @@ class Utils {
   }
 
   static async standardMessage(msg, text) {
-    return msg.channel.send(Utils.embed(msg, 'green').setDescription(`**${text}**`))
+    return msg.channel.send(Utils.embed(msg).setDescription(`**${text}**`))
   }
 
   // standard valid options return

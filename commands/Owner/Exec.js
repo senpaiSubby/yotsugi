@@ -13,8 +13,12 @@ class Executor extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { channel } = msg
     const { Utils } = client
+
+    // * ------------------ Usage Logic --------------------
 
     const regex = new RegExp(
       client.config.token
@@ -29,11 +33,10 @@ class Executor extends Command {
       `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
     exec(Utils.makeShellSafe(args.join(' ')), { silent: true }, async (code, stdout, stderr) => {
-      if (stderr) {
+      if (stderr)
         return channel
           .send(`${input}\n${error(stderr)}`)
           .catch((err) => channel.send(`${input}\n${error(err)}`))
-      }
 
       const response = `📤 **Output:**\n\`\`\`sh\n${stdout.replace(regex, '[Token]')}\n\`\`\``
       return channel

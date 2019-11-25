@@ -15,7 +15,8 @@ class TransmissionManagement extends Command {
   }
 
   async run(client, msg, args) {
-    // -------------------------- Setup --------------------------
+    // * ------------------ Setup --------------------
+
     const { p, Utils } = client
     const {
       bytesToSize,
@@ -26,9 +27,12 @@ class TransmissionManagement extends Command {
       standardMessage,
       missingConfig
     } = Utils
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const { host, port, ssl } = JSON.parse(client.db.general.transmission)
+
+    // * ------------------ Check Config --------------------
 
     if (!host || !port) {
       const settings = [
@@ -46,7 +50,7 @@ class TransmissionManagement extends Command {
       url: '/transmission/rpc' // default '/transmission/rpc'
     })
 
-    // ----------------------- Main Logic ------------------------
+    // * ------------------ Logic --------------------
 
     const getStatus = (code) => {
       switch (code) {
@@ -78,20 +82,21 @@ class TransmissionManagement extends Command {
         const downloadQueue = []
 
         torrents.forEach((item) => {
+          const { name, id, rateUpload, rateDownload, downloadedEver, status, sizeWhenDone } = item
           downloadQueue.push({
-            name: item.name,
-            id: item.id,
-            status: getStatus(item.status),
-            percentage: item.downloadedEver
-              ? Math.round((item.downloadedEver / item.sizeWhenDone) * 100).toString()
+            name,
+            id,
+            status: getStatus(status),
+            percentage: downloadedEver
+              ? Math.round((downloadedEver / sizeWhenDone) * 100).toString()
               : '0',
             rate: {
-              up: item.rateUpload ? bytesToSize(item.rateUpload) : 0,
-              down: item.rateDownload ? bytesToSize(item.rateDownload) : 0
+              up: rateUpload ? bytesToSize(rateUpload) : 0,
+              down: rateDownload ? bytesToSize(rateDownload) : 0
             },
             size: {
-              current: item.downloadedEver ? bytesToSize(item.downloadedEver) : 0,
-              complete: item.sizeWhenDone ? bytesToSize(item.sizeWhenDone) : 0
+              current: downloadedEver ? bytesToSize(downloadedEver) : 0,
+              complete: sizeWhenDone ? bytesToSize(sizeWhenDone) : 0
             }
           })
         })
@@ -104,26 +109,24 @@ class TransmissionManagement extends Command {
     const addTorrent = async (magnet) => {
       try {
         const response = await trans.addUrl(magnet)
-
         return standardMessage(msg, `${response.name}\nAdded to Transmission`)
       } catch {
         return errorMessage(msg, `Failed to connect to Transmission`)
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
+    // * ------------------ Usage Logic --------------------
 
     const caseOptions = ['list', 'add']
     switch (args[0]) {
       case 'list': {
         const data = await getQueue()
-        if (!data.length > 0) {
-          return warningMessage(msg, `Nothing in download Queue`)
-        }
+        if (!data.length) return warningMessage(msg, `Nothing in download Queue`)
+
         const embedList = []
         data.forEach((item) => {
           const { name, id, status, percentage, rate, size } = item
-          const embed = Utils.embed(msg, 'green')
+          const embed = Utils.embed(msg)
             .setTitle('Transmission Queue')
             .setThumbnail(
               'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transmission_Icon.svg/1200px-Transmission_Icon.svg.png'
@@ -140,9 +143,9 @@ class TransmissionManagement extends Command {
         return Utils.paginate(client, msg, embedList, 1)
       }
 
-      case 'add': {
+      case 'add':
         return addTorrent(args[1])
-      }
+
       default:
         return validOptions(msg, caseOptions)
     }

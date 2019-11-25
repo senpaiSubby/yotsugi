@@ -16,7 +16,6 @@ module.exports = class Command {
     this.ownerOnly = data.ownerOnly || false
     this.adminOnly = data.adminOnly || false
     this.permsNeeded = data.permsNeeded || []
-    this.disabled = data.disabled || false
 
     if (!this.name) throw new Error('Command Name is required')
     if (!this.description) throw new Error('Command Description is required')
@@ -42,8 +41,6 @@ module.exports = class Command {
       throw new TypeError('Command webUI property must be a boolean')
     if (typeof this.ownerOnly !== 'boolean')
       throw new TypeError('Command adminOnly property must be a boolean')
-    if (typeof this.disabled !== 'boolean')
-      throw new TypeError('Command disabled property must be a boolean')
   }
 
   run() {

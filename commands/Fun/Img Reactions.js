@@ -1,8 +1,5 @@
-const fs = require('fs')
-const util = require('util')
+const { readdir } = require('fs')
 const Command = require('../../core/Command')
-
-const readdir = util.promisify(fs.readdir)
 
 class ImgReactions extends Command {
   constructor(client) {
@@ -28,55 +25,43 @@ class ImgReactions extends Command {
 
     //* ----------------------- Main Logic ------------------------
 
-    /**
-     * lists all files in our images directory
-     * @return {list} list of file names in dir
-     */
     const listImages = async () => {
       const files = await readdir(imgDir)
       const fileList = []
       if (files) {
-        for (const file of files) {
+        files.forEach((file) => {
           const baseName = file.split('.').shift()
           fileList.push(baseName)
-        }
+        })
         return fileList
       }
       return false
     }
 
-    /**
-     * searches for matching file from searchTerm
-     * @param {String} searchTerm image to search
-     * @return {list} [pathToFile, fileName]
-     */
     const findImage = async (searchTerm) => {
       const files = await readdir(imgDir)
-      if (files) {
-        for (const file of files) {
+      if (files)
+        files.forEach((file) => {
           const ext = file.split('.').pop()
           const baseName = file.split('.').shift()
 
-          if (baseName === searchTerm) {
-            return [`${imgDir}/${baseName}.${ext}`, file]
-          }
-        }
-      }
+          if (baseName === searchTerm) return [`${imgDir}/${baseName}.${ext}`, file]
+        })
+
       return false
     }
 
     //* ---------------------- Usage Logic ------------------------
 
-    const embed = Utils.embed(msg, 'green')
+    const embed = Utils.embed(msg)
 
     switch (args[0]) {
       case 'list': {
         const images = await listImages()
         let fileList = ''
 
-        for (const file of images) {
-          fileList += `${file}\n`
-        }
+        images.forEach((file) => (fileList += `${file}\n`))
+
         embed.setTitle('Reaction Images')
         embed.addField('Here are my images', fileList)
         const m = await channel.send({ embed })

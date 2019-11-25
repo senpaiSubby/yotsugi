@@ -31,7 +31,7 @@ class RemindMe extends Command {
 
     setTimeout(() => {
       return author.send(
-        Utils.embed(msg, 'green').setDescription(
+        Utils.embed(msg).setDescription(
           `It's been **${ms(ms(Timer), {
             long: true
           })}** Here's your reminder to **${notice}**`

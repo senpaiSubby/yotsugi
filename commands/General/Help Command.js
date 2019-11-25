@@ -13,8 +13,12 @@ class Help extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { author, channel } = msg
+
+    // * ------------------ Config --------------------
 
     // get server prefix
     const { id } = msg.guild
@@ -26,6 +30,8 @@ class Help extends Command {
       where: { id: client.config.ownerID }
     })
     const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
+
+    // * ------------------ Logic --------------------
 
     const checkPerms = (i) => {
       let disabled = false
@@ -61,7 +67,7 @@ class Help extends Command {
       const newSorted = Utils.groupBy(sorted, 'category')
       const embedList = []
       Object.keys(newSorted).forEach((key) => {
-        const e = Utils.embed(msg, 'green')
+        const e = Utils.embed(msg)
           .setTitle(`${client.user.username} Help - ${key} Commands`)
           .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
@@ -78,7 +84,7 @@ class Help extends Command {
     msg.delete(10000)
     if (command && checkPerms(command)) {
       const m = await channel.send(
-        Utils.embed(msg, 'green')
+        Utils.embed(msg)
           .setTitle(`Help - ${Utils.capitalize(command.name)}`)
           .setDescription(
             `**${command.description}**\n\`\`\`css\n${command.usage.replace(

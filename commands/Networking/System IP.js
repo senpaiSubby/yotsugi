@@ -10,20 +10,24 @@ class SystemIP extends Command {
       description: 'Show Server IP',
       usage: `ip <external/local>`,
       ownerOnly: true,
-      args: true
+      args: false
     })
   }
 
-  async run(client, msg, args, api) {
-    const { Utils, colors } = client
-    const { author, channel } = msg
+  async run(client, msg, api) {
+    // * ------------------ Setup --------------------
 
-    const embed = Utils.embed(msg, 'green')
+    const { Utils } = client
+    const { channel } = msg
+
+    // * ------------------ Logic --------------------
 
     const response = await fetch('https://ifconfig.co/json')
+
     const data = await response.json()
-    embed.setTitle(`${data.ip}`)
-    const m = await channel.send({ embed })
+    if (api) return data
+    const embed = Utils.embed(msg).setTitle(`${data.ip}`)
+    const m = await channel.send(embed)
     return m.delete(10000)
   }
 }

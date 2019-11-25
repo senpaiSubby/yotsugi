@@ -15,9 +15,17 @@ class EmbyStats extends Command {
   }
 
   async run(client, msg, args, api) {
+    // * ------------------ Setup --------------------
+
     const { p, Utils } = client
     const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
+
+    // * ------------------ Config --------------------
+
     const { apiKey, host, userID } = JSON.parse(client.db.general.emby)
+
+    // * ------------------ Check Config --------------------
+
     if (!host || !apiKey || !userID) {
       const settings = [
         `${p}db set emby host <http://ip>`,
@@ -26,10 +34,9 @@ class EmbyStats extends Command {
       ]
       return missingConfig(msg, 'emby', settings)
     }
-
     const headers = { 'X-Emby-Token': apiKey }
 
-    // post /Library/Refresh library scan
+    // * ------------------ Logic --------------------
 
     const getLink = (item) => {
       var Id = item['Id']
@@ -64,9 +71,11 @@ class EmbyStats extends Command {
       }
     }
 
+    // * ------------------ Usage Logic --------------------
+
     let embed
     if (!api) {
-      embed = Utils.embed(msg, 'green').setThumbnail(
+      embed = Utils.embed(msg).setThumbnail(
         'https://emby.media/community/public/style_images/master/meta_image1.png'
       )
     }

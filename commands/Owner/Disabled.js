@@ -12,26 +12,32 @@ class Disabled extends Command {
   }
 
   async run(client, msg) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { standardMessage } = Utils
     const { channel } = msg
+
+    // * ------------------ Config --------------------
 
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
     const values = JSON.parse(generalConfig.dataValues.disabledCommands)
 
+    // * ------------------ Usage Logic --------------------
+
     const disabledCommands = []
     values.forEach((i) => {
       disabledCommands.push(i.command)
     })
-    if (disabledCommands.length) {
+    if (disabledCommands.length)
       return channel.send(
         Utils.embed(msg)
           .setTitle('Disabled Commands')
           .setDescription(`**- ${disabledCommands.join('\n- ')}**`)
       )
-    }
+
     return standardMessage(msg, `No commands are disabled`)
   }
 }

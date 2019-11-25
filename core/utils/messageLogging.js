@@ -14,9 +14,8 @@ module.exports = async (client, msg) => {
     const dir = `./data/logs/guilds/${guild.id} - ${guild.name}/${msg.channel.id} - ${msg.channel.name}.txt`
     const text = `${Date.now()} | ${msg.author.id} - ${msg.author.tag} => ${content}\n`
     // check if folders exist and create if they dont
-    if (!fs.existsSync(path.dirname(dir))) {
-      fs.mkdirSync(path.dirname(dir), { recursive: true })
-    }
+    if (!fs.existsSync(path.dirname(dir))) fs.mkdirSync(path.dirname(dir), { recursive: true })
+
     // append chat to log file
     fs.appendFile(dir, text, (err) => {
       if (err) throw err
@@ -28,9 +27,8 @@ module.exports = async (client, msg) => {
     const dir = `./data/logs/dm/${msg.author.id}/${msg.author.tag}.txt`
     const text = `${Date.now()} | ${msg.author.tag} => ${content}\n`
     // check if folders exist and create if they dont
-    if (!fs.existsSync(path.dirname(dir))) {
-      fs.mkdirSync(path.dirname(dir), { recursive: true })
-    }
+    if (!fs.existsSync(path.dirname(dir))) fs.mkdirSync(path.dirname(dir), { recursive: true })
+
     // append chat to log file
     fs.appendFile(dir, text, (err) => {
       if (err) throw err

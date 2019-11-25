@@ -16,12 +16,16 @@ class GoogleHomeSpeak extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
-    const { p, Log, Utils } = client
+    // * ------------------ Setup --------------------
+
+    const { p, Utils } = client
     const { errorMessage, missingConfig, standardMessage } = Utils
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const { ip, name, language } = JSON.parse(client.db.general.googleHome)
+
+    // * ------------------ Check Config --------------------
 
     if (!ip || !name || !language) {
       const settings = [
@@ -32,35 +36,23 @@ class GoogleHomeSpeak extends Command {
       return missingConfig(msg, 'googleHome', settings)
     }
 
-    // ----------------------- Main Logic ------------------------
+    // * ------------------ Logic --------------------
 
-    /**
-     * send text to Google Home to TTS
-     * @param {String} speach text to have spoken
-     * @returns {String} success / no connection
-     */
     const googleSpeak = async (speach) => {
       try {
         const device = new Device(ip, name, language)
         await device.notify(speach)
-        return 'success'
-      } catch (error) {
-        Log.warn(error)
-        return 'no connection'
+        if (api) return `Told Google Home to say: ${speach}`
+        return standardMessage(msg, `Told Google Home to say: ${speach}`)
+      } catch {
+        if (api) return `No connection to Google Home`
+        return errorMessage(msg, `No connection to Google Home`)
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
+    // * ------------------ Usage Logic --------------------
 
-    const command = args.join(' ')
-    const status = await googleSpeak(command)
-
-    if (status === 'success') {
-      if (api) return `Told Google Home to say: ${command}`
-      return standardMessage(msg, `Told Google Home to say: ${command}`)
-    }
-    if (api) return 'No connection to Google Home.'
-    return errorMessage(msg, `No connection to Google Home`)
+    return googleSpeak(args.join(' '))
   }
 }
 module.exports = GoogleHomeSpeak

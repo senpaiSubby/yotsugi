@@ -3,12 +3,11 @@ const Command = require('../../core/Command')
 const mappings = ((object) => {
   const output = []
 
-  for (const key in object) {
+  for (const key in object)
     output.push({
       regex: new RegExp(key, 'ig'),
       replacement: object[key]
     })
-  }
 
   return output
 })({
@@ -53,7 +52,11 @@ class TinyText extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { channel } = msg
+
+    // * ------------------ Logic --------------------
 
     let output = args.join(' ')
 

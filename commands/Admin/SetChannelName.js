@@ -15,8 +15,12 @@ class SetChannelName extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { standardMessage } = Utils
+
+    // * ------------------ Logic --------------------
 
     const channel = args.shift()
     const newName = args.join(' ').replace(/ /g, '\u2009')

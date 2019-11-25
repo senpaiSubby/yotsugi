@@ -18,8 +18,14 @@ class Template extends Command {
   }
 
   async run(client, msg, args, api) {
-    //const { Utils } = client
-    //const { author, channel } = msg
+    // * ------------------ Setup --------------------
+    const { Utils } = client
+    const { author, channel } = msg
+    // * ------------------ Config --------------------
+    // * ------------------ Check Config --------------------
+
+    // * ------------------ Logic --------------------
+    // * ------------------ Usage Logic --------------------
   }
 }
 module.exports = Template

@@ -15,21 +15,26 @@ class Routines extends Command {
   }
 
   async run(client, msg, args) {
-    const { Utils, p } = client
-    const { errorMessage, validOptions, warningMessage, standardMessage } = Utils
+    // * ------------------ Setup --------------------
+
+    const { Utils } = client
+    const { validOptions, warningMessage, standardMessage } = Utils
+
+    // * ------------------ Config --------------------
 
     const memberConfig = await Database.Models.generalConfig.findOne({
       where: { id: msg.author.id }
     })
     const routines = JSON.parse(memberConfig.dataValues.routines)
 
+    // * ------------------ Logic --------------------
+    // * ------------------ Usage Logic --------------------
+
     // command setup
     const caseOptions = ['add', 'remove', 'run']
     switch (args[0]) {
       case 'list': {
-        if (!routines.length) {
-          return warningMessage(msg, `There are no routines!`)
-        }
+        if (!routines.length) return warningMessage(msg, `There are no routines!`)
 
         let todoList = ''
         routines.forEach((i) => {
@@ -57,14 +62,12 @@ class Routines extends Command {
       case 'remove': {
         const name = args[1]
         const index = routines.findIndex((d) => d.name === name)
-        if (index === -1) {
-          return warningMessage(msg, `Routine does not exist`)
-        }
+        if (index === -1) return warningMessage(msg, `Routine does not exist`)
+
         routines.splice(index, 1)
         await memberConfig.update({ routines: JSON.stringify(routines) })
-        if (name) {
-          return standardMessage(msg, `${name}\n\nRemoved from routine list`)
-        }
+        if (name) return standardMessage(msg, `${name}\n\nRemoved from routine list`)
+
         break
       }
       default:

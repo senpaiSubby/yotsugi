@@ -3,7 +3,6 @@ const chalk = require('chalk')
 const cors = require('cors')
 const shortid = require('shortid')
 const Subprocess = require('../../Subprocess')
-const { client } = require('../../../index')
 const { Manager } = require('../../../events/message')
 const Database = require('../../../core/Database')
 
@@ -39,7 +38,7 @@ class WebServer extends Subprocess {
 
     app.get('/ui/db', async (req, res) => {
       const generalConfig = await Database.Models.generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
       const data = {
         uiButtons: JSON.parse(generalConfig.dataValues.webUI)
@@ -49,7 +48,7 @@ class WebServer extends Subprocess {
 
     app.post('/ui/db', async (req, res) => {
       const generalConfig = await Database.Models.generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
       const values = JSON.parse(generalConfig.dataValues.webUI)
 
@@ -62,7 +61,7 @@ class WebServer extends Subprocess {
 
     app.post('/ui/db/rm/:id', async (req, res) => {
       const generalConfig = await Database.Models.generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
       const values = JSON.parse(generalConfig.dataValues.webUI)
       const index = values.findIndex((x) => x.id === req.params.id)
@@ -96,9 +95,7 @@ class WebServer extends Subprocess {
       )
 
       // check if all required params are met
-      if (!req.body.command) {
-        res.status(406).json({ response: "Missing params 'command'" })
-      }
+      if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
 
       // anything after command becomes a list of args
       const args = req.body.command.split(/ +/)
@@ -108,13 +105,12 @@ class WebServer extends Subprocess {
       // if command exists
       if (cmd) {
         // Check if command is enabled
-        if (cmd.disabled) {
-          return res.status(403).json({ response: 'Command is disabled bot wide.' })
-        }
-        if (!cmd.webUI) {
+        if (cmd.disabled) return res.status(403).json({ response: 'Command is disabled bot wide.' })
+
+        if (!cmd.webUI)
           // check if command is enabled in API
           return res.status(403).json({ response: 'Command is disabled for use in the API.' })
-        }
+
         const response = await Manager.runCommand(this.client, cmd, null, args, true)
         return res.status(200).json({ response })
       }

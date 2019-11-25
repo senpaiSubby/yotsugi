@@ -16,29 +16,24 @@ class TuyaPlugController extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
-    const { Log, Utils } = client
+    // * ------------------ Setup --------------------
+    const { Utils } = client
+    const { capitalize } = Utils
     const { errorMessage, warningMessage, standardMessage } = Utils
     const { channel } = msg
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const devices = JSON.parse(client.db.general.tuyaPlugControl)
 
-    // ----------------------- Main Logic ------------------------
+    // * ------------------ Logic --------------------
 
-    /**
-     * List info from plugs specify in config
-     * @return {Object} array of devices
-     */
     const listPlugs = async () => {
       try {
         const deviceList = []
 
-        for (const item of devices) {
-          const device = new TuyAPI({
-            id: item.id,
-            key: item.key
-          })
+        devices.forEach(async (d) => {
+          const device = new TuyAPI({ id: d.id, key: d.key })
 
           await device.find()
 
@@ -49,121 +44,82 @@ class TuyaPlugController extends Command {
             name: item.name,
             status: currentStatus === 1 ? 'on' : 'off'
           })
-          device.disconnect()
-        }
+          await device.disconnect()
+        })
+
         return deviceList
-      } catch (error) {
-        Log.warn(error)
-        return error
+      } catch {
+        return null
       }
     }
 
-    /**
-     * Toggle plug on/off
-     * @param {Number} id ID of plug
-     * @param {Number} key Key of plug
-     * @return {String} new status of plug. on/off
-     */
-    const togglePlug = async (id, key) => {
+    const togglePlug = async (d) => {
+      const { name, id, key } = d
       try {
-        const device = new TuyAPI({
-          id,
-          key
-        })
+        const device = new TuyAPI({ id, key })
+
         await device.find()
         await device.connect()
+
         const currentStatus = await device.get()
         await device.set({ set: !currentStatus })
-        device.disconnect()
-        return currentStatus ? 'off' : 'on'
-      } catch (error) {
-        Log.warn(error)
-        return error
+        await device.disconnect()
+
+        const status = currentStatus ? 'off' : 'on'
+        if (api) return `${capitalize(name)} turned ${status}`
+        return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${status}`)
+      } catch {
+        if (api) return `Failed to connect to ${capitalize(name)}`
+        return errorMessage(msg, `Failed to connect to ${capitalize(name)}`)
       }
     }
 
-    /**
-     * Set new status for plug
-     * @param {Number} id ID of plug
-     * @param {Number} key Key of plug
-     * @param {String} state new state. on/off
-     * @return {String} new status of plug. on/off
-     */
-    const setPlug = async (id, key, state) => {
+    const setPlug = async (d, state) => {
+      const { id, key, name } = d
       try {
-        const device = new TuyAPI({
-          id,
-          key
-        })
+        const device = new TuyAPI({ id, key })
         await device.find()
         await device.connect()
         const currentState = await device.get()
+        await device.disconnect()
         const newState = state === 'on'
-        // if state same and new state return state
+
         if (currentState === newState) {
-          device.disconnect()
-          return `already ${state}`
+          if (api) return `${capitalize(name)} is already ${state}`
+          return standardMessage(msg, `:electric_plug: ${capitalize(name)} is already ${state}`)
         }
         await device.set({ set: !currentState })
-        device.disconnect()
-        return state
-      } catch (error) {
-        Log.warn(error)
-        return error
+        if (api) return `${capitalize(name)} turned ${state}`
+        return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${state}`)
+      } catch {
+        if (api) return `Failed to connect to ${capitalize(name)}`
+        return errorMessage(msg, `Failed to connect to ${capitalize(name)}`)
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
-
-    const embed = Utils.embed(msg, 'green')
+    // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
-      case 'list': {
-        // if user wants list of devices
+      case 'list':
         const deviceList = await listPlugs()
-
         if (api) return deviceList
+        const embed = Utils.embed(msg).setTitle(':electric_plug: Smart Plugs')
 
-        embed.setTitle(':electric_plug: Smart Plugs')
+        deviceList.forEach((device) => embed.addField(`${device.name}`, `Status: ${device.status}`))
+        return channel.send(embed)
 
-        for (const device of deviceList) {
-          embed.addField(`${device.name}`, `Status: ${device.status}`)
-        }
-        return channel.send({ embed })
-      }
-
-      default: {
-        // get index of device from name sepcified
+      default:
         const index = devices.findIndex((d) => d.name === args[0])
+        const device = devices[index]
+        const name = Utils.capitalize(args[0])
         // if plug name not found
-        if (index === -1) {
-          if (api) return `No plug named ${args[0]}.`
-          return warningMessage(msg, `No plug named **${Utils.capitalize(args[0])}`)
-        }
+        if (index === -1) return warningMessage(msg, `No plug named **${name}`)
 
-        if (args[1]) {
-          // if on/off specified
-          const status = await setPlug(devices[index].id, devices[index].key, args[1])
+        // if on/off specified
+        if (args[1]) return setPlug(device, args[1])
 
-          if (status !== 'on' && status !== 'off') {
-            if (api) return `${args[0]} is ${status}`
-
-            return standardMessage(msg, `:electric_plug: ${Utils.capitalize(args[0])} is ${status}`)
-          }
-          if (api) return `${args[0]} turned ${status}.`
-
-          return standardMessage(
-            msg,
-            `:electric_plug: ${Utils.capitalize(args[0])} turned ${status}.`
-          )
-        }
         // if user doesnt specify on/off then toggle device instead
-        const status = await togglePlug(devices[index].id, devices[index].key)
-
-        if (api) return `${args[0]} turned ${status}`
-
-        return standardMessage(msg, `:electric_plug: ${Utils.capitalize(args[0])} turned ${status}`)
-      }
+        return togglePlug(device)
     }
   }
 }

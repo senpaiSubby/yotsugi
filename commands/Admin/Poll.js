@@ -12,7 +12,11 @@ class Poll extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
+
+    // * ------------------ Logic --------------------
 
     const pollembed = Utils.embed(msg)
       .setFooter('React to vote')

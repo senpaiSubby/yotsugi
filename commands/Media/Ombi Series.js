@@ -19,7 +19,8 @@ class OmbiTV extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
+    // * ------------------ Setup --------------------
+
     const { p, Utils } = client
     const { errorMessage, warningMessage, standardMessage } = Utils
     const { author, member } = msg
@@ -36,8 +37,11 @@ class OmbiTV extends Command {
       )
     }
 
-    // ------------------------- Config --------------------------
+    // * ------------------ Config --------------------
+
     const { host, apiKey, username } = JSON.parse(client.db.general.ombi)
+
+    // * ------------------ Config --------------------
 
     if (!host || !apiKey || !username) {
       const settings = [
@@ -48,9 +52,10 @@ class OmbiTV extends Command {
       return missingConfig(msg, 'ombi', settings)
     }
 
-    // ----------------------- Main Logic ------------------------
+    // * ------------------ Logic --------------------
+
     const outputTVShow = (show) => {
-      const embed = Utils.embed(msg, 'green')
+      const embed = Utils.embed(msg)
         .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
         .setDescription(`${show.overview.substr(0, 255)}(...)`)
         .setThumbnail(show.banner)
@@ -79,26 +84,19 @@ class OmbiTV extends Command {
         })
         return response.json()
       } catch {
-        return msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
+        return null
       }
     }
 
     const requestTVShow = async (show) => {
-      if (!member.roles.some((r) => r.name === 'requesttv')) {
+      if (!member.roles.some((r) => r.name === 'requesttv'))
         return warningMessage(msg, 'You must be part of the `requesttv` role to request TV Shows.')
-      }
 
-      if (show.available) {
-        return warningMessage(msg, `${show.title} is already available in Ombi`)
-      }
+      if (show.available) return warningMessage(msg, `${show.title} is already available in Ombi`)
 
-      if (show.approved) {
-        return warningMessage(msg, `${show.title} is already approved in Ombi`)
-      }
+      if (show.approved) return warningMessage(msg, `${show.title} is already approved in Ombi`)
 
-      if (show.requested) {
-        return warningMessage(msg, `${show.title} is already requested in Ombi`)
-      }
+      if (show.requested) return warningMessage(msg, `${show.title} is already requested in Ombi`)
 
       if (!show.available && !show.requested && !show.approved) {
         try {
@@ -117,7 +115,9 @@ class OmbiTV extends Command {
         }
       }
     }
-    // ---------------------- Usage Logic ------------------------
+
+    // * ------------------ Usage Logic --------------------
+
     const showName = args.join(' ')
 
     if (!showName) {
@@ -126,9 +126,9 @@ class OmbiTV extends Command {
 
     const results = await getTVDBID(showName)
 
-    if (results) {
+    if (results.length) {
       const embedList = []
-      for (const show of results) {
+      results.forEach(async (show) => {
         try {
           const response = await fetch(urljoin(host, '/api/v1/Search/tv/info/', String(show.id)), {
             headers: { ApiKey: apiKey, accept: 'application/json' }
@@ -138,10 +138,12 @@ class OmbiTV extends Command {
         } catch {
           return errorMessage(msg, `No connection to Ombi`)
         }
-      }
+      })
+
       const itemPicked = await Utils.paginate(client, msg, embedList, 2, true)
       return requestTVShow(results[itemPicked])
     }
+    return msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
   }
 }
 module.exports = OmbiTV

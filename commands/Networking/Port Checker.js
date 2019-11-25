@@ -1,4 +1,4 @@
-const portscanner = require('portscanner')
+const { findAPortNotInUse, checkPortStatus } = require('portscanner')
 const Command = require('../../core/Command')
 
 /**
@@ -19,24 +19,24 @@ class PortChecker extends Command {
   }
 
   async run(client, msg, args) {
-    // -------------------------- Setup --------------------------
+    // * ------------------ Setup --------------------
+
     const { Utils, colors } = client
     const { channel } = msg
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const targetIP = '10.0.0.5'
     const command = args[0]
 
-    // ----------------------- Main Logic ------------------------
-
-    // ---------------------- Usage Logic ------------------------
+    // * ------------------ Usage Logic --------------------
 
     const embed = Utils.embed(msg, 'green')
 
     switch (command) {
       case 'find': {
         // if command is "find" then we'll find us a random open port
-        const port = await portscanner.findAPortNotInUse(3000, 4000)
+        const port = await findAPortNotInUse(3000, 4000)
         embed.setDescription(`**Port ${port} is available for use.**`)
         return channel.send({ embed })
       }
@@ -48,7 +48,7 @@ class PortChecker extends Command {
         }
 
         // Checks the status of a single port
-        portscanner.checkPortStatus(args[0], targetIP, async (error, status) => {
+        checkPortStatus(args[0], targetIP, async (error, status) => {
           if (error) {
             embed.setDescription('**No connection to host**')
             embed.setColor(colors.red)

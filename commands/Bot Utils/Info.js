@@ -1,4 +1,4 @@
-const moment = require('moment')
+const { duration } = require('moment')
 require('moment-duration-format')
 const worker = require('core-worker')
 const Command = require('../../core/Command')
@@ -13,16 +13,20 @@ class Info extends Command {
   }
 
   async run(client, msg) {
+    // * ------------------ Setup --------------------
+
     const { Utils, user } = client
     const { channel } = msg
 
-    const embed = Utils.embed(msg, 'green')
+    // * ------------------ Logic --------------------
+
+    const embed = Utils.embed(msg)
 
     const npmv = await worker.process('npm -v').death()
 
     embed.setTitle(`${user.username} Status`)
     embed.setThumbnail(user.avatarURL)
-    embed.addField('Uptime', moment.duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
+    embed.addField('Uptime', duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
     embed.addField(
       'Memory Usage',
       `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`,

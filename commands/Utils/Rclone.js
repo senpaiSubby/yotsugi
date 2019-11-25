@@ -41,28 +41,37 @@ class Drive extends Command {
         )
 
         const startTime = performance.now()
-        const { code, stdout } = exec(`rclone size --json ${remote}:"${dirPath}"`, { silent: true })
-        await waitMessage.delete()
-        const stopTime = performance.now()
-        // 3 doesnt exist 0 good
-        const embed = Utils.embed(msg, 'green')
-        if (code === 0) {
-          const response = JSON.parse(stdout)
-          const { count } = response
-          const size = Utils.bytesToSize(response.bytes)
-          embed.setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
-          embed.addField('Files', `:newspaper: ${count}`, true)
-          embed.addField('Size', `:file_folder: ${size}`, true)
-          embed.setDescription(`**Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}**`)
+        exec(
+          `rclone size --json ${remote}:"${dirPath}"`,
+          {
+            silent: true
+          },
+          async (code, stdout) => {
+            await waitMessage.delete()
+            const stopTime = performance.now()
+            // 3 doesnt exist 0 good
+            const embed = Utils.embed(msg)
+            if (code === 0) {
+              const response = JSON.parse(stdout)
+              const { count } = response
+              const size = Utils.bytesToSize(response.bytes)
+              embed.setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
+              embed.addField('Files', `:newspaper: ${count}`, true)
+              embed.addField('Size', `:file_folder: ${size}`, true)
+              embed.setDescription(
+                `**Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}**`
+              )
 
-          return msg.reply(embed)
-        }
+              return msg.reply(embed)
+            }
 
-        if (code === 3) {
-          return warningMessage(msg, `Directory | :file_folder: ${dirPath} | does not exist!`)
-        }
+            if (code === 3)
+              return warningMessage(msg, `Directory | :file_folder: ${dirPath} | does not exist!`)
 
-        return errorMessage(msg, `A error occured with Rclone`)
+            return errorMessage(msg, `A error occured with Rclone`)
+          }
+        )
+        break
       }
 
       case 'ls': {
@@ -71,67 +80,70 @@ class Drive extends Command {
           `:file_cabinet: Getting Directory\n\n- ${dirPath ||
             '/'}\n\n:hourglass: This may take some time...`
         )
-        const { code, stdout } = exec(`rclone lsjson ${remote}:"${dirPath}"`, {
-          silent: true
-        })
-        await waitMessage.delete()
-        // 3 doesnt exist 0 good
+        exec(
+          `rclone lsjson ${remote}:"${dirPath}"`,
+          {
+            silent: true
+          },
+          async (code, stdout) => {
+            await waitMessage.delete()
+            // 3 doesnt exist 0 good
 
-        if (code === 0) {
-          let response = JSON.parse(stdout)
-          const sorted = []
-          // remake array with nice emojis based on file extensions
-          for (const i of response) {
-            if (i.IsDir) {
-              sorted.push(`:file_folder: ${i.Name}`)
-            } else {
-              switch (i.Name.split('.').pop()) {
-                case 'png':
-                case 'jpg':
-                case 'jpeg':
-                  sorted.push(`:frame_photo: ${i.Name}`)
-                  break
-                case 'mkv':
-                case 'mp4':
-                case 'avi':
-                  sorted.push(`:tv: ${i.Name}`)
-                  break
-                case 'mp3':
-                case 'flac':
-                  sorted.push(`:musical_note: ${i.Name}`)
-                  break
-                default:
-                  sorted.push(`:newspaper: ${i.Name}`)
-              }
+            if (code === 0) {
+              let response = JSON.parse(stdout)
+              const sorted = []
+              // remake array with nice emojis based on file extensions
+              for (const i of response)
+                if (i.IsDir) sorted.push(`:file_folder: ${i.Name}`)
+                else
+                  switch (i.Name.split('.').pop()) {
+                    case 'png':
+                    case 'jpg':
+                    case 'jpeg':
+                      sorted.push(`:frame_photo: ${i.Name}`)
+                      break
+                    case 'mkv':
+                    case 'mp4':
+                    case 'avi':
+                      sorted.push(`:tv: ${i.Name}`)
+                      break
+                    case 'mp3':
+                    case 'flac':
+                      sorted.push(`:musical_note: ${i.Name}`)
+                      break
+                    default:
+                      sorted.push(`:newspaper: ${i.Name}`)
+                  }
+
+              response = sorted.join()
+              const splitArray = Utils.arraySplitter(sorted)
+
+              const embedList = []
+              Object.keys(splitArray).forEach((key, index) => {
+                const e = Utils.embed(msg)
+                  .setTitle(`:file_cabinet: ${dirPath || '/'}`)
+                  .setThumbnail(
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
+                  )
+                  .addField('Files', `${splitArray[index].join('\n')}`)
+                embedList.push(e)
+              })
+              return Utils.paginate(client, msg, embedList, 1)
             }
-          }
 
-          response = sorted.join()
-          const splitArray = Utils.arraySplitter(sorted)
-
-          const embedList = []
-          Object.keys(splitArray).forEach((key, index) => {
-            const e = Utils.embed(msg, 'green')
-              .setTitle(`:file_cabinet: ${dirPath || '/'}`)
-              .setThumbnail(
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
+            if (code === 3)
+              return warningMessage(
+                msg,
+                `Folder | :file_folder: ${dirPath || '/'} | does not exist! `
               )
-              .addField('Files', `${splitArray[index].join('\n')}`)
 
-            embedList.push(e)
-          })
-          return Utils.paginate(client, msg, embedList, 1)
-        }
-
-        if (code === 3) {
-          return warningMessage(msg, `Folder | :file_folder: ${dirPath || '/'} | does not exist! `)
-        }
-
-        return errorMessage(msg, 'A error occured with RClone')
+            return errorMessage(msg, 'A error occured with RClone')
+          }
+        )
+        break
       }
-      default: {
+      default:
         return validOptions(msg, caseOptions)
-      }
     }
   }
 }

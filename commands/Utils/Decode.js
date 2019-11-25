@@ -19,9 +19,8 @@ class Decode extends Command {
 
     let decoded = ''
     const arr = Decodemsg.match(/.{1,8}/g)
-    for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++)
       decoded += String.fromCharCode(parseInt(arr[i], 2).toString(10))
-    }
 
     return standardMessage(msg, decoded)
   }

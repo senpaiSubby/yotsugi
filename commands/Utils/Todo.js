@@ -34,26 +34,24 @@ class Todo extends Command {
         const name = todos[item]
         todos.splice(item, 1)
         await memberConfig.update({ todos: JSON.stringify(todos) })
-        if (name) {
-          return standardMessage(msg, `${name}\n\nRemoved from todo list`)
-        }
+        if (name) return standardMessage(msg, `${name}\n\nRemoved from todo list`)
+
         return warningMessage(msg, `Rule does not exist`)
       }
       default: {
-        if (!todos.length) {
+        if (!todos.length)
           return msg.reply(
             Utils.embed(msg, 'yellow')
               .setTitle(`There are no todos!`)
               .setDescription(`\`${p}todos add <todo to add>\`\nTo add some!`)
           )
-        }
 
         let todoList = ''
         todos.forEach((i, index) => {
           todoList += `${index + 1} | ${i}\n`
         })
         return msg.reply(
-          Utils.embed(msg, 'green')
+          Utils.embed(msg)
             .setTitle('Todos')
             .setDescription(todoList)
         )

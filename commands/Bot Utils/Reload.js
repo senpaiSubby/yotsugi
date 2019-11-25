@@ -12,8 +12,12 @@ class Reload extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage, standardMessage } = Utils
+
+    // * ------------------ Logic --------------------
 
     const module = args[0]
 
@@ -25,9 +29,7 @@ class Reload extends Command {
 
     const run = await msg.context.reloadCommand(module)
 
-    if (run) {
-      return warningMessage(msg, `Reloaded ${module}`)
-    }
+    if (run) return warningMessage(msg, `Reloaded ${module}`)
 
     return warningMessage(msg, `Module [${module}] doesn't exist!`)
   }

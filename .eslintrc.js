@@ -17,6 +17,7 @@ module.exports = {
     'no-eval': 'off',
     'global-require': 'off',
     'no-prototype-builtins': 'off',
-    'import/no-dynamic-require': 'off'
+    'import/no-dynamic-require': 'off',
+    curly: ['error', 'multi']
   }
 }

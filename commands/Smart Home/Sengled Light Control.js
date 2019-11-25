@@ -16,13 +16,18 @@ class SengledLightController extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
+    // * ------------------ Setup --------------------
+
     const { Log, Utils, p } = client
+    const { capitalize } = Utils
     const { missingConfig, warningMessage, standardMessage } = Utils
     const { channel } = msg
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const { jsessionid, username, password } = JSON.parse(client.db.general.sengled)
+
+    // * ------------------ Check Config --------------------
 
     if (!jsessionid || !username || !password) {
       const settings = [
@@ -33,13 +38,13 @@ class SengledLightController extends Command {
       return missingConfig(msg, 'sengled', settings)
     }
 
+    // * ------------------ Logic --------------------
+
     const baseUrl = 'https://us-elements.cloud.sengled.com:443/zigbee'
     const headers = {
       'Content-Type': 'application/json',
       Cookie: `JSESSIONID=${jsessionid}`
     }
-
-    // ----------------------- Main Logic ------------------------
 
     // eslint-disable-next-line no-unused-vars
     const login = async () => {
@@ -73,8 +78,8 @@ class SengledLightController extends Command {
         const data = await response.json()
         const deviceList = []
 
-        for (const room of data.roomList) {
-          for (const device of room.deviceList) {
+        data.roomList.forEach((room) => {
+          room.deviceList.forEach((device) => {
             deviceList.push({
               room: room.roomName,
               name: device.deviceName,
@@ -82,16 +87,15 @@ class SengledLightController extends Command {
               status: device.onoff === 1 ? 'on' : 'off',
               brightness: device.brightness
             })
-          }
-        }
+          })
+        })
         return deviceList
       } catch (error) {
         Log.warn(error)
-        return error
       }
     }
 
-    const setLight = async (deviceID, newState) => {
+    const setLight = async (deviceID, deviceName, newState) => {
       try {
         const jsonData = {
           deviceUuid: deviceID,
@@ -102,14 +106,17 @@ class SengledLightController extends Command {
           headers,
           body: JSON.stringify(jsonData)
         })
-        // const data = await response.json()
-        return newState
+
+        const icon = newState === 'on' ? ':full_moon:' : ':new_moon:'
+        const state = newState === 'on' ? 'on' : 'off'
+        if (api) return `${capitalize(deviceName)} light turned ${state}`
+        return standardMessage(msg, `${icon} ${capitalize(deviceName)} light turned ${state}`)
       } catch (error) {
         Log.warn(error)
-        return error
       }
     }
-    const setBrightness = async (deviceID, newBrightness) => {
+    const setBrightness = async (deviceID, deviceName, newBrightness) => {
+      newBrightness = Number(newBrightness)
       try {
         // convert 0-100 to 0-255
         const value = (newBrightness / 100) * 255
@@ -124,81 +131,68 @@ class SengledLightController extends Command {
           headers,
           body: JSON.stringify(jsonData)
         })
-        // const data = await response.json()
-        if (response.status === 200) return 'ok'
+        if (response.status === 200) {
+          if (newBrightness === 0 || newBrightness === 100) {
+            const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
+            const newStatus = newBrightness === 100 ? 'on' : 'off'
+            if (api) return `${capitalize(deviceName)} light turned ${newStatus}`
+            return standardMessage(
+              msg,
+              `${icon} ${capitalize(deviceName)} light turned ${newStatus}`
+            )
+          }
+          if (api) return `${capitalize(deviceName)} light brightness set to ${newBrightness}`
+          return standardMessage(
+            msg,
+            `:bulb: ${capitalize(deviceName)} light brightness set to ${newBrightness}`
+          )
+        }
       } catch (error) {
         Log.warn(error)
-        return error
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
-
-    const embed = Utils.embed(msg, 'green')
+    // * ------------------ Usage Logic --------------------
 
     const devices = await getDevices()
 
     switch (args[0]) {
-      case 'list':
+      case 'list': {
         if (api) return devices
-
-        embed.setTitle(':bulb: Lights')
-
-        for (const device of devices) {
+        const embed = Utils.embed(msg).setTitle(':bulb: Lights')
+        devices.forEach((device) => {
           embed.addField(
             `${device.name}`,
             `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
             true
           )
-        }
-        return channel.send({ embed })
-
+        })
+        return channel.send(embed)
+      }
       default: {
+        const deviceName = args[0]
         // find index based of of key name
-        const index = devices.findIndex((d) => d.name === args[0])
+        const index = devices.findIndex((d) => d.name === deviceName)
 
         // if light not found
         if (index === -1) {
-          // if device name doesnt exist
-          if (api) return `Could not find a light named ${args[0]}`
-          return warningMessage(msg, `Could not find a light named ${args[0]}`)
+          if (api) return `Could not find a light named ${deviceName}`
+          return warningMessage(msg, `Could not find a light named ${deviceName}`)
         }
+        const device = devices[index].uuid
+
         if (args[1]) {
           if (args[1] === 'on' || args[1] === 'off') {
             // toggle power on/off if brightness not specified
-            await setBrightness(devices[index].uuid, args[1] === 'on' ? '100' : '0')
-
-            if (api) return `${args[0]} light turned ${args[1] === 'on' ? 'on' : 'off'}`
-
-            return standardMessage(
-              msg,
-              `${args[1] === 'on' ? ':full_moon:' : ':new_moon:'} ${args[0]} light turned ${
-                args[1] === 'on' ? 'on' : 'off'
-              }`
-            )
+            const newState = args[1] === 'on' ? 100 : 0
+            return setBrightness(device, deviceName, newState)
           }
           // set light brightness eg: !light desk 100
-          await setBrightness(devices[index].uuid, args[1])
-
-          if (api) return `${args[0]} light brightness set to ${args[1]}`
-
-          return standardMessage(
-            msg,
-            `:bulb: ${Utils.capitalize(args[0])} light brightness set to ${args[1]}`
-          )
+          return setBrightness(device, deviceName, args[1])
         }
         // if no brightness specified then toggle light power
-
-        const newState = devices[index].status === 'on' ? 'off' : 'on'
-
-        await setLight(devices[index].uuid, newState)
-        if (api) return `${args[0]} light turned ${newState}`
-        return standardMessage(
-          msg,
-          `${newState === 'on' ? ':full_moon:' : ':new_moon:'} ${Utils.capitalize(
-            args[0]
-          )} light turned ${newState}`
-        )
+        const newState = devices[index].status === 'on' ? 0 : 100
+        return setBrightness(device, deviceName, newState)
       }
     }
   }

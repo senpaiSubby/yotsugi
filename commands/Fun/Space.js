@@ -13,7 +13,11 @@ class SpaceText extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { channel } = msg
+
+    // * ------------------ Logic --------------------
 
     const amount = 2
 

@@ -7,30 +7,34 @@ class Disable extends Command {
       name: 'disable',
       category: 'Owner',
       description: 'Disable commands you dont want to use',
-      usage: 'disable emby',
+      usage: 'disable <command name> | disable all',
       args: true,
       ownerOnly: true
     })
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage } = Utils
     const { channel } = msg
 
     const nonDisableable = ['disable', 'disabled', 'enable', 'help']
 
+    // * ------------------ Config --------------------
+
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
     const values = JSON.parse(generalConfig.dataValues.disabledCommands)
 
+    // * ------------------ Logic --------------------
+
     const checkIfDisabled = async (command) => {
       let isDisabled = false
       values.forEach((i) => {
-        if (command === i.command || i.aliases.includes(command)) {
-          isDisabled = true
-        }
+        if (command === i.command || i.aliases.includes(command)) isDisabled = true
       })
       if (isDisabled) return true
       return false
@@ -76,15 +80,24 @@ class Disable extends Command {
         m.delete(20000)
       }
 
-      if (willDisable.length) {
+      if (willDisable.length)
         await channel.send(
           Utils.embed(msg)
             .setTitle('Disabled the Commands')
             .setDescription(`**- ${willDisable.join('\n- ')}**`)
         )
-      }
     }
-    return disableCommands(args)
+
+    // * ------------------ Usage Logic --------------------
+
+    switch (args[0]) {
+      case 'all': {
+        const commandList = msg.context.commands.map((i) => i.name)
+        return disableCommands(commandList)
+      }
+      default:
+        return disableCommands(args)
+    }
   }
 }
 

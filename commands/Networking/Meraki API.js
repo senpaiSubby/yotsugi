@@ -15,20 +15,24 @@ class MerakiAPI extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
+    // * ------------------ Setup --------------------
+
     const { bytesToSize, sortByKey } = client.Utils
-    const { p, Log, Utils } = client
+    const { p, Utils } = client
     const { errorMessage, validOptions, missingConfig } = Utils
 
-    // ------------------------- Config --------------------------
+    // * ------------------ Config --------------------
 
     const { serielNum, apiKey } = JSON.parse(client.db.general.meraki)
+
+    // * ------------------ Check Config --------------------
+
     if (!serielNum || !apiKey) {
       const settings = [`${p}db set meraki serielNum <SERIEL>`, `${p}db set meraki apiKey <APIKEY>`]
       return missingConfig(msg, 'meraki', settings)
     }
 
-    // ----------------------- Main Logic ------------------------
+    // * ------------------ Logic --------------------
 
     const networkDevices = async () => {
       try {
@@ -43,77 +47,60 @@ class MerakiAPI extends Command {
           // if we have a connection to the meraki API
           const deviceList = []
 
-          for (const device of devices) {
+          devices.forEach((device) => {
             // gather / format json for each device in network
             let description
-            if (device.description) {
+            if (device.description)
               // if device has a description set
               description = device.description
-            } else {
-              // if no device description set use hostname instead
-              description = device.dhcpHostname
-            }
+            // if no device description set use hostname instead
+            else description = device.dhcpHostname
+
             // general device info
-            const { ip } = device
-            const { vlan } = device
+            const { ip, vlan } = device
             const uploaded = bytesToSize(device.usage.recv * 1000) // convert kb to B and get true size
             const downloaded = bytesToSize(device.usage.sent * 1000) // convert kb to B and get true size
             sent += device.usage.recv
             recv += device.usage.sent
             // new device json
-            const stats = {
+            deviceList.push({
               name: description,
               ip,
               vlan,
               sent: uploaded,
               recv: downloaded
-            }
-            deviceList.push(stats) // add stats per device to main deviceList
-          }
-          const numDevices = deviceList.length // count number of devices on network
-          // generate main JSON array
-          return {
-            numDevices,
+            })
+          })
+          const status = {
+            numDevices: deviceList.length,
             traffic: { sent: bytesToSize(sent * 1000), recv: bytesToSize(recv * 1000) },
             devices: sortByKey(deviceList, 'ip')
           }
+          const embedList = []
+          status.devices.forEach((i) => {
+            const e = Utils.embed(msg)
+              .setTitle('Meraki Devices')
+              .setThumbnail('https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000')
+              .addField('Name', i.name, true)
+              .addField('IP', i.ip, true)
+              .addField('VLAN', i.vlan, true)
+              .addField('Sent', i.sent, true)
+              .addField('Recv', i.recv, true)
+            embedList.push(e)
+          })
+          return Utils.paginate(client, msg, embedList)
         }
-      } catch (error) {
-        Log.warn(error)
-        return 'failure'
+      } catch {
+        if (api) return `Failed to connect to Meraki API`
+        return errorMessage(msg, `Failed to connect to Meraki API`)
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
+    // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
       case 'list': {
-        const status = await networkDevices()
-
-        switch (status) {
-          case 'failure':
-            if (api) return 'Failure connection to Meraki API'
-            return errorMessage(msg`Failed to connect to Meraki API`)
-          default: {
-            if (api) return status
-
-            const embedList = []
-            status.devices.forEach((i) => {
-              const e = Utils.embed(msg, 'green')
-                .setTitle('Meraki Devices')
-                .setThumbnail(
-                  'https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000'
-                )
-                .addField('Name', i.name, true)
-                .addField('IP', i.ip, true)
-                .addField('VLAN', i.vlan, true)
-                .addField('Sent', i.sent, true)
-                .addField('Recv', i.recv, true)
-              embedList.push(e)
-            })
-            return Utils.paginate(client, msg, embedList)
-          }
-        }
+        return networkDevices()
       }
       default: {
         return validOptions(msg, ['list'])

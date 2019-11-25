@@ -10,10 +10,9 @@ class SpeedTest extends Command {
     })
   }
 
-  async run(client, msg, args) {
-    const { Utils, p } = client
-    const { errorMessage, warningMessage, validOptions, standardMessage } = Utils
-    const { author, channel } = msg
+  async run(client, msg) {
+    const { Utils } = client
+    const { errorMessage, standardMessage } = Utils
 
     const test = speedTest({ maxTime: 5000 })
     const m = await standardMessage(
@@ -25,7 +24,7 @@ class SpeedTest extends Command {
       const { download, upload } = data.speeds
       const { isp, isprating } = data.client
       const { location, ping } = data.server
-      const embed = Utils.embed(msg, 'green')
+      const embed = Utils.embed(msg)
         .addField(':arrow_down: Download', `${download}`, true)
         .addField(' :arrow_up: Upload', `${upload}`, true)
         .addField(':globe_with_meridians: Ping', `${ping}`, true)

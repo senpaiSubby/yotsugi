@@ -11,7 +11,11 @@ class Evaluator extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { channel } = msg
+
+    // * ------------------ Usage Logic --------------------
 
     const regex = new RegExp(
       client.config.token

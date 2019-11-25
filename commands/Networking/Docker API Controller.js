@@ -18,41 +18,40 @@ class DockerManagement extends Command {
   }
 
   async run(client, msg, args, api) {
-    // -------------------------- Setup --------------------------
-    const { p, Log, Utils, colors } = client
+    // * ------------------ Setup --------------------
+
+    const { p, Utils } = client
     const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
     const { channel } = msg
-    // ------------------------- Config --------------------------
+
+    // * ------------------ Config --------------------
 
     const { host } = JSON.parse(client.db.general.docker)
+
+    // * ------------------ Check Config --------------------
+
     if (!host) {
       const settings = [`${p}db set docker host <http://ip>`]
       return missingConfig(msg, 'docker', settings)
     }
-    // ----------------------- Main Logic ------------------------
 
-    /**
-     *
-     * @param {String} state state of container. Ex: running/exited
-     * @return {list} list of containers based on state specified
-     */
+    // * ------------------ Logic --------------------
+
     const getContainers = async (state = 'running') => {
-      const options = ['running', 'paused', 'exited', 'created', 'restarting', 'dead']
-      if (!options.includes(state)) return 'bad params'
       const params = `filters={%22status%22:[%22${state}%22]}`
       try {
         const response = await fetch(urljoin(host, `/containers/json?${params}`))
         const containers = await response.json()
         const containerList = []
 
-        for (const container of containers) {
+        containers.forEach((container) => {
           const { Id, Names, Ports, State, Status } = container
           const exposedports = []
 
-          for (const port of Ports) {
+          Ports.forEach((port) => {
             // filter out only exposed host ports
             if ('PublicPort' in port) exposedports.push(port.PublicPort)
-          }
+          })
           containerList.push({
             name: Names[0].replace('/', ''),
             id: Id,
@@ -60,28 +59,23 @@ class DockerManagement extends Command {
             status: Status,
             ports: exposedports
           })
-        }
+        })
         return containerList
-      } catch (error) {
-        Log.warn(error)
-        return 'no connection'
+      } catch {
+        return null
       }
     }
 
-    const setContainerState = async (newState, containerName) => {
+    const setContainerState = async (containers, newState, containerName) => {
       const options = ['start', 'restart', 'stop']
-      if (!options.includes(newState)) return 'bad params'
-      const containers = await getContainers()
-      if (containers === 'bad params') {
-        return 'bad params'
-      }
-      if (containers === 'no connection') {
-        return 'no connection'
-      }
+      if (!options.includes(newState)) return validOptions(msg, options)
+
       // find index based off of key name
       const index = containers.findIndex((c) => c.name === containerName, newState)
       // if container name doesnt match
-      if (!containers[index].id) return 'no match'
+      if (!containers[index].id)
+        return warningMessage(msg, `No container named: ${containerName} found`)
+
       try {
         const response = await fetch(
           urljoin(host, `/containers/${containers[index].id}/${newState}`),
@@ -91,91 +85,72 @@ class DockerManagement extends Command {
         )
         const { status } = response
         if (status >= 200 && status < 300) {
-          return 'success'
+          if (api) return `Container ${containerName} has been ${newState}ed successfully`
+          return standardMessage(
+            msg,
+            `Container ${containerName} has been ${newState}ed successfully`
+          )
         }
         if (newState !== 'restart' && status >= 300 && status < 400) {
-          return 'same state'
+          if (api)
+            return `Container ${containerName} is already ${newState}${
+              newState === 'stop' ? 'ped' : 'ed'
+            }`
+          return warningMessage(
+            msg,
+            `Container ${containerName} is already ${newState}${newState === 'stop' ? 'ped' : 'ed'}`
+          )
         }
-      } catch (error) {
-        Log.warn(error)
-        return 'failure'
+      } catch {
+        if (api) return `Failed to connect to Docker daemon`
+        return errorMessage(msg, `Failed to connect to Docker daemon`)
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
-
-    const embed = Utils.embed(msg, 'green')
+    // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
       case 'list': {
-        const filterState = args[1]
+        const filterState = args[1] || 'running'
+
+        const options = ['running', 'paused', 'exited', 'created', 'restarting', 'dead']
+        if (!options.includes(filterState)) {
+          if (api) return `Valid options are [ ${options.join(', ')} ]`
+          return validOptions(msg, options)
+        }
+
         const containers = await getContainers(filterState)
-        if (containers === 'bad params') {
-          if (api) return 'Valid options are `running, paused, exited, created, restarting, dead`'
-          embed.setColor(colors.yellow)
-          return validOptions(msg, ['running', 'paused', 'exited', 'created', 'restarting', 'dead'])
+        if (containers) {
+          if (containers.length) {
+            if (api) return containers
+            const embed = Utils.embed(msg).setDescription('Docker Containers')
+
+            containers.forEach((container) => {
+              const { name, ports, state } = container
+              embed.addField(
+                `${name}`,
+                `${state}\n${ports.length ? ports.join(', ') : '---'}`,
+                true
+              )
+            })
+
+            return channel.send(embed)
+          }
+          if (api) return `No containers currently in state [ ${filterState} ]`
+          return warningMessage(msg, `No containers currently in state [ ${filterState} ]`)
         }
-        if (containers === 'no connection') {
-          if (api) return 'Could not connect to the docker daemon'
-          return errorMessage(msg, `Could not connect to the docker daemon`)
-        }
-
-        if (api) return containers
-
-        embed.setDescription('Docker Containers')
-
-        for (const container of containers) {
-          const { name, ports, state } = container
-          embed.addField(`${name}`, `${state}\n${ports.length ? ports.join(', ') : '---'}`, true)
-        }
-
-        return channel.send({ embed })
+        if (api) return `Could not connect to the docker daemon`
+        return errorMessage(msg, `Could not connect to the docker daemon`)
       }
       default: {
-        const containerName = args[1]
-        const newState = args[0]
-        const status = await setContainerState(newState, containerName)
-
-        switch (status) {
-          case 'bad params': {
-            if (api) return 'Valid options are `start, restart, stop'
-            return validOptions(msg, ['start', 'restart', 'stop'])
-          }
-
-          case 'no match':
-            if (api) return `No container named: ${containerName} found.`
-            return warningMessage(msg, `No container named: ${containerName} found`)
-
-          case 'success':
-            if (api) return `Container: ${containerName} has been ${newState}ed successfully`
-
-            return standardMessage(
-              msg,
-              `Container ${containerName} has been ${newState}ed successfully`
-            )
-
-          case 'same state':
-            if (api) {
-              return `Container: ${containerName} is already ${newState}${
-                newState === 'stop' ? 'ped' : 'ed'
-              }`
-            }
-
-            return warningMessage(
-              msg,
-              `Container ${containerName} is already ${newState}${
-                newState === 'stop' ? 'ped' : 'ed'
-              }`
-            )
-
-          case 'failure':
-            if (api) return 'Action could not be completed'
-
-            return errorMessage(msg`Action could not be completed`)
-          default:
-            break
+        const containers = await getContainers()
+        if (containers) {
+          const containerName = args[1]
+          const newState = args[0]
+          return setContainerState(containers, newState, containerName)
         }
-        break
+        if (api) return `Could not connect to the docker daemon`
+        return errorMessage(msg, `Could not connect to the docker daemon`)
       }
     }
   }

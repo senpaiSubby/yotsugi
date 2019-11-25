@@ -11,9 +11,8 @@ module.exports = class CommandManager {
     this.prefix = '//'
     this.ownerID = client.config.ownerID
 
-    if (!this.client || !(this.client instanceof Client)) {
+    if (!this.client || !(this.client instanceof Client))
       throw new Error('Discord Client is required')
-    }
   }
 
   loadCommands(directory) {
@@ -37,23 +36,20 @@ module.exports = class CommandManager {
 
     this.commands.set(commandName, instance)
 
-    for (const alias of instance.aliases) {
+    for (const alias of instance.aliases)
       if (this.aliases.has(alias)) {
         throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
       } else {
         this.aliases.set(alias, instance)
       }
-    }
   }
 
   reloadCommands() {
     this.Log.warn('Reload Manager', 'Clearing Module Cache')
     this.commands = new Enmap()
     this.aliases = new Enmap()
-
     this.Log.warn('Reload Manager', 'Reinitialising Modules')
     this.loadCommands('./commands')
-
     this.Log.success('Reload Manager', 'Reload Commands Success')
     return true
   }
@@ -61,11 +57,10 @@ module.exports = class CommandManager {
   reloadCommand(commandName) {
     const existingCommand = this.commands.get(commandName) || this.aliases.get(commandName)
     if (!existingCommand) return false
-    const { location } = existingCommand
     for (const alias of existingCommand.aliases) this.aliases.delete(alias)
     this.commands.delete(commandName)
-    delete require.cache[require.resolve(location)]
-    this.startModule(location, true)
+    delete require.cache[require.resolve(existingCommand.location)]
+    this.startModule(existingCommand.location, true)
     return true
   }
 
@@ -82,7 +77,6 @@ module.exports = class CommandManager {
     } catch (err) {
       if (msg) {
         await msg.channel.stopTyping()
-
         return client.Utils.error(command.name, err, msg.channel)
       }
     }
@@ -94,31 +88,28 @@ module.exports = class CommandManager {
 
   async handleMessage(msg, client) {
     const { errorMessage, warningMessage, standardMessage } = client.Utils
-    // assign variables
+    const { content, author, channel } = msg
+    const { Utils } = client
+
+    // if msg is sent by bot then ignore
+    if (author.bot) return
+
     msg.context = this
 
-    const { content, author, channel } = msg
     await this.handleUser(msg)
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     client.p = prefix
-    msg.prefix = prefix
-    const { Utils, Log } = client
 
     // set db configs
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
-    const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
-    client.db = []
+
     client.db.general = generalConfig.dataValues
 
     // reply with prefix when bot is the only thing mentioned
-    if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
+    if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1)
       return warningMessage(msg, `My command prefix is ${prefix}`)
-    }
-
-    // if msg is sent by bot then ignore
-    if (author.bot) return
 
     // send all messages to our Log
     await messageLogging(client, msg)
@@ -142,39 +133,22 @@ module.exports = class CommandManager {
     msg.command = instance.commandName
 
     // Check if command is enabled
-    if (command.disabled) return
-
     let disabled = false
+    const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
     disabledCommands.forEach((c) => {
-      if (instance.name === c.command || c.aliases.includes(commandName)) {
-        console.log(c)
-        disabled = true
-      }
+      if (instance.name === c.command || c.aliases.includes(commandName)) disabled = true
     })
     if (disabled) return warningMessage(msg, `Command [${commandName}] is disabled`)
 
     // if command is marked 'ownerOnly: true' then don't excecute
-    if (command.ownerOnly && author.id !== this.ownerID) {
-      Log.warn(
-        'Command Parser',
-        `${author.tag} tried to run ownerOnly command [${command.name} ${
-          args.length ? args.join(' ') : ''
-        }]`
-      )
-      return
-    }
+    if (command.ownerOnly && author.id !== this.ownerID) return
 
     // if command is marked 'guildOnly: true' then don't excecute
-    if (command.guildOnly && channel.type === 'dm') {
-      Log.warn(
-        'Command Parser',
-        `${author.tag} tried to run [${command.name} ${args.length ? args.join(' ') : ''}] in a DM`
-      )
+    if (command.guildOnly && channel.type === 'dm')
       return standardMessage(msg, `This command cannot be slid into my DM`)
-    }
 
     // check if user and bot has all required perms in permsNeeded
-    if (channel.type !== 'dm') {
+    if (channel.type !== 'dm')
       if (command.permsNeeded) {
         const userMissingPerms = this.checkPerms(msg.member, command.permsNeeded)
         const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
@@ -196,24 +170,23 @@ module.exports = class CommandManager {
               .setFooter('Message will self destruct in 30 seconds')
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
           )
-
           return m.delete(30000)
         }
       }
-    }
 
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
-      const embed = Utils.embed(msg, 'yellow')
-        .setTitle('Command requires parameters')
-        .setFooter('Message will self destruct in 30 seconds')
-        .setDescription(
-          `**__You can edit your last message instead of sending a new one!__**\n\n**Example Usage**\n\`\`\`css\n${command.usage.replace(
-            / \| /g,
-            '\n'
-          )}\`\`\``
-        )
-      const m = await msg.reply({ embed })
+      const m = await msg.reply(
+        Utils.embed(msg, 'yellow')
+          .setTitle('Command requires parameters')
+          .setFooter('Message will self destruct in 30 seconds')
+          .setDescription(
+            `**__You can edit your last message instead of sending a new one!__**\n\n**Example Usage**\n\`\`\`css\n${command.usage.replace(
+              / \| /g,
+              '\n'
+            )}\`\`\``
+          )
+      )
       return m.delete(30000)
     }
 
@@ -223,13 +196,12 @@ module.exports = class CommandManager {
 
   async handleServer(guild) {
     const { id, ownerID, name, owner } = guild
-    // setup DB
 
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: this.ownerID }
     })
 
-    if (!generalConfig) {
+    if (!generalConfig)
       await Database.Models.generalConfig.create({
         username: owner.user.tag,
         id: ownerID,
@@ -251,14 +223,13 @@ module.exports = class CommandManager {
         shortcuts: JSON.stringify([]),
         routines: JSON.stringify([])
       })
-    }
 
     // per server config
     if (!guild) return { prefix: this.prefix }
 
     let db = await Database.Models.serverConfig.findOne({ where: { id } })
 
-    if (!db) {
+    if (!db)
       db = await Database.Models.serverConfig.create({
         serverName: name,
         id,
@@ -269,34 +240,33 @@ module.exports = class CommandManager {
         starboardChannel: null,
         rules: JSON.stringify([])
       })
-    }
+
     const prefix = db.prefix || this.prefix
     return prefix
   }
 
   async handleUser(msg) {
     const { author } = msg
-    // setup DB
 
     const memberConfig = await Database.Models.memberConfig.findOne({
       where: { id: author.id }
     })
 
-    if (!memberConfig) {
+    if (!memberConfig)
       await Database.Models.memberConfig.create({
         username: author.tag,
         id: author.id,
         todos: JSON.stringify([]),
         messages: JSON.stringify([])
       })
-    }
   }
 
   checkPerms(user, permsNeeded) {
     const missingPerms = []
-    for (const perm of permsNeeded) {
+    permsNeeded.forEach((perm) => {
       if (!user.permissions.has(perm)) missingPerms.push(perm)
-    }
+    })
+
     if (missingPerms.length) return missingPerms
     return false
   }

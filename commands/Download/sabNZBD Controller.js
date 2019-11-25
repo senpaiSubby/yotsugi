@@ -16,25 +16,25 @@ class SabnzbdManagement extends Command {
   }
 
   async run(client, msg, args) {
-    // -------------------------- Setup --------------------------
+    // * ------------------ Setup --------------------
+
     const { sortByKey } = client.Utils
     const { p, Utils } = client
     const { errorMessage, warningMessage, validOptions, missingConfig } = Utils
-    const { channel } = msg
 
-    // ------------------------- Config --------------------------
+    // * ------------------ Config --------------------
+
     const { host, apiKey } = JSON.parse(client.db.general.sabnzbd)
+
+    // * ------------------ Check Config --------------------
+
     if (!host || !apiKey) {
       const settings = [`${p}db set sabnzbd host <http://ip>`, `${p}db set sabnzbd apiKey <APIKEY>`]
       return missingConfig(msg, 'sabnzbd', settings)
     }
 
-    // ----------------------- Main Logic ------------------------
-    /**
-     * Fetches the download queue
-     * @type {Object}
-     * @return {Promise} asd
-     */
+    // * ------------------ Logic --------------------
+
     const getQueue = async () => {
       try {
         const endpoint = '/api?output=json&mode=queue'
@@ -58,7 +58,7 @@ class SabnzbdManagement extends Command {
       }
     }
 
-    // ---------------------- Usage Logic ------------------------
+    // * ------------------ Usage Logic --------------------
 
     const data = await getQueue()
 
@@ -71,7 +71,7 @@ class SabnzbdManagement extends Command {
         const embedList = []
         data.forEach((item) => {
           const { filename, status, percentage, time, size } = item
-          const embed = Utils.embed(msg, 'green')
+          const embed = Utils.embed(msg)
             .setTitle('SabNZBD Queue')
             .setThumbnail(
               'https://dashboard.snapcraft.io/site_media/appmedia/2018/10/icon.svg_WxcxD3g.png'

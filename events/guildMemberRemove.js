@@ -10,11 +10,12 @@ client.on('guildMemberRemove', async (member) => {
   })
   const { welcomeChannel } = serverConfig.dataValues
 
-  const embed = new RichEmbed().setColor(colors.yellow)
-  embed.setThumbnail(member.guild.iconURL)
-  embed.setAuthor(member.user.username, member.user.avatarURL)
-  embed.setTitle(`Left the server!`)
-  embed.setDescription(`Sorry to see you go!`)
+  const embed = new RichEmbed()
+    .setColor(colors.yellow)
+    .setThumbnail(member.guild.iconURL)
+    .setAuthor(member.user.username, member.user.avatarURL)
+    .setTitle(`Left the server!`)
+    .setDescription(`Sorry to see you go!`)
   const channel = member.guild.channels.get(welcomeChannel)
-  return channel.send({ embed })
+  return channel.send(embed)
 })

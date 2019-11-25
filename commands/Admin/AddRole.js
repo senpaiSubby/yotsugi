@@ -13,24 +13,23 @@ class AddRole extends Command {
     })
   }
 
-  async run(client, msg, args, api) {
+  async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
-    const { warningMessage, standardMessage, errorMessage } = Utils
-    const { author, channel, guild, mentions } = msg
+    const { warningMessage, errorMessage } = Utils
+
+    // * ------------------ Logic --------------------
 
     const rMember = msg.guild.member(msg.mentions.users.first() || msg.guild.members.get(args[0]))
-    if (!rMember) {
-      return errorMessage(msg, `No user given or Invalid user given`)
-    }
+    if (!rMember) return errorMessage(msg, `No user given or Invalid user given`)
 
     args.shift()
     const role = args.join(' ')
 
     if (!role) return msg.reply('Please specify a role')
     const gRole = msg.guild.roles.find((a) => a.name === role)
-    if (!gRole) {
-      return errorMessage(msg, `Role does not exist`)
-    }
+    if (!gRole) return errorMessage(msg, `Role does not exist`)
 
     if (rMember.roles.has(gRole.id))
       return warningMessage(msg, `${rMember} already has the role [ ${role} ]`)

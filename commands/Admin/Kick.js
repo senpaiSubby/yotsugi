@@ -15,9 +15,13 @@ class KickUsers extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { warningMessage } = Utils
     const { author, channel } = msg
+
+    // * ------------------ Config --------------------
 
     const serverConfig = await Database.Models.serverConfig.findOne({
       where: { id: msg.guild.id }
@@ -26,21 +30,22 @@ class KickUsers extends Command {
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
+    // * ------------------ Check Config --------------------
+
     if (!serverLogsChannel)
       return warningMessage(
         msg,
         `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
 
-    if (msg.mentions.members.size === 0) {
-      return warningMessage(msg, `Please mention a user to kick`)
-    }
+    // * ------------------ Logic --------------------
+
+    if (msg.mentions.members.size === 0) return warningMessage(msg, `Please mention a user to kick`)
 
     const kickMember = msg.mentions.members.first()
 
-    if (!args[1]) {
-      return warningMessage(msg, `Please put a reason for the kick`)
-    }
+    if (!args[1]) return warningMessage(msg, `Please put a reason for the kick`)
+
     const target = await kickMember.kick(args.join(' '))
 
     const reason = args.slice(1).join(' ')

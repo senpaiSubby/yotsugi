@@ -12,14 +12,18 @@ class UserAvatar extends Command {
   }
 
   async run(client, msg) {
+    // * ------------------ Setup --------------------
+
     const { Utils } = client
     const { author, channel } = msg
+
+    // * ------------------ Logic --------------------
 
     const member = msg.mentions.members.first() || author
     if (!member.user.avatar) return channel.send('This user does not have an avatar!')
     const avatar = member.user.avatarURL
 
-    const embed = Utils.embed(msg, 'green')
+    const embed = Utils.embed(msg)
       .setAuthor(`${member.user.tag}`, avatar)
       .setDescription(`[Avatar URL](${avatar})`)
       .setImage(avatar)
