@@ -65,20 +65,20 @@ module.exports = class CommandManager {
   }
 
   async runCommand(client, command, msg, args, api = false) {
+    if (api) {
+      msg = { channel: null, author: null }
+      return command.run(client, msg, args, api)
+    }
+
     try {
-      if (msg) await msg.channel.startTyping()
+      msg.channel.startTyping()
       await command.run(client, msg, args, api)
-      client.Log.info(
-        'Command Parser',
-        `${msg.author.tag} ran command [${command.name} ${args.join(' ')}]`
-      )
-      if (msg) return msg.channel.stopTyping()
-      return
+      return msg.channel.stopTyping()
     } catch (err) {
-      if (msg) {
-        await msg.channel.stopTyping()
-        return client.Utils.error(command.name, err, msg.channel)
-      }
+      if (api) return 'failed'
+
+      await msg.channel.stopTyping()
+      return client.Utils.error(command.name, err, msg.channel)
     }
   }
 

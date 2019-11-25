@@ -3,6 +3,7 @@ const chalk = require('chalk')
 const cors = require('cors')
 const shortid = require('shortid')
 const Subprocess = require('../../Subprocess')
+const { client } = require('../../../index')
 const { Manager } = require('../../../events/message')
 const Database = require('../../../core/Database')
 
@@ -23,8 +24,8 @@ class WebServer extends Subprocess {
      *  }
      */
 
-    const { webServerPort } = this.client.config
-    const { Log } = this.client
+    const { webServerPort } = client.config
+    const { Log } = client
 
     const app = express()
     app.use(express.json())
@@ -38,7 +39,7 @@ class WebServer extends Subprocess {
 
     app.get('/ui/db', async (req, res) => {
       const generalConfig = await Database.Models.generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
+        where: { id: client.config.ownerID }
       })
       const data = {
         uiButtons: JSON.parse(generalConfig.dataValues.webUI)
@@ -48,7 +49,7 @@ class WebServer extends Subprocess {
 
     app.post('/ui/db', async (req, res) => {
       const generalConfig = await Database.Models.generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
+        where: { id: client.config.ownerID }
       })
       const values = JSON.parse(generalConfig.dataValues.webUI)
 
@@ -61,7 +62,7 @@ class WebServer extends Subprocess {
 
     app.post('/ui/db/rm/:id', async (req, res) => {
       const generalConfig = await Database.Models.generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
+        where: { id: client.config.ownerID }
       })
       const values = JSON.parse(generalConfig.dataValues.webUI)
       const index = values.findIndex((x) => x.id === req.params.id)
@@ -72,15 +73,15 @@ class WebServer extends Subprocess {
     })
 
     app.get('/api/info', (req, res) => {
-      const upTime = this.client.Utils.millisecondsToTime(this.client.uptime)
+      const upTime = client.Utils.millisecondsToTime(client.uptime)
       const data = {
-        username: this.client.user.username,
-        id: this.client.user.id,
-        avatarId: this.client.user.avatar,
-        status: this.client.status,
+        username: client.user.username,
+        id: client.user.id,
+        avatarId: client.user.avatar,
+        status: client.status,
         upTime,
-        presence: this.client.user.localPresence.game,
-        avatar: this.client.user.avatarURL
+        presence: client.user.localPresence.game,
+        avatar: client.user.avatarURL
       }
       return res.status(200).json(data)
     })
@@ -97,6 +98,13 @@ class WebServer extends Subprocess {
       // check if all required params are met
       if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
 
+      // set db configs
+      const generalConfig = await Database.Models.generalConfig.findOne({
+        where: { id: client.config.ownerID }
+      })
+
+      client.db.general = generalConfig.dataValues
+
       // anything after command becomes a list of args
       const args = req.body.command.split(/ +/)
       // command name without prefix
@@ -108,10 +116,9 @@ class WebServer extends Subprocess {
         if (cmd.disabled) return res.status(403).json({ response: 'Command is disabled bot wide.' })
 
         if (!cmd.webUI)
-          // check if command is enabled in API
           return res.status(403).json({ response: 'Command is disabled for use in the API.' })
 
-        const response = await Manager.runCommand(this.client, cmd, null, args, true)
+        const response = await Manager.runCommand(client, cmd, null, args, true)
         return res.status(200).json({ response })
       }
       return res.status(406).json({ response: `Command '${req.body.command}' not found.` })
