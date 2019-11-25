@@ -16,24 +16,18 @@ module.exports = class SubprocessManager {
 
     subprocesses.forEach((item) => {
       const location = path.join(__dirname, '..', dir, item, 'index.js')
-      // Location doesn't exist, skip loop
       if (!fs.existsSync(location)) return
-
-      // Add Subprocess to Processes Collection
 
       const Process = require(location)
       const instance = new Process(this.client)
 
-      if (instance.disabled) return
+      if (!instance.disabled) {
+        if (this.processes.has(instance.name))
+          throw new Error('Subprocesses cannot have the same name')
 
-      if (this.processes.has(instance.name)) {
-        throw new Error('Subprocesses cannot have the same name')
-      } else {
         this.processes.set(instance.name, instance)
-      }
 
-      for (const subprocess of this.processes.values()) {
-        this.startModule(subprocess)
+        for (const subprocess of this.processes.values()) this.startModule(subprocess)
       }
     })
   }

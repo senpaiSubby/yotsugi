@@ -11,7 +11,8 @@ class WebServer extends Subprocess {
   constructor(client) {
     super(client, {
       name: 'Web Server',
-      description: 'Web Server'
+      description: 'Web Server',
+      disabled: false
     })
   }
 
