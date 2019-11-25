@@ -18,6 +18,8 @@ class Disable extends Command {
     const { warningMessage } = Utils
     const { channel } = msg
 
+    const nonDisableable = ['disable', 'disabled', 'enable', 'help']
+
     const generalConfig = await Database.Models.generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
@@ -37,21 +39,33 @@ class Disable extends Command {
     const disableCommands = async (commands) => {
       const alreadyDisabled = []
       const willDisable = []
+      const cannotDisable = []
 
       await commands.forEach(async (i) => {
         const cmd = msg.context.findCommand(i)
         if (!cmd) return warningMessage(msg, `No command named [ ${i} ]`)
+        if (!nonDisableable.includes(i)) {
+          const isDisabled = await checkIfDisabled(i)
 
-        const isDisabled = await checkIfDisabled(i)
+          if (isDisabled) alreadyDisabled.push(i)
 
-        if (isDisabled) alreadyDisabled.push(i)
-
-        if (!isDisabled) {
-          willDisable.push(i)
-          values.push({ command: cmd.name, aliases: cmd.aliases })
-          await generalConfig.update({ disabledCommands: JSON.stringify(values) })
+          if (!isDisabled) {
+            willDisable.push(i)
+            values.push({ command: cmd.name, aliases: cmd.aliases })
+            await generalConfig.update({ disabledCommands: JSON.stringify(values) })
+          }
         }
+        if (nonDisableable.includes(i)) cannotDisable.push(i)
       })
+
+      if (cannotDisable.length) {
+        const m = await channel.send(
+          Utils.embed(msg, 'red')
+            .setTitle('The following commands CANNOT be disabled since they are required!')
+            .setDescription(`**- ${cannotDisable.join('\n- ')}**`)
+        )
+        m.delete(20000)
+      }
 
       if (alreadyDisabled.length) {
         const m = await channel.send(
