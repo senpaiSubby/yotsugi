@@ -62,7 +62,7 @@ class Help extends Command {
       const embedList = []
       Object.keys(newSorted).forEach((key) => {
         const e = Utils.embed(msg, 'green')
-          .setTitle(`SubbyBot Help - ${key} Commands`)
+          .setTitle(`${client.user.username} Help - ${key} Commands`)
           .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
           e.addField(`${prefix}${i.name}`, `${i.description}`, true)

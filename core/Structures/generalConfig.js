@@ -21,7 +21,9 @@ const generalConfig = Database.db.define('generalConfig', {
   pioneerAVR: Sequelize.STRING,
   systemPowerControl: Sequelize.STRING,
   tuyaPlugControl: Sequelize.STRING,
-  disabledCommands: Sequelize.STRING
+  disabledCommands: Sequelize.STRING,
+  shortcuts: Sequelize.STRING,
+  routines: Sequelize.STRING
 })
 
 generalConfig.sync()

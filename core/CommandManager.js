@@ -82,6 +82,7 @@ module.exports = class CommandManager {
     } catch (err) {
       if (msg) {
         await msg.channel.stopTyping()
+
         return client.Utils.error(command.name, err, msg.channel)
       }
     }
@@ -97,7 +98,7 @@ module.exports = class CommandManager {
     msg.context = this
 
     const { content, author, channel } = msg
-    await this.handleUuser(msg)
+    await this.handleUser(msg)
     const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
     client.p = prefix
     msg.prefix = prefix
@@ -246,7 +247,9 @@ module.exports = class CommandManager {
         pioneerAVR: JSON.stringify({ host: null }),
         systemPowerControl: JSON.stringify([{ host: null, mac: null, name: null }]),
         tuyaPlugControl: JSON.stringify([{ id: null, key: null, name: null }]),
-        disabledCommands: JSON.stringify([])
+        disabledCommands: JSON.stringify([]),
+        shortcuts: JSON.stringify([]),
+        routines: JSON.stringify([])
       })
     }
 
@@ -271,7 +274,7 @@ module.exports = class CommandManager {
     return prefix
   }
 
-  async handleUuser(msg) {
+  async handleUser(msg) {
     const { author } = msg
     // setup DB
 

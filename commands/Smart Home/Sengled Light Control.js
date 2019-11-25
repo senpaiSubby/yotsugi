@@ -172,7 +172,7 @@ class SengledLightController extends Command {
 
             return standardMessage(
               msg,
-              `${args[1] === 'on' ? ':full_moon:' : ':new_moon:'} **${args[0]} light turned ${
+              `${args[1] === 'on' ? ':full_moon:' : ':new_moon:'} ${args[0]} light turned ${
                 args[1] === 'on' ? 'on' : 'off'
               }`
             )
