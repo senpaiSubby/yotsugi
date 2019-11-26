@@ -14,7 +14,7 @@ class Disabled extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { standardMessage } = Utils
+    const { standardMessage, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -30,12 +30,13 @@ class Disabled extends Command {
     values.forEach((i) => {
       disabledCommands.push(i.command)
     })
-    if (disabledCommands.length)
+    if (disabledCommands.length) {
       return channel.send(
-        Utils.embed(msg)
+        embed(msg)
           .setTitle('Disabled Commands')
           .setDescription(`**- ${disabledCommands.join('\n- ')}**`)
       )
+    }
 
     return standardMessage(msg, `No commands are disabled`)
   }

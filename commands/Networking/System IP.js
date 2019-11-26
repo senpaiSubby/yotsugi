@@ -8,7 +8,7 @@ class SystemIP extends Command {
       name: 'ip',
       category: 'Networking',
       description: 'Show Server IP',
-      usage: `ip <external/local>`,
+      usage: [`ip <external/local>`],
       ownerOnly: true,
       args: false
     })
@@ -18,7 +18,7 @@ class SystemIP extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { channel } = msg
+    const { warningMessage } = Utils
 
     // * ------------------ Logic --------------------
 
@@ -26,9 +26,7 @@ class SystemIP extends Command {
 
     const data = await response.json()
     if (api) return data
-    const embed = Utils.embed(msg).setTitle(`${data.ip}`)
-    const m = await channel.send(embed)
-    return m.delete(10000)
+    return warningMessage(msg, `${data.ip}`)
   }
 }
 module.exports = SystemIP

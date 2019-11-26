@@ -8,7 +8,7 @@ class PioneerAVRController extends Command {
       name: 'avr',
       category: 'Smart Home',
       description: 'Pioneer AVR Controller',
-      usage: `avr vol <1-100> | avr <off/on> | avr <mute>`,
+      usage: [`avr vol <1-100>`, `avr <off/on>`, `avr <mute>`],
       aliases: ['vol'],
       ownerOnly: true,
       webUI: true,
@@ -54,14 +54,16 @@ class PioneerAVRController extends Command {
       if (number >= currentVol) {
         // setting the volume higher
         const raiseVal = (number - currentVol) * 2
-        for (let i = 0; i < raiseVal; i++)
+        for (let i = 0; i < raiseVal; i++) {
           await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VU'))
+        }
       } else if (number <= currentVol) {
         // setting the volume lower
         const lowerVal = Math.abs((number - currentVol) * 2)
 
-        for (let i = 0; i < lowerVal; i++)
+        for (let i = 0; i < lowerVal; i++) {
           await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VD'))
+        }
       }
     }
 

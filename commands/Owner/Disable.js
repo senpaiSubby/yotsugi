@@ -6,7 +6,7 @@ class Disable extends Command {
       name: 'disable',
       category: 'Owner',
       description: 'Disable commands you dont want to use',
-      usage: 'disable <command name> | disable all',
+      usage: ['disable <command name>', 'disable all'],
       args: true,
       ownerOnly: true
     })
@@ -16,7 +16,7 @@ class Disable extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { warningMessage } = Utils
+    const { warningMessage, embed } = Utils
     const { channel } = msg
 
     const nonDisableable = ['disable', 'disabled', 'enable', 'help']
@@ -63,7 +63,7 @@ class Disable extends Command {
 
       if (cannotDisable.length) {
         const m = await channel.send(
-          Utils.embed(msg, 'red')
+          embed(msg, 'red')
             .setTitle('The following commands CANNOT be disabled since they are required!')
             .setDescription(`**- ${cannotDisable.join('\n- ')}**`)
         )
@@ -72,19 +72,20 @@ class Disable extends Command {
 
       if (alreadyDisabled.length) {
         const m = await channel.send(
-          Utils.embed(msg, 'yellow')
+          embed(msg, 'yellow')
             .setTitle('The following commands are already disabled')
             .setDescription(`**- ${alreadyDisabled.join('\n- ')}**`)
         )
         m.delete(20000)
       }
 
-      if (willDisable.length)
+      if (willDisable.length) {
         await channel.send(
-          Utils.embed(msg)
+          embed(msg)
             .setTitle('Disabled the Commands')
             .setDescription(`**- ${willDisable.join('\n- ')}**`)
         )
+      }
     }
 
     // * ------------------ Usage Logic --------------------

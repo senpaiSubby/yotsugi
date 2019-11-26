@@ -7,7 +7,7 @@ class UnbanUser extends Command {
       name: 'unban',
       category: 'Admin',
       description: 'Unbans a user',
-      usage: 'unban <userID> <reason for unban>',
+      usage: ['unban <userID> <reason for unban>'],
       guildOnly: true,
       args: true,
       permsNeeded: ['BAN_MEMBERS']
@@ -18,7 +18,7 @@ class UnbanUser extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { warningMessage } = Utils
+    const { warningMessage, embed } = Utils
     const { author, channel, guild } = msg
 
     // * ------------------ Config --------------------
@@ -32,11 +32,12 @@ class UnbanUser extends Command {
 
     // * ------------------ Check Config --------------------
 
-    if (!serverLogsChannel)
+    if (!serverLogsChannel) {
       return warningMessage(
         msg,
         `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
+    }
 
     // * ------------------ Logic --------------------
 
@@ -50,17 +51,16 @@ class UnbanUser extends Command {
 
     if (!target) return warningMessage(msg, `Please specify a member to unban!`)
     if (!reason) return warningMessage(msg, `Please specify a reason for this unban!`)
-
-    const embed = Utils.embed(msg)
-      .addField('Unbanned Member', `**${target.username}** with an ID: ${target.id}`)
-      .addField('Unbanned By', `**${author.username}** with an ID: ${author.id}`)
-      .addField('Unbanned Time', msg.createdAt)
-      .addField('Unbanned At', channel)
-      .addField('Unbanned Reason', reason)
-
     await guild.unban(target, reason)
 
-    return serverLogsChannel.send(embed)
+    return serverLogsChannel.send(
+      embed(msg)
+        .addField('Unbanned Member', `**${target.username}** with an ID: ${target.id}`)
+        .addField('Unbanned By', `**${author.username}** with an ID: ${author.id}`)
+        .addField('Unbanned Time', msg.createdAt)
+        .addField('Unbanned At', channel)
+        .addField('Unbanned Reason', reason)
+    )
   }
 }
 module.exports = UnbanUser

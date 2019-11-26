@@ -6,18 +6,18 @@ class RemoveRole extends Command {
       name: 'removerole',
       category: 'Admin',
       description: 'Remove roles from members',
-      usage: 'removerole @user rolename',
+      usage: ['removerole @user rolename'],
       aliases: ['rrole'],
       permsNeeded: ['MANAGE_ROLES'],
       args: true
     })
   }
 
-  async run(client, msg, args, api) {
+  async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { warningMessage, errorMessage } = Utils
+    const { warningMessage, errorMessage, embed } = Utils
 
     // * ------------------ Logic --------------------
 
@@ -31,13 +31,14 @@ class RemoveRole extends Command {
     const gRole = msg.guild.roles.find((a) => a.name === role)
     if (!gRole) return errorMessage(msg, `Role does not exist`)
 
-    if (!rMember.roles.has(gRole.id))
+    if (!rMember.roles.has(gRole.id)) {
       return warningMessage(msg, `${rMember} doesn't have the role [ ${role} ]`)
+    }
     await rMember.removeRole(gRole.id)
 
     try {
       return rMember.send(
-        Utils.embed(msg, 'yellow').setDescription(
+        embed(msg, 'yellow').setDescription(
           `**You have been removed from the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
         )
       )

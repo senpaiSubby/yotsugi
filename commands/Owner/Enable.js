@@ -6,7 +6,7 @@ class Enable extends Command {
       name: 'enable',
       category: 'Owner',
       description: 'Enable commands you have disabled',
-      usage: 'enable <command name> | enable all',
+      usage: ['enable <command name>', 'enable all'],
       args: true,
       ownerOnly: true
     })
@@ -16,7 +16,7 @@ class Enable extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { warningMessage } = Utils
+    const { warningMessage, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -63,19 +63,20 @@ class Enable extends Command {
 
       if (alreadyEnabled.length) {
         const m = await channel.send(
-          Utils.embed(msg, 'yellow')
+          embed(msg, 'yellow')
             .setTitle('The following commands are already enabled')
             .setDescription(`**- ${alreadyEnabled.join('\n- ')}**`)
         )
         m.delete(20000)
       }
 
-      if (willEnable.length)
+      if (willEnable.length) {
         await channel.send(
-          Utils.embed(msg)
+          embed(msg)
             .setTitle('Enabled the Commands')
             .setDescription(`**- ${willEnable.join('\n- ')}**`)
         )
+      }
     }
 
     // * ------------------ Usage Logic --------------------

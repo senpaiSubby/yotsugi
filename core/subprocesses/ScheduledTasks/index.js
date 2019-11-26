@@ -1,6 +1,5 @@
 const { scheduleJob } = require('node-schedule')
 const Subprocess = require('../../Subprocess')
-const { client } = require('../../../index')
 
 class ScheduledTasks extends Subprocess {
   constructor(client) {
@@ -12,7 +11,7 @@ class ScheduledTasks extends Subprocess {
   }
 
   async run() {
-    const { runCommand } = client.Utils
+    const { runCommand } = this.client.Utils
 
     // every morning at 10am
     scheduleJob('0 10 * * *', async () => {

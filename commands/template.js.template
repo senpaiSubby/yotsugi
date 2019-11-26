@@ -7,7 +7,7 @@ class Template extends Command {
       name: 'template',
       category: '',
       description: 'Template',
-      usage: '|',
+      usage: [],
       aliases: [],
       args: true,
       disabled: true,

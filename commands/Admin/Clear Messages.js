@@ -6,7 +6,7 @@ class ClearMessages extends Command {
       name: 'clear',
       category: 'Admin',
       description: 'Removes # of messages',
-      usage: `clear <0-100>`,
+      usage: [`clear <0-100>`, 'clear <@user> <0-100>'],
       aliases: ['delete', 'rm', 'purge'],
       guildOnly: true,
       args: true,

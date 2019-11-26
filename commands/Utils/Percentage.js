@@ -6,7 +6,7 @@ class Percentage extends Command {
       name: 'percentage',
       category: 'Utils',
       description: 'Gets the percentage of numbers',
-      usage: 'percent 5 100',
+      usage: ['percent 5 100'],
       aliases: ['percent']
     })
   }

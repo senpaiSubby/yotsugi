@@ -11,7 +11,7 @@ class SpeedTest extends Command {
   }
 
   async run(client, msg) {
-    const { Utils } = client
+    const { Utils, embed } = client
     const { errorMessage, standardMessage } = Utils
 
     const test = speedTest({ maxTime: 5000 })
@@ -24,15 +24,16 @@ class SpeedTest extends Command {
       const { download, upload } = data.speeds
       const { isp, isprating } = data.client
       const { location, ping } = data.server
-      const embed = Utils.embed(msg)
-        .addField(':arrow_down: Download', `${download}`, true)
-        .addField(' :arrow_up: Upload', `${upload}`, true)
-        .addField(':globe_with_meridians: Ping', `${ping}`, true)
-        .addField(':classical_building: ISP', `${isp}`, true)
-        .addField(':star: Rating', `${isprating}`, true)
-        .addField(':flag_us: Location', `${location}`, true)
 
-      return m.edit(embed)
+      return m.edit(
+        embed(msg)
+          .addField(':arrow_down: Download', `${download}`, true)
+          .addField(' :arrow_up: Upload', `${upload}`, true)
+          .addField(':globe_with_meridians: Ping', `${ping}`, true)
+          .addField(':classical_building: ISP', `${isp}`, true)
+          .addField(':star: Rating', `${isprating}`, true)
+          .addField(':flag_us: Location', `${location}`, true)
+      )
     })
 
     test.on('error', async () => {

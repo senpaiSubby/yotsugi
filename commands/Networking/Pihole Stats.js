@@ -8,7 +8,7 @@ class PiHoleController extends Command {
       name: 'pihole',
       category: 'Networking',
       description: 'PiHole stats and management',
-      usage: `pihole <on/off> | pihole stats`,
+      usage: [`pihole <enable/disable>`, `pihole stats`],
       aliases: ['dns'],
       ownerOnly: true,
       webUI: true,
@@ -19,8 +19,8 @@ class PiHoleController extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { p, Log, Utils, colors } = client
-    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
+    const { p, Log, Utils } = client
+    const { errorMessage, validOptions, missingConfig, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -37,20 +37,21 @@ class PiHoleController extends Command {
     // * ------------------ Logic --------------------
 
     const setState = async (newState) => {
-      const opt = newState === 'off' ? 'disable' : 'enable'
-
       try {
-        const response = await fetch(urljoin(host, `admin/api.php?${opt}&auth=${apiKey}`))
+        const response = await fetch(urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`))
         const data = await response.json()
         if (data.status !== 'enabled' && data.status !== 'disabled') {
           if (api) return `API key is incorrect`
           return errorMessage(`API key is incorrect`)
         }
-        if (api) return `PiHole turned ${newState}`
-        return standardMessage(msg, `PiHole turned ${newState}`)
-      } catch {
-        if (api) return `No connection to PiHole`
-        return errorMessage(msg, `No connection to PiHole`)
+        const text = newState === 'enable' ? 'enabled' : 'disabled'
+        const color = newState === 'enable' ? 'green' : 'red'
+        if (api) return `PiHole ${text}`
+        return channel.send(embed(msg, color).setDescription(`**PiHole ${text}**`))
+      } catch (e) {
+        if (api) return `Failed to connect to PiHole`
+        Log.error('PiHole', 'Failed to connect to PiHole', e)
+        await errorMessage(msg, `Failed to connect to PiHole`)
       }
     }
 
@@ -65,36 +66,38 @@ class PiHoleController extends Command {
           queriesToday: data.dns_queries_today,
           adsBlockedToday: data.ads_blocked_today
         }
-      } catch {}
+      } catch (e) {
+        if (api) return `Failed to connect to PiHole`
+        Log.error('PiHole', 'Failed to connect to PiHole', e)
+        await errorMessage(msg, `Failed to connect to PiHole`)
+      }
     }
 
     // * ------------------ Usage Logic --------------------
 
-    const caseOptions = ['on', 'off', 'stats']
+    const caseOptions = ['enable', 'disable', 'stats']
     switch (args[0]) {
-      case 'on':
-      case 'off':
+      case 'enable':
+      case 'disable':
         return setState(args[0])
 
       case 'stats': {
-        embed.attachFile('./data/images/icons/pihole.png')
-        embed.setThumbnail('attachment://pihole.png')
         const status = await getStats()
         if (status) {
-          const embed = Utils.embed(msg)
-            .setTitle('PiHole Stats')
-            .addField('Status', status.status)
-            .addField('Domains Being Blocked', status.domainsBeingBlocked)
-            .addField('Total Queries', status.totalQueries)
-            .addField('Queries Today', status.queriesToday)
-            .addField('Ads Blocked Today', status.adsBlockedToday)
-          return channel.send(embed)
+          return channel.send(
+            embed(msg)
+              .attachFile('./data/images/icons/pihole.png')
+              .setThumbnail('attachment://pihole.png')
+              .setTitle('PiHole Stats')
+              .addField('Status', status.status)
+              .addField('Domains Being Blocked', status.domainsBeingBlocked)
+              .addField('Total Queries', status.totalQueries)
+              .addField('Queries Today', status.queriesToday)
+              .addField('Ads Blocked Today', status.adsBlockedToday)
+          )
         }
-        if (api) return `No connection to PiHole`
-        return errorMessage(msg, `No connection to PiHole`)
+        return
       }
-      default:
-        break
     }
     return validOptions(msg, caseOptions)
   }

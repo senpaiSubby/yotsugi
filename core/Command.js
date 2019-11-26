@@ -11,7 +11,7 @@ module.exports = class Command {
     this.aliases = data.aliases || []
     this.args = data.args || false
     this.webUI = data.webUI || false
-    this.usage = data.usage || ''
+    this.usage = data.usage || []
     this.guildOnly = data.guildOnly || false
     this.ownerOnly = data.ownerOnly || false
     this.adminOnly = data.adminOnly || false
@@ -20,27 +20,40 @@ module.exports = class Command {
     if (!this.name) throw new Error('Command Name is required')
     if (!this.description) throw new Error('Command Description is required')
     if (typeof this.name !== 'string') throw new TypeError('Command name must be a string')
-    if (typeof this.description !== 'string')
+    if (typeof this.description !== 'string') {
       throw new TypeError('Command description must be a string')
+    }
     if (typeof this.category !== 'string') throw new TypeError('Command category must be a string')
-    if (!(this.permsNeeded instanceof Array))
+    if (!(this.permsNeeded instanceof Array)) {
       throw new TypeError('Command permsNeeded must be an array of strings')
-    if (this.permsNeeded.some((perm) => typeof perm !== 'string'))
+    }
+    if (this.permsNeeded.some((perm) => typeof perm !== 'string')) {
       throw new TypeError('Command permsNeeded must be an array of strings')
-    if (!(this.aliases instanceof Array))
+    }
+    if (!(this.aliases instanceof Array)) {
       throw new TypeError('Command aliases must be an array of strings')
-    if (this.aliases.some((alias) => typeof alias !== 'string'))
+    }
+    if (this.aliases.some((alias) => typeof alias !== 'string')) {
       throw new TypeError('Command aliases must be an array of strings')
-    if (typeof this.guildOnly !== 'boolean')
+    }
+    if (this.usage.some((usage) => typeof usage !== 'string')) {
+      throw new TypeError('Command usage must be an array of strings')
+    }
+    if (typeof this.guildOnly !== 'boolean') {
       throw new TypeError('Command guildOnly property must be a boolean')
-    if (typeof this.adminOnly !== 'boolean')
+    }
+    if (typeof this.adminOnly !== 'boolean') {
       throw new TypeError('Command adminOnly property must be a boolean')
-    if (typeof this.args !== 'boolean')
+    }
+    if (typeof this.args !== 'boolean') {
       throw new TypeError('Command args property must be a boolean')
-    if (typeof this.webUI !== 'boolean')
+    }
+    if (typeof this.webUI !== 'boolean') {
       throw new TypeError('Command webUI property must be a boolean')
-    if (typeof this.ownerOnly !== 'boolean')
+    }
+    if (typeof this.ownerOnly !== 'boolean') {
       throw new TypeError('Command adminOnly property must be a boolean')
+    }
   }
 
   run() {

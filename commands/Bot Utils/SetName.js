@@ -6,14 +6,14 @@ class SetName extends Command {
       name: 'setname',
       category: 'Bot Utils',
       description: 'Set the bot username',
-      usage: 'setname Subby the great',
+      usage: ['setname <new name>'],
       ownerOnly: true,
       args: true
     })
   }
 
   async run(client, msg, args) {
-    msg.delete()
+    await msg.delete()
 
     const username = args.join(' ')
     const u = await client.user.setUsername(username)

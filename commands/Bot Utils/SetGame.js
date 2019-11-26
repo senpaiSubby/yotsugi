@@ -6,7 +6,7 @@ class SetGame extends Command {
       name: 'setgame',
       category: 'Bot Utils',
       description: 'Sets the game the bot is playing',
-      usage: 'setgame Minecraft',
+      usage: ['setgame <status>'],
       aliases: ['setstatus'],
       ownerOnly: true,
       args: true
@@ -14,7 +14,7 @@ class SetGame extends Command {
   }
 
   async run(client, msg, args) {
-    msg.delete()
+    await msg.delete()
 
     const gameName = args.join(' ')
 

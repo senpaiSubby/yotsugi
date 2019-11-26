@@ -6,7 +6,7 @@ class Decode extends Command {
       name: 'decode',
       category: 'Utils',
       description: 'Decode a message from binary',
-      usage: 'decode 0110011001110101011000110110101100100000011110010110111101110101',
+      usage: ['decode <text>'],
       args: true
     })
   }

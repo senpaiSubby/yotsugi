@@ -6,7 +6,7 @@ class SetChannelName extends Command {
       name: 'cname',
       category: 'Admin',
       description: 'Sets a channel name',
-      usage: 'cname <channelID> <newName>',
+      usage: ['cname <channelID> <newName>'],
       aliases: ['channelname'],
       args: true,
       guildOnly: true,

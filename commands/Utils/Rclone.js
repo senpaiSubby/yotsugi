@@ -8,21 +8,33 @@ class Drive extends Command {
       name: 'drive',
       category: 'Utils',
       description: 'Gets info on the Rclone folder you specify',
-      usage: 'drive size /Unsorted | drive ls /folder/to/check',
+      usage: ['drive size /Unsorted', 'drive ls /folder/to/check'],
       args: true
     })
   }
 
   async run(client, msg, args) {
     const { Utils, p } = client
-    const { errorMessage, warningMessage, validOptions, standardMessage } = Utils
+
+    const {
+      errorMessage,
+      warningMessage,
+      validOptions,
+      standardMessage,
+      embed,
+      bytesToSize,
+      millisecondsToTime,
+      arraySplitter,
+      paginate
+    } = Utils
+
     const { channel } = msg
 
     const { remote } = JSON.parse(client.db.general.rclone)
     if (!remote) {
       const settings = [`${p}db set rclone remote <remote>`]
       return channel.send(
-        Utils.embed(msg, 'red')
+        embed(msg, 'red')
           .setTitle(':gear: Missing Rclone DB config!')
           .setDescription(`Set them like so..\n\`\`\`css\n${settings.join('\n')}\n\`\`\``)
       )
@@ -41,6 +53,7 @@ class Drive extends Command {
         )
 
         const startTime = performance.now()
+
         exec(
           `rclone size --json ${remote}:"${dirPath}"`,
           {
@@ -50,23 +63,24 @@ class Drive extends Command {
             await waitMessage.delete()
             const stopTime = performance.now()
             // 3 doesnt exist 0 good
-            const embed = Utils.embed(msg)
+
             if (code === 0) {
               const response = JSON.parse(stdout)
               const { count } = response
-              const size = Utils.bytesToSize(response.bytes)
-              embed.setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
-              embed.addField('Files', `:newspaper: ${count}`, true)
-              embed.addField('Size', `:file_folder: ${size}`, true)
-              embed.setDescription(
-                `**Time Taken ${Utils.millisecondsToTime(stopTime - startTime)}**`
-              )
+              const size = bytesToSize(response.bytes)
 
-              return msg.reply(embed)
+              return msg.reply(
+                embed(msg)
+                  .setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
+                  .addField('Files', `:newspaper: ${count}`, true)
+                  .addField('Size', `:file_folder: ${size}`, true)
+                  .setDescription(`**Time Taken ${millisecondsToTime(stopTime - startTime)}**`)
+              )
             }
 
-            if (code === 3)
+            if (code === 3) {
               return warningMessage(msg, `Directory | :file_folder: ${dirPath} | does not exist!`)
+            }
 
             return errorMessage(msg, `A error occured with Rclone`)
           }
@@ -80,6 +94,7 @@ class Drive extends Command {
           `:file_cabinet: Getting Directory\n\n- ${dirPath ||
             '/'}\n\n:hourglass: This may take some time...`
         )
+
         exec(
           `rclone lsjson ${remote}:"${dirPath}"`,
           {
@@ -93,9 +108,9 @@ class Drive extends Command {
               let response = JSON.parse(stdout)
               const sorted = []
               // remake array with nice emojis based on file extensions
-              for (const i of response)
+              response.forEach((i) => {
                 if (i.IsDir) sorted.push(`:file_folder: ${i.Name}`)
-                else
+                else {
                   switch (i.Name.split('.').pop()) {
                     case 'png':
                     case 'jpg':
@@ -114,28 +129,33 @@ class Drive extends Command {
                     default:
                       sorted.push(`:newspaper: ${i.Name}`)
                   }
+                }
+              })
 
               response = sorted.join()
-              const splitArray = Utils.arraySplitter(sorted)
+              const splitArray = arraySplitter(sorted)
 
               const embedList = []
               Object.keys(splitArray).forEach((key, index) => {
-                const e = Utils.embed(msg)
-                  .setTitle(`:file_cabinet: ${dirPath || '/'}`)
-                  .setThumbnail(
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
-                  )
-                  .addField('Files', `${splitArray[index].join('\n')}`)
-                embedList.push(e)
+                embedList.push(
+                  embed(msg)
+                    .setTitle(`:file_cabinet: ${dirPath || '/'}`)
+                    .setThumbnail(
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
+                    )
+                    .addField('Files', `${splitArray[index].join('\n')}`)
+                )
               })
-              return Utils.paginate(client, msg, embedList, 1)
+
+              return paginate(client, msg, embedList, 1)
             }
 
-            if (code === 3)
+            if (code === 3) {
               return warningMessage(
                 msg,
                 `Folder | :file_folder: ${dirPath || '/'} | does not exist! `
               )
+            }
 
             return errorMessage(msg, 'A error occured with RClone')
           }

@@ -7,7 +7,7 @@ class TransmissionManagement extends Command {
       name: 'tor',
       category: 'Download',
       description: 'Transmission Management',
-      usage: `tor list`,
+      usage: [`tor list`, 'tor add <magnet link>'],
       aliases: ['transmission'],
       ownerOnly: true,
       args: true
@@ -17,7 +17,7 @@ class TransmissionManagement extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils } = client
+    const { p, Utils, Log } = client
     const {
       bytesToSize,
       sortByKey,
@@ -25,7 +25,9 @@ class TransmissionManagement extends Command {
       warningMessage,
       validOptions,
       standardMessage,
-      missingConfig
+      missingConfig,
+      paginate,
+      embed
     } = Utils
 
     // * ------------------ Config --------------------
@@ -70,8 +72,6 @@ class TransmissionManagement extends Command {
           return 'seeding'
         case 7:
           return 'No Peers'
-        default:
-          break
       }
     }
 
@@ -101,8 +101,10 @@ class TransmissionManagement extends Command {
           })
         })
         return sortByKey(downloadQueue, 'percentage')
-      } catch {
-        return false
+      } catch (e) {
+        const text = 'Failed to connect to Transmission'
+        Log.error('Transmission', text, e)
+        await errorMessage(msg, text)
       }
     }
 
@@ -110,46 +112,50 @@ class TransmissionManagement extends Command {
       try {
         const response = await trans.addUrl(magnet)
         return standardMessage(msg, `${response.name}\nAdded to Transmission`)
-      } catch {
-        return errorMessage(msg, `Failed to connect to Transmission`)
+      } catch (e) {
+        const text = 'Failed to connect to Transmission'
+        Log.error('Transmission', text, e)
+        await errorMessage(msg, text)
       }
     }
 
     // * ------------------ Usage Logic --------------------
 
-    const caseOptions = ['list', 'add']
     switch (args[0]) {
       case 'list': {
         const data = await getQueue()
 
-        if (!data) return errorMessage(msg, `Failed to connect to Transmission`)
-        if (!data.length) return warningMessage(msg, `Nothing in download Queue`)
+        if (data) {
+          if (!data.length) return warningMessage(msg, `Nothing in download Queue`)
 
-        const embedList = []
-        data.forEach((item) => {
-          const { name, id, status, percentage, rate, size } = item
-          const embed = Utils.embed(msg)
-            .setTitle('Transmission Queue')
-            .setThumbnail(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transmission_Icon.svg/1200px-Transmission_Icon.svg.png'
+          const embedList = []
+          data.forEach((item) => {
+            const { name, id, status, percentage, rate, size } = item
+            embedList.push(
+              embed(msg)
+                .setTitle('Transmission Queue')
+                .setThumbnail(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transmission_Icon.svg/1200px-Transmission_Icon.svg.png'
+                )
+                .addField('Filename', `[${id}] ${name}`, false)
+                .addField('Status', `${status}`, true)
+                .addField('Percentage', `${percentage}`, true)
+                .addField('Size Total', `${size.complete}`, true)
+                .addField('Size Current', `${size.current}`, true)
+                .addField('Rate Down', `${rate.down}`, true)
+                .addField('Rate Upload', `${rate.up}`, true)
             )
-            .addField('__Filename__', `[${id}] ${name}`, false)
-            .addField('__Status__', `${status}`, true)
-            .addField('__Percentage__', `${percentage}`, true)
-            .addField('__Size Total__', `${size.complete}`, true)
-            .addField('__Size Current__', `${size.current}`, true)
-            .addField('__Rate Down__', `${rate.down}`, true)
-            .addField('__Rate Upload__', `${rate.up}`, true)
-          embedList.push(embed)
-        })
-        return Utils.paginate(client, msg, embedList, 1)
+          })
+          return paginate(client, msg, embedList, 1)
+        }
+        return
       }
 
       case 'add':
         return addTorrent(args[1])
 
       default:
-        return validOptions(msg, caseOptions)
+        return validOptions(msg, ['list', 'add'])
     }
   }
 }

@@ -8,7 +8,7 @@ class DriveSize extends Subprocess {
     super(client, {
       name: 'Drive Size',
       description: 'Updates channel names with info on google drive',
-      disabled: true
+      disabled: false
     })
   }
 

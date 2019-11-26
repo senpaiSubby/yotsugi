@@ -13,6 +13,7 @@ class Invite extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
+    const { embed } = Utils
     const { channel } = msg
 
     // * ------------------ Logic --------------------
@@ -27,15 +28,16 @@ class Invite extends Command {
       'MANAGE_MESSAGES',
       'MANAGE_ROLES'
     ])
-    const embed = Utils.embed(msg)
-      .setTitle('SubbyBot')
-      .setDescription(
-        'Thanks for showing interest in SubbyBot! Click the\nlink below to invite her to your server.'
-      )
-      .setThumbnail(client.user.avatarURL)
-      .addField('\u200b', `[Click Here](${invite})`)
 
-    return channel.send({ embed })
+    return channel.send(
+      embed(msg)
+        .setTitle('SubbyBot')
+        .setDescription(
+          'Thanks for showing interest in SubbyBot! Click the\nlink below to invite her to your server.'
+        )
+        .setThumbnail(client.user.avatarURL)
+        .addField('\u200b', `[Click Here](${invite})`)
+    )
   }
 }
 

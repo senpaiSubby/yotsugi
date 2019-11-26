@@ -15,11 +15,12 @@ class Error extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
+    const { error } = Utils
     const { channel } = msg
 
     // * ------------------ Logic --------------------
 
-    return Utils.error('Test Error', 'Error Triggered by Admin', channel)
+    return error('Test Error', 'Error Triggered by Admin', channel)
   }
 }
 

@@ -6,7 +6,7 @@ class Poll extends Command {
       name: 'poll',
       category: 'Admin',
       description: 'Template',
-      usage: 'poll giveaway is happening!',
+      usage: ['poll <whats the poll for?>'],
       permsNeeded: ['ADMINISTRATOR']
     })
   }
@@ -15,10 +15,11 @@ class Poll extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
+    const { embed } = Utils
 
     // * ------------------ Logic --------------------
 
-    const pollembed = Utils.embed(msg)
+    const pollembed = embed(msg)
       .setFooter('React to vote')
       .setDescription(args.join(' '))
       .setTitle(`Poll created by ${msg.author.username}`)

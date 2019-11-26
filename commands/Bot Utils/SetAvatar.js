@@ -6,14 +6,14 @@ class SetAvatar extends Command {
       name: 'setavatar',
       category: 'Bot Utils',
       description: 'Sets the bot avatar',
-      usage: 'setavatar <image url>',
+      usage: ['setavatar <image url>'],
       ownerOnly: true,
       args: true
     })
   }
 
   async run(client, msg, args) {
-    msg.delete()
+    await msg.delete()
 
     const a = await client.user.setAvatar(args[1])
     return console.log(`--> New avatar: ${a.avatarURL}`)

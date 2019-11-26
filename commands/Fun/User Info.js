@@ -8,7 +8,7 @@ class UserInfo extends Command {
       name: 'userinfo',
       category: 'Fun',
       description: 'Get info on yourself and others.',
-      usage: `userinfo | userinfo @user`,
+      usage: [`userinfo`, `userinfo @user`],
       aliases: ['user'],
       guildOnly: true
     })
@@ -18,7 +18,7 @@ class UserInfo extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { warningMessage } = Utils
+    const { warningMessage, embed } = Utils
     const { member, channel } = msg
 
     // * ------------------ Logic --------------------
@@ -29,7 +29,7 @@ class UserInfo extends Command {
     const inGuild = msg.guild.members.has(user.id)
     const roles = user.roles.map((role) => role.name)
 
-    const embed = Utils.embed(msg)
+    const e = embed(msg)
       .setTitle(`${user.user.tag}'s User Info`)
       .setThumbnail(user.user.avatarURL)
       .addField('ID:', `${user.id}`, true)
@@ -55,14 +55,14 @@ class UserInfo extends Command {
         if (memSort[i].id === user.id) break
       }
 
-      embed
-        .addField('Joined At', dateFormat(rMember.joinedAt), true)
-        .addField('Joined Position', position, true)
+      e.addField('Joined At', dateFormat(rMember.joinedAt), true).addField(
+        'Joined Position',
+        position,
+        true
+      )
     }
 
-    if (user.user.presence.activity) embed.addField('Game', user.user.presence.activity.name)
-
-    return channel.send(embed)
+    return channel.send(e)
   }
 }
 module.exports = UserInfo

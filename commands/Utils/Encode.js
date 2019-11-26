@@ -6,7 +6,7 @@ class Encode extends Command {
       name: 'encode',
       category: 'Utils',
       description: 'Encodes a message to binary',
-      usage: 'encode some text to convert',
+      usage: ['encode <text>'],
       args: true
     })
   }

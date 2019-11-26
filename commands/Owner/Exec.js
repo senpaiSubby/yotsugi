@@ -8,7 +8,9 @@ class Executor extends Command {
       name: 'exec',
       category: 'Owner',
       description: 'Executes shell commands',
-      ownerOnly: true
+      ownerOnly: true,
+      args: true,
+      usage: ['exec <command>']
     })
   }
 
@@ -16,7 +18,7 @@ class Executor extends Command {
     // * ------------------ Setup --------------------
 
     const { channel } = msg
-    const { Utils } = client
+    const { makeShellSafe } = client
 
     // * ------------------ Usage Logic --------------------
 
@@ -32,11 +34,12 @@ class Executor extends Command {
     const error = (err) =>
       `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
-    exec(Utils.makeShellSafe(args.join(' ')), { silent: true }, async (code, stdout, stderr) => {
-      if (stderr)
+    exec(makeShellSafe(args.join(' ')), { silent: true }, async (code, stdout, stderr) => {
+      if (stderr) {
         return channel
           .send(`${input}\n${error(stderr)}`)
           .catch((err) => channel.send(`${input}\n${error(err)}`))
+      }
 
       const response = `📤 **Output:**\n\`\`\`sh\n${stdout.replace(regex, '[Token]')}\n\`\`\``
       return channel

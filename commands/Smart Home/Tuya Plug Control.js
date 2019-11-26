@@ -7,7 +7,7 @@ class TuyaPlugController extends Command {
       name: 'plug',
       category: 'Smart Home',
       description: 'Tuya Plug Control',
-      usage: `plug <name>`,
+      usage: [`plug <name>`],
       aliases: ['socket'],
       ownerOnly: true,
       webUI: true,
@@ -17,8 +17,8 @@ class TuyaPlugController extends Command {
 
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
-    const { Utils } = client
-    const { capitalize } = Utils
+    const { Utils, Log } = client
+    const { capitalize, embed } = Utils
     const { errorMessage, warningMessage, standardMessage } = Utils
     const { channel } = msg
 
@@ -41,15 +41,18 @@ class TuyaPlugController extends Command {
 
           const currentStatus = await device.get()
           deviceList.push({
-            name: item.name,
+            name: d.name,
             status: currentStatus === 1 ? 'on' : 'off'
           })
           await device.disconnect()
         })
 
         return deviceList
-      } catch {
-        return null
+      } catch (e) {
+        const text = `Failed to connect to devices`
+        if (api) return text
+        Log.error('Tuya', text, e)
+        await errorMessage(msg, text)
       }
     }
 
@@ -68,9 +71,11 @@ class TuyaPlugController extends Command {
         const status = currentStatus ? 'off' : 'on'
         if (api) return `${capitalize(name)} turned ${status}`
         return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${status}`)
-      } catch {
-        if (api) return `Failed to connect to ${capitalize(name)}`
-        return errorMessage(msg, `Failed to connect to ${capitalize(name)}`)
+      } catch (e) {
+        const text = `Failed to connect to ${capitalize(name)}`
+        if (api) return text
+        Log.error('Tuya', text, e)
+        await errorMessage(msg, text)
       }
     }
 
@@ -91,27 +96,32 @@ class TuyaPlugController extends Command {
         await device.set({ set: !currentState })
         if (api) return `${capitalize(name)} turned ${state}`
         return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${state}`)
-      } catch {
-        if (api) return `Failed to connect to ${capitalize(name)}`
-        return errorMessage(msg, `Failed to connect to ${capitalize(name)}`)
+      } catch (e) {
+        const text = `Failed to connect to ${capitalize(name)}`
+        if (api) return text
+        Log.error('Tuya', text, e)
+        await errorMessage(msg, text)
       }
     }
 
     // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
-      case 'list':
+      case 'list': {
         const deviceList = await listPlugs()
-        if (api) return deviceList
-        const embed = Utils.embed(msg).setTitle(':electric_plug: Smart Plugs')
+        if (deviceList) {
+          if (api) return deviceList
+          const e = embed(msg).setTitle(':electric_plug: Smart Plugs')
 
-        deviceList.forEach((device) => embed.addField(`${device.name}`, `Status: ${device.status}`))
-        return channel.send(embed)
-
-      default:
+          deviceList.forEach((device) => e.addField(`${device.name}`, `Status: ${device.status}`))
+          return channel.send(e)
+        }
+        return
+      }
+      default: {
         const index = devices.findIndex((d) => d.name === args[0])
         const device = devices[index]
-        const name = Utils.capitalize(args[0])
+        const name = capitalize(args[0])
         // if plug name not found
         if (index === -1) return warningMessage(msg, `No plug named **${name}`)
 
@@ -120,6 +130,7 @@ class TuyaPlugController extends Command {
 
         // if user doesnt specify on/off then toggle device instead
         return togglePlug(device)
+      }
     }
   }
 }

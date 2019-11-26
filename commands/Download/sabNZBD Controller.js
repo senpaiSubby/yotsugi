@@ -8,7 +8,7 @@ class SabnzbdManagement extends Command {
       name: 'sab',
       category: 'Download',
       description: 'sabNZBD Management',
-      usage: `sab list`,
+      usage: [`sab list`],
       aliases: ['nzb'],
       ownerOnly: true,
       args: true
@@ -18,9 +18,17 @@ class SabnzbdManagement extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { sortByKey } = client.Utils
-    const { p, Utils } = client
-    const { errorMessage, warningMessage, validOptions, missingConfig } = Utils
+    const { p, Utils, Log } = client
+
+    const {
+      errorMessage,
+      warningMessage,
+      validOptions,
+      missingConfig,
+      sortByKey,
+      embed,
+      paginate
+    } = Utils
 
     // * ------------------ Config --------------------
 
@@ -53,43 +61,46 @@ class SabnzbdManagement extends Command {
           })
         })
         return sortByKey(downloadQueue, '-index')
-      } catch {
-        return errorMessage(msg, 'Could not connect to sabNZBD')
+      } catch (e) {
+        const text = 'Could not connect to sabNZBD'
+        Log.error('sabNZBD', text, e)
+        await errorMessage(msg, text)
       }
     }
 
     // * ------------------ Usage Logic --------------------
 
-    const data = await getQueue()
-
-    const caseOptions = ['list']
     switch (args[0]) {
       case 'list': {
-        if (!data.length > 0) {
-          return warningMessage(msg, `Nothing in download Queue`)
-        }
-        const embedList = []
-        data.forEach((item) => {
-          const { filename, status, percentage, time, size } = item
-          const embed = Utils.embed(msg)
-            .setTitle('SabNZBD Queue')
-            .setThumbnail(
-              'https://dashboard.snapcraft.io/site_media/appmedia/2018/10/icon.svg_WxcxD3g.png'
+        const data = await getQueue()
+        if (data) {
+          if (!data.length > 0) return warningMessage(msg, `Nothing in download Queue`)
+
+          const embedList = []
+          data.forEach((item) => {
+            const { filename, status, percentage, time, size } = item
+            embedList.push(
+              embed(msg)
+                .setTitle('SabNZBD Queue')
+                .setThumbnail(
+                  'https://dashboard.snapcraft.io/site_media/appmedia/2018/10/icon.svg_WxcxD3g.png'
+                )
+                .addField('Filename', `${filename}`, false)
+                .addField('Status', `${status}`, true)
+                .addField('Percentage', `${percentage}`, true)
+                .addField('Size Total', `${size.total}`, true)
+                .addField('Size Left', `${size.left}`, true)
+                .addField('Time Left', `${time.left}`, true)
+                .addField('ETA', `${time.eta}`, true)
             )
-            .addField('__Filename__', `${filename}`, false)
-            .addField('__Status__', `${status}`, true)
-            .addField('__Percentage__', `${percentage}`, true)
-            .addField('__Size Total__', `${size.total}`, true)
-            .addField('__Size Left__', `${size.left}`, true)
-            .addField('__Time Left__', `${time.left}`, true)
-            .addField('__ETA__', `${time.eta}`, true)
-          embedList.push(embed)
-        })
-        return Utils.paginate(client, msg, embedList, 1)
+          })
+          return paginate(client, msg, embedList, 1)
+        }
+        return
       }
 
       default: {
-        return validOptions(msg, caseOptions)
+        return validOptions(msg, ['list'])
       }
     }
   }

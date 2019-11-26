@@ -1,14 +1,16 @@
 const fs = require('fs')
 const path = require('path')
-const { Collection, Client } = require('discord.js')
+const { Client } = require('discord.js')
+const Enmap = require('enmap')
 
 module.exports = class SubprocessManager {
   constructor(client) {
     this.client = client
-    this.processes = new Collection()
+    this.processes = new Enmap()
 
-    if (!this.client || !(this.client instanceof Client))
+    if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
+    }
   }
 
   loadModules(dir) {
@@ -22,19 +24,21 @@ module.exports = class SubprocessManager {
       const instance = new Process(this.client)
 
       if (!instance.disabled) {
-        if (this.processes.has(instance.name))
+        if (this.processes.has(instance.name)) {
           throw new Error('Subprocesses cannot have the same name')
+        }
 
         this.processes.set(instance.name, instance)
-
-        for (const subprocess of this.processes.values()) this.startModule(subprocess)
       }
     })
+    for (const subprocess of this.processes.values()) {
+      this.startModule(subprocess)
+    }
   }
 
   startModule(subprocess) {
     try {
-      return subprocess.run()
+      subprocess.run()
     } catch (err) {
       this.client.Log.error('Subprocess', err)
     }

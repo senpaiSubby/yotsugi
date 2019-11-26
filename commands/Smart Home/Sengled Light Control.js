@@ -7,7 +7,7 @@ class SengledLightController extends Command {
       name: 'lights',
       category: 'Smart Home',
       description: 'Sengled Light Control',
-      usage: `lights desk | lights list`,
+      usage: [`lights desk`, `lights list`],
       aliases: ['light', 'lamp'],
       ownerOnly: true,
       webUI: true,
@@ -19,8 +19,8 @@ class SengledLightController extends Command {
     // * ------------------ Setup --------------------
 
     const { Log, Utils, p } = client
-    const { capitalize } = Utils
-    const { missingConfig, warningMessage, standardMessage } = Utils
+    const { capitalize, embed } = Utils
+    const { missingConfig, warningMessage, errorMessage, standardMessage } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -63,9 +63,10 @@ class SengledLightController extends Command {
         })
         const data = await response.json()
         return data
-      } catch (error) {
-        Log.warn(error)
-        return false
+      } catch (e) {
+        if (api) return `Failed to connect to Sengled`
+        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
 
@@ -90,8 +91,10 @@ class SengledLightController extends Command {
           })
         })
         return deviceList
-      } catch (error) {
-        Log.warn(error)
+      } catch (e) {
+        if (api) return `Failed to connect to Sengled`
+        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
 
@@ -111,8 +114,10 @@ class SengledLightController extends Command {
         const state = newState === 'on' ? 'on' : 'off'
         if (api) return `${capitalize(deviceName)} light turned ${state}`
         return standardMessage(msg, `${icon} ${capitalize(deviceName)} light turned ${state}`)
-      } catch (error) {
-        Log.warn(error)
+      } catch (e) {
+        if (api) return `Failed to connect to Sengled`
+        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
     const setBrightness = async (deviceID, deviceName, newBrightness) => {
@@ -147,52 +152,56 @@ class SengledLightController extends Command {
             `:bulb: ${capitalize(deviceName)} light brightness set to ${newBrightness}`
           )
         }
-      } catch (error) {
-        Log.warn(error)
+      } catch (e) {
+        if (api) return `Failed to connect to Sengled`
+        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
 
     // * ------------------ Usage Logic --------------------
 
     const devices = await getDevices()
-
-    switch (args[0]) {
-      case 'list': {
-        if (api) return devices
-        const embed = Utils.embed(msg).setTitle(':bulb: Lights')
-        devices.forEach((device) => {
-          embed.addField(
-            `${device.name}`,
-            `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
-            true
-          )
-        })
-        return channel.send(embed)
-      }
-      default: {
-        const deviceName = args[0]
-        // find index based of of key name
-        const index = devices.findIndex((d) => d.name === deviceName)
-
-        // if light not found
-        if (index === -1) {
-          if (api) return `Could not find a light named ${deviceName}`
-          return warningMessage(msg, `Could not find a light named ${deviceName}`)
+    if (devices) {
+      const option = args[0]
+      switch (option) {
+        case 'list': {
+          if (api) return devices
+          const e = embed(msg).setTitle(':bulb: Lights')
+          devices.forEach((device) => {
+            encodeURIComponent.addField(
+              `${device.name}`,
+              `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
+              true
+            )
+          })
+          return channel.send(e)
         }
-        const device = devices[index].uuid
+        default: {
+          const deviceName = args[0]
+          // find index based of of key name
+          const index = devices.findIndex((d) => d.name === deviceName)
 
-        if (args[1]) {
-          if (args[1] === 'on' || args[1] === 'off') {
-            // toggle power on/off if brightness not specified
-            const newState = args[1] === 'on' ? 100 : 0
-            return setBrightness(device, deviceName, newState)
+          // if light not found
+          if (index === -1) {
+            if (api) return `Could not find a light named ${deviceName}`
+            return warningMessage(msg, `Could not find a light named ${deviceName}`)
           }
-          // set light brightness eg: !light desk 100
-          return setBrightness(device, deviceName, args[1])
+          const device = devices[index].uuid
+
+          if (args[1]) {
+            if (args[1] === 'on' || args[1] === 'off') {
+              // toggle power on/off if brightness not specified
+              const newState = args[1] === 'on' ? 100 : 0
+              return setBrightness(device, deviceName, newState)
+            }
+            // set light brightness eg: !light desk 100
+            return setBrightness(device, deviceName, args[1])
+          }
+          // if no brightness specified then toggle light power
+          const newState = devices[index].status === 'on' ? 0 : 100
+          return setBrightness(device, deviceName, newState)
         }
-        // if no brightness specified then toggle light power
-        const newState = devices[index].status === 'on' ? 0 : 100
-        return setBrightness(device, deviceName, newState)
       }
     }
   }

@@ -6,7 +6,7 @@ class AddRole extends Command {
       name: 'addrole',
       category: 'Admin',
       description: 'Add roles to members',
-      usage: 'addrole @user rolename',
+      usage: ['addrole <@user> <rolename>'],
       aliases: ['arole'],
       permsNeeded: ['MANAGE_ROLES'],
       args: true
@@ -17,7 +17,7 @@ class AddRole extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { warningMessage, errorMessage } = Utils
+    const { warningMessage, errorMessage, embed } = Utils
 
     // * ------------------ Logic --------------------
 
@@ -31,13 +31,14 @@ class AddRole extends Command {
     const gRole = msg.guild.roles.find((a) => a.name === role)
     if (!gRole) return errorMessage(msg, `Role does not exist`)
 
-    if (rMember.roles.has(gRole.id))
+    if (rMember.roles.has(gRole.id)) {
       return warningMessage(msg, `${rMember} already has the role [ ${role} ]`)
+    }
     await rMember.addRole(gRole.id)
 
     try {
       return rMember.send(
-        Utils.embed(msg).setDescription(
+        embed(msg).setDescription(
           `**You have been given the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
         )
       )

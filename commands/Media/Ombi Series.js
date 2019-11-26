@@ -1,6 +1,6 @@
-const Command = require('../../core/Command')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
+const Command = require('../../core/Command')
 
 /*
 requires role "requesttv"
@@ -12,24 +12,24 @@ class OmbiTV extends Command {
       name: 'tv',
       category: 'Media',
       description: 'Search and Request TV Shows in Ombi.',
-      usage: `tv <Series Name> `,
+      usage: [`tv <Series Name>`],
       aliases: ['shows', 'series'],
       args: true
     })
   }
 
-  async run(client, msg, args, api) {
+  async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils } = client
-    const { errorMessage, warningMessage, standardMessage } = Utils
+    const { p, Utils, Log } = client
+    const { errorMessage, warningMessage, standardMessage, missingConfig, embed, paginate } = Utils
     const { author, member } = msg
 
     const role = msg.guild.roles.find('name', 'requesttv')
     if (!role) {
       await msg.guild.createRole({ name: 'requesttv' })
       return msg.channel.send(
-        Utils.embed(msg, 'yellow')
+        embed(msg, 'yellow')
           .setTitle('Missing role [requesttv]')
           .setDescription(
             'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
@@ -55,23 +55,23 @@ class OmbiTV extends Command {
     // * ------------------ Logic --------------------
 
     const outputTVShow = (show) => {
-      const embed = Utils.embed(msg)
+      const e = embed(msg)
         .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
         .setDescription(`${show.overview.substr(0, 255)}(...)`)
         .setThumbnail(show.banner)
         .setURL(`https://www.thetvdb.com/?id=${show.id}&tab=series`)
-        .addField('__Network__', show.network, true)
-        .addField('__Status__', show.status, true)
-        .addField('__TVDB ID__', show.id, true)
+        .addField('Network', show.network, true)
+        .addField('Status', show.status, true)
+        .addField('TVDB ID', show.id, true)
 
-      if (show.available) embed.addField('__Available__', '✅', true)
-      if (show.quality) embed.addField('__Quality__', show.quality, true)
-      if (show.requested) embed.addField('__Requested__', '✅', true)
-      if (show.approved) embed.addField('__Approved__', '✅', true)
-      if (show.plexUrl) embed.addField('__Plex__', `[Watch Now](${show.plexUrl})`, true)
-      if (show.embyUrl) embed.addField('__Emby__', `[Watch Now](${show.embyUrl})`, true)
+      if (show.available) e.addField('Available', '✅', true)
+      if (show.quality) e.addField('Quality', show.quality, true)
+      if (show.requested) e.addField('Requested', '✅', true)
+      if (show.approved) e.addField('Approved', '✅', true)
+      if (show.plexUrl) e.addField('Plex', `[Watch Now](${show.plexUrl})`, true)
+      if (show.embyUrl) e.addField('Emby', `[Watch Now](${show.embyUrl})`, true)
 
-      return embed
+      return e
     }
 
     const getTVDBID = async (name) => {
@@ -83,14 +83,17 @@ class OmbiTV extends Command {
           }
         })
         return response.json()
-      } catch {
-        return null
+      } catch (e) {
+        const text = 'Failed to connect to Ombi'
+        Log.error('Ombi Movies', text, e)
+        await errorMessage(msg, text)
       }
     }
 
     const requestTVShow = async (show) => {
-      if (!member.roles.some((r) => r.name === 'requesttv'))
+      if (!member.roles.some((r) => r.name === 'requesttv')) {
         return warningMessage(msg, 'You must be part of the `requesttv` role to request TV Shows.')
+      }
 
       if (show.available) return warningMessage(msg, `${show.title} is already available in Ombi`)
 
@@ -110,8 +113,10 @@ class OmbiTV extends Command {
             body: JSON.stringify({ tvDbId: show.id, requestAll: true })
           })
           return standardMessage(msg, `Requested ${show.title} in Ombi`)
-        } catch {
-          return errorMessage(msg`No connection to Ombi`)
+        } catch (e) {
+          const text = 'Failed to connect to Ombi'
+          Log.error('Ombi Movies', text, e)
+          await errorMessage(msg, text)
         }
       }
     }
@@ -120,13 +125,11 @@ class OmbiTV extends Command {
 
     const showName = args.join(' ')
 
-    if (!showName) {
-      return warningMessage(msg, `Please enter a valid TV show name!`)
-    }
+    if (!showName) return warningMessage(msg, `Please enter a valid TV show name!`)
 
     const results = await getTVDBID(showName)
 
-    if (results.length) {
+    if (results) {
       const embedList = []
       results.forEach(async (show) => {
         try {
@@ -135,15 +138,16 @@ class OmbiTV extends Command {
           })
           const data = await response.json()
           embedList.push(outputTVShow(data))
-        } catch {
-          return errorMessage(msg, `No connection to Ombi`)
+        } catch (e) {
+          const text = 'Failed to connect to Ombi'
+          Log.error('Ombi Movies', text, e)
+          await errorMessage(msg, text)
         }
       })
 
-      const itemPicked = await Utils.paginate(client, msg, embedList, 2, true)
+      const itemPicked = await paginate(client, msg, embedList, 2, true)
       return requestTVShow(results[itemPicked])
     }
-    return msg.reply(Utils.embed(msg, 'red').setDescription('No connection to Ombi'))
   }
 }
 module.exports = OmbiTV

@@ -5,7 +5,6 @@ const shortid = require('shortid')
 const Subprocess = require('../../Subprocess')
 const { client } = require('../../../index')
 const { Manager } = require('../../../events/message')
-const { generalConfig } = require('../../../core/Database')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -26,7 +25,7 @@ class WebServer extends Subprocess {
      */
 
     const { webServerPort } = client.config
-    const { Log } = client
+    const { Log, generalConfig } = client
 
     const app = express()
     app.use(express.json())
@@ -38,63 +37,71 @@ class WebServer extends Subprocess {
     )
     app.use(express.static(`${__dirname}/app/build`))
 
+    // home page
+    app.get('/', (req, res) => res.sendFile('/index.html'))
+
+    // get DB info
     app.get('/ui/db', async (req, res) => {
       const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
-      const data = {
-        uiButtons: JSON.parse(config.dataValues.webUI)
-      }
-      return res.status(200).json(data)
+
+      const data = JSON.parse(config.dataValues.webUI)
+
+      return res.status(200).json({ uiButtons: data.commands })
     })
 
+    // set DB info
     app.post('/ui/db', async (req, res) => {
       const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
-      const values = JSON.parse(config.dataValues.webUI)
+
+      const data = JSON.parse(config.dataValues.webUI)
 
       if (req.body[0] && req.body[1]) {
-        values.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
-        await generalConfig.update({ webUI: JSON.stringify(values) })
+        data.commands.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
+        await config.update({ webUI: JSON.stringify(data) })
         return res.status(200)
       }
     })
 
+    // remove Button
     app.post('/ui/db/rm/:id', async (req, res) => {
       const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
-      const values = JSON.parse(config.dataValues.webUI)
-      const index = values.findIndex((x) => x.id === req.params.id)
-      values.splice(index, 1)
-      await config.update({ webUI: JSON.stringify(values) })
 
+      const values = JSON.parse(config.dataValues.webUI)
+
+      const index = values.commands.findIndex((x) => x.id === req.params.id)
+
+      values.commands.splice(index, 1)
+
+      await config.update({ webUI: JSON.stringify(values) })
       return res.status(200)
     })
 
+    // general bot info
     app.get('/api/info', (req, res) => {
-      const upTime = client.Utils.millisecondsToTime(client.uptime)
-      const data = {
-        username: client.user.username,
-        id: client.user.id,
-        avatarId: client.user.avatar,
-        status: client.status,
-        upTime,
-        presence: client.user.localPresence.game,
-        avatar: client.user.avatarURL
-      }
-      return res.status(200).json(data)
+      const { Utils, uptime, user, status } = client
+      const { username, id, avatar, avatarURL, localPresence } = user
+      const { millisecondsToTime } = Utils
+
+      return res.status(200).json({
+        username,
+        id,
+        avatarId: avatar,
+        status,
+        upTime: millisecondsToTime(uptime),
+        presence: localPresence.game,
+        avatar: avatarURL
+      })
     })
 
-    app.get('/', (req, res) => {
-      res.sendFile('/index.html')
-    })
-
+    // endpoint for running commands
     app.post('/api/commands', async (req, res) => {
-      Log.info(
-        chalk.green(`${chalk.yellow(req.ip)} sent command ${chalk.yellow(req.body.command)}`)
-      )
+      Log.info('Web Server', `${req.ip} sent command ${req.body.command}`)
 
       // check if all required params are met
       if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
@@ -106,18 +113,15 @@ class WebServer extends Subprocess {
 
       client.db.general = config.dataValues
 
-      // anything after command becomes a list of args
-      const args = req.body.command.split(/ +/)
-      // command name without prefix
+      const args = req.body.command.split(' ')
       const cmdName = args.shift().toLowerCase()
       const cmd = Manager.findCommand(cmdName)
-      // if command exists
       if (cmd) {
-        // Check if command is enabled
         if (cmd.disabled) return res.status(403).json({ response: 'Command is disabled bot wide.' })
 
-        if (!cmd.webUI)
+        if (!cmd.webUI) {
           return res.status(403).json({ response: 'Command is disabled for use in the API.' })
+        }
 
         const response = await Manager.runCommand(client, cmd, null, args, true)
         return res.status(200).json({ response })
@@ -125,8 +129,8 @@ class WebServer extends Subprocess {
       return res.status(406).json({ response: `Command '${req.body.command}' not found.` })
     })
 
-    app.listen(webServerPort, () => {
-      Log.info(`Web Server Up`, `Listening on port ${webServerPort}`)
+    app.listen(webServerPort, '0.0.0.0', () => {
+      Log.info(`Web Server`, `Listening on port ${webServerPort}`)
     })
   }
 }

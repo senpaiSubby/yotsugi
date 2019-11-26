@@ -9,7 +9,7 @@ class DockerManagement extends Command {
       name: 'docker',
       category: 'Networking',
       description: 'Docker Management',
-      usage: `docker <state> <name> | docker list <state>`,
+      usage: [`docker <state> <name>`, `docker list <state>`],
       aliases: ['container'],
       ownerOnly: true,
       webUI: true,
@@ -20,8 +20,17 @@ class DockerManagement extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils } = client
-    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig } = Utils
+    const { p, Utils, Log } = client
+
+    const {
+      errorMessage,
+      warningMessage,
+      validOptions,
+      standardMessage,
+      missingConfig,
+      embed
+    } = Utils
+
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -61,8 +70,10 @@ class DockerManagement extends Command {
           })
         })
         return containerList
-      } catch {
-        return null
+      } catch (e) {
+        if (api) return `Failed to connect to Docker daemon`
+        Log.error('Docker', 'Failed to connect to Docker', e)
+        await errorMessage(msg, `Failed to connect to Docker daemon`)
       }
     }
 
@@ -73,8 +84,9 @@ class DockerManagement extends Command {
       // find index based off of key name
       const index = containers.findIndex((c) => c.name === containerName, newState)
       // if container name doesnt match
-      if (!containers[index].id)
+      if (!containers[index].id) {
         return warningMessage(msg, `No container named: ${containerName} found`)
+      }
 
       try {
         const response = await fetch(
@@ -92,18 +104,20 @@ class DockerManagement extends Command {
           )
         }
         if (newState !== 'restart' && status >= 300 && status < 400) {
-          if (api)
+          if (api) {
             return `Container ${containerName} is already ${newState}${
               newState === 'stop' ? 'ped' : 'ed'
             }`
+          }
           return warningMessage(
             msg,
             `Container ${containerName} is already ${newState}${newState === 'stop' ? 'ped' : 'ed'}`
           )
         }
-      } catch {
+      } catch (e) {
         if (api) return `Failed to connect to Docker daemon`
-        return errorMessage(msg, `Failed to connect to Docker daemon`)
+        Log.error('Docker', 'Failed to connect to Docker', e)
+        await errorMessage(msg, `Failed to connect to Docker daemon`)
       }
     }
 
@@ -123,24 +137,19 @@ class DockerManagement extends Command {
         if (containers) {
           if (containers.length) {
             if (api) return containers
-            const embed = Utils.embed(msg).setDescription('Docker Containers')
+            const e = embed(msg).setDescription('Docker Containers')
 
             containers.forEach((container) => {
               const { name, ports, state } = container
-              embed.addField(
-                `${name}`,
-                `${state}\n${ports.length ? ports.join(', ') : '---'}`,
-                true
-              )
+              e.addField(`${name}`, `${state}\n${ports.length ? ports.join(', ') : '---'}`, true)
             })
 
-            return channel.send(embed)
+            return channel.send(e)
           }
           if (api) return `No containers currently in state [ ${filterState} ]`
           return warningMessage(msg, `No containers currently in state [ ${filterState} ]`)
         }
-        if (api) return `Could not connect to the docker daemon`
-        return errorMessage(msg, `Could not connect to the docker daemon`)
+        return
       }
       default: {
         const containers = await getContainers()
@@ -149,8 +158,6 @@ class DockerManagement extends Command {
           const newState = args[0]
           return setContainerState(containers, newState, containerName)
         }
-        if (api) return `Could not connect to the docker daemon`
-        return errorMessage(msg, `Could not connect to the docker daemon`)
       }
     }
   }

@@ -7,7 +7,7 @@ class Calculator extends Command {
       name: 'calc',
       category: 'Utils',
       description: 'Calculates maths',
-      usage: 'calc 2+2',
+      usage: ['calc 2+2'],
       aliases: ['calculator']
     })
   }

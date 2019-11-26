@@ -6,7 +6,7 @@ class Get extends Command {
       name: 'server',
       category: 'Admin',
       description: 'Set/Get server config for bot',
-      usage: 'server get | server set <key> <value',
+      usage: ['server get', 'server set <key> <value'],
       args: true,
       permsNeeded: ['MANAGE_GUILD']
     })
@@ -53,8 +53,9 @@ class Get extends Command {
         if (
           ['serverName', 'id', 'ownerID', 'createdAt', 'updatedAt'].includes(key) &&
           author.id !== client.config.ownerID
-        )
+        ) {
           return warningMessage(msg, `DB value [${key}] cannot be edited`)
+        }
 
         if (key in values) {
           await config.update({ [key]: value })

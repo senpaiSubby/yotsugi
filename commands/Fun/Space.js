@@ -6,7 +6,7 @@ class SpaceText extends Command {
       name: 'space',
       category: 'Fun',
       description: "Spaces out text to look all dramatic n' stuff",
-      usage: 'space <text>',
+      usage: ['space <text>'],
       args: true,
       guildOnly: true
     })

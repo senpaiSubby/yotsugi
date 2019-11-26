@@ -18,6 +18,7 @@ module.exports = {
     'global-require': 'off',
     'no-prototype-builtins': 'off',
     'import/no-dynamic-require': 'off',
-    curly: ['error', 'multi']
+    'default-case': 'off',
+    curly: ['error']
   }
 }

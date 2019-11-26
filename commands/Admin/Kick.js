@@ -6,7 +6,7 @@ class KickUsers extends Command {
       name: 'kick',
       category: 'Admin',
       description: 'Kick em out',
-      usage: `kick <@username>`,
+      usage: [`kick <@username>`],
       guildOnly: true,
       args: true,
       permsNeeded: ['KICK_MEMBERS']
@@ -17,7 +17,7 @@ class KickUsers extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, serverConfig } = client
-    const { warningMessage } = Utils
+    const { warningMessage, embed } = Utils
     const { author, channel } = msg
 
     // * ------------------ Config --------------------
@@ -31,11 +31,12 @@ class KickUsers extends Command {
 
     // * ------------------ Check Config --------------------
 
-    if (!serverLogsChannel)
+    if (!serverLogsChannel) {
       return warningMessage(
         msg,
         `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
+    }
 
     // * ------------------ Logic --------------------
 
@@ -49,7 +50,7 @@ class KickUsers extends Command {
 
     const reason = args.slice(1).join(' ')
     return serverLogsChannel.send(
-      Utils.embed(msg, 'yellow')
+      embed(msg, 'yellow')
         .setThumbnail(target.user.avatarURL)
         .addField('Kicked Member', `**${target.user.username}** with an ID: ${target.user.id}`)
         .addField('Kicked By', `**${author.username}** with an ID: ${author.id}`)

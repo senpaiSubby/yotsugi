@@ -6,7 +6,7 @@ class GetServerInvite extends Command {
       name: 'bd',
       category: 'Owner',
       description: 'Creates invite to any guild the bot is on',
-      usage: 'bd <guild ID>',
+      usage: ['bd <guild ID>'],
       ownerOnly: true,
       args: true
     })
@@ -16,7 +16,7 @@ class GetServerInvite extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { warningMessage, errorMessage } = Utils
+    const { warningMessage, errorMessage, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Usage Logic --------------------
@@ -28,22 +28,24 @@ class GetServerInvite extends Command {
 
     const list = invites.map((invite) => invite.code)
 
-    if (list.length)
+    if (list.length) {
       return channel.send(
-        Utils.embed(msg)
+        embed(msg)
           .setTitle('I found the following existing invites')
           .setDescription(`**- https://discord.gg/${list.join('\n- https://discord.gg/')}**`)
       )
+    }
 
     const invitechannels = guild.channels.filter((c) =>
       c.permissionsFor(guild.me).has('CREATE_INSTANT_INVITE')
     )
-    if (!invitechannels)
+    if (!invitechannels) {
       return warningMessage(msg, 'No Channels found with permissions to create Invite in!')
+    }
 
     const newInvite = await invitechannels.random().createInvite()
     return channel.send(
-      Utils.embed(msg)
+      embed(msg)
         .setTitle('I created a new invite')
         .setDescription(`**- ${newInvite}**`)
     )

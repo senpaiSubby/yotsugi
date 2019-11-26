@@ -7,7 +7,7 @@ class MerakiAPI extends Command {
       name: 'meraki',
       category: 'Networking',
       description: 'Meraki network statistics',
-      usage: `meraki list`,
+      usage: [`meraki list`],
       ownerOnly: true,
       webUI: true,
       args: true
@@ -18,8 +18,8 @@ class MerakiAPI extends Command {
     // * ------------------ Setup --------------------
 
     const { bytesToSize, sortByKey } = client.Utils
-    const { p, Utils } = client
-    const { errorMessage, validOptions, missingConfig } = Utils
+    const { p, Utils, Log } = client
+    const { errorMessage, validOptions, missingConfig, embed, paginate } = Utils
 
     // * ------------------ Config --------------------
 
@@ -50,9 +50,7 @@ class MerakiAPI extends Command {
           devices.forEach((device) => {
             // gather / format json for each device in network
             let description
-            if (device.description)
-              // if device has a description set
-              description = device.description
+            if (device.description) description = device.description
             // if no device description set use hostname instead
             else description = device.dhcpHostname
 
@@ -71,14 +69,28 @@ class MerakiAPI extends Command {
               recv: downloaded
             })
           })
-          const status = {
+          return {
             numDevices: deviceList.length,
             traffic: { sent: bytesToSize(sent * 1000), recv: bytesToSize(recv * 1000) },
             devices: sortByKey(deviceList, 'ip')
           }
+        }
+      } catch (e) {
+        if (api) return `Failed to connect to Meraki`
+        Log.error('Meraki', 'Failed to connect to Meraki', e)
+        await errorMessage(msg, `Failed to connect to Meraki`)
+      }
+    }
+
+    // * ------------------ Usage Logic --------------------
+
+    switch (args[0]) {
+      case 'list': {
+        const status = await networkDevices()
+        if (status) {
           const embedList = []
           status.devices.forEach((i) => {
-            const e = Utils.embed(msg)
+            const e = embed(msg)
               .setTitle('Meraki Devices')
               .setThumbnail('https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000')
               .addField('Name', i.name, true)
@@ -88,19 +100,9 @@ class MerakiAPI extends Command {
               .addField('Recv', i.recv, true)
             embedList.push(e)
           })
-          return Utils.paginate(client, msg, embedList)
+          return paginate(client, msg, embedList)
         }
-      } catch {
-        if (api) return `Failed to connect to Meraki API`
-        return errorMessage(msg, `Failed to connect to Meraki API`)
-      }
-    }
-
-    // * ------------------ Usage Logic --------------------
-
-    switch (args[0]) {
-      case 'list': {
-        return networkDevices()
+        return
       }
       default: {
         return validOptions(msg, ['list'])

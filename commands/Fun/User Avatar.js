@@ -6,7 +6,7 @@ class UserAvatar extends Command {
       name: 'avatar',
       category: 'Fun',
       description: 'Show the avatar of users.',
-      usage: `avatar | avatar @user`,
+      usage: [`avatar`, `avatar @user`],
       guildOnly: true
     })
   }
@@ -15,6 +15,7 @@ class UserAvatar extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
+    const { embed } = Utils
     const { author, channel } = msg
 
     // * ------------------ Logic --------------------
@@ -23,11 +24,12 @@ class UserAvatar extends Command {
     if (!member.user.avatar) return channel.send('This user does not have an avatar!')
     const avatar = member.user.avatarURL
 
-    const embed = Utils.embed(msg)
-      .setAuthor(`${member.user.tag}`, avatar)
-      .setDescription(`[Avatar URL](${avatar})`)
-      .setImage(avatar)
-    return channel.send({ embed })
+    return channel.send(
+      embed(msg)
+        .setAuthor(`${member.user.tag}`, avatar)
+        .setDescription(`[Avatar URL](${avatar})`)
+        .setImage(avatar)
+    )
   }
 }
 module.exports = UserAvatar

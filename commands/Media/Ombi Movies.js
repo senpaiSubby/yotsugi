@@ -1,6 +1,6 @@
-const Command = require('../../core/Command')
 const fetch = require('node-fetch')
 const urljoin = require('url-join')
+const Command = require('../../core/Command')
 
 /*
 requires role "requestmovie"
@@ -12,23 +12,23 @@ class OmbiMovies extends Command {
       name: 'movie',
       category: 'Media',
       description: 'Search and Request Movies in Ombi.',
-      usage: `movie <Movie Name> | movie tmdb:603`,
+      usage: [`movie <Movie Name>`, `movie tmdb:603`],
       aliases: ['film'],
       args: true
     })
   }
 
-  async run(client, msg, args, api) {
+  async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils } = client
-    const { errorMessage, warningMessage, missingConfig, standardMessage } = Utils
+    const { p, Utils, Log } = client
+    const { errorMessage, warningMessage, missingConfig, standardMessage, embed, paginate } = Utils
     const { author, channel, member } = msg
 
     const role = msg.guild.roles.find('name', 'requestmovie')
     if (!role) {
       await msg.guild.createRole({ name: 'requestmovie' })
-      return msg.channel.send(
+      return channel.send(
         Utils.embed(msg, 'yellow')
           .setTitle('Missing role [requestmovie]')
           .setDescription(
@@ -55,24 +55,24 @@ class OmbiMovies extends Command {
     // * ------------------ Logic --------------------
 
     const outputMovie = (movie) => {
-      const embed = Utils.embed(msg)
+      const e = embed(msg)
         .setTitle(
           `${movie.title} ${
             movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
           }`
         )
-        .setDescription(movie.overview.substring(0, 255) + '(...)')
-        .setThumbnail('https://image.tmdb.org/t/p/w500' + movie.posterPath)
-        .setURL('https://www.themoviedb.org/movie/' + movie.theMovieDbId)
+        .setDescription(`${movie.overview.substring(0, 255)}(...)`)
+        .setThumbnail(`https://image.tmdb.org/t/p/w500${movie.posterPath}`)
+        .setURL(`https://www.themoviedb.org/movie/${movie.theMovieDbId}`)
 
-      if (movie.available) embed.addField('__Available__', '✅', true)
-      if (movie.quality) embed.addField('__Quality__', movie.quality, true)
-      if (movie.requested) embed.addField('__Requested__', '✅', true)
-      if (movie.approved) embed.addField('__Approved__', '✅', true)
-      if (movie.plexUrl) embed.addField('__Plex__', `[Watch now](${movie.plexUrl})`, true)
-      if (movie.embyUrl) embed.addField('__Emby__', `[Watch now](${movie.embyUrl})`, true)
+      if (movie.available) e.addField('Available', '✅', true)
+      if (movie.quality) e.addField('Quality', movie.quality, true)
+      if (movie.requested) e.addField('Requested', '✅', true)
+      if (movie.approved) e.addField('Approved', '✅', true)
+      if (movie.plexUrl) e.addField('Plex', `[Watch now](${movie.plexUrl})`, true)
+      if (movie.embyUrl) e.addField('Emby', `[Watch now](${movie.embyUrl})`, true)
 
-      return embed
+      return e
     }
     const getTMDbID = async (name) => {
       try {
@@ -84,14 +84,17 @@ class OmbiMovies extends Command {
           }
         })
         return response.json()
-      } catch {
-        return null
+      } catch (e) {
+        const text = 'Failed to connect to Ombi'
+        Log.error('Ombi Movies', text, e)
+        await errorMessage(msg, text)
       }
     }
 
     const requestMovie = async (movie) => {
-      if (!member.roles.some((r) => r.name === 'requestmovie'))
+      if (!member.roles.some((r) => r.name === 'requestmovie')) {
         return warningMessage(msg, 'You must be part of the `requestmovie` role to request movies.')
+      }
 
       if (movie.available) return warningMessage(msg, `${movie.title} is already available in Ombi`)
 
@@ -113,8 +116,10 @@ class OmbiMovies extends Command {
             body: JSON.stringify({ theMovieDbId: movie.theMovieDbId })
           })
           return standardMessage(msg, `Requested ${movie.title} in Ombi.`)
-        } catch {
-          return errorMessage(msg, `No connection to Ombi`)
+        } catch (e) {
+          const text = 'Failed to connect to Ombi'
+          Log.error('Ombi Movies', text, e)
+          await errorMessage(msg, text)
         }
       }
     }
@@ -123,13 +128,11 @@ class OmbiMovies extends Command {
 
     const movieName = args.join(' ')
 
-    if (!movieName) {
-      return warningMessage(msg, `Please enter a valid TV show name!`)
-    }
+    if (!movieName) return warningMessage(msg, `Please enter a valid TV show name!`)
 
     const results = await getTMDbID(movieName)
 
-    if (results.length) {
+    if (results) {
       const embedList = []
       results.forEach(async (movie) => {
         try {
@@ -141,14 +144,15 @@ class OmbiMovies extends Command {
           )
           const data = await response.json()
           embedList.push(outputMovie(data))
-        } catch {
-          return errorMessage(msg, `No connection to Ombi`)
+        } catch (e) {
+          const text = 'Failed to connect to Ombi'
+          Log.error('Ombi Movies', text, e)
+          await errorMessage(msg, text)
         }
       })
-      const itemPicked = await Utils.paginate(client, msg, embedList, 2, true)
+      const itemPicked = await paginate(client, msg, embedList, 2, true)
       return requestMovie(results[itemPicked])
     }
-    return errorMessage(msg, `No connection to Ombi`)
   }
 }
 module.exports = OmbiMovies

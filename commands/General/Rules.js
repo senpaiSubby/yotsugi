@@ -13,15 +13,16 @@ class Rules extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, serverConfig } = client
-    const { warningMessage, standardMessage } = Utils
+    const { warningMessage, standardMessage, embed } = Utils
     const { member } = msg
 
     // * ------------------ Check Config --------------------
 
-    if (args[0])
+    if (args[0]) {
       if (!member.permissions.has(['ADMINISTRATOR'])) {
         return warningMessage(msg, `You must have ['ADMINISTRATOR'] perms to ${args[0]} rules`)
       }
+    }
 
     // * ------------------ Logic --------------------
 
@@ -35,11 +36,12 @@ class Rules extends Command {
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
-    if (!serverLogsChannel)
+    if (!serverLogsChannel) {
       return warningMessage(
         msg,
         `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
       )
+    }
 
     switch (args[0]) {
       case 'add': {
@@ -57,19 +59,20 @@ class Rules extends Command {
         return warningMessage(msg, `Rule does not exist`)
       }
       default: {
-        if (!rules.length)
+        if (!rules.length) {
           return msg.reply(
-            Utils.embed(msg, 'yellow')
+            embed(msg, 'yellow')
               .setTitle(`There are no rules!`)
               .setDescription(`\`${prefix}rules add <rule to add>\`\nTo add some!`)
           )
+        }
 
         let ruleList = ''
         rules.forEach((i, index) => {
           ruleList += `${index + 1} | ${i}\n`
         })
         return msg.reply(
-          Utils.embed(msg)
+          embed(msg)
             .setTitle('Rules')
             .setDescription(ruleList)
         )

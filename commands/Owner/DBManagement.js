@@ -6,7 +6,7 @@ class DBManagement extends Command {
       name: 'db',
       category: 'Owner',
       description: 'Get/Set data in the DB',
-      usage: 'db get | db get emby | db set emby host https://emby.url',
+      usage: ['db get', 'db get emby', 'db set emby host https://emby.url'],
       ownerOnly: true,
       args: true
     })

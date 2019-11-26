@@ -8,7 +8,7 @@ class SystemPowerController extends Command {
       name: 'pc',
       category: 'Smart Home',
       description: 'Power linux systems on/off',
-      usage: `system gaara off | pc thinkboi reboot`,
+      usage: [`system gaara off`, `pc thinkboi reboot`],
       aliases: ['system'],
       ownerOnly: true,
       webUI: true,
@@ -19,8 +19,8 @@ class SystemPowerController extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { errorMessage, validOptions, standardMessage } = Utils
+    const { Utils, Log } = client
+    const { errorMessage, validOptions, standardMessage, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -34,7 +34,8 @@ class SystemPowerController extends Command {
 
       const options = ['reboot', 'off', 'on']
       if (!options.includes(command)) {
-        return validOptions(msg, options)
+        await validOptions(msg, options)
+        return
       }
 
       if (command === 'reboot' || command === 'off') {
@@ -52,9 +53,10 @@ class SystemPowerController extends Command {
             if (api) return `Told ${name} to ${text}`
             return standardMessage(msg, `:desktop: Told ${name} to ${text}`)
           }
-        } catch {
+        } catch (e) {
           if (api) return `Failed to connect to ${name}`
-          return errorMessage(msg, `Failed to connect to ${name}`)
+          Log.error('System Power Control', `Failed to connect to ${name}`, e)
+          await errorMessage(msg, `Failed to connect to ${name}`)
         }
       } else if (command === 'on') {
         await wol.wake(mac)
@@ -68,8 +70,7 @@ class SystemPowerController extends Command {
     switch (args[0]) {
       case 'list': {
         // todo add listing functionality
-        const embed = Utils.embed(msg)
-        return channel.send(embed)
+        return channel.send(embed(msg))
       }
 
       default: {

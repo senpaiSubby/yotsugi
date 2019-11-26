@@ -11,8 +11,9 @@ module.exports = class CommandManager {
     this.prefix = '//'
     this.ownerID = client.config.ownerID
 
-    if (!this.client || !(this.client instanceof Client))
+    if (!this.client || !(this.client instanceof Client)) {
       throw new Error('Discord Client is required')
+    }
   }
 
   loadCommands(directory) {
@@ -37,10 +38,11 @@ module.exports = class CommandManager {
 
     this.commands.set(commandName, instance)
 
-    for (const alias of instance.aliases)
+    for (const alias of instance.aliases) {
       if (this.aliases.has(alias))
         throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
       else this.aliases.set(alias, instance)
+    }
   }
 
   reloadCommands() {
@@ -65,7 +67,7 @@ module.exports = class CommandManager {
 
   async runCommand(client, command, msg, args, api = false) {
     if (api) {
-      msg = { channel: null, author: null }
+      msg = { channel: null, author: null, context: this }
       return command.run(client, msg, args, api)
     }
 
@@ -89,6 +91,7 @@ module.exports = class CommandManager {
     const { errorMessage, warningMessage, standardMessage } = client.Utils
     const { content, author, channel } = msg
     const { Utils, generalConfig } = client
+    const { embed } = Utils
 
     // if msg is sent by bot then ignore
     if (author.bot) return
@@ -107,8 +110,9 @@ module.exports = class CommandManager {
     client.db.general = config.dataValues
 
     // reply with prefix when bot is the only thing mentioned
-    if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1)
+    if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
       return warningMessage(msg, `My command prefix is ${prefix}`)
+    }
 
     // send all messages to our Log
     await messageLogging(client, msg)
@@ -157,7 +161,7 @@ module.exports = class CommandManager {
       return standardMessage(msg, `This command cannot be slid into my DM`)
     }
     // check if user and bot has all required perms in permsNeeded
-    if (channel.type !== 'dm')
+    if (channel.type !== 'dm') {
       if (command.permsNeeded) {
         const userMissingPerms = this.checkPerms(msg.member, command.permsNeeded)
         const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
@@ -170,7 +174,7 @@ module.exports = class CommandManager {
             )} ] but lacks the perms [ ${userMissingPerms.join(', ')} ]`
           )
           const m = await msg.reply(
-            Utils.embed(msg, 'red')
+            embed(msg, 'red')
               .setTitle('You lack the perms')
               .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
               .setFooter('Message will self destruct in 30 seconds')
@@ -186,7 +190,7 @@ module.exports = class CommandManager {
             )} ] for command [ ${userMissingPerms.join(', ')} ]`
           )
           const m = await channel.send(
-            Utils.embed(msg, 'red')
+            embed(msg, 'red')
               .setTitle('I lack the perms needed to perform that action')
               .setFooter('Message will self destruct in 30 seconds')
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
@@ -194,6 +198,7 @@ module.exports = class CommandManager {
           return m.delete(30000)
         }
       }
+    }
 
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
@@ -202,12 +207,11 @@ module.exports = class CommandManager {
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] without parameters`
       )
       const m = await msg.reply(
-        Utils.embed(msg, 'yellow')
+        embed(msg, 'yellow')
           .setTitle('Command requires parameters')
           .setFooter('Message will self destruct in 30 seconds')
           .setDescription(
-            `**__You can edit your last message instead of sending a new one!__**\n\n**Example Usage**\n\`\`\`css\n${command.usage.replace(
-              / \| /g,
+            `**__You can edit your last message instead of sending a new one!__**\n\n**Example Usage**\n\`\`\`css\n${command.usage.join(
               '\n'
             )}\`\`\``
           )
@@ -236,7 +240,7 @@ module.exports = class CommandManager {
       await generalConfig.create({
         username: owner.user.tag,
         id: ownerID,
-        webUI: JSON.stringify([]),
+        webUI: JSON.stringify({ apiKey: 1234, commands: [] }),
         pihole: JSON.stringify({ host: null, apiKey: null }),
         rclone: JSON.stringify({ remote: null }),
         emby: JSON.stringify({ host: null, apiKey: null, userID: null }),

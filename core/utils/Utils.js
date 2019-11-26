@@ -107,7 +107,7 @@ class Utils {
         }
       else {
         run = false
-        return
+        return editMessage.clearReactions()
       }
       await editMessage.clearReactions()
     }
