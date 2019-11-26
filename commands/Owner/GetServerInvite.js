@@ -6,7 +6,9 @@ class GetServerInvite extends Command {
       name: 'bd',
       category: 'Owner',
       description: 'Creates invite to any guild the bot is on',
-      ownerOnly: true
+      usage: 'bd <guild ID>',
+      ownerOnly: true,
+      args: true
     })
   }
 

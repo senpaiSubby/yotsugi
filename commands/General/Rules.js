@@ -1,5 +1,4 @@
 const Command = require('../../../noelleBot/core/Command')
-const Database = require('../../../noelleBot/core/Database')
 
 class Rules extends Command {
   constructor(client) {
@@ -13,7 +12,7 @@ class Rules extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, serverConfig } = client
     const { warningMessage, standardMessage } = Utils
     const { member } = msg
 
@@ -28,11 +27,11 @@ class Rules extends Command {
 
     const rule = args.slice(1).join(' ')
 
-    const serverConfig = await Database.Models.serverConfig.findOne({
+    const config = await serverConfig.findOne({
       where: { id: msg.guild.id }
     })
-    const { prefix, logsChannel } = serverConfig.dataValues
-    const rules = JSON.parse(serverConfig.dataValues.rules)
+    const { prefix, logsChannel } = config.dataValues
+    const rules = JSON.parse(config.dataValues.rules)
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
@@ -45,14 +44,14 @@ class Rules extends Command {
     switch (args[0]) {
       case 'add': {
         rules.push(rule)
-        await serverConfig.update({ rules: JSON.stringify(rules) })
+        await config.update({ rules: JSON.stringify(rules) })
         return standardMessage(msg, `${rule}\n\nAdded to rules`)
       }
       case 'remove': {
         const item = args[1] - 1
         const name = rules[item]
         rules.splice(item, 1)
-        await serverConfig.update({ rules: JSON.stringify(rules) })
+        await config.update({ rules: JSON.stringify(rules) })
         if (name) return standardMessage(msg, `${name}\n\nRemoved from rules`)
 
         return warningMessage(msg, `Rule does not exist`)

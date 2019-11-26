@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class Routines extends Command {
   constructor(client) {
@@ -17,15 +16,15 @@ class Routines extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, generalConfig } = client
     const { validOptions, warningMessage, standardMessage } = Utils
 
     // * ------------------ Config --------------------
 
-    const memberConfig = await Database.Models.generalConfig.findOne({
+    const config = await generalConfig.findOne({
       where: { id: msg.author.id }
     })
-    const routines = JSON.parse(memberConfig.dataValues.routines)
+    const routines = JSON.parse(config.dataValues.routines)
 
     // * ------------------ Logic --------------------
     // * ------------------ Usage Logic --------------------
@@ -56,7 +55,7 @@ class Routines extends Command {
         args.splice(0, 3)
         const arg = args.join(' ')
         routines.push({ name, command, arg: arg.split(' ') })
-        await memberConfig.update({ routines: JSON.stringify(routines) })
+        await config.update({ routines: JSON.stringify(routines) })
         return standardMessage(msg, `${name}\n\nAdded to routine list`)
       }
       case 'remove': {
@@ -65,7 +64,7 @@ class Routines extends Command {
         if (index === -1) return warningMessage(msg, `Routine does not exist`)
 
         routines.splice(index, 1)
-        await memberConfig.update({ routines: JSON.stringify(routines) })
+        await config.update({ routines: JSON.stringify(routines) })
         if (name) return standardMessage(msg, `${name}\n\nRemoved from routine list`)
 
         break

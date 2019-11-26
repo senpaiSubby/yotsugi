@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class Todo extends Command {
   constructor(client) {
@@ -12,28 +11,28 @@ class Todo extends Command {
   }
 
   async run(client, msg, args) {
-    const { p, Utils } = client
+    const { p, Utils, memberConfig } = client
     const { warningMessage, standardMessage } = Utils
     const { author } = msg
 
     const todo = args.slice(1).join(' ')
 
-    const memberConfig = await Database.Models.memberConfig.findOne({
+    const config = await memberConfig.findOne({
       where: { id: author.id }
     })
-    const todos = JSON.parse(memberConfig.dataValues.todos)
+    const todos = JSON.parse(config.dataValues.todos)
 
     switch (args[0]) {
       case 'add': {
         todos.push(todo)
-        await memberConfig.update({ todos: JSON.stringify(todos) })
+        await config.update({ todos: JSON.stringify(todos) })
         return standardMessage(msg, `${todo}\n\nAdded to todo list`)
       }
       case 'remove': {
         const item = args[1] - 1
         const name = todos[item]
         todos.splice(item, 1)
-        await memberConfig.update({ todos: JSON.stringify(todos) })
+        await config.update({ todos: JSON.stringify(todos) })
         if (name) return standardMessage(msg, `${name}\n\nRemoved from todo list`)
 
         return warningMessage(msg, `Rule does not exist`)

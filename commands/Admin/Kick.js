@@ -1,5 +1,4 @@
 const Command = require('../../../noelleBot/core/Command')
-const Database = require('../../../noelleBot/core/Database')
 
 class KickUsers extends Command {
   constructor(client) {
@@ -17,16 +16,16 @@ class KickUsers extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, serverConfig } = client
     const { warningMessage } = Utils
     const { author, channel } = msg
 
     // * ------------------ Config --------------------
 
-    const serverConfig = await Database.Models.serverConfig.findOne({
+    const config = await serverConfig.findOne({
       where: { id: msg.guild.id }
     })
-    const { prefix, logsChannel } = serverConfig.dataValues
+    const { prefix, logsChannel } = config.dataValues
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 

@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class Disable extends Command {
   constructor(client) {
@@ -16,7 +15,7 @@ class Disable extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, generalConfig } = client
     const { warningMessage } = Utils
     const { channel } = msg
 
@@ -24,10 +23,10 @@ class Disable extends Command {
 
     // * ------------------ Config --------------------
 
-    const generalConfig = await Database.Models.generalConfig.findOne({
+    const config = await generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
-    const values = JSON.parse(generalConfig.dataValues.disabledCommands)
+    const values = JSON.parse(config.dataValues.disabledCommands)
 
     // * ------------------ Logic --------------------
 
@@ -56,7 +55,7 @@ class Disable extends Command {
           if (!isDisabled) {
             willDisable.push(i)
             values.push({ command: cmd.name, aliases: cmd.aliases })
-            await generalConfig.update({ disabledCommands: JSON.stringify(values) })
+            await config.update({ disabledCommands: JSON.stringify(values) })
           }
         }
         if (nonDisableable.includes(i)) cannotDisable.push(i)

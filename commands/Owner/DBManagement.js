@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class DBManagement extends Command {
   constructor(client) {
@@ -16,7 +15,7 @@ class DBManagement extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, generalConfig } = client
     const { warningMessage, validOptions, standardMessage } = Utils
     const { channel } = msg
 
@@ -24,10 +23,10 @@ class DBManagement extends Command {
 
     // * ------------------ Config --------------------
 
-    const generalConfig = await Database.Models.generalConfig.findOne({
+    const config = await generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
-    const values = generalConfig.dataValues
+    const values = config.dataValues
 
     // * ------------------ Usage Logic --------------------
 
@@ -62,7 +61,7 @@ class DBManagement extends Command {
         if (keyToChange in values && key1 in JSON.parse(values[keyToChange])) {
           const tempObject = JSON.parse(values[args[1]])
           tempObject[key1] = val1
-          await generalConfig.update({ [keyToChange]: JSON.stringify(tempObject) })
+          await config.update({ [keyToChange]: JSON.stringify(tempObject) })
           const m = await standardMessage(msg, `Key [${keyToChange}.${key1}] changed to [${val1}]`)
           return m.delete(10000)
         }

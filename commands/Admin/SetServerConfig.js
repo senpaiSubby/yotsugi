@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class Get extends Command {
   constructor(client) {
@@ -16,7 +15,7 @@ class Get extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, serverConfig } = client
     const { warningMessage, validOptions, standardMessage } = Utils
     const { author } = msg
     const option = args[0]
@@ -28,10 +27,10 @@ class Get extends Command {
     switch (option) {
       case 'get':
         {
-          const serverConfig = await Database.Models.serverConfig.findOne({
+          const config = await serverConfig.findOne({
             where: { id: msg.guild.id }
           })
-          const values = serverConfig.dataValues
+          const values = config.dataValues
           // serverConfig.update({ [args[1]]: args[2] })
           msg.reply(
             JSON.stringify(args[1] ? values[args[1]] : values, null, 2)
@@ -47,10 +46,10 @@ class Get extends Command {
         }
         break
       case 'set': {
-        const serverConfig = await Database.Models.serverConfig.findOne({
+        const config = await serverConfig.findOne({
           where: { id: msg.guild.id }
         })
-        const values = serverConfig.dataValues
+        const values = config.dataValues
         if (
           ['serverName', 'id', 'ownerID', 'createdAt', 'updatedAt'].includes(key) &&
           author.id !== client.config.ownerID
@@ -58,7 +57,7 @@ class Get extends Command {
           return warningMessage(msg, `DB value [${key}] cannot be edited`)
 
         if (key in values) {
-          await serverConfig.update({ [key]: value })
+          await config.update({ [key]: value })
           return standardMessage(msg, `Server [${key}] changed to [${value}]`)
         }
         return warningMessage(msg, `[${key}] does not exist`)

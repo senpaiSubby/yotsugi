@@ -1,6 +1,7 @@
 const { Client } = require('discord.js')
 const { exec } = require('shelljs')
 const config = require('./data/config')
+const Database = require('./core/Database')
 
 // clear terminal
 exec('clear')
@@ -13,12 +14,19 @@ client.Log = require('./core/utils/Log')
 client.Utils = require('./core/utils/Utils')
 
 client.db = []
+client.generalConfig = Database.Models.generalConfig
+client.serverConfig = Database.Models.serverConfig
+client.memberConfig = Database.Models.memberConfig
 
 client.colors = {
-  red: '#cc241d',
-  green: '#b8bb26',
-  blue: '#458588',
-  yellow: '#d79921'
+  red: '#fb4934',
+  green: '#8ec07c',
+  blue: '#83a598',
+  yellow: '#fabd2f',
+  orange: '#d79921',
+  white: '#ebdbb2',
+  black: '#282828',
+  grey: '#928374'
 }
 
 module.exports = { client }

@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class Disabled extends Command {
   constructor(client) {
@@ -14,16 +13,16 @@ class Disabled extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, generalConfig } = client
     const { standardMessage } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const generalConfig = await Database.Models.generalConfig.findOne({
+    const config = await generalConfig.findOne({
       where: { id: client.config.ownerID }
     })
-    const values = JSON.parse(generalConfig.dataValues.disabledCommands)
+    const values = JSON.parse(config.dataValues.disabledCommands)
 
     // * ------------------ Usage Logic --------------------
 

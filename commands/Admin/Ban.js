@@ -1,5 +1,4 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
 class BanUser extends Command {
   constructor(client) {
@@ -17,16 +16,16 @@ class BanUser extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, serverConfig } = client
     const { warningMessage, standardMessage } = Utils
     const { author, channel } = msg
 
     // * ------------------ Config --------------------
 
-    const serverConfig = await Database.Models.serverConfig.findOne({
+    const config = await serverConfig.findOne({
       where: { id: msg.guild.id }
     })
-    const { prefix, logsChannel } = serverConfig.dataValues
+    const { prefix, logsChannel } = config.dataValues
 
     // * ------------------ Check Config --------------------
 

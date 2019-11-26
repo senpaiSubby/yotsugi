@@ -5,7 +5,7 @@ const shortid = require('shortid')
 const Subprocess = require('../../Subprocess')
 const { client } = require('../../../index')
 const { Manager } = require('../../../events/message')
-const Database = require('../../../core/Database')
+const { generalConfig } = require('../../../core/Database')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -39,20 +39,20 @@ class WebServer extends Subprocess {
     app.use(express.static(`${__dirname}/app/build`))
 
     app.get('/ui/db', async (req, res) => {
-      const generalConfig = await Database.Models.generalConfig.findOne({
+      const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
       const data = {
-        uiButtons: JSON.parse(generalConfig.dataValues.webUI)
+        uiButtons: JSON.parse(config.dataValues.webUI)
       }
       return res.status(200).json(data)
     })
 
     app.post('/ui/db', async (req, res) => {
-      const generalConfig = await Database.Models.generalConfig.findOne({
+      const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
-      const values = JSON.parse(generalConfig.dataValues.webUI)
+      const values = JSON.parse(config.dataValues.webUI)
 
       if (req.body[0] && req.body[1]) {
         values.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
@@ -62,13 +62,13 @@ class WebServer extends Subprocess {
     })
 
     app.post('/ui/db/rm/:id', async (req, res) => {
-      const generalConfig = await Database.Models.generalConfig.findOne({
+      const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
-      const values = JSON.parse(generalConfig.dataValues.webUI)
+      const values = JSON.parse(config.dataValues.webUI)
       const index = values.findIndex((x) => x.id === req.params.id)
       values.splice(index, 1)
-      await generalConfig.update({ webUI: JSON.stringify(values) })
+      await config.update({ webUI: JSON.stringify(values) })
 
       return res.status(200)
     })
@@ -100,11 +100,11 @@ class WebServer extends Subprocess {
       if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
 
       // set db configs
-      const generalConfig = await Database.Models.generalConfig.findOne({
+      const config = await generalConfig.findOne({
         where: { id: client.config.ownerID }
       })
 
-      client.db.general = generalConfig.dataValues
+      client.db.general = config.dataValues
 
       // anything after command becomes a list of args
       const args = req.body.command.split(/ +/)

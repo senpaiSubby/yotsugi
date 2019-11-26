@@ -102,7 +102,7 @@ class TransmissionManagement extends Command {
         })
         return sortByKey(downloadQueue, 'percentage')
       } catch {
-        return errorMessage(msg, `Failed to connect to Transmission`)
+        return false
       }
     }
 
@@ -121,6 +121,8 @@ class TransmissionManagement extends Command {
     switch (args[0]) {
       case 'list': {
         const data = await getQueue()
+
+        if (!data) return errorMessage(msg, `Failed to connect to Transmission`)
         if (!data.length) return warningMessage(msg, `Nothing in download Queue`)
 
         const embedList = []
