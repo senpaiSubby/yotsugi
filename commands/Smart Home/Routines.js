@@ -207,8 +207,7 @@ class Routines extends Command {
           return warningMessage(msg, `Routine [ ${routineName} ] does not exist`)
         }
 
-        if (api) return `Running routine [ ${routineName} ]`
-        await standardMessage(msg, `Running routine [ ${routineName} ]`)
+        if (!api) await standardMessage(msg, `Running routine [ ${routineName} ]`)
 
         const failedCommands = []
         routines[index].commands.forEach(async (i) => {
@@ -229,6 +228,7 @@ class Routines extends Command {
           if (api) return `Commands [ ${failedCommands.join(', ')} ] dont exist`
           return errorMessage(msg, `Commands [ ${failedCommands.join(', ')} ] dont exist`)
         }
+        if (api) return `Ran routine [ ${routineName} ]`
         break
       }
 
