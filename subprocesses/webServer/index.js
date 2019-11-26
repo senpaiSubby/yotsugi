@@ -1,10 +1,8 @@
 const express = require('express')
-const chalk = require('chalk')
 const cors = require('cors')
 const shortid = require('shortid')
-const Subprocess = require('../../Subprocess')
-const { client } = require('../../../index')
-const { Manager } = require('../../../events/message')
+const Subprocess = require('../../core/Subprocess')
+const { Manager } = require('../../events/message')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -24,8 +22,8 @@ class WebServer extends Subprocess {
      *  }
      */
 
-    const { webServerPort } = client.config
-    const { Log, generalConfig } = client
+    const { webServerPort } = this.client.config
+    const { Log, generalConfig } = this.client
 
     const app = express()
     app.use(express.json())
@@ -43,7 +41,7 @@ class WebServer extends Subprocess {
     // get DB info
     app.get('/ui/db', async (req, res) => {
       const config = await generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
 
       const data = JSON.parse(config.dataValues.webUI)
@@ -54,7 +52,7 @@ class WebServer extends Subprocess {
     // set DB info
     app.post('/ui/db', async (req, res) => {
       const config = await generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
 
       const data = JSON.parse(config.dataValues.webUI)
@@ -69,7 +67,7 @@ class WebServer extends Subprocess {
     // remove Button
     app.post('/ui/db/rm/:id', async (req, res) => {
       const config = await generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
 
       const values = JSON.parse(config.dataValues.webUI)
@@ -84,7 +82,7 @@ class WebServer extends Subprocess {
 
     // general bot info
     app.get('/api/info', (req, res) => {
-      const { Utils, uptime, user, status } = client
+      const { Utils, uptime, user, status } = this.client
       const { username, id, avatar, avatarURL, localPresence } = user
       const { millisecondsToTime } = Utils
 
@@ -108,10 +106,10 @@ class WebServer extends Subprocess {
 
       // set db configs
       const config = await generalConfig.findOne({
-        where: { id: client.config.ownerID }
+        where: { id: this.client.config.ownerID }
       })
 
-      client.db.general = config.dataValues
+      this.client.db.general = config.dataValues
 
       const args = req.body.command.split(' ')
       const cmdName = args.shift().toLowerCase()
@@ -123,7 +121,7 @@ class WebServer extends Subprocess {
           return res.status(403).json({ response: 'Command is disabled for use in the API.' })
         }
 
-        const response = await Manager.runCommand(client, cmd, null, args, true)
+        const response = await Manager.runCommand(this.client, cmd, null, args, true)
         return res.status(200).json({ response })
       }
       return res.status(406).json({ response: `Command '${req.body.command}' not found.` })

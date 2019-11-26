@@ -1,4 +1,4 @@
-const Subprocess = require('../../Subprocess')
+const Subprocess = require('../../core/Subprocess')
 
 class Template extends Subprocess {
   constructor(client) {
