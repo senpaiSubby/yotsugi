@@ -3,6 +3,7 @@ const cors = require('cors')
 const shortid = require('shortid')
 const Subprocess = require('../../core/Subprocess')
 const { Manager } = require('../../events/message')
+const { client } = require('../../index')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -22,7 +23,6 @@ class WebServer extends Subprocess {
      *  }
      */
 
-    const { client } = this
     const { webServerPort } = client.config
     const { Log, generalConfig } = client
     const { ownerID } = client.config
