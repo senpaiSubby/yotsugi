@@ -23,7 +23,7 @@
 
 <h2 align="center"><b>About The Project</b></h2>
 
-##### I made Nezuko to automate my life. From controlling my lights and smart plugs to media management and Docker control. If its not here it'll be here. Feel free to PR and ask for new features!
+### I made Nezuko to automate my life. From controlling my lights and smart plugs to media management and Docker control. If its not here it'll be here. Feel free to PR and ask for new features!
 
 <!-- COMMANDS -->
 
@@ -61,7 +61,7 @@
 
 </center>
 
-##### Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use [HTTP Request Shortcuts](https://github.com/Waboodoo/HTTP-Shortcuts) on my Galaxy. It has a nice UI with support for custom icons, etc.
+### Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use [HTTP Request Shortcuts](https://github.com/Waboodoo/HTTP-Shortcuts) on my Galaxy. It has a nice UI with support for custom icons, etc.
 
 <div style="display: flex; justify-content: center">
 <img src="data/images/app1.png"
@@ -74,15 +74,15 @@
 <!-- GETTING STARTED -->
 <h2 align="center"><b>Getting Started</b></h2>
 
-##### To get a local copy up and running follow these simple steps.
+### To get a local copy up and running follow these simple steps.
 
-###### 1. Clone Nezuko
+#### 1. Clone Nezuko
 
 ```sh
 git clone https://github.com/callmekory/nezuko.git
 ```
 
-###### 2. Install Yarn
+#### 2. Install Yarn
 
 `curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
 
@@ -90,7 +90,7 @@ git clone https://github.com/callmekory/nezuko.git
 
 `sudo apt install yarn`
 
-###### 3: Install NPM packages
+#### 3: Install NPM packages
 
 ```sh
 yarn install
@@ -98,29 +98,29 @@ yarn install
 
 <h2 align="center"><b>Roadmap</b></h2>
 
-##### See the [open issues](https://github.com/callmekory/nezuko/issues) for a list of proposed features (and known issues).
+### See the [open issues](https://github.com/callmekory/nezuko/issues) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
 <h2 align="center"><b>Contributing</b></h2>
 
-##### Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**!
+### Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**!
 
-###### 1. Fork the Project
+#### 1. Fork the Project
 
-###### 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+#### 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 
-###### 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+#### 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 
-###### 4. Push to the Branch (`git push origin feature/AmazingFeature`)
+#### 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 
-###### 5. Open a Pull Request
+#### 5. Open a Pull Request
 
 <!-- LICENSE -->
 
 <h2 align="center"><b>License</b></h2>
 
-###### Distributed under the GPL3 License. See `LICENSE` for more information. Do whatever you want IDC
+### Distributed under the GPL3 License. See `LICENSE` for more information. Do whatever you want IDC
 
 <!-- CONTACT -->
 
