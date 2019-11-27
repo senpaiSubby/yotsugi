@@ -4,7 +4,7 @@ module.exports = class Routines extends Command {
   constructor(client) {
     super(client, {
       name: 'routine',
-      category: 'Smart Home',
+      category: 'Utils',
       description: 'Routines like good morning or goodnight',
       usage: [
         'r add <routine name> <command>',

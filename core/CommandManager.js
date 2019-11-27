@@ -241,6 +241,7 @@ module.exports = class CommandManager {
         id: ownerID,
         config: JSON.stringify({
           routines: [],
+          archivebox: { path: null },
           webUI: { apiKey: null, commands: [] },
           pihole: { apiKey: null, host: null },
           rclone: { remote: null },

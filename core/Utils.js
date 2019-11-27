@@ -52,7 +52,7 @@ module.exports = class Utils {
           : embedList[page].setFooter(`Page ${page + 1}/${totalPages}`)
       )
 
-      if (totalPages !== 1)
+      if (totalPages !== 1) {
         if (page === 0) {
           await editMessage.react('➡️')
           if (acceptButton) await editMessage.react('✅')
@@ -64,6 +64,7 @@ module.exports = class Utils {
           await editMessage.react('➡️')
           if (acceptButton) await editMessage.react('✅')
         }
+      }
 
       const collected = await editMessage.awaitReactions(
         (reaction, user) =>
@@ -74,7 +75,7 @@ module.exports = class Utils {
       )
 
       const reaction = collected.first()
-      if (reaction)
+      if (reaction) {
         switch (reaction.emoji.name) {
           case '⬅️':
             page--
@@ -89,7 +90,7 @@ module.exports = class Utils {
           default:
             break
         }
-      else {
+      } else {
         run = false
         return editMessage.clearReactions()
       }
@@ -140,12 +141,13 @@ module.exports = class Utils {
       sortOrder = -1
       key = key.substr(1)
     }
-    if (sortOrder === -1)
+    if (sortOrder === -1) {
       return array.sort((a, b) => {
         const x = a[key]
         const y = b[key]
         return x < y ? -1 : x > y ? 1 : 0
       })
+    }
 
     return array.sort((a, b) => {
       const x = b[key]

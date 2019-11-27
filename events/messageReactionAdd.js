@@ -48,8 +48,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
       .setDescription(foundStar.description)
       .setAuthor(message.author.tag, message.author.displayAvatarURL)
       .setTimestamp()
-      // eslint-disable-next-line radix
-      .setFooter(`⭐ ${parseInt(star[1]) + 1} | ${message.id}`)
+      .setFooter(`⭐ ${parseInt(star[1], 10) + 1} | ${message.id}`)
       .setImage(image)
     const starMsg = await starChannel.fetchMessage(stars.id)
     return starMsg.edit({ embed })

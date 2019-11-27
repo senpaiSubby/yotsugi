@@ -30,7 +30,7 @@ module.exports = class Drive extends Command {
 
     const { channel } = msg
 
-    const { remote } = JSON.parse(client.db.config.rclone)
+    const { remote } = client.db.config.rclone
     if (!remote) {
       const settings = [`${p}db set rclone remote <remote>`]
       return channel.send(

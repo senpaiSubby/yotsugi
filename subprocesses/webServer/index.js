@@ -3,7 +3,6 @@ const cors = require('cors')
 const shortid = require('shortid')
 const Subprocess = require('../../core/Subprocess')
 const { Manager } = require('../../events/message')
-const { client } = require('../../index')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -22,12 +21,12 @@ class WebServer extends Subprocess {
      *      "command": "<command> <params>"
      *  }
      */
-
-    const { webServerPort } = client.config
+    const { client } = this
+    const { webServerPort, ownerID } = client.config
     const { Log, generalConfig } = client
-    const { ownerID } = client.config
 
     const app = express()
+
     app.use(express.json())
     app.use(cors({ credentials: true, origin: ['http://127.0.0.1:3000'] }))
     app.use(express.static(`${__dirname}/app/build`))
@@ -87,6 +86,9 @@ class WebServer extends Subprocess {
     // endpoint for running commands
     app.post('/api/commands', async (req, res) => {
       Log.info('Web Server', `${req.ip} sent command ${req.body.command}`)
+
+      const generalDB = await client.generalConfig.findOne({ where: { id: ownerID } })
+      client.db.config = JSON.parse(generalDB.dataValues.config)
 
       // check if all required params are met
       if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })

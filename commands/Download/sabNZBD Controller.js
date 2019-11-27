@@ -32,7 +32,7 @@ module.exports = class SabnzbdManagement extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey } = JSON.parse(client.db.config.sabnzbd)
+    const { host, apiKey } = client.db.config.sabnzbd
 
     // * ------------------ Check Config --------------------
 
