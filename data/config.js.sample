@@ -1,5 +1,5 @@
 module.exports = {
-  username: 'Subby',
+  username: 'Nezuko',
   ownerID: '',
   token: '',
   webServerPort: 5700,

@@ -1,21 +1,21 @@
-[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
+[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/callmekory/subbyBot">
+  <a href="https://github.com/callmekory/nezuko">
     <img src="data/images/logo.png" alt="Logo" width="126" height="126">
   </a>
 
-**<h2 align="center">Subby Bot</h2>**
+**<h2 align="center">Nezuko</h2>**
 
   <p align="center">
     Home automation, media management and server automation bot.
     <br />
     <br />
-    <a href="https://github.com/callmekory/subbyBot/issues">Report Bug</a>
+    <a href="https://github.com/callmekory/nezuko/issues">Report Bug</a>
     ·
-    <a href="https://github.com/callmekory/subbyBot/issues">Request Feature</a>
+    <a href="https://github.com/callmekory/nezuko/issues">Request Feature</a>
   </p>
 </p>
 
@@ -56,34 +56,35 @@ This bot was made to help me automate and control my lights, computers, smart pl
 
 <!-- GETTING STARTED -->
 
-SubbyBot has a built in web UI / express api server for remotely running commands. For Web UI enabled commands you can add them as buttons on the Web UI and have nice buttons to click or tap on to control things like your lights / plugs / etc aswell as via HTTP POST requests from your favorite applications like Insomnia or Postman.
+nezuko has a built in web UI / express api server for remotely running commands. For Web UI enabled commands you can add them as buttons on the Web UI and have nice buttons to click or tap on to control things like your lights / plugs / etc aswell as via HTTP POST requests from your favorite applications like Insomnia or Postman.
 
 <h2 align="center"><b>Getting Started</b></h2>
 
 To get a local copy up and running follow these simple steps.
 
-1. Clone the subbyBot
+1. Clone the nezuko
 
 ```sh
-git clone https://github.com/callmekory/subbyBot.git
+git clone https://github.com/callmekory/nezuko.git
 ```
 
 2. Install Yarn
 
-```curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -```
+`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
 
-```echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list```
+`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
 
-```sudo apt install yarn```
+`sudo apt install yarn`
 
-3: Install NPM packages 
+3: Install NPM packages
+
 ```sh
 yarn install
 ```
 
 <h2 align="center"><b>Roadmap</b></h2>
 
-See the [open issues](https://github.com/callmekory/subbyBot/issues) for a
+See the [open issues](https://github.com/callmekory/nezuko/issues) for a
 list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
@@ -110,7 +111,7 @@ Distributed under the GPL3 License. See `LICENSE` for more information. Do whate
 
 <h2 align="center"><b>Contact</b></h2>
 
-[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/subbyBot?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
+[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
 
 <!-- ACKNOWLEDGEMENTS -->
 
