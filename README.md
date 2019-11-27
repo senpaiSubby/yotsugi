@@ -151,23 +151,27 @@
 </tr>
 </tbody>
 </table>
+
 <h2 id="-web-ui-"><!-- Web UI --></h2>
 <h2 align="center"><b>Web UI - Work in progress</b></h2>
 
 <center>
 
-<img src="/data/images/webui.png" alt="alt text" title="Logo Title Text 1">
+<img src="data/images/webui.png" alt="alt text" title="Logo Title Text 1">
 
 </center>
 
-<h3 id="nezuko-has-a-built-in-web-ui-api-server-for-remotely-running-commands-for-api-enabled-commands-you-can-add-them-as-buttons-on-the-web-ui-send-http-post-requests-from-your-favorite-applications-i-personally-use-http-request-shortcuts-https-github-com-waboodoo-http-shortcuts-on-my-galaxy-it-has-a-nice-ui-with-support-for-custom-icons-etc-">Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</h3>
-<p><div style="display: flex; justify-content: center">
+<h3>Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</h3>
+
+<div style="display: flex; justify-content: center">
 <img src="data/images/app1.png"
      alt="Markdown Monster icon"
      style="width: 300px" />
+
 <img src="data/images/app2.png"
      alt="Markdown Monster icon"
      style="width: 300px" />
+
 </div>
 <!-- GETTING STARTED --></p>
 <hr>
