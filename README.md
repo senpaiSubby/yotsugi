@@ -1,3 +1,4 @@
+<center>
 <p><a href="https://discord.gg/xhnkTUH"><img src="https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&amp;logo=appveyor" alt="Discord"></a> <img src="https://img.shields.io/discord/302306803880820736?style=for-the-badge" alt="Discord"> <img src="https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge" alt="GitHub contributors"> <img src="https://img.shields.io/github/followers/callmekory?style=for-the-badge" alt="GitHub followers"></p>
 <!-- PROJECT LOGO -->
 <p><br /></p>
@@ -8,21 +9,22 @@
 
 <strong><h2 align="center">Nezuko</h2></strong>
 
-  <p align="center">
+  <h4 align="center">
     Smart Home, Automation, and all purpose server management bot.
     <br />
     <br />
     <a href="https://github.com/callmekory/nezuko/issues">Report Bug</a>
     ·
     <a href="https://github.com/callmekory/nezuko/issues">Request Feature</a>
-  </p>
+  </h4>
 </p>
 
-<!-- ABOUT THE PROJECT -->
+<hr>
 <h2 align="center"><b>About The Project</b></h2>
 
-<p id="i-made-nezuko-to-automate-my-life-from-controlling-my-lights-and-smart-plugs-to-media-management-and-docker-control-if-its-not-here-it-ll-be-here-feel-free-to-pr-and-ask-for-new-features-">I made Nezuko to automate my life. From controlling my lights and smart plugs to media management and Docker control. If its not here it&#39;ll be here. Feel free to PR and ask for new features!</p>
-<h2 id="-commands-"><!-- COMMANDS --></h2>
+<h4>I made Nezuko to automate my life. From controlling my lights and smart plugs to media management and Docker control. If its not here it&#39;ll be here. Feel free to PR and ask for new features!</h4>
+
+<hr>
 <h2 align="center"><b>Commands</b></h2>
 
 <table>
@@ -152,18 +154,19 @@
 </tbody>
 </table>
 
+<hr>
 <h2 id="-web-ui-"><!-- Web UI --></h2>
 <h2 align="center"><b>Web UI - Work in progress</b></h2>
 
-<center>
 <img src="data/images/webui.png" alt="alt text" title="Logo Title Text 1">
-</center>
+
 <br>
 <br>
-<p>Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</p>
+<h4>Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</h4>
 <br>
 <br>
-<div style="display: flex; justify-content: center">
+
+<div>
 <img src="data/images/app1.png" width="300px" />
 
 <img src="data/images/app2.png" width="300px" />
@@ -175,15 +178,15 @@
 <hr>
 <h2 align="center"><b>Getting Started</b></h2>
 
-<p id="to-get-a-local-copy-up-and-running-follow-these-simple-steps-">To get a local copy up and running follow these simple steps.</p>
-<h4 id="1-clone-nezuko">1. Clone Nezuko</h4>
+<h4>To get a local copy up and running follow these simple steps.</h4>
+<h4>1. Clone Nezuko</h4>
 <pre><code class="lang-sh">git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/callmekory/nezuko.git
 </code></pre>
-<h4 id="2-install-yarn">2. Install Yarn</h4>
+<h4 >2. Install Yarn</h4>
 <p><code>curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -</code></p>
 <p><code>echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list</code></p>
 <p><code>sudo apt install yarn</code></p>
-<h4 id="3-install-npm-packages">3: Install NPM packages</h4>
+<h4 >3: Install NPM packages</h4>
 <pre><code class="lang-sh">yarn <span class="hljs-keyword">install</span>
 </code></pre>
 <hr>
@@ -194,26 +197,28 @@
 <hr>
 <h2 align="center"><b>Contributing</b></h2>
 
-<h3 id="contributions-are-what-make-the-open-source-community-such-an-amazing-place-to-be-learn-inspire-and-create-any-contributions-you-make-are-greatly-appreciated-">Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are <strong>greatly appreciated</strong>!</h3>
-<h4 id="1-fork-the-project">1. Fork the Project</h4>
-<h4 id="2-create-your-feature-branch-git-checkout-b-feature-amazingfeature-">2. Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</h4>
-<h4 id="3-commit-your-changes-git-commit-m-add-some-amazingfeature-">3. Commit your Changes (<code>git commit -m &#39;Add some AmazingFeature&#39;</code>)</h4>
-<h4 id="4-push-to-the-branch-git-push-origin-feature-amazingfeature-">4. Push to the Branch (<code>git push origin feature/AmazingFeature</code>)</h4>
-<h4 id="5-open-a-pull-request">5. Open a Pull Request</h4>
-<!-- LICENSE -->
+<h4>Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are <strong>greatly appreciated</strong>!</h3>
+<h4>Fork the Project</h4>
+<h4>Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</h4>
+<h4>Commit your Changes (<code>git commit -m &#39;Add some AmazingFeature&#39;</code>)</h4>
+<h4>Push to the Branch (<code>git push origin feature/AmazingFeature</code>)</h4>
+<h4>Open a Pull Request</h4>
+
+<hr>
 <h2 align="center"><b>License</b></h2>
 
-<h3 id="distributed-under-the-gpl3-license-see-license-for-more-information-do-whatever-you-want-idc">Distributed under the GPL3 License. See <code>LICENSE</code> for more information. Do whatever you want IDC</h3>
-<!-- CONTACT -->
+<h4>Distributed under the GPL3 License. See <code>LICENSE</code> for more information.</h4>
+
+<hr>
 <h2 align="center"><b>Contact</b></h2>
 
 <p><a href="https://discord.gg/xhnkTUH"><img src="https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&amp;logo=appveyor" alt="Discord"></a> <img src="https://img.shields.io/discord/302306803880820736?style=for-the-badge" alt="Discord"> <img src="https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge" alt="GitHub contributors"> <img src="https://img.shields.io/github/followers/callmekory?style=for-the-badge" alt="GitHub followers"></p>
-<!-- ACKNOWLEDGEMENTS -->
+
+<hr>
 <h2 align="center"><b>Acknowledgements</b></h2>
 
-<ul>
-<li><a href="https://github.com/v0idp/Mellow">Mellow - Ombi movies/series code</a></li>
-<li><a href="https://github.com/nwithan8">nwithan8</a></li>
-<li><a href="https://github.com/codetheweb/tuyapi">codetheweb/tuyapi</a></li>
-</ul>
-<!-- MARKDOWN LINKS & IMAGES -->
+<a href="https://github.com/v0idp/Mellow">Mellow - Ombi movies/series code</a><br>
+<a href="https://github.com/nwithan8">nwithan8</a><br>
+<a href="https://github.com/codetheweb/tuyapi">codetheweb/tuyapi</a>
+
+</center>
