@@ -156,28 +156,26 @@
 <h2 align="center"><b>Web UI - Work in progress</b></h2>
 
 <center>
-
 <img src="data/images/webui.png" alt="alt text" title="Logo Title Text 1">
-
 </center>
-
-<h3>Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</h3>
-
+<br>
+<br>
+<p>Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</p>
+<br>
+<br>
 <div style="display: flex; justify-content: center">
-<img src="data/images/app1.png"
-     alt="Markdown Monster icon"
-     style="width: 300px" />
+<img src="data/images/app1.png" width="300px" />
 
-<img src="data/images/app2.png"
-     alt="Markdown Monster icon"
-     style="width: 300px" />
+<img src="data/images/app2.png" width="300px" />
 
 </div>
+<br>
+<br>
 <!-- GETTING STARTED --></p>
 <hr>
 <h2 align="center"><b>Getting Started</b></h2>
 
-<h3 id="to-get-a-local-copy-up-and-running-follow-these-simple-steps-">To get a local copy up and running follow these simple steps.</h3>
+<p id="to-get-a-local-copy-up-and-running-follow-these-simple-steps-">To get a local copy up and running follow these simple steps.</p>
 <h4 id="1-clone-nezuko">1. Clone Nezuko</h4>
 <pre><code class="lang-sh">git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/callmekory/nezuko.git
 </code></pre>
