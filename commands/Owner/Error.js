@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Error extends Command {
+module.exports = class Error extends Command {
   constructor(client) {
     super(client, {
       name: 'error',
@@ -14,8 +14,7 @@ class Error extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { error } = Utils
+    const { error } = client.Utils
     const { channel } = msg
 
     // * ------------------ Logic --------------------
@@ -23,5 +22,3 @@ class Error extends Command {
     return error('Test Error', 'Error Triggered by Admin', channel)
   }
 }
-
-module.exports = Error

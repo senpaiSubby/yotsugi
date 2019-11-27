@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Reload extends Command {
+module.exports = class Reload extends Command {
   constructor(client) {
     super(client, {
       name: 'reload',
@@ -14,8 +14,8 @@ class Reload extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage, standardMessage } = Utils
+    const { warningMessage, standardMessage } = client.Utils
+    const { context } = msg
 
     // * ------------------ Logic --------------------
 
@@ -23,16 +23,14 @@ class Reload extends Command {
 
     if (!module) {
       const msg1 = await standardMessage(msg, `Reloading all modules..`)
-      await msg.context.reloadCommands()
+      await context.reloadCommands()
       return msg1.edit(standardMessage(msg, `Reloading all modules.. done!`))
     }
 
-    const run = await msg.context.reloadCommand(module)
+    const run = await context.reloadCommand(module)
 
     if (run) return warningMessage(msg, `Reloaded ${module}`)
 
     return warningMessage(msg, `Module [${module}] doesn't exist!`)
   }
 }
-
-module.exports = Reload

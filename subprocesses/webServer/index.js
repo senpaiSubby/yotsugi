@@ -22,17 +22,14 @@ class WebServer extends Subprocess {
      *  }
      */
 
-    const { webServerPort } = this.client.config
-    const { Log, generalConfig } = this.client
+    const { client } = this
+    const { webServerPort } = client.config
+    const { Log, generalConfig } = client
+    const { ownerID } = client.config
 
     const app = express()
     app.use(express.json())
-    app.use(
-      cors({
-        credentials: true,
-        origin: ['http://127.0.0.1:3000']
-      })
-    )
+    app.use(cors({ credentials: true, origin: ['http://127.0.0.1:3000'] }))
     app.use(express.static(`${__dirname}/app/build`))
 
     // home page
@@ -40,50 +37,41 @@ class WebServer extends Subprocess {
 
     // get DB info
     app.get('/ui/db', async (req, res) => {
-      const config = await generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
-      })
-
-      const data = JSON.parse(config.dataValues.webUI)
-
-      return res.status(200).json({ uiButtons: data.commands })
+      const db = await generalConfig.findOne({ where: { id: ownerID } })
+      const { webUI } = JSON.parse(db.dataValues.config)
+      return res.status(200).json({ uiButtons: webUI.commands })
     })
 
     // set DB info
     app.post('/ui/db', async (req, res) => {
-      const config = await generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
-      })
-
-      const data = JSON.parse(config.dataValues.webUI)
+      const db = await generalConfig.findOne({ where: { id: ownerID } })
+      const config = JSON.parse(db.dataValues.config)
+      const { webUI } = config
 
       if (req.body[0] && req.body[1]) {
-        data.commands.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
-        await config.update({ webUI: JSON.stringify(data) })
+        webUI.commands.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
+        await db.update({ config: JSON.stringify(config) })
         return res.status(200)
       }
     })
 
     // remove Button
     app.post('/ui/db/rm/:id', async (req, res) => {
-      const config = await generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
-      })
+      const db = await generalConfig.findOne({ where: { id: ownerID } })
+      const config = JSON.parse(db.dataValues.config)
+      const { webUI } = config
 
-      const values = JSON.parse(config.dataValues.webUI)
+      const index = webUI.commands.findIndex((x) => x.id === req.params.id)
+      webUI.commands.splice(index, 1)
 
-      const index = values.commands.findIndex((x) => x.id === req.params.id)
-
-      values.commands.splice(index, 1)
-
-      await config.update({ webUI: JSON.stringify(values) })
+      await config.update({ config: JSON.stringify(config) })
       return res.status(200)
     })
 
     // general bot info
     app.get('/api/info', (req, res) => {
-      const { Utils, uptime, user, status } = this.client
-      const { username, id, avatar, avatarURL, localPresence } = user
+      const { Utils, uptime, user, status } = client
+      const { username, id, avatar, localPresence } = user
       const { millisecondsToTime } = Utils
 
       return res.status(200).json({
@@ -92,8 +80,7 @@ class WebServer extends Subprocess {
         avatarId: avatar,
         status,
         upTime: millisecondsToTime(uptime),
-        presence: localPresence.game,
-        avatar: avatarURL
+        presence: localPresence.game
       })
     })
 
@@ -104,16 +91,10 @@ class WebServer extends Subprocess {
       // check if all required params are met
       if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
 
-      // set db configs
-      const config = await generalConfig.findOne({
-        where: { id: this.client.config.ownerID }
-      })
-
-      this.client.db.general = config.dataValues
-
       const args = req.body.command.split(' ')
       const cmdName = args.shift().toLowerCase()
       const cmd = Manager.findCommand(cmdName)
+
       if (cmd) {
         if (cmd.disabled) return res.status(403).json({ response: 'Command is disabled bot wide.' })
 
@@ -121,12 +102,13 @@ class WebServer extends Subprocess {
           return res.status(403).json({ response: 'Command is disabled for use in the API.' })
         }
 
-        const response = await Manager.runCommand(this.client, cmd, null, args, true)
+        const response = await Manager.runCommand(client, cmd, null, args, true)
         return res.status(200).json({ response })
       }
       return res.status(406).json({ response: `Command '${req.body.command}' not found.` })
     })
 
+    // Start server
     app.listen(webServerPort, '0.0.0.0', () => {
       Log.info(`Web Server`, `Listening on port ${webServerPort}`)
     })

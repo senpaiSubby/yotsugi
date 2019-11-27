@@ -8,11 +8,8 @@ const serverConfig = Database.db.define('serverConfig', {
     primaryKey: true
   },
   ownerID: Sequelize.STRING,
-  prefix: Sequelize.STRING,
-  welcomeChannel: Sequelize.STRING,
-  starboardChannel: Sequelize.STRING,
-  rules: Sequelize.STRING,
-  logsChannel: Sequelize.STRING
+  config: Sequelize.STRING,
+  messages: Sequelize.STRING
 })
 
 serverConfig.sync()

@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Todo extends Command {
+module.exports = class Todo extends Command {
   constructor(client) {
     super(client, {
       name: 'todos',
@@ -17,16 +17,14 @@ class Todo extends Command {
 
     const todo = args.slice(1).join(' ')
 
-    const config = await memberConfig.findOne({
-      where: { id: author.id }
-    })
-
-    const todos = JSON.parse(config.dataValues.todos)
+    const db = await memberConfig.findOne({ where: { id: author.id } })
+    const config = JSON.parse(db.dataValues.config)
+    const { todos } = config
 
     switch (args[0]) {
       case 'add': {
         todos.push(todo)
-        await config.update({ todos: JSON.stringify(todos) })
+        await db.update({ config: JSON.stringify(config) })
 
         return standardMessage(msg, `${todo}\n\nAdded to todo list`)
       }
@@ -35,7 +33,7 @@ class Todo extends Command {
         const item = args[1] - 1
         const name = todos[item]
         todos.splice(item, 1)
-        await config.update({ todos: JSON.stringify(todos) })
+        await db.update({ config: JSON.stringify(config) })
 
         if (name) return standardMessage(msg, `${name}\n\nRemoved from todo list`)
 
@@ -52,9 +50,7 @@ class Todo extends Command {
         }
 
         let todoList = ''
-        todos.forEach((i, index) => {
-          todoList += `${index + 1} | ${i}\n`
-        })
+        todos.forEach((i, index) => (todoList += `${index + 1} | ${i}\n`))
 
         return msg.reply(
           embed(msg)
@@ -65,5 +61,3 @@ class Todo extends Command {
     }
   }
 }
-
-module.exports = Todo

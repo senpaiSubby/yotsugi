@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Get extends Command {
+module.exports = class Get extends Command {
   constructor(client) {
     super(client, {
       name: 'server',
@@ -15,57 +15,45 @@ class Get extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils, serverConfig } = client
-    const { warningMessage, validOptions, standardMessage } = Utils
-    const { author } = msg
-    const option = args[0]
-    const key = args[1]
-    const value = args[2]
+    const { Utils, serverConfig, p } = client
+    const { warningMessage, validOptions, standardMessage, embed } = Utils
+    const { channel, guild } = msg
 
-    // * ------------------ Logic --------------------
+    msg.delete(10000)
 
-    switch (option) {
-      case 'get':
-        {
-          const config = await serverConfig.findOne({
-            where: { id: msg.guild.id }
-          })
-          const values = config.dataValues
-          // serverConfig.update({ [args[1]]: args[2] })
-          msg.reply(
-            JSON.stringify(args[1] ? values[args[1]] : values, null, 2)
-              .replace(/"/g, '')
-              .replace(/\\/g, '')
-              .replace(/: /g, ':')
-              .replace(/:/g, ': ')
-              .replace(/,/g, ', '),
-            {
-              code: 'js'
-            }
-          )
-        }
-        break
+    // * ------------------ Config --------------------
+
+    const db = await serverConfig.findOne({ where: { id: guild.id } })
+    const { server } = client.db
+
+    // * ------------------ Usage Logic --------------------
+
+    switch (args[0]) {
+      case 'get': {
+        delete server.rules
+        const keys = Object.keys(server).sort()
+
+        const e = embed(msg)
+          .setTitle('Server Database Keys')
+          .setDescription(`**[ ${p}server set <key> <new value> ] to set new value**`)
+
+        keys.forEach((i) => e.addField(`${i}`, `${server[i]}`, false))
+        return channel.send(e)
+      }
+
       case 'set': {
-        const config = await serverConfig.findOne({
-          where: { id: msg.guild.id }
-        })
-        const values = config.dataValues
-        if (
-          ['serverName', 'id', 'ownerID', 'createdAt', 'updatedAt'].includes(key) &&
-          author.id !== client.config.ownerID
-        ) {
-          return warningMessage(msg, `DB value [${key}] cannot be edited`)
+        const keyToChange = args[1]
+        const newValue = args[2]
+        if (keyToChange in server) {
+          server[keyToChange] = newValue
+          await db.update({ config: JSON.stringify(server) })
+          const m = await standardMessage(msg, `Key [ ${keyToChange} ] changed to [ ${newValue} ]`)
+          return m.delete(10000)
         }
-
-        if (key in values) {
-          await config.update({ [key]: value })
-          return standardMessage(msg, `Server [${key}] changed to [${value}]`)
-        }
-        return warningMessage(msg, `[${key}] does not exist`)
+        return warningMessage(msg, `Key [${keyToChange}] doesnt exist`)
       }
       default:
         return validOptions(msg, ['get', 'set'])
     }
   }
 }
-module.exports = Get

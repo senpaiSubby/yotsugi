@@ -1,6 +1,6 @@
 const { Client } = require('discord.js')
 const Enmap = require('enmap')
-const messageLogging = require('../core/utils/messageLogging')
+const MessageHandler = require('../core/MessageHandler')
 
 module.exports = class CommandManager {
   constructor(client) {
@@ -8,7 +8,7 @@ module.exports = class CommandManager {
     this.Log = client.Log
     this.commands = new Enmap()
     this.aliases = new Enmap()
-    this.prefix = '//'
+    this.prefix = client.config.prefix
     this.ownerID = client.config.ownerID
 
     if (!this.client || !(this.client instanceof Client)) {
@@ -18,9 +18,7 @@ module.exports = class CommandManager {
 
   loadCommands(directory) {
     const cmdFiles = this.client.Utils.findNested(directory, '.js')
-    cmdFiles.forEach((file) => {
-      this.startModule(file)
-    })
+    cmdFiles.forEach((file) => this.startModule(file))
   }
 
   startModule(location) {
@@ -39,9 +37,9 @@ module.exports = class CommandManager {
     this.commands.set(commandName, instance)
 
     for (const alias of instance.aliases) {
-      if (this.aliases.has(alias))
+      if (this.aliases.has(alias)) {
         throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
-      else this.aliases.set(alias, instance)
+      } else this.aliases.set(alias, instance)
     }
   }
 
@@ -72,7 +70,7 @@ module.exports = class CommandManager {
     }
 
     try {
-      msg.channel.startTyping()
+      await msg.channel.startTyping()
       await command.run(client, msg, args, api)
       return msg.channel.stopTyping()
     } catch (err) {
@@ -88,10 +86,11 @@ module.exports = class CommandManager {
   }
 
   async handleMessage(msg, client) {
-    const { errorMessage, warningMessage, standardMessage } = client.Utils
-    const { content, author, channel } = msg
-    const { Utils, generalConfig } = client
-    const { embed } = Utils
+    const { Utils, generalConfig, serverConfig } = client
+    const { errorMessage, warningMessage, standardMessage, embed } = Utils
+    const { content, author, channel, guild } = msg
+
+    const { ownerID } = client.config
 
     // if msg is sent by bot then ignore
     if (author.bot) return
@@ -99,15 +98,17 @@ module.exports = class CommandManager {
     msg.context = this
 
     await this.handleUser(msg)
-    const prefix = msg.guild ? await this.handleServer(msg.guild) : this.prefix
+    const prefix = guild ? await this.handleServer(guild) : this.prefix
     client.p = prefix
 
     // set db configs
-    const config = await generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
+    const generalDB = await generalConfig.findOne({ where: { id: ownerID } })
+    client.db.config = JSON.parse(generalDB.dataValues.config)
 
-    client.db.general = config.dataValues
+    if (channel.type === 'text') {
+      const serverDB = await serverConfig.findOne({ where: { id: guild.id } })
+      client.db.server = JSON.parse(serverDB.dataValues.config)
+    }
 
     // reply with prefix when bot is the only thing mentioned
     if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
@@ -115,13 +116,13 @@ module.exports = class CommandManager {
     }
 
     // send all messages to our Log
-    await messageLogging(client, msg)
+    await MessageHandler.logger(msg)
 
     // if msg doesnt start with prefix then ignore msg
     if (!content.startsWith(prefix) || content.length < 2) return
 
     // anything after command becomes a list of args
-    const args = content.slice(prefix.length).split(/ +/)
+    const args = content.slice(prefix.length).split(' ')
 
     // command name without prefix
     const commandName = args.shift().toLowerCase()
@@ -137,7 +138,7 @@ module.exports = class CommandManager {
 
     // Check if command is enabled
     let disabled = false
-    const disabledCommands = JSON.parse(config.dataValues.disabledCommands)
+    const { disabledCommands } = client.db.config
     disabledCommands.forEach((c) => {
       if (instance.name === c.command || c.aliases.includes(commandName)) disabled = true
     })
@@ -231,32 +232,32 @@ module.exports = class CommandManager {
     const { id, ownerID, name, owner } = guild
     const { generalConfig, serverConfig } = this.client
 
-    const config = await generalConfig.findOne({
-      where: { id: this.ownerID }
-    })
+    const config = await generalConfig.findOne({ where: { id: this.ownerID } })
 
     if (!config) {
       this.Log.info('Handle Server', `Created new general config for user [ ${this.ownerID} ]`)
       await generalConfig.create({
         username: owner.user.tag,
         id: ownerID,
-        webUI: JSON.stringify({ apiKey: 1234, commands: [] }),
-        pihole: JSON.stringify({ host: null, apiKey: null }),
-        rclone: JSON.stringify({ remote: null }),
-        emby: JSON.stringify({ host: null, apiKey: null, userID: null }),
-        docker: JSON.stringify({ host: null }),
-        sengled: JSON.stringify({ username: null, password: null, jsessionid: null }),
-        googleHome: JSON.stringify({ name: null, ip: null, language: null }),
-        transmission: JSON.stringify({ host: null, apiKey: null, ssl: false }),
-        sabnzbd: JSON.stringify({ host: null, apiKey: null }),
-        ombi: JSON.stringify({ host: null, apiKey: null, username: null }),
-        meraki: JSON.stringify({ serielNum: null, apiKey: null }),
-        pioneerAVR: JSON.stringify({ host: null }),
-        systemPowerControl: JSON.stringify([{ host: null, mac: null, name: null }]),
-        tuyaPlugControl: JSON.stringify([{ id: null, key: null, name: null }]),
-        disabledCommands: JSON.stringify([]),
-        shortcuts: JSON.stringify([]),
-        routines: JSON.stringify([])
+        config: JSON.stringify({
+          routines: [],
+          webUI: { apiKey: null, commands: [] },
+          pihole: { apiKey: null, host: null },
+          rclone: { remote: null },
+          emby: { apiKey: null, host: null, userID: null },
+          docker: { host: null },
+          sengled: { jsessionid: null, password: null, username: null },
+          googleHome: { ip: null, language: null, name: null },
+          transmission: { host: null, port: '9091', ssl: false },
+          sabnzbd: { apiKey: null, host: null },
+          ombi: { apiKey: null, host: null, username: null },
+          meraki: { apiKey: null, serielNum: null },
+          pioneerAVR: { host: null },
+          systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
+          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
+          disabledCommands: [],
+          shortcuts: []
+        })
       })
     }
 
@@ -270,15 +271,18 @@ module.exports = class CommandManager {
         'Handle Server',
         `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`
       )
-      db = await db.create({
+      db = await serverConfig.create({
         serverName: name,
         id,
-        prefix: '//',
         ownerID,
-        welcomeChannel: null,
-        logsChannel: null,
-        starboardChannel: null,
-        rules: JSON.stringify([])
+        config: JSON.stringify({
+          prefix: this.prefix,
+          welcomeChannel: null,
+          logsChannel: null,
+          starboardChannel: null,
+          rules: []
+        }),
+        messages: JSON.stringify({ channels: {}, dm: {}, ignoredChannels: [] })
       })
     }
 
@@ -288,23 +292,14 @@ module.exports = class CommandManager {
 
   async handleUser(msg) {
     const { author } = msg
+    const { id, tag: username } = author
     const { memberConfig } = this.client
 
-    const config = await memberConfig.findOne({
-      where: { id: author.id }
-    })
+    const db = await memberConfig.findOne({ where: { id } })
 
-    if (!config) {
-      this.Log.info(
-        'Handle Server',
-        `Created new member config for user [ ${author.id} ] [ ${author.tag} ]`
-      )
-      await config.create({
-        username: author.tag,
-        id: author.id,
-        todos: JSON.stringify([]),
-        messages: JSON.stringify([])
-      })
+    if (!db) {
+      this.Log.info('Handle Server', `Created new member config for user [ ${id} ] [ ${username} ]`)
+      await memberConfig.create({ username, id, config: JSON.stringify({ todos: [] }) })
     }
   }
 
@@ -315,6 +310,5 @@ module.exports = class CommandManager {
     })
 
     if (missingPerms.length) return missingPerms
-    return false
   }
 }

@@ -1,7 +1,7 @@
 const Command = require('../core/Command')
 //  const Command = require('../../core/Command')
 
-class Template extends Command {
+module.exports = class Template extends Command {
   constructor(client) {
     super(client, {
       name: 'template',
@@ -28,4 +28,3 @@ class Template extends Command {
     // * ------------------ Usage Logic --------------------
   }
 }
-module.exports = Template

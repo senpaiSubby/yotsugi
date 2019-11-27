@@ -1,7 +1,7 @@
 const math = require('math-expression-evaluator')
 const Command = require('../../core/Command')
 
-class Calculator extends Command {
+module.exports = class Calculator extends Command {
   constructor(client) {
     super(client, {
       name: 'calc',
@@ -14,8 +14,7 @@ class Calculator extends Command {
 
   async run(client, msg, args) {
     const { channel } = msg
-    const { Utils } = client
-    const { warningMessage } = Utils
+    const { warningMessage } = client.Utils
 
     const question = args.join(' ')
 
@@ -38,4 +37,3 @@ class Calculator extends Command {
     )
   }
 }
-module.exports = Calculator

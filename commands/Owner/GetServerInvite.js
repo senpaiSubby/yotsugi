@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class GetServerInvite extends Command {
+module.exports = class GetServerInvite extends Command {
   constructor(client) {
     super(client, {
       name: 'bd',
@@ -15,8 +15,7 @@ class GetServerInvite extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage, errorMessage, embed } = Utils
+    const { warningMessage, errorMessage, embed } = client.Utils
     const { channel } = msg
 
     // * ------------------ Usage Logic --------------------
@@ -51,5 +50,3 @@ class GetServerInvite extends Command {
     )
   }
 }
-
-module.exports = GetServerInvite

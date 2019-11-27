@@ -1,6 +1,6 @@
-const Command = require('../../../noelleBot/core/Command')
+const Command = require('../../core/Command')
 
-class Rules extends Command {
+module.exports = class Rules extends Command {
   constructor(client) {
     super(client, {
       name: 'rules',
@@ -14,7 +14,7 @@ class Rules extends Command {
 
     const { Utils, serverConfig } = client
     const { warningMessage, standardMessage, embed } = Utils
-    const { member } = msg
+    const { member, guild } = msg
 
     // * ------------------ Check Config --------------------
 
@@ -28,32 +28,30 @@ class Rules extends Command {
 
     const rule = args.slice(1).join(' ')
 
-    const config = await serverConfig.findOne({
-      where: { id: msg.guild.id }
-    })
-    const { prefix, logsChannel } = config.dataValues
-    const rules = JSON.parse(config.dataValues.rules)
+    const db = await serverConfig.findOne({ where: { id: guild.id } })
+    const { rules, logsChannel, prefix } = client.db.server
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
     if (!serverLogsChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a logs channel.
+        Please set one with \`${prefix}server set logsChannel <channelID>\``
       )
     }
 
     switch (args[0]) {
       case 'add': {
         rules.push(rule)
-        await config.update({ rules: JSON.stringify(rules) })
+        await db.update({ rules: JSON.stringify(rules) })
         return standardMessage(msg, `${rule}\n\nAdded to rules`)
       }
       case 'remove': {
         const item = args[1] - 1
         const name = rules[item]
         rules.splice(item, 1)
-        await config.update({ rules: JSON.stringify(rules) })
+        await db.update({ rules: JSON.stringify(rules) })
         if (name) return standardMessage(msg, `${name}\n\nRemoved from rules`)
 
         return warningMessage(msg, `Rule does not exist`)
@@ -80,5 +78,3 @@ class Rules extends Command {
     }
   }
 }
-
-module.exports = Rules

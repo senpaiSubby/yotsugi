@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class RemoveRole extends Command {
+module.exports = class RemoveRole extends Command {
   constructor(client) {
     super(client, {
       name: 'removerole',
@@ -16,8 +16,7 @@ class RemoveRole extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage, errorMessage, embed } = Utils
+    const { warningMessage, errorMessage, embed } = client.Utils
 
     // * ------------------ Logic --------------------
 
@@ -45,9 +44,9 @@ class RemoveRole extends Command {
     } catch (e) {
       return warningMessage(
         msg,
-        `<@${rMember.id}> They have been removed from the role ${gRole.name} I tried to DM them but their DMs are locked`
+        `<@${rMember.id}> They have been removed from the role ${gRole.name}
+        I tried to DM them but their DMs are locked`
       )
     }
   }
 }
-module.exports = RemoveRole

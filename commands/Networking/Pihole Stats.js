@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
-class PiHoleController extends Command {
+module.exports = class PiHoleController extends Command {
   constructor(client) {
     super(client, {
       name: 'pihole',
@@ -25,7 +25,7 @@ class PiHoleController extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey } = JSON.parse(client.db.general.pihole)
+    const { host, apiKey } = client.db.config.pihole
 
     // * ------------------ Check Config --------------------
 
@@ -102,4 +102,3 @@ class PiHoleController extends Command {
     return validOptions(msg, caseOptions)
   }
 }
-module.exports = PiHoleController

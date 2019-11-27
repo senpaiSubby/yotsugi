@@ -1,7 +1,6 @@
 const { Client } = require('discord.js')
 const { exec } = require('shelljs')
-const config = require('./data/config')
-const Database = require('./core/Database')
+const Database = require('./core/Database/Database')
 
 // clear terminal
 exec('clear')
@@ -9,9 +8,9 @@ exec('clear')
 // Initialise
 const client = new Client()
 
-client.config = config
-client.Log = require('./core/utils/Log')
-client.Utils = require('./core/utils/Utils')
+client.config = require('./data/config')
+client.Log = require('./core/Log')
+client.Utils = require('./core/Utils')
 
 client.db = []
 client.generalConfig = Database.Models.generalConfig
@@ -31,11 +30,9 @@ client.colors = {
 
 module.exports = { client }
 
-// setup event handlers
+// Load event handlers
 const eventFiles = client.Utils.findNested('./events', '.js')
-eventFiles.forEach((file) => {
-  require(file)
-})
+eventFiles.forEach((file) => require(file))
 
 // Unhandled Promise Rejections
 process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejection', reason, true))
@@ -44,4 +41,4 @@ process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejecti
 process.on('uncaughtException', (error) => client.Log.error('Uncaught Exception', error, true))
 
 // login
-client.login(config.token)
+client.login(client.config.token)

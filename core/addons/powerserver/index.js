@@ -33,6 +33,4 @@ app.post('/', (req, res) => {
   }
 })
 
-app.listen(port, () => {
-  console.log('stop-server listening on port ' + port)
-})
+app.listen(port, () => console.log(`powerserver listening on port  ${port}`))

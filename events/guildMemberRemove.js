@@ -1,14 +1,10 @@
 const { RichEmbed } = require('discord.js')
 const { client } = require('../index')
-const Database = require('../core/Database')
 
 client.on('guildMemberRemove', async (member) => {
-  const { colors } = client
+  const { colors, db } = client
 
-  const serverConfig = await Database.Models.serverConfig.findOne({
-    where: { id: member.guild.id }
-  })
-  const { welcomeChannel } = serverConfig.dataValues
+  const { welcomeChannel } = db.server
 
   const embed = new RichEmbed()
     .setColor(colors.yellow)

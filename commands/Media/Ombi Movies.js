@@ -6,7 +6,7 @@ const Command = require('../../core/Command')
 requires role "requestmovie"
 */
 
-class OmbiMovies extends Command {
+module.exports = class OmbiMovies extends Command {
   constructor(client) {
     super(client, {
       name: 'movie',
@@ -39,7 +39,7 @@ class OmbiMovies extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey, username } = JSON.parse(client.db.general.ombi)
+    const { host, apiKey, username } = client.db.config.ombi
 
     // * ------------------ Check Config --------------------
 
@@ -155,4 +155,3 @@ class OmbiMovies extends Command {
     }
   }
 }
-module.exports = OmbiMovies

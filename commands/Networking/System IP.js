@@ -2,7 +2,7 @@
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-class SystemIP extends Command {
+module.exports = class SystemIP extends Command {
   constructor(client) {
     super(client, {
       name: 'ip',
@@ -17,8 +17,7 @@ class SystemIP extends Command {
   async run(client, msg, api) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage } = Utils
+    const { warningMessage } = client.Utils
 
     // * ------------------ Logic --------------------
 
@@ -29,4 +28,3 @@ class SystemIP extends Command {
     return warningMessage(msg, `${data.ip}`)
   }
 }
-module.exports = SystemIP

@@ -2,7 +2,7 @@ const { utc } = require('moment')
 const dateFormat = require('dateformat')
 const Command = require('../../core/Command')
 
-class UserInfo extends Command {
+module.exports = class UserInfo extends Command {
   constructor(client) {
     super(client, {
       name: 'userinfo',
@@ -17,8 +17,7 @@ class UserInfo extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage, embed } = Utils
+    const { warningMessage, embed } = client.Utils
     const { member, channel } = msg
 
     // * ------------------ Logic --------------------
@@ -65,4 +64,3 @@ class UserInfo extends Command {
     return channel.send(e)
   }
 }
-module.exports = UserInfo

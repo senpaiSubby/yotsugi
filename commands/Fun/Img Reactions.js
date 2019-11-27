@@ -1,7 +1,7 @@
 const { readdir } = require('fs')
 const Command = require('../../core/Command')
 
-class ImgReactions extends Command {
+module.exports = class ImgReactions extends Command {
   constructor(client) {
     super(client, {
       name: 'img',
@@ -85,4 +85,3 @@ class ImgReactions extends Command {
     }
   }
 }
-module.exports = ImgReactions

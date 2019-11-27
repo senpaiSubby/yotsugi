@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-class SengledLightController extends Command {
+module.exports = class SengledLightController extends Command {
   constructor(client) {
     super(client, {
       name: 'lights',
@@ -18,14 +18,14 @@ class SengledLightController extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { Log, Utils, p } = client
+    const { Log, Utils, p, db } = client
     const { capitalize, embed } = Utils
     const { missingConfig, warningMessage, errorMessage, standardMessage } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const { jsessionid, username, password } = JSON.parse(client.db.general.sengled)
+    const { jsessionid, username, password } = db.config.sengled
 
     // * ------------------ Check Config --------------------
 
@@ -206,4 +206,3 @@ class SengledLightController extends Command {
     }
   }
 }
-module.exports = SengledLightController

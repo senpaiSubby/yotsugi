@@ -1,7 +1,6 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
-class UnbanUser extends Command {
+module.exports = class UnbanUser extends Command {
   constructor(client) {
     super(client, {
       name: 'unban',
@@ -17,16 +16,12 @@ class UnbanUser extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage, embed } = Utils
+    const { warningMessage, embed, db } = client.Utils
     const { author, channel, guild } = msg
 
     // * ------------------ Config --------------------
 
-    const serverConfig = await Database.Models.serverConfig.findOne({
-      where: { id: msg.guild.id }
-    })
-    const { prefix, logsChannel } = serverConfig.dataValues
+    const { prefix, logsChannel } = db.server
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 
@@ -35,7 +30,8 @@ class UnbanUser extends Command {
     if (!serverLogsChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a logs channel.
+        Please set one with \`${prefix}server set logsChannel <channelID>\``
       )
     }
 
@@ -63,4 +59,3 @@ class UnbanUser extends Command {
     )
   }
 }
-module.exports = UnbanUser

@@ -1,7 +1,7 @@
 const speedTest = require('speedtest-net')
 const Command = require('../../core/Command')
 
-class SpeedTest extends Command {
+module.exports = class SpeedTest extends Command {
   constructor(client) {
     super(client, {
       name: 'speedtest',
@@ -12,10 +12,10 @@ class SpeedTest extends Command {
 
   async run(client, msg) {
     const { Utils, embed } = client
-    const { errorMessage, standardMessage } = Utils
+    const { errorMessage } = Utils
 
     const test = speedTest({ maxTime: 5000 })
-    const m = await standardMessage(
+    const m = await embed(msg).setDescription(
       msg,
       `:desktop: Testing network throughput.\n\n:hourglass: Be back in a few seconds`
     )
@@ -36,9 +36,6 @@ class SpeedTest extends Command {
       )
     })
 
-    test.on('error', async () => {
-      return errorMessage(msg, `Failed to speedtest`)
-    })
+    test.on('error', async () => errorMessage(msg, `Failed to speedtest`))
   }
 }
-module.exports = SpeedTest

@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Invite extends Command {
+module.exports = class Invite extends Command {
   constructor(client) {
     super(client, {
       name: 'invite',
@@ -12,8 +12,7 @@ class Invite extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { embed } = Utils
+    const { embed } = client.Utils
     const { channel } = msg
 
     // * ------------------ Logic --------------------
@@ -33,12 +32,10 @@ class Invite extends Command {
       embed(msg)
         .setTitle('SubbyBot')
         .setDescription(
-          'Thanks for showing interest in SubbyBot! Click the\nlink below to invite her to your server.'
+          'Thanks for showing interest in SubbyBot! Click the link below to invite her to your server.'
         )
         .setThumbnail(client.user.avatarURL)
         .addField('\u200b', `[Click Here](${invite})`)
     )
   }
 }
-
-module.exports = Invite

@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Ping extends Command {
+module.exports = class Ping extends Command {
   constructor(client) {
     super(client, {
       name: 'ping',
@@ -13,12 +13,11 @@ class Ping extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { standardMessage } = Utils
+    const { standardMessage } = client.Utils
+    const { createdTimestamp } = msg
 
     // * ------------------ Logic --------------------
 
-    return standardMessage(msg, `Pong! Your ping is ${Date.now() - msg.createdTimestamp} ms`)
+    return standardMessage(msg, `Pong! Your ping is ${Date.now() - createdTimestamp} ms`)
   }
 }
-module.exports = Ping

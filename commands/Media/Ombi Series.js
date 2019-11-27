@@ -6,7 +6,7 @@ const Command = require('../../core/Command')
 requires role "requesttv"
 */
 
-class OmbiTV extends Command {
+module.exports = class OmbiTV extends Command {
   constructor(client) {
     super(client, {
       name: 'tv',
@@ -39,7 +39,7 @@ class OmbiTV extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey, username } = JSON.parse(client.db.general.ombi)
+    const { host, apiKey, username } = client.db.config.ombi
 
     // * ------------------ Config --------------------
 
@@ -150,4 +150,3 @@ class OmbiTV extends Command {
     }
   }
 }
-module.exports = OmbiTV

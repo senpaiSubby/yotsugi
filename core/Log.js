@@ -2,7 +2,7 @@ const chalk = require('chalk')
 const moment = require('moment')
 const { format } = require('util')
 
-class Log {
+module.exports = class Log {
   // Throw error if someone tries to create an instance
   constructor() {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
@@ -54,5 +54,3 @@ class Log {
     throw Log.log(chalk.bgRed.white.bold, false, message, stacktrace)
   }
 }
-
-module.exports = Log

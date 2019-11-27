@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Routines extends Command {
+module.exports = class Routines extends Command {
   constructor(client) {
     super(client, {
       name: 'routine',
@@ -30,10 +30,9 @@ class Routines extends Command {
 
     // * ------------------ Config --------------------
 
-    const config = await generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
-    const routines = JSON.parse(config.dataValues.routines)
+    const db = await generalConfig.findOne({ where: { id: client.config.ownerID } })
+    const { config } = client.db
+    const { routines } = config
 
     // * ------------------ Logic --------------------
     // * ------------------ Usage Logic --------------------
@@ -61,7 +60,7 @@ class Routines extends Command {
         routines[routineIndex].name = newName
 
         // save changes
-        await config.update({ routines: JSON.stringify(routines) })
+        await db.update({ config: JSON.stringify(config) })
         if (api) return `Renamed routine [ ${routineName} ] to [ ${newName} ]`
         return standardMessage(msg, `Renamed routine [ ${routineName} ] to [ ${newName} ]`)
       }
@@ -118,7 +117,7 @@ class Routines extends Command {
         commandListIndex[0] = true
 
         // save changes
-        await config.update({ routines: JSON.stringify(routines) })
+        await db.update({ config: JSON.stringify(config) })
         if (api) {
           return `Enabled command  [ ${command + 1} ] [ ${
             commandListIndex[1]
@@ -184,7 +183,7 @@ class Routines extends Command {
         commandListIndex[0] = false
 
         // save changes
-        await config.update({ routines: JSON.stringify(routines) })
+        await db.update({ config: JSON.stringify(config) })
         if (api) {
           return `Disabled command  [ ${command + 1} ][ ${
             commandListIndex[1]
@@ -280,7 +279,7 @@ class Routines extends Command {
 
         // save changes
         routines[index].commands.push([true, command])
-        await config.update({ routines: JSON.stringify(routines) })
+        await db.update({ config: JSON.stringify(config) })
         if (api) return `Added command [ ${command} ] to routine [ ${routineName} ]`
         return standardMessage(msg, `Added command [ ${command} ] to routine [ ${routineName} ]`)
       }
@@ -315,7 +314,7 @@ class Routines extends Command {
           const commandIndex = routines[routineIndex].commands.findIndex((i) => i === command)
           // save changes
           routines[routineIndex].commands.splice(commandIndex, 1)
-          await config.update({ routines: JSON.stringify(routines) })
+          await db.update({ config: JSON.stringify(config) })
           if (api) return `Removed command [ ${command} ] from routine [ ${routineName} ]`
           return standardMessage(
             msg,
@@ -325,7 +324,7 @@ class Routines extends Command {
 
         // save changes
         routines.splice(routineIndex, 1)
-        await config.update({ routines: JSON.stringify(routines) })
+        await db.update({ config: JSON.stringify(config) })
         if (api) return `Removed routine [ ${routineName} ]`
         return standardMessage(msg, `Removed routine [ ${routineName} ]`)
       }
@@ -335,4 +334,3 @@ class Routines extends Command {
     }
   }
 }
-module.exports = Routines

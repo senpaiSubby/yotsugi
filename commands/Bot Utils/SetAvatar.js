@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class SetAvatar extends Command {
+module.exports = class SetAvatar extends Command {
   constructor(client) {
     super(client, {
       name: 'setavatar',
@@ -19,4 +19,3 @@ class SetAvatar extends Command {
     return console.log(`--> New avatar: ${a.avatarURL}`)
   }
 }
-module.exports = SetAvatar

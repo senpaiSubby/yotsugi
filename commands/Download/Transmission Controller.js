@@ -1,7 +1,7 @@
 const Transmission = require('transmission-promise')
 const Command = require('../../core/Command')
 
-class TransmissionManagement extends Command {
+module.exports = class TransmissionManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'tor',
@@ -17,7 +17,7 @@ class TransmissionManagement extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Log, db } = client
     const {
       bytesToSize,
       sortByKey,
@@ -32,7 +32,7 @@ class TransmissionManagement extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, port, ssl } = JSON.parse(client.db.general.transmission)
+    const { host, port, ssl } = db.config.transmission
 
     // * ------------------ Check Config --------------------
 
@@ -159,4 +159,3 @@ class TransmissionManagement extends Command {
     }
   }
 }
-module.exports = TransmissionManagement

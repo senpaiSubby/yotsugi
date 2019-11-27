@@ -1,15 +1,11 @@
 const { RichEmbed } = require('discord.js')
-const Database = require('../core/Database')
 const { client } = require('../index')
 
 client.on('messageReactionAdd', async (reaction, user) => {
   const { message } = reaction
   if (reaction.emoji.name !== '⭐') return
 
-  const serverConfig = await Database.Models.serverConfig.findOne({
-    where: { id: message.guild.id }
-  })
-  const { prefix, starboardChannel } = serverConfig.dataValues
+  const { prefix, starboardChannel } = client.db.server
 
   const extension = async (attachment) => {
     const imageLink = attachment.split('.')
@@ -30,10 +26,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
   }
   const starChannel = message.guild.channels.get(starboardChannel)
 
-  if (!starChannel)
+  if (!starChannel) {
     return message.channel.send(
       `It appears that you do not have a StarBoard channel. Please set one with **${prefix}server set starBoard <channelID>**`
     )
+  }
 
   const fetchedMessages = await starChannel.fetchMessages({ limit: 100 })
   const stars = fetchedMessages.find(

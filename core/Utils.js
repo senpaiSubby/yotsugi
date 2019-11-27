@@ -2,27 +2,11 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const { RichEmbed } = require('discord.js')
-const { Manager } = require('../../index')
 const Log = require('./Log')
 
-class Utils {
+module.exports = class Utils {
   constructor() {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
-  }
-
-  static async runCommand(cmdString) {
-    const commandName = cmdString.split(' ').shift()
-    const cmd = Manager.findCommand(commandName)
-    const args = cmdString.split(' ').slice(1)
-    if (cmd)
-      if (!cmd.disabled) {
-        try {
-          await Manager.runCommand(cmd, null, args, true)
-          return 1
-        } catch {
-          return 0
-        }
-      }
   }
 
   // make embed fields always fit within limits after spliiting
@@ -201,16 +185,15 @@ class Utils {
 
   static millisecondsToTime(ms) {
     const duration = moment.duration(ms)
-    if (duration.asHours() > 1)
+    if (duration.asHours() > 1) {
       return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss')
+    }
 
     return moment.utc(duration.asMilliseconds()).format('mm:ss')
   }
 
   static sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms)
-    })
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   // Global Error Function
@@ -239,11 +222,11 @@ class Utils {
       Utils.embed(msg, 'red')
         .setTitle(`:gear: Missing ${name} DB config!`)
         .setDescription(
-          `${
-            msg.prefix
-          }db get ${name} for current config.\n\nSet them like so..\n\`\`\`css\n${params.join(
-            '\n'
-          )}\n\`\`\``
+          `${msg.prefix}db get ${name} for current config.
+
+          Set them like so..
+
+          \`\`\`css\n${params.join('\n')}\n\`\`\``
         )
     )
   }
@@ -276,5 +259,3 @@ class Utils {
     return m.delete(20000)
   }
 }
-
-module.exports = Utils

@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Poll extends Command {
+module.exports = class Poll extends Command {
   constructor(client) {
     super(client, {
       name: 'poll',
@@ -14,8 +14,7 @@ class Poll extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { embed } = Utils
+    const { embed } = client.Utils
 
     // * ------------------ Logic --------------------
 
@@ -28,7 +27,6 @@ class Poll extends Command {
 
     await m.react('✅')
     await m.react('❌')
-    msg.delete({ timeout: 1000 })
+    await msg.delete({ timeout: 1000 })
   }
 }
-module.exports = Poll

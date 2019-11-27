@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Encode extends Command {
+module.exports = class Encode extends Command {
   constructor(client) {
     super(client, {
       name: 'encode',
@@ -12,8 +12,7 @@ class Encode extends Command {
   }
 
   async run(client, msg, args) {
-    const { Utils } = client
-    const { standardMessage } = Utils
+    const { standardMessage } = client.Utils
 
     const Encodemsg = args.slice(0).join(' ')
 
@@ -23,8 +22,7 @@ class Encode extends Command {
       encoded += Array(8 - bin.length + 1).join('0') + bin
     }
 
-    msg.delete()
+    await msg.delete()
     return standardMessage(msg, encoded)
   }
 }
-module.exports = Encode

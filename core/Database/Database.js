@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize')
-const path = require('path')
+const { join } = require('path')
 
 const database = new Sequelize({
   logging: false,
   dialect: 'sqlite',
-  storage: path.join(__dirname, '..', 'data', 'db.sqlite')
+  storage: join(__dirname, '../..', 'data', 'db.sqlite')
 })
 
-class Database {
+module.exports = class Database {
   static get db() {
     return database
   }
@@ -20,5 +20,3 @@ class Database {
     }
   }
 }
-
-module.exports = Database

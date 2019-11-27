@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Disabled extends Command {
+module.exports = class Disabled extends Command {
   constructor(client) {
     super(client, {
       name: 'disabled',
@@ -13,32 +13,26 @@ class Disabled extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils, generalConfig } = client
+    const { Utils } = client
     const { standardMessage, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const config = await generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
-    const values = JSON.parse(config.dataValues.disabledCommands)
+    const { disabledCommands } = client.db.config
 
     // * ------------------ Usage Logic --------------------
 
-    const disabledCommands = []
-    values.forEach((i) => {
-      disabledCommands.push(i.command)
-    })
-    if (disabledCommands.length) {
+    const commandList = []
+    disabledCommands.forEach((i) => commandList.push(i.command))
+    if (commandList.length) {
       return channel.send(
         embed(msg)
           .setTitle('Disabled Commands')
-          .setDescription(`**- ${disabledCommands.join('\n- ')}**`)
+          .setDescription(`**- ${commandList.join('\n- ')}**`)
       )
     }
 
     return standardMessage(msg, `No commands are disabled`)
   }
 }
-module.exports = Disabled

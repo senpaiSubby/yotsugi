@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
-class DockerManagement extends Command {
+module.exports = class DockerManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'docker',
@@ -35,7 +35,7 @@ class DockerManagement extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host } = JSON.parse(client.db.general.docker)
+    const { host } = client.db.config.docker
 
     // * ------------------ Check Config --------------------
 
@@ -162,4 +162,3 @@ class DockerManagement extends Command {
     }
   }
 }
-module.exports = DockerManagement

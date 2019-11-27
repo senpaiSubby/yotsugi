@@ -2,7 +2,7 @@ const { exec } = require('shelljs')
 
 const Command = require('../../core/Command')
 
-class Executor extends Command {
+module.exports = class Executor extends Command {
   constructor(client) {
     super(client, {
       name: 'exec',
@@ -48,5 +48,3 @@ class Executor extends Command {
     })
   }
 }
-
-module.exports = Executor

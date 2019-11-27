@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Enable extends Command {
+module.exports = class Enable extends Command {
   constructor(client) {
     super(client, {
       name: 'enable',
@@ -21,16 +21,15 @@ class Enable extends Command {
 
     // * ------------------ Config --------------------
 
-    const config = await generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
-    const values = JSON.parse(config.dataValues.disabledCommands)
+    const db = await generalConfig.findOne({ where: { id: client.config.ownerID } })
+    const { config } = client.db
+    const { disabledCommands } = config
 
     // * ------------------ Logic --------------------
 
     const checkIfDisabled = async (command) => {
       let isDisabled = false
-      values.forEach((i) => {
+      disabledCommands.forEach((i) => {
         if (command === i.command || i.aliases.includes(command)) isDisabled = true
       })
       if (isDisabled) return true
@@ -51,12 +50,12 @@ class Enable extends Command {
 
         if (isDisabled) {
           willEnable.push(i)
-          await values.forEach(async (c, index) => {
+          await disabledCommands.forEach(async (c, index) => {
             const { aliases, command } = c
 
-            if (aliases.includes(i) || command === i) values.splice(index, 1)
+            if (aliases.includes(i) || command === i) disabledCommands.splice(index, 1)
 
-            await config.update({ disabledCommands: JSON.stringify(values) })
+            await db.update({ config: JSON.stringify(config) })
           })
         }
       })
@@ -91,4 +90,3 @@ class Enable extends Command {
     }
   }
 }
-module.exports = Enable

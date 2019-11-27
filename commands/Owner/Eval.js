@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Evaluator extends Command {
+module.exports = class Evaluator extends Command {
   constructor(client) {
     super(client, {
       name: 'eval',
@@ -45,5 +45,3 @@ class Evaluator extends Command {
     }
   }
 }
-
-module.exports = Evaluator

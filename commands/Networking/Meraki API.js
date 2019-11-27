@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-class MerakiAPI extends Command {
+module.exports = class MerakiAPI extends Command {
   constructor(client) {
     super(client, {
       name: 'meraki',
@@ -23,7 +23,7 @@ class MerakiAPI extends Command {
 
     // * ------------------ Config --------------------
 
-    const { serielNum, apiKey } = JSON.parse(client.db.general.meraki)
+    const { serielNum, apiKey } = client.db.config.meraki
 
     // * ------------------ Check Config --------------------
 
@@ -90,25 +90,25 @@ class MerakiAPI extends Command {
         if (status) {
           const embedList = []
           status.devices.forEach((i) => {
-            const e = embed(msg)
-              .setTitle('Meraki Devices')
-              .setThumbnail('https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000')
-              .addField('Name', i.name, true)
-              .addField('IP', i.ip, true)
-              .addField('VLAN', i.vlan, true)
-              .addField('Sent', i.sent, true)
-              .addField('Recv', i.recv, true)
-            embedList.push(e)
+            embedList.push(
+              embed(msg)
+                .setTitle('Meraki Devices')
+                .setThumbnail(
+                  'https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000'
+                )
+                .addField('Name', i.name, true)
+                .addField('IP', i.ip, true)
+                .addField('VLAN', i.vlan, true)
+                .addField('Sent', i.sent, true)
+                .addField('Recv', i.recv, true)
+            )
           })
           return paginate(client, msg, embedList)
         }
         return
       }
-      default: {
+      default:
         return validOptions(msg, ['list'])
-      }
     }
   }
 }
-
-module.exports = MerakiAPI

@@ -2,5 +2,6 @@ module.exports = {
   username: 'Subby',
   ownerID: '',
   token: '',
-  webServerPort: 5700
+  webServerPort: 5700,
+  prefix: '//'
 }

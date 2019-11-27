@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class SetGame extends Command {
+module.exports = class SetGame extends Command {
   constructor(client) {
     super(client, {
       name: 'setgame',
@@ -22,4 +22,3 @@ class SetGame extends Command {
     return console.log(`--> Game set: ${gameName}`)
   }
 }
-module.exports = SetGame

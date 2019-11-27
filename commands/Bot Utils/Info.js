@@ -3,7 +3,7 @@ require('moment-duration-format')
 const worker = require('core-worker')
 const Command = require('../../core/Command')
 
-class Info extends Command {
+module.exports = class Info extends Command {
   constructor(client) {
     super(client, {
       name: 'info',
@@ -17,7 +17,9 @@ class Info extends Command {
 
     const { Utils, user } = client
     const { embed } = Utils
-    const { channel } = msg
+    const { channel, context } = msg
+    const { round } = Math
+    const { memoryUsage } = process
 
     // * ------------------ Logic --------------------
 
@@ -25,22 +27,17 @@ class Info extends Command {
 
     return channel.send(
       embed(msg)
-        .setTitle(`${user.username} Status`)
+        .setTitle(`Nezuko Status`)
         .setThumbnail(user.avatarURL)
         .addField('Uptime', duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
-        .addField(
-          'Memory Usage',
-          `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`,
-          true
-        )
+        .addField('Memory Usage', `${round(memoryUsage().heapUsed / 1024 / 1024)} MB`, true)
         .addField('Node Version', process.version.replace('v', ''), true)
         .addField('NPM Version', npmv.data.replace('\n', ''), true)
         .addField('Servers', client.guilds.size, true)
-        .addField('Commands', msg.context.commands.size, true)
+        .addField('Commands', context.commands.size, true)
         .setDescription(
-          `SubbyBot! Created by CallMeKory because I was bored lmao [GITHUB](https://github.com/callmekory/subbyBot)`
+          `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/subbyBot)`
         )
     )
   }
 }
-module.exports = Info

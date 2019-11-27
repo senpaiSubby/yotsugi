@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
-class PioneerAVRController extends Command {
+module.exports = class PioneerAVRController extends Command {
   constructor(client) {
     super(client, {
       name: 'avr',
@@ -25,7 +25,7 @@ class PioneerAVRController extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host } = JSON.parse(client.db.general.pioneerAVR)
+    const { host } = client.db.config.pioneerAVR
 
     // * ------------------ Check Config --------------------
 
@@ -121,4 +121,3 @@ class PioneerAVRController extends Command {
     }
   }
 }
-module.exports = PioneerAVRController

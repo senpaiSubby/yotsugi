@@ -1,7 +1,7 @@
 const ms = require('ms')
 const Command = require('../../core/Command')
 
-class RemindMe extends Command {
+module.exports = class RemindMe extends Command {
   constructor(client) {
     super(client, {
       name: 'remindme',
@@ -46,4 +46,3 @@ class RemindMe extends Command {
     }, ms(Timer))
   }
 }
-module.exports = RemindMe

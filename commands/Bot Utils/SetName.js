@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class SetName extends Command {
+module.exports = class SetName extends Command {
   constructor(client) {
     super(client, {
       name: 'setname',
@@ -20,4 +20,3 @@ class SetName extends Command {
     return console.log(`--> New username set: ${u.username}`)
   }
 }
-module.exports = SetName

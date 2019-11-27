@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const wol = require('wol')
 const Command = require('../../core/Command')
 
-class SystemPowerController extends Command {
+module.exports = class SystemPowerController extends Command {
   constructor(client) {
     super(client, {
       name: 'pc',
@@ -25,7 +25,7 @@ class SystemPowerController extends Command {
 
     // * ------------------ Config --------------------
 
-    const devices = JSON.parse(client.db.general.systemPowerControl)
+    const devices = client.db.config.systemPowerControl
 
     // * ------------------ Logic --------------------
 
@@ -83,4 +83,3 @@ class SystemPowerController extends Command {
     }
   }
 }
-module.exports = SystemPowerController

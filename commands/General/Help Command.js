@@ -1,7 +1,6 @@
 const Command = require('../../core/Command')
-const Database = require('../../core/Database')
 
-class Help extends Command {
+module.exports = class Help extends Command {
   constructor(client) {
     super(client, {
       name: 'help',
@@ -15,22 +14,16 @@ class Help extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, db } = client
     const { embed, groupBy, paginate, capitalize } = Utils
-    const { author, channel } = msg
+    const { author, channel, context } = msg
 
     // * ------------------ Config --------------------
 
-    // get server prefix
-    const { id } = msg.guild
+    // get server config
+    const prefix = db.server.prefix || context.prefix
 
-    const db = await Database.Models.serverConfig.findOne({ where: { id } })
-    const prefix = db.prefix || this.prefix
-
-    const generalConfig = await Database.Models.generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
-    const disabledCommands = JSON.parse(generalConfig.dataValues.disabledCommands)
+    const { disabledCommands } = client.db.config
 
     // * ------------------ Logic --------------------
 
@@ -42,8 +35,7 @@ class Help extends Command {
       if (disabled) return false
 
       if (i.permsNeeded.length) {
-        const missingPerms = msg.context.checkPerms(msg.member, i.permsNeeded)
-        if (missingPerms) return false
+        if (context.checkPerms(msg.member, i.permsNeeded)) return false
       }
       if (i.ownerOnly) {
         if (author.id === client.config.ownerID) return true
@@ -54,7 +46,7 @@ class Help extends Command {
     }
 
     // filter commands based on author access
-    const commands = msg.context.commands.filter((i) => checkPerms(i))
+    const commands = context.commands.filter((i) => checkPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
       msg.delete(10000)
@@ -80,7 +72,7 @@ class Help extends Command {
       return paginate(client, msg, embedList, 1)
     }
     // Show individual command's help.
-    const command = msg.context.findCommand(args[0])
+    const command = context.findCommand(args[0])
 
     msg.delete(10000)
     if (command && checkPerms(command)) {
@@ -99,5 +91,3 @@ class Help extends Command {
     }
   }
 }
-
-module.exports = Help

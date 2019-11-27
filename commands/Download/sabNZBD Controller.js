@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
-class SabnzbdManagement extends Command {
+module.exports = class SabnzbdManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'sab',
@@ -32,7 +32,7 @@ class SabnzbdManagement extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey } = JSON.parse(client.db.general.sabnzbd)
+    const { host, apiKey } = JSON.parse(client.db.config.sabnzbd)
 
     // * ------------------ Check Config --------------------
 
@@ -99,10 +99,8 @@ class SabnzbdManagement extends Command {
         return
       }
 
-      default: {
+      default:
         return validOptions(msg, ['list'])
-      }
     }
   }
 }
-module.exports = SabnzbdManagement

@@ -1,6 +1,6 @@
-const Command = require('../../../noelleBot/core/Command')
+const Command = require('../../core/Command')
 
-class SpaceText extends Command {
+module.exports = class SpaceText extends Command {
   constructor(client) {
     super(client, {
       name: 'space',
@@ -30,4 +30,3 @@ class SpaceText extends Command {
     )
   }
 }
-module.exports = SpaceText

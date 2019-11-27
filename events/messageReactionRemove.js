@@ -1,9 +1,8 @@
 /* eslint-disable radix */
 const { RichEmbed } = require('discord.js')
-const Database = require('../core/Database')
 const { client } = require('../index')
 
-client.on('messageReactionRemove', async (reaction, user) => {
+client.on('messageReactionRemove', async (reaction) => {
   const extension = async (attachment) => {
     const imageLink = attachment.split('.')
     const typeOfImage = imageLink[imageLink.length - 1]
@@ -15,17 +14,15 @@ client.on('messageReactionRemove', async (reaction, user) => {
   const { message } = reaction
   if (reaction.emoji.name !== '⭐') return
 
-  const serverConfig = await Database.Models.serverConfig.findOne({
-    where: { id: message.guild.id }
-  })
-  const { prefix, starboardChannel } = serverConfig.dataValues
+  const { prefix, starboardChannel } = client.broadcasts.server
 
   if (reaction.emoji.name !== '⭐') return
   const starChannel = message.guild.channels.get(starboardChannel)
-  if (!starChannel)
+  if (!starChannel) {
     return message.channel.send(
       `It appears that you do not have a StarBoard channel. Please set one with **${prefix}server set starBoard <channelID>**`
     )
+  }
 
   const fetchedMessages = await starChannel.fetchMessages({ limit: 100 })
   const stars = fetchedMessages.find(

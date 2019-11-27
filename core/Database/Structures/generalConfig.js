@@ -1,15 +1,14 @@
 const Sequelize = require('sequelize')
 const Database = require('../Database')
 
-const memberConfig = Database.db.define('memberConfig', {
+const generalConfig = Database.db.define('generalConfig', {
   username: Sequelize.STRING,
   id: {
     type: Sequelize.STRING,
     primaryKey: true
   },
-  todos: Sequelize.STRING,
-  messages: Sequelize.STRING
+  config: Sequelize.STRING
 })
 
-memberConfig.sync()
-module.exports = memberConfig
+generalConfig.sync()
+module.exports = generalConfig

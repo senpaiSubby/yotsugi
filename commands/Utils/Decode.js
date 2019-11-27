@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Decode extends Command {
+module.exports = class Decode extends Command {
   constructor(client) {
     super(client, {
       name: 'decode',
@@ -12,17 +12,16 @@ class Decode extends Command {
   }
 
   async run(client, msg, args) {
-    const { Utils } = client
-    const { standardMessage } = Utils
+    const { standardMessage } = client.Utils
 
     const Decodemsg = args.slice(0).join(' ')
 
     let decoded = ''
     const arr = Decodemsg.match(/.{1,8}/g)
-    for (let i = 0; i < arr.length; i++)
+    for (let i = 0; i < arr.length; i++) {
       decoded += String.fromCharCode(parseInt(arr[i], 2).toString(10))
+    }
 
     return standardMessage(msg, decoded)
   }
 }
-module.exports = Decode

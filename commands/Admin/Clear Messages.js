@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class ClearMessages extends Command {
+module.exports = class ClearMessages extends Command {
   constructor(client) {
     super(client, {
       name: 'clear',
@@ -19,8 +19,7 @@ class ClearMessages extends Command {
 
     await msg.delete()
 
-    const { Utils } = client
-    const { warningMessage } = Utils
+    const { warningMessage } = client.Utils
     const { channel } = msg
     const user = msg.mentions.users.first()
 
@@ -49,4 +48,3 @@ class ClearMessages extends Command {
     return channel.bulkDelete(messages)
   }
 }
-module.exports = ClearMessages

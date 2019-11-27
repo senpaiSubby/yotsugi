@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=sublime
-ExecStart=/usr/bin/node /home/sublime/git/subbyBot/data/addons/powerserver/index.js
+ExecStart=/usr/bin/node /home/sublime/git/subbyBot/core/addons/powerserver/index.js
 Restart=on-failure
 
 [Install]

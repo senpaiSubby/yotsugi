@@ -2,7 +2,7 @@ const { exec } = require('shelljs')
 const { performance } = require('perf_hooks')
 const Command = require('../../core/Command')
 
-class Drive extends Command {
+module.exports = class Drive extends Command {
   constructor(client) {
     super(client, {
       name: 'drive',
@@ -30,7 +30,7 @@ class Drive extends Command {
 
     const { channel } = msg
 
-    const { remote } = JSON.parse(client.db.general.rclone)
+    const { remote } = JSON.parse(client.db.config.rclone)
     if (!remote) {
       const settings = [`${p}db set rclone remote <remote>`]
       return channel.send(
@@ -48,8 +48,11 @@ class Drive extends Command {
       case 'size': {
         const waitMessage = await standardMessage(
           msg,
-          `:file_cabinet: Calculating size of\n\n- ${dirPath ||
-            '/'}\n\n:hourglass: This may take some time...`
+          `:file_cabinet: Calculating size of
+
+          - ${dirPath || '/'}
+
+            :hourglass: This may take some time...`
         )
 
         const startTime = performance.now()
@@ -91,8 +94,11 @@ class Drive extends Command {
       case 'ls': {
         const waitMessage = await standardMessage(
           msg,
-          `:file_cabinet: Getting Directory\n\n- ${dirPath ||
-            '/'}\n\n:hourglass: This may take some time...`
+          `:file_cabinet: Getting Directory
+
+          - ${dirPath || '/'}
+
+          :hourglass: This may take some time...`
         )
 
         exec(
@@ -167,4 +173,3 @@ class Drive extends Command {
     }
   }
 }
-module.exports = Drive

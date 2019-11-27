@@ -1,6 +1,6 @@
-const Command = require('../../../noelleBot/core/Command')
+const Command = require('../../core/Command')
 
-class KickUsers extends Command {
+module.exports = class KickUsers extends Command {
   constructor(client) {
     super(client, {
       name: 'kick',
@@ -16,33 +16,33 @@ class KickUsers extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils, serverConfig } = client
+    const { Utils, db } = client
     const { warningMessage, embed } = Utils
-    const { author, channel } = msg
+    const { author, channel, guild, mentions, createdAt } = msg
 
     // * ------------------ Config --------------------
 
-    const config = await serverConfig.findOne({
-      where: { id: msg.guild.id }
-    })
-    const { prefix, logsChannel } = config.dataValues
+    const { prefix, logsChannel } = db.server
 
-    const serverLogsChannel = msg.guild.channels.get(logsChannel)
+    const serverLogsChannel = guild.channels.get(logsChannel)
 
     // * ------------------ Check Config --------------------
 
     if (!serverLogsChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.\nPlease set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a logs channel.
+        Please set one with \`${prefix}server set logsChannel <channelID>\``
       )
     }
 
     // * ------------------ Logic --------------------
 
-    if (msg.mentions.members.size === 0) return warningMessage(msg, `Please mention a user to kick`)
+    if (msg.mentions.members.size === 0) {
+      return warningMessage(msg, `Please mention a user to kick`)
+    }
 
-    const kickMember = msg.mentions.members.first()
+    const kickMember = mentions.members.first()
 
     if (!args[1]) return warningMessage(msg, `Please put a reason for the kick`)
 
@@ -54,11 +54,10 @@ class KickUsers extends Command {
         .setThumbnail(target.user.avatarURL)
         .addField('Kicked Member', `**${target.user.username}** with an ID: ${target.user.id}`)
         .addField('Kicked By', `**${author.username}** with an ID: ${author.id}`)
-        .addField('Kicked Time', msg.createdAt)
+        .addField('Kicked Time', createdAt)
         .addField('Kicked At', channel)
         .addField('Kicked Reason', reason)
         .setFooter('Kicked user information', target.user.displayAvatarURL)
     )
   }
 }
-module.exports = KickUsers

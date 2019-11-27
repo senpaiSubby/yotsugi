@@ -1,7 +1,7 @@
 const TuyAPI = require('tuyapi')
 const Command = require('../../core/Command')
 
-class TuyaPlugController extends Command {
+module.exports = class TuyaPlugController extends Command {
   constructor(client) {
     super(client, {
       name: 'plug',
@@ -24,7 +24,7 @@ class TuyaPlugController extends Command {
 
     // * ------------------ Config --------------------
 
-    const devices = JSON.parse(client.db.general.tuyaPlugControl)
+    const { tuyaDevices } = client.db.config
 
     // * ------------------ Logic --------------------
 
@@ -32,7 +32,7 @@ class TuyaPlugController extends Command {
       try {
         const deviceList = []
 
-        devices.forEach(async (d) => {
+        tuyaDevices.forEach(async (d) => {
           const device = new TuyAPI({ id: d.id, key: d.key })
 
           await device.find()
@@ -119,8 +119,8 @@ class TuyaPlugController extends Command {
         return
       }
       default: {
-        const index = devices.findIndex((d) => d.name === args[0])
-        const device = devices[index]
+        const index = tuyaDevices.findIndex((d) => d.name === args[0])
+        const device = tuyaDevices[index]
         const name = capitalize(args[0])
         // if plug name not found
         if (index === -1) return warningMessage(msg, `No plug named **${name}`)
@@ -134,5 +134,3 @@ class TuyaPlugController extends Command {
     }
   }
 }
-
-module.exports = TuyaPlugController

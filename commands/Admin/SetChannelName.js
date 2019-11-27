@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class SetChannelName extends Command {
+module.exports = class SetChannelName extends Command {
   constructor(client) {
     super(client, {
       name: 'cname',
@@ -17,8 +17,7 @@ class SetChannelName extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { standardMessage } = Utils
+    const { standardMessage } = client.Utils
 
     // * ------------------ Logic --------------------
 
@@ -29,4 +28,3 @@ class SetChannelName extends Command {
     return standardMessage(msg, `Channel name changed to ${newName}`)
   }
 }
-module.exports = SetChannelName

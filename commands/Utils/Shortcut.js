@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class Shortcut extends Command {
+module.exports = class Shortcut extends Command {
   constructor(client) {
     super(client, {
       name: 'shortcut',
@@ -18,13 +18,13 @@ class Shortcut extends Command {
 
     const { Utils, generalConfig } = client
     const { warningMessage, standardMessage, errorMessage, embed } = Utils
+    const { author, context } = msg
 
     // * ------------------ Config --------------------
 
-    const config = await generalConfig.findOne({
-      where: { id: msg.author.id }
-    })
-    const shortcuts = JSON.parse(config.dataValues.shortcuts)
+    const db = await generalConfig.findOne({ where: { id: author.id } })
+    const { config } = client.db
+    const { shortcuts } = config
 
     // * ------------------ Logic --------------------
     // * ------------------ Usage Logic --------------------
@@ -34,11 +34,9 @@ class Shortcut extends Command {
         if (!shortcuts.length) return warningMessage(msg, `There are no shortcuts!`)
 
         let todoList = ''
-        shortcuts.forEach((i) => {
-          todoList += `**${i.name} - ${i.command} ${i.arg.join(' ')}**\n`
-        })
+        shortcuts.forEach((i) => (todoList += `**${i.name} - ${i.command} ${i.arg.join(' ')}**\n`))
         return msg.reply(
-          embed(msg, 'green')
+          embed(msg)
             .setTitle('Shortcuts')
             .setDescription(todoList)
         )
@@ -53,7 +51,7 @@ class Shortcut extends Command {
         args.splice(0, 3)
         const arg = args.join(' ')
         shortcuts.push({ name, command, arg: arg.split(' ') })
-        await config.update({ shortcuts: JSON.stringify(shortcuts) })
+        await db.update({ config: JSON.stringify(config) })
         return standardMessage(msg, `${name}\n\nAdded to shortcut list`)
       }
       case 'remove': {
@@ -62,7 +60,7 @@ class Shortcut extends Command {
         if (index === -1) return warningMessage(msg, `Shortcut does not exist`)
 
         shortcuts.splice(index, 1)
-        await config.update({ shortcuts: JSON.stringify(shortcuts) })
+        await db.update({ config: JSON.stringify(config) })
         if (name) return standardMessage(msg, `${name}\n\nRemoved from shortcut list`)
 
         break
@@ -73,12 +71,10 @@ class Shortcut extends Command {
 
         const { command, arg } = shortcuts[index]
 
-        const cmd = msg.context.findCommand(command)
-        if (cmd) return msg.context.runCommand(client, cmd, msg, arg)
+        const cmd = context.findCommand(command)
+        if (cmd) return context.runCommand(client, cmd, msg, arg)
         return errorMessage(msg, `Command [ ${command} ] does not exist`)
       }
     }
   }
 }
-
-module.exports = Shortcut

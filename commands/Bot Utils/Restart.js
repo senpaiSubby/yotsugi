@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class restart extends Command {
+module.exports = class restart extends Command {
   constructor(client) {
     super(client, {
       name: 'restart',
@@ -13,13 +13,13 @@ class restart extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { embed } = Utils
+    const { embed } = client.Utils
+    const { channel } = msg
 
     // * ------------------ Logic --------------------
     let count = 10
 
-    const m = await msg.channel.send(
+    const m = await channel.send(
       embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`)
     )
     const interval = setInterval(async () => {
@@ -33,4 +33,3 @@ class restart extends Command {
     }, 1000)
   }
 }
-module.exports = restart

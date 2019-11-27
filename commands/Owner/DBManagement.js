@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class DBManagement extends Command {
+module.exports = class DBManagement extends Command {
   constructor(client) {
     super(client, {
       name: 'db',
@@ -15,42 +15,52 @@ class DBManagement extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils, generalConfig } = client
-    const { warningMessage, validOptions, standardMessage } = Utils
+    const { Utils, generalConfig, p } = client
+    const { warningMessage, validOptions, standardMessage, chunkArray, embed } = Utils
     const { channel } = msg
 
     msg.delete(10000)
 
     // * ------------------ Config --------------------
 
-    const config = await generalConfig.findOne({
-      where: { id: client.config.ownerID }
-    })
-    const values = config.dataValues
+    const db = await generalConfig.findOne({ where: { id: client.config.ownerID } })
+    const { config } = client.db
 
     // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
       case 'get': {
         const key1 = args[1]
-        let x = ''
         if (!key1) {
-          Object.keys(values).forEach((key) => {
-            x += `${key}\n${values[key]}\n`
+          delete config.disabledCommands
+          delete config.webUI
+          delete config.routines
+          delete config.shortcuts
+
+          const e = embed(msg).setTitle('Database Keys').setDescription(`**[ ${p}db get <key> ]
+            for more detailed info**`)
+
+          const splitArray = chunkArray(Object.keys(config).sort(), 7)
+          splitArray.forEach((item) => {
+            let text = ''
+            item.forEach((i) => (text += `**${i}**\n`))
+            e.addField(`\u200b`, text, true)
           })
-          const m = await channel.send(x, { code: 'json' })
-          return m.delete(30000)
+          return channel.send(e)
         }
-        if (key1 in values) {
-          x = `${values[key1]}`
-          const m = await msg.reply(
-            x
-              .replace(/,/g, ',\n')
-              .replace(/\{/g, '{\n')
-              .replace(/\}/g, '\n}'),
-            { code: 'json' }
-          )
-          return m.delete(20000)
+        if (key1 in config) {
+          const keys = Object.keys(config[key1])
+          const e = embed(msg)
+            .setTitle(`Database Keys [ ${key1} ]`)
+            .setDescription(
+              `**[ ${p}db set ${key1} <${keys.join(' | ')}> <new value> ] to change**`
+            )
+
+          keys.forEach((i) => {
+            e.addField(`${i}`, `${config[key1][i]}`, true)
+          })
+
+          return channel.send(e)
         }
         return warningMessage(msg, `Key [${key1}] doesnt exist`)
       }
@@ -58,19 +68,16 @@ class DBManagement extends Command {
         const keyToChange = args[1]
         const key1 = args[2]
         const val1 = args[3]
-        if (keyToChange in values && key1 in JSON.parse(values[keyToChange])) {
-          const tempObject = JSON.parse(values[args[1]])
-          tempObject[key1] = val1
-          await config.update({ [keyToChange]: JSON.stringify(tempObject) })
-          const m = await standardMessage(msg, `Key [${keyToChange}.${key1}] changed to [${val1}]`)
+        if (keyToChange in config && key1 in config[keyToChange]) {
+          config[keyToChange][key1] = val1
+          await db.update({ config: JSON.stringify(config) })
+          const m = await standardMessage(msg, `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`)
           return m.delete(10000)
         }
         return warningMessage(msg, `Key [${key1}] doesnt exist`)
       }
-      default: {
+      default:
         return validOptions(msg, ['get', 'set'])
-      }
     }
   }
 }
-module.exports = DBManagement

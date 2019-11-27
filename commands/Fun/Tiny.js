@@ -40,7 +40,7 @@ const mappings = ((object) => {
   z: '\u1D22'
 })
 
-class TinyText extends Command {
+module.exports = class TinyText extends Command {
   constructor(client) {
     super(client, {
       name: 'tiny',
@@ -66,4 +66,3 @@ class TinyText extends Command {
     return channel.send(output)
   }
 }
-module.exports = TinyText

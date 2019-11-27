@@ -5,7 +5,7 @@ const Command = require('../../core/Command')
  * ! logic doesnt work fix callbacks
  */
 
-class PortChecker extends Command {
+module.exports = class PortChecker extends Command {
   constructor(client) {
     super(client, {
       name: 'port',
@@ -21,8 +21,7 @@ class PortChecker extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { warningMessage, standardMessage, errorMessage } = Utils
+    const { warningMessage, standardMessage, errorMessage } = client.Utils
 
     // * ------------------ Config --------------------
 
@@ -38,16 +37,12 @@ class PortChecker extends Command {
         return standardMessage(msg, `Port ${port} is available for use`)
       }
       default: {
-        if (isNaN(command)) {
-          // check if port is a number
-          return warningMessage(msg, `Port should be a number`)
-        }
+        if (isNaN(command)) return warningMessage(msg, `Port should be a number`)
 
         // Checks the status of a single port
         checkPortStatus(args[0], targetIP, async (error, status) => {
-          if (error) {
-            return errorMessage(msg, `No connection to host`)
-          }
+          if (error) return errorMessage(msg, `No connection to host`)
+
           // Status is 'open' if currently in use or 'closed' if available
           if (status === 'open') {
             return standardMessage(msg, `Port ${args[0]} is open and in use`)
@@ -61,4 +56,3 @@ class PortChecker extends Command {
     }
   }
 }
-module.exports = PortChecker

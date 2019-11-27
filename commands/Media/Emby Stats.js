@@ -2,7 +2,7 @@ const urljoin = require('url-join')
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-class EmbyStats extends Command {
+module.exports = class EmbyStats extends Command {
   constructor(client) {
     super(client, {
       name: 'emby',
@@ -18,6 +18,7 @@ class EmbyStats extends Command {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client
+    const { channel } = msg
     const {
       errorMessage,
       warningMessage,
@@ -30,7 +31,7 @@ class EmbyStats extends Command {
 
     // * ------------------ Config --------------------
 
-    const { apiKey, host, userID } = JSON.parse(client.db.general.emby)
+    const { apiKey, host, userID } = client.db.config.emby
 
     // * ------------------ Check Config --------------------
 
@@ -126,7 +127,7 @@ class EmbyStats extends Command {
               true
             )
           })
-          return msg.channel.send(e)
+          return channel.send(e)
         }
         return
       }
@@ -135,7 +136,7 @@ class EmbyStats extends Command {
         const stats = await fetchStats('/Items/Counts')
         if (stats) {
           const { MovieCount, SeriesCount, EpisodeCount, ArtistCount, SongCount, BookCount } = stats
-          return msg.channel.send(
+          return channel.send(
             embed
               .setTitle('Emby Stats')
               .addField(':film_frames: Movies', MovieCount, true)
@@ -164,7 +165,7 @@ class EmbyStats extends Command {
                 text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`
               })
               embed.setDescription(text)
-              return msg.channel.send(embed)
+              return channel.send(embed)
             }
             case 'series': {
               embed.setTitle('Recently added series')
@@ -175,7 +176,7 @@ class EmbyStats extends Command {
                   true
                 )
               })
-              return msg.channel.send(embed)
+              return channel.send(embed)
             }
             default:
               return validOptions(msg, ['series', 'movies'])
@@ -191,4 +192,3 @@ class EmbyStats extends Command {
     }
   }
 }
-module.exports = EmbyStats

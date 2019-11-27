@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-class UserAvatar extends Command {
+module.exports = class UserAvatar extends Command {
   constructor(client) {
     super(client, {
       name: 'avatar',
@@ -14,14 +14,13 @@ class UserAvatar extends Command {
   async run(client, msg) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
-    const { embed } = Utils
+    const { embed, warningMessage } = client.Utils
     const { author, channel } = msg
 
     // * ------------------ Logic --------------------
 
     const member = msg.mentions.members.first() || author
-    if (!member.user.avatar) return channel.send('This user does not have an avatar!')
+    if (!member.user.avatar) return warningMessage(msg, 'This user does not have an avatar!')
     const avatar = member.user.avatarURL
 
     return channel.send(
@@ -32,4 +31,3 @@ class UserAvatar extends Command {
     )
   }
 }
-module.exports = UserAvatar
