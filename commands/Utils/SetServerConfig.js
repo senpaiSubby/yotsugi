@@ -4,7 +4,7 @@ module.exports = class Get extends Command {
   constructor(client) {
     super(client, {
       name: 'server',
-      category: 'Admin',
+      category: 'Utils',
       description: 'Set/Get server config for bot',
       usage: ['server get', 'server set <key> <value'],
       args: true,

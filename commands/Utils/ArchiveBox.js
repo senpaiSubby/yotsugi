@@ -32,7 +32,11 @@ module.exports = class ArchiveBox extends Command {
         if (code !== 0) {
           return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)
         }
-        return standardMessage(msg, `Archive of [ ${args[0]} ] complete!`)
+        return standardMessage(
+          msg,
+          `Archive of [ ${args[0]} ] complete!
+        You can find it [here](https://atriox.io)`
+        )
       }
     )
   }
