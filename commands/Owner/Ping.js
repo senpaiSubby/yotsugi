@@ -4,7 +4,7 @@ module.exports = class Ping extends Command {
   constructor(client) {
     super(client, {
       name: 'ping',
-      category: 'Bot Utils',
+      category: 'Owner',
       description: 'Check discord latency.',
       ownerOnly: true
     })

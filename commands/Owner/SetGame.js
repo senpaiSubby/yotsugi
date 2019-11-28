@@ -4,7 +4,7 @@ module.exports = class SetGame extends Command {
   constructor(client) {
     super(client, {
       name: 'setgame',
-      category: 'Bot Utils',
+      category: 'Owner',
       description: 'Sets the game the bot is playing',
       usage: ['setgame <status>'],
       aliases: ['setstatus'],
