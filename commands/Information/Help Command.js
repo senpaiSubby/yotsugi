@@ -4,7 +4,7 @@ module.exports = class Help extends Command {
   constructor(client) {
     super(client, {
       name: 'help',
-      category: 'General',
+      category: 'Information',
       description: 'Gets Help On Commands',
       aliases: ['halp'],
       guildOnly: true
@@ -14,14 +14,16 @@ module.exports = class Help extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils, db } = client
+    const { Utils } = client
     const { embed, groupBy, paginate, capitalize } = Utils
-    const { author, channel, context } = msg
+    const { channel, context } = msg
 
     // * ------------------ Config --------------------
 
     // get server config
-    const prefix = db.server.prefix || context.prefix
+    const db = await serverConfig.findOne({ where: { id: guild.id } })
+    const { prefix: p } = JSON.parse(db.dataValues.config)
+    const prefix = p || context.prefix
 
     const { disabledCommands } = client.db.config
 

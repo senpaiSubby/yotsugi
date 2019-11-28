@@ -2,9 +2,10 @@ const { RichEmbed } = require('discord.js')
 const { client } = require('../index')
 
 client.on('guildMemberAdd', async (member) => {
-  const { colors, db } = client
+  const { colors } = client
 
-  const { prefix, welcomeChannel } = db.server
+  const db = await serverConfig.findOne({ where: { id: member.guild.id } })
+  const { welcomeChannel, prefix } = JSON.parse(db.dataValues.config)
 
   const embed = new RichEmbed()
     .setColor(colors.green)
