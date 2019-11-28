@@ -4,7 +4,7 @@ module.exports = class Rules extends Command {
   constructor(client) {
     super(client, {
       name: 'rules',
-      category: 'Information',
+      category: 'General',
       description: 'Behold the rule book.'
     })
   }
@@ -29,7 +29,7 @@ module.exports = class Rules extends Command {
     const rule = args.slice(1).join(' ')
 
     const db = await serverConfig.findOne({ where: { id: guild.id } })
-    const { rules, logsChannel, prefix } = JSON.parse(db.dataValues.config)
+    const { rules, logsChannel, prefix } = client.db.server
 
     const serverLogsChannel = msg.guild.channels.get(logsChannel)
 

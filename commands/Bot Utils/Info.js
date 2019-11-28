@@ -7,7 +7,7 @@ module.exports = class Info extends Command {
   constructor(client) {
     super(client, {
       name: 'info',
-      category: 'Information',
+      category: 'General',
       description: 'Learn about the bot.'
     })
   }

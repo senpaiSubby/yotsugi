@@ -72,6 +72,7 @@ module.exports = class CommandManager {
     try {
       return command.run(client, msg, args, api)
     } catch (err) {
+      if (api) return 'failed'
       return client.Utils.error(command.name, err, msg.channel)
     }
   }
@@ -81,24 +82,37 @@ module.exports = class CommandManager {
   }
 
   async handleMessage(msg, client) {
-    if (msg.author.bot) return
-
-    const { Utils, generalConfig } = client
+    const { Utils, generalConfig, serverConfig } = client
     const { errorMessage, warningMessage, standardMessage, embed } = Utils
     const { content, author, channel, guild } = msg
+
     const { ownerID } = client.config
+
+    // if msg is sent by bot then ignore
+    if (author.bot) return
+
     msg.context = this
-    const prefix = guild ? await this.handleServer(guild) : this.prefix
-    client.p = prefix
 
     await this.handleConfig()
     await this.handleUser(msg)
+    const prefix = guild ? await this.handleServer(guild) : this.prefix
+    client.p = prefix
 
     // set db configs
     const generalDB = await generalConfig.findOne({ where: { id: ownerID } })
     client.db.config = JSON.parse(generalDB.dataValues.config)
 
-    // send all messages to our parser
+    if (channel.type === 'text') {
+      const serverDB = await serverConfig.findOne({ where: { id: guild.id } })
+      client.db.server = JSON.parse(serverDB.dataValues.config)
+    }
+
+    // reply with prefix when bot is the only thing mentioned
+    if (msg.isMentioned(client.user) && msg.content.split(' ').length === 1) {
+      return warningMessage(msg, `My command prefix is ${prefix}`)
+    }
+
+    // send all messages to our Log
     await MessageManager.logger(msg)
 
     // if msg doesnt start with prefix then ignore msg

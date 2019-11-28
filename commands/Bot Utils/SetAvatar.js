@@ -4,7 +4,7 @@ module.exports = class SetAvatar extends Command {
   constructor(client) {
     super(client, {
       name: 'setavatar',
-      category: 'Owner',
+      category: 'Bot Utils',
       description: 'Sets the bot avatar',
       usage: ['setavatar <image url>'],
       ownerOnly: true,

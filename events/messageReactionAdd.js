@@ -2,13 +2,10 @@ const { RichEmbed } = require('discord.js')
 const { client } = require('../index')
 
 client.on('messageReactionAdd', async (reaction, user) => {
+  const { message } = reaction
   if (reaction.emoji.name !== '⭐') return
 
-  const { message } = reaction
-  const { serverConfig } = client
-
-  const db = await serverConfig.findOne({ where: { id: guild.id } })
-  const { starboardChannel, prefix } = JSON.parse(db.dataValues.config)
+  const { prefix, starboardChannel } = client.db.server
 
   const extension = async (attachment) => {
     const imageLink = attachment.split('.')

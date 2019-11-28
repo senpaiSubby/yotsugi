@@ -4,7 +4,7 @@ module.exports = class restart extends Command {
   constructor(client) {
     super(client, {
       name: 'restart',
-      category: 'Owner',
+      category: 'Bot Utils',
       description: 'Restarts the bot.',
       ownerOnly: true
     })
