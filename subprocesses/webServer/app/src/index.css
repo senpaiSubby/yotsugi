@@ -48,7 +48,7 @@ button:focus {
   outline: none;
 }
 .apiButtons {
-  max-width: 80%;
+  max-width: 90%;
   height: 100%;
   align-content: center;
   flex-wrap: wrap;

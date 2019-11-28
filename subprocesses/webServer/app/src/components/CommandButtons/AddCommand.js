@@ -23,13 +23,13 @@ const AddCommand = () => {
         display: 'grid',
         padding: '10px',
         gap: '5px',
-        gridTemplateColumns: '200px 200px 50px'
+        gridTemplateColumns: '150px 150px 50px'
       }}
     >
       <input
         type="text"
         style={{
-          width: '200px',
+          width: '150px',
           border: 'none',
           fontSize: '0.7rem',
           backgroundColor: '#3E4245',
@@ -46,7 +46,7 @@ const AddCommand = () => {
       <input
         type="text"
         style={{
-          width: '200px',
+          width: '150px',
           border: 'none',
           fontSize: '0.7rem',
           backgroundColor: '#3E4245',
