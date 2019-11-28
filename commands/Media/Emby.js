@@ -118,7 +118,7 @@ module.exports = class Emby extends Command {
 
           if (!currentStreamCount) return standardMessage(msg, 'Nothing is playing')
 
-          e.setTitle(`Emby Stats - Current Streams [${currentStreamCount}]`)
+          e.setTitle(`Emby Stats - Current Streams [ ${currentStreamCount} ]`)
 
           currentStreams.forEach((i) => {
             e.addField(

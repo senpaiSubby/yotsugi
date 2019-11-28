@@ -30,7 +30,7 @@ module.exports = class OmbiTV extends Command {
       await msg.guild.createRole({ name: 'requesttv' })
       return msg.channel.send(
         embed(msg, 'yellow')
-          .setTitle('Missing role [requesttv]')
+          .setTitle('Missing role [ requesttv ]')
           .setDescription(
             'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
           )

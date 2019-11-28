@@ -26,7 +26,11 @@ module.exports = class ArchiveBox extends Command {
     // * ------------------ Logic --------------------
     await standardMessage(
       msg,
-      `:printer: Archiving the url\n\n- ${args[0]}\n\n:hourglass: This may take some time...`
+      `:printer: Archiving the url
+
+      - ${args[0]}
+
+      :hourglass: This may take some time...`
     )
 
     const { code } = await execAsync(`cd ${path} && echo "${args[0]}" | ./archive`, {
@@ -38,7 +42,7 @@ module.exports = class ArchiveBox extends Command {
     return standardMessage(
       msg,
       `Archive of [ ${args[0]} ] complete!
-        You can find it [here](https://atriox.io)`
+      You can find it [here](https://atriox.io)`
     )
   }
 }

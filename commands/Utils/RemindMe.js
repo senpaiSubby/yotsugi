@@ -18,7 +18,7 @@ module.exports = class RemindMe extends Command {
   async run(client, msg, args) {
     const { Utils } = client
     const { standardMessage, embed } = Utils
-    const { author, channel } = msg
+    const { author } = msg
 
     msg.delete(10000)
 
@@ -27,9 +27,9 @@ module.exports = class RemindMe extends Command {
 
     const m = await standardMessage(
       msg,
-      `:white_check_mark:  I'll DM you in [${ms(ms(Timer), {
+      `**:white_check_mark:  I'll DM you in [ ${ms(ms(Timer), {
         long: true
-      })}] to [${notice}]`
+      })} ] to [ ${notice} ]**`
     )
 
     m.delete(10000)
@@ -37,9 +37,9 @@ module.exports = class RemindMe extends Command {
     setTimeout(() => {
       return author.send(
         embed(msg).setDescription(
-          `It's been **${ms(ms(Timer), {
+          `**It's been [ ${ms(ms(Timer), {
             long: true
-          })}** Here's your reminder to **${notice}**`
+          })} ] Here's your reminder to [ ${notice} ]**`
         )
       )
     }, ms(Timer))

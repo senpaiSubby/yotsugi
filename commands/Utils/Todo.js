@@ -26,7 +26,7 @@ module.exports = class Todo extends Command {
         todos.push(todo)
         await db.update({ config: JSON.stringify(config) })
 
-        return standardMessage(msg, `${todo}\n\nAdded to todo list`)
+        return standardMessage(msg, `[ ${todo} ]\n\nAdded to todo list`)
       }
 
       case 'remove': {
@@ -35,9 +35,9 @@ module.exports = class Todo extends Command {
         todos.splice(item, 1)
         await db.update({ config: JSON.stringify(config) })
 
-        if (name) return standardMessage(msg, `${name}\n\nRemoved from todo list`)
+        if (name) return standardMessage(msg, `[ ${name} ]\n\nRemoved from todo list`)
 
-        return warningMessage(msg, `Rule does not exist`)
+        return warningMessage(msg, `Todo [ ${name} ] does not exist`)
       }
 
       default: {

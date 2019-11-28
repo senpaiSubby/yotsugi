@@ -130,11 +130,18 @@ module.exports = class CommandManager {
         'Command Manager',
         `[ ${author.tag} ] tried to run disabled command[ ${msg.content.slice(prefix.length)} ]`
       )
-      return warningMessage(msg, `Command [${commandName}] is disabled`)
+      return warningMessage(msg, `Command [ ${commandName} ] is disabled`)
     }
 
     // if command is marked 'ownerOnly: true' then don't excecute
-    if (command.ownerOnly && author.id !== this.ownerID) return
+    if (command.ownerOnly && author.id !== this.ownerID) {
+      msg.delete(20000)
+      this.Log.info(
+        'Command Manager',
+        `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
+      )
+      return errorMessage(msg, `This command is owner only nerd`)
+    }
 
     // if command is marked 'guildOnly: true' then don't excecute
     if (command.guildOnly && channel.type === 'dm') {

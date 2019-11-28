@@ -71,9 +71,9 @@ module.exports = class Tuya extends Command {
 
         const status = currentStatus ? 'off' : 'on'
         if (api) return `${capitalize(name)} turned ${status}`
-        return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${status}`)
+        return standardMessage(msg, `:electric_plug: [ ${capitalize(name)} ] turned [ ${status} ]`)
       } catch (e) {
-        const text = `Failed to connect to ${capitalize(name)}`
+        const text = `Failed to connect to [ ${capitalize(name)} ]`
         if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
@@ -91,15 +91,18 @@ module.exports = class Tuya extends Command {
 
         if (currentState === newState) {
           await device.disconnect()
-          if (api) return `${capitalize(name)} is already ${state}`
-          return standardMessage(msg, `:electric_plug: ${capitalize(name)} is already ${state}`)
+          if (api) return `[ ${capitalize(name)} ] is already [ ${state} ]`
+          return standardMessage(
+            msg,
+            `:electric_plug: [ ${capitalize(name)} ] is already [ ${state} ]`
+          )
         }
         await device.set({ set: !currentState })
         await device.disconnect()
         if (api) return `${capitalize(name)} turned ${state}`
-        return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${state}`)
+        return standardMessage(msg, `:electric_plug: [ ${capitalize(name)} ] turned [ ${state} ]`)
       } catch (e) {
-        const text = `Failed to connect to ${capitalize(name)}`
+        const text = `Failed to connect to [ ${capitalize(name)} ]`
         if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
@@ -125,7 +128,7 @@ module.exports = class Tuya extends Command {
         const device = tuyaDevices[index]
         const name = capitalize(args[0])
         // if plug name not found
-        if (index === -1) return warningMessage(msg, `No plug named **${name}`)
+        if (index === -1) return warningMessage(msg, `No plug named [ ${name} ]`)
 
         // if on/off specified
         if (args[1]) return setPlug(device, args[1])

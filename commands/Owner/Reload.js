@@ -31,6 +31,6 @@ module.exports = class Reload extends Command {
 
     if (run) return warningMessage(msg, `Reloaded ${module}`)
 
-    return warningMessage(msg, `Module [${module}] doesn't exist!`)
+    return warningMessage(msg, `Module [ ${module} ] doesn't exist!`)
   }
 }

@@ -17,7 +17,9 @@ module.exports = class SpeedTest extends Command {
     const test = speedTest({ maxTime: 5000 })
     const m = await embed(msg).setDescription(
       msg,
-      `:desktop: Testing network throughput.\n\n:hourglass: Be back in a few seconds`
+      `:desktop: Testing network throughput
+
+      :hourglass: Be back in a few seconds`
     )
 
     test.on('data', async (data) => {

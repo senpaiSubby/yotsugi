@@ -42,10 +42,10 @@ module.exports = class GoogleHome extends Command {
       try {
         const device = new Device(ip, name, language)
         await device.notify(speach)
-        if (api) return `Told Google Home to say: ${speach}`
-        return standardMessage(msg, `Told Google Home to say: ${speach}`)
+        if (api) return `Told Google Home to say [ ${speach} ]`
+        return standardMessage(msg, `Told Google Home to say [ ${speach} ]`)
       } catch (e) {
-        if (api) return `Failed to connect to Google Hole`
+        if (api) return `Failed to connect to Google Home`
         Log.error('Google Home', 'Failed to connect to Google Home', e)
         await errorMessage(msg, `Failed to connect to Google Home`)
       }

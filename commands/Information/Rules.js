@@ -45,16 +45,16 @@ module.exports = class Rules extends Command {
       case 'add': {
         rules.push(rule)
         await db.update({ rules: JSON.stringify(rules) })
-        return standardMessage(msg, `${rule}\n\nAdded to rules`)
+        return standardMessage(msg, `[ ${rule} ]\n\nAdded to rules`)
       }
       case 'remove': {
         const item = args[1] - 1
         const name = rules[item]
         rules.splice(item, 1)
         await db.update({ rules: JSON.stringify(rules) })
-        if (name) return standardMessage(msg, `${name}\n\nRemoved from rules`)
+        if (name) return standardMessage(msg, `[ ${name} ]\n\nRemoved from rules`)
 
-        return warningMessage(msg, `Rule does not exist`)
+        return warningMessage(msg, `Rule [ ${name} ] does not exist`)
       }
       default: {
         if (!rules.length) {

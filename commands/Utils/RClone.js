@@ -53,7 +53,7 @@ module.exports = class RClone extends Command {
 
           - ${dirPath || '/'}
 
-            :hourglass: This may take some time...`
+          :hourglass: This may take some time...`
         )
 
         const startTime = performance.now()

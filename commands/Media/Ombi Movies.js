@@ -30,7 +30,7 @@ module.exports = class OmbiMovies extends Command {
       await msg.guild.createRole({ name: 'requestmovie' })
       return channel.send(
         Utils.embed(msg, 'yellow')
-          .setTitle('Missing role [requestmovie]')
+          .setTitle('Missing role [ requestmovie ]')
           .setDescription(
             'I created a role called **requestmovie**. Assign this role to members to let them request movies!'
           )

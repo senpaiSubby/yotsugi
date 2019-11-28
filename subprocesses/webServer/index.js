@@ -112,7 +112,7 @@ class WebServer extends Subprocess {
 
     // Start server
     app.listen(webServerPort, '0.0.0.0', () => {
-      Log.info(`Web Server`, `Listening on port ${webServerPort}`)
+      Log.info(`Web Server`, `Active on port [ ${webServerPort} ]`)
     })
   }
 }

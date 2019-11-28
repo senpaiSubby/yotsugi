@@ -70,8 +70,8 @@ module.exports = class PioneerAVR extends Command {
     const setPower = async (onoff) => {
       const state = onoff === 'on' ? 'PO' : 'PF'
       await fetch(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`))
-      if (api) return `AVR turned ${onoff}`
-      return standardMessage(msg, `:radio: AVR turned ${onoff}`)
+      if (api) return `AVR turned [ ${onoff} ]`
+      return standardMessage(msg, `:radio: AVR turned [ ${onoff} ]`)
     }
 
     const toggleMute = async () => {
@@ -79,8 +79,8 @@ module.exports = class PioneerAVR extends Command {
       const state = status.Z[0].M === 0 ? 'MO' : 'MF'
       await fetch(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`))
       const muteStatus = status.Z[0].M === 0 ? ':mute:' : ':speaker:'
-      if (api) return `AVR ${muteStatus}`
-      return standardMessage(msg, `${muteStatus} AVR ${muteStatus}`)
+      if (api) return `AVR [ ${muteStatus} ]`
+      return standardMessage(msg, `${muteStatus} AVR [ ${muteStatus} ]`)
     }
 
     // * ------------------ Usage Logic --------------------
@@ -89,7 +89,6 @@ module.exports = class PioneerAVR extends Command {
     const command = args[0]
     const level = args[1]
 
-    const caseOptions = ['on', 'off', 'vol', 'mute']
     switch (command) {
       case 'on':
       case 'off':
@@ -101,8 +100,8 @@ module.exports = class PioneerAVR extends Command {
       case 'vol': // set volume
         // set volume
         if (!level) {
-          if (api) return `Current volume is ${await getVolume()} / 100`
-          return standardMessage(msg, `:speaker: Current volume is ${await getVolume()} / 100`)
+          if (api) return `Current volume is [ ${await getVolume()} / 100 ]`
+          return standardMessage(msg, `:speaker: Current volume is [ ${await getVolume()} / 100 ]`)
         }
         if (isNaN(level)) {
           if (api) return `Volume should be a number between 1-100`
@@ -114,10 +113,10 @@ module.exports = class PioneerAVR extends Command {
         }
 
         if (api) return `Volume set to ${level}`
-        return standardMessage(msg, `:speaker: Volume set to ${level}`)
+        return standardMessage(msg, `:speaker: Volume set to [ ${level} ]`)
 
       default:
-        return validOptions(msg, caseOptions)
+        return validOptions(msg, ['on', 'off', 'vol', 'mute'])
     }
   }
 }

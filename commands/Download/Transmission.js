@@ -111,7 +111,7 @@ module.exports = class Transmission extends Command {
     const addTorrent = async (magnet) => {
       try {
         const response = await trans.addUrl(magnet)
-        return standardMessage(msg, `${response.name}\nAdded to Transmission`)
+        return standardMessage(msg, `[ ${response.name} ] Added to Transmission`)
       } catch (e) {
         const text = 'Failed to connect to Transmission'
         Log.error('Transmission', text, e)
@@ -137,7 +137,7 @@ module.exports = class Transmission extends Command {
                 .setThumbnail(
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transmission_Icon.svg/1200px-Transmission_Icon.svg.png'
                 )
-                .addField('Filename', `[${id}] ${name}`, false)
+                .addField('Filename', `[ ${id} ] ${name}`, false)
                 .addField('Status', `${status}`, true)
                 .addField('Percentage', `${percentage}`, true)
                 .addField('Size Total', `${size.complete}`, true)

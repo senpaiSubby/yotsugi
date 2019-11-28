@@ -62,7 +62,7 @@ module.exports = class DB extends Command {
 
           return channel.send(e)
         }
-        return warningMessage(msg, `Key [${key1}] doesnt exist`)
+        return warningMessage(msg, `Key [ ${key1} ] doesnt exist`)
       }
       case 'set': {
         const keyToChange = args[1]
@@ -74,7 +74,7 @@ module.exports = class DB extends Command {
           const m = await standardMessage(msg, `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`)
           return m.delete(10000)
         }
-        return warningMessage(msg, `Key [${key1}] doesnt exist`)
+        return warningMessage(msg, `Key [ ${key1} ] doesnt exist`)
       }
       default:
         return validOptions(msg, ['get', 'set'])

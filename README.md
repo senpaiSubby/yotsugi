@@ -31,7 +31,6 @@
 <thead>
 <tr>
 <th>Command</th>
-<th style="text-align:center">Status</th>
 <th style="text-align:center">API</th>
 <th>Description (Click for full details)</th>
 </tr>
@@ -39,115 +38,115 @@
 <tbody>
 <tr>
 <td>sab</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>sabNZBD Management</summary><p>Commands:<p><ul><li><b>list</b> - List all downloads in queue</li><li><b>add</b> - Add NZB&#39;s via link</li></ul></details></td>
 </tr>
 <tr>
 <td>tor</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Transmission Management</summary><p>Commands:<p><ul><li><b>list</b> - List all downloads in queue</li><li><b>add [magnet link]</b> - Add Torrent via link</li></ul></details></td>
 </tr>
 <tr>
 <td>movie</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center"></td>
 <td><details><summary>Search and request movies in Ombi</summary><p>Commands:<p><ul><li><b>[movie name]</b> - Movie to search for</li></ul></details></td>
 </tr>
 <tr>
 <td>series</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center"></td>
 <td><details><summary>Search and request TV shows in Ombi</summary><p>Commands:<p><ul><li><b>[series name]</b> - Series to search for</li></ul></details></td>
 </tr>
 <tr>
 <td>emby</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center"></td>
 <td><details><summary>Get stats from Emby</summary><p>Commands:<p><ul><li><b>stats</b> - Media library stats</li><li><b>recent [movies/series/music]</b> - View recent media and get links to watch</li><li><b>streams</b> - View who and whats currently streaming</li></ul></details></td>
 </tr>
 <tr>
 <td>plex</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center"></td>
 <td><details><summary>Get stats from Plex via Tautulli</summary><p>Commands:<p><ul><li><b>stats</b> - Media library stats</li><li><b>recent [movies/series/music]</b> - View recent media and get links to watch</li><li><b>streams</b> - View who and whats currently streaming</li></ul></details></td>
 </tr>
 <tr>
 <td>archivebox</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Clone webpages via ArchiveBox</summary><p>Commands:<p><ul><li><b>[url]</b> - Url to add</li></ul></details></td>
 </tr>
 <tr>
 <td>rclone</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>List directories and get info on your rclone mounts</summary><p>Commands:<p><ul><li><b>ls [/some/rclone/dir]</b> - List files in a dir and navigate in pages</li><li><b>size[/some/rclone/dir]</b> - Get the size of a dir on rclone</li></ul></details></td>
 </tr>
 <tr>
 <td>speedtest</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Runs a speedtest on the host the bot is running on</summary></details></td>
 </tr>
 <tr>
 <td>todo</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Your personal todo list</summary><p>Commands:<p><ul><li><b>list</b> - List all todos</li><li><b>add [take out trash]</b> - Add a todo</li><li><b>remove [1]</b> - Remove a todo</li></ul></details></td>
 </tr>
 <tr>
 <td>docker</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Manage Docker contaienrs</summary><p>Commands:<p><ul><li><b>list running/paused/exited/etc</b> - List containers</li><li><b>stop/start/restart/etc [CONTAINER]</b> - Manage container states</li></ul></details></td>
 </tr>
 <tr>
 <td>avr</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Pioneer AVR controller</summary><p>Commands:<p><ul><li><b>on/off</b> - Power on/off</li><li><b>vol</b> - Show current volume</li><li><b>vol [0-100]</b> - Set AVR volume</li></ul></details></td>
 </tr>
 <tr>
 <td>lights</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Sengled light controller</summary><p>Commands:<p><ul><li><b>list</b> - List all lights</li><li><b>[light name]</b> - Toggle light on/off</li><li><b>[light name] 0-100</b> - Set light brightness</li></ul></details></td>
 </tr>
 <tr>
 <td>plug</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Meraki network statistics</summary><p>Commands:<p><ul><li><b>list</b> - List all devices on network</li></ul></details></td>
 </tr>
 <tr>
 <td>pihole</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>PiHole management</summary><p>Commands:<p><ul><li><b>stats</b> - List usage statistics</li><li><b>on/off</b> - Enable/disable DNS filtering</li></ul></details></td>
 </tr>
 <tr>
 <td>pc</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Linux system power controller</summary><p>Commands:<p><ul><li><b>on/off/restart</b> - State to set system</li></ul><p>Requires addon in core/addons/powerserver to be running on the system you want to control.</p></details></td>
 </tr>
 <tr>
 <td>routines</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Routines to run multiple commands at once</summary><p>Commands:<p><ul><li><b>add [routine name][command]</b> - Add a command to a routine</li><li><b>remove [routine name][command # from list command]</b> - Remove a command from routine</li><li><b>disable/enable [routine name][command # from list command]</b> - Enable/disable a command in a routine</li><li><b>list</b> - List all your routines and commands</li></ul></details></td>
 </tr>
 <tr>
 <td>ip</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Shows server public and local IP</summary></details></td>
 </tr>
 <tr>
 <td>say</td>
-<td style="text-align:center">1.0</td>
+
 <td style="text-align:center">Y</td>
 <td><details><summary>Speak through Google Home</summary><p>Commands:<p><ul><li><b>say [waddup my dude]</b> - Text to be spoken</li></ul></details></td>
 </tr>
@@ -198,11 +197,11 @@
 <h2 align="center"><b>Contributing</b></h2>
 
 <h4>Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are <strong>greatly appreciated</strong>!</h3>
-<h4>Fork the Project</h4>
-<h4>Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</h4>
-<h4>Commit your Changes (<code>git commit -m &#39;Add some AmazingFeature&#39;</code>)</h4>
-<h4>Push to the Branch (<code>git push origin feature/AmazingFeature</code>)</h4>
-<h4>Open a Pull Request</h4>
+<h4>1. Fork the Project</h4>
+<h4>2. Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</h4>
+<h4>3. Commit your Changes (<code>git commit -m &#39;Add some AmazingFeature&#39;</code>)</h4>
+<h4>4. Push to the Branch (<code>git push origin feature/AmazingFeature</code>)</h4>
+<h4>5. Open a Pull Request</h4>
 
 <hr>
 <h2 align="center"><b>License</b></h2>

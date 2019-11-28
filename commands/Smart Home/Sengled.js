@@ -112,8 +112,11 @@ module.exports = class Sengled extends Command {
 
         const icon = newState === 'on' ? ':full_moon:' : ':new_moon:'
         const state = newState === 'on' ? 'on' : 'off'
-        if (api) return `${capitalize(deviceName)} light turned ${state}`
-        return standardMessage(msg, `${icon} ${capitalize(deviceName)} light turned ${state}`)
+        if (api) return `[ ${capitalize(deviceName)} ] light turned [ ${state} ]`
+        return standardMessage(
+          msg,
+          `${icon} [ ${capitalize(deviceName)} ] light turned [ ${state} ]`
+        )
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
         Log.error('Sengled', 'Failed to connect to Sengled', e)
@@ -136,16 +139,16 @@ module.exports = class Sengled extends Command {
           if (newBrightness === 0 || newBrightness === 100) {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
-            if (api) return `${capitalize(deviceName)} light turned ${newStatus}`
+            if (api) return `${capitalize(deviceName)} light turned [ ${newStatus} ]`
             return standardMessage(
               msg,
-              `${icon} ${capitalize(deviceName)} light turned ${newStatus}`
+              `${icon} [ ${capitalize(deviceName)} ] light turned [ ${newStatus} ]`
             )
           }
-          if (api) return `${capitalize(deviceName)} light brightness set to ${newBrightness}`
+          if (api) return `[ ${capitalize(deviceName)} ] brightness set to [ ${newBrightness} ]`
           return standardMessage(
             msg,
-            `:bulb: ${capitalize(deviceName)} light brightness set to ${newBrightness}`
+            `:bulb: [ ${capitalize(deviceName)} ] brightness set to [ ${newBrightness} ]`
           )
         }
       } catch (e) {
@@ -180,8 +183,8 @@ module.exports = class Sengled extends Command {
 
           // if light not found
           if (index === -1) {
-            if (api) return `Could not find a light named ${deviceName}`
-            return warningMessage(msg, `Could not find a light named ${deviceName}`)
+            if (api) return `Could not find a light named [ ${deviceName} ]`
+            return warningMessage(msg, `Could not find a light named [ ${deviceName} ]`)
           }
           const device = devices[index].uuid
 
