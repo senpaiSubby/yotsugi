@@ -70,15 +70,9 @@ module.exports = class CommandManager {
     }
 
     try {
-      await client.user.setStatus('online')
-      await msg.channel.startTyping()
-      await command.run(client, msg, args, api)
-      await client.user.setStatus('idle')
-      return msg.channel.stopTyping()
+      return command.run(client, msg, args, api)
     } catch (err) {
       if (api) return 'failed'
-      await client.user.setStatus('idle')
-      await msg.channel.stopTyping()
       return client.Utils.error(command.name, err, msg.channel)
     }
   }
@@ -99,6 +93,7 @@ module.exports = class CommandManager {
 
     msg.context = this
 
+    await this.handleConfig()
     await this.handleUser(msg)
     const prefix = guild ? await this.handleServer(guild) : this.prefix
     client.p = prefix
@@ -230,17 +225,15 @@ module.exports = class CommandManager {
     return this.runCommand(client, command, msg, args)
   }
 
-  async handleServer(guild) {
-    const { id, ownerID, name, owner } = guild
-    const { generalConfig, serverConfig } = this.client
+  async handleConfig() {
+    const { generalConfig } = this.client
 
     const config = await generalConfig.findOne({ where: { id: this.ownerID } })
 
     if (!config) {
-      this.Log.info('Handle Server', `Created new general config for user [ ${this.ownerID} ]`)
+      this.Log.info('Handle Config', `Created new general config for [ ${this.ownerID} ]`)
       await generalConfig.create({
-        username: owner.user.tag,
-        id: ownerID,
+        id: this.ownerID,
         config: JSON.stringify({
           routines: [],
           scheduledTasks: {},
@@ -264,6 +257,11 @@ module.exports = class CommandManager {
         })
       })
     }
+  }
+
+  async handleServer(guild) {
+    const { id, ownerID, name } = guild
+    const { serverConfig } = this.client
 
     // per server config
     if (!guild) return { prefix: this.prefix }
@@ -312,7 +310,6 @@ module.exports = class CommandManager {
     permsNeeded.forEach((perm) => {
       if (!user.permissions.has(perm)) missingPerms.push(perm)
     })
-
     if (missingPerms.length) return missingPerms
   }
 }
