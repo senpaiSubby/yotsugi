@@ -1,5 +1,3 @@
-const { exec } = require('shelljs')
-
 const Command = require('../../core/Command')
 
 module.exports = class Executor extends Command {
@@ -18,7 +16,7 @@ module.exports = class Executor extends Command {
     // * ------------------ Setup --------------------
 
     const { channel } = msg
-    const { makeShellSafe } = client
+    const { execAsync } = client.Utils
 
     // * ------------------ Usage Logic --------------------
 
@@ -34,17 +32,21 @@ module.exports = class Executor extends Command {
     const error = (err) =>
       `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
-    exec(makeShellSafe(args.join(' ')), { silent: true }, async (code, stdout, stderr) => {
-      if (stderr) {
-        return channel
-          .send(`${input}\n${error(stderr)}`)
-          .catch((err) => channel.send(`${input}\n${error(err)}`))
-      }
+    const { code, stdout, stderr } = await execAsync(args.join(' '), { silent: true })
 
-      const response = `📤 **Output:**\n\`\`\`sh\n${stdout.replace(regex, '[Token]')}\n\`\`\``
-      return channel
-        .send(`${input}\n${response}`, { split: true })
-        .catch((err) => channel.send(`${input}\n${error(err)}`))
-    })
+    if (stderr) {
+      try {
+        return channel.send(`${input}\n${error(stderr)}`)
+      } catch (err) {
+        return channel.send(`${input}\n${error(err)}`)
+      }
+    }
+
+    const response = `📤 **Output:**\n\`\`\`sh\n${stdout.replace(regex, '[Token]')}\n\`\`\``
+    try {
+      return channel.send(`${input}\n${response}`, { split: true })
+    } catch (err) {
+      return channel.send(`${input}\n${error(err)}`)
+    }
   }
 }

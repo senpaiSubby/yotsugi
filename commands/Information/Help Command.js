@@ -14,9 +14,9 @@ module.exports = class Help extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
+    const { Utils, serverConfig } = client
     const { embed, groupBy, paginate, capitalize } = Utils
-    const { channel, context } = msg
+    const { channel, context, guild } = msg
 
     // * ------------------ Config --------------------
 

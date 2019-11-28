@@ -15,15 +15,16 @@
   },
   "author": "callmekory",
   "dependencies": {
+    "bluebird": "^3.7.1",
     "chalk": "^3.0.0",
     "core-worker": "^0.3.5",
     "cors": "^2.8.5",
+    "dateformat": "^3.0.3",
     "discord.js": "^11.5.1",
     "enmap": "^5.2.3",
     "express": "^4.17.1",
     "google-home-notify-client": "^0.3.1",
     "later": "^1.2.0",
-    "math-expression-evaluator": "^1.2.17",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "ms": "^2.1.2",
@@ -43,17 +44,14 @@
     "youtube-v3-api": "^1.1.1"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.7.0",
-    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "javascript-typescript-langserver": "^2.11.3",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1"
   }

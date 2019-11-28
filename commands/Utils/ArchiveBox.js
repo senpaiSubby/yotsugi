@@ -1,4 +1,3 @@
-const { exec } = require('shelljs')
 const Command = require('../../core/Command')
 
 module.exports = class ArchiveBox extends Command {
@@ -18,7 +17,7 @@ module.exports = class ArchiveBox extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, db } = client
-    const { standardMessage, errorMessage } = Utils
+    const { standardMessage, errorMessage, execAsync } = Utils
 
     // * ------------------ Config --------------------
 
@@ -30,15 +29,16 @@ module.exports = class ArchiveBox extends Command {
       `:printer: Archiving the url\n\n- ${args[0]}\n\n:hourglass: This may take some time...`
     )
 
-    exec(`cd ${path} && echo "${args[0]}" | ./archive`, { silent: true }, async (code) => {
-      if (code !== 0) {
-        return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)
-      }
-      return standardMessage(
-        msg,
-        `Archive of [ ${args[0]} ] complete!
-        You can find it [here](https://atriox.io)`
-      )
+    const { code } = await execAsync(`cd ${path} && echo "${args[0]}" | ./archive`, {
+      silent: true
     })
+
+    if (code !== 0) return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)
+
+    return standardMessage(
+      msg,
+      `Archive of [ ${args[0]} ] complete!
+        You can find it [here](https://atriox.io)`
+    )
   }
 }

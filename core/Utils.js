@@ -3,10 +3,20 @@ const fs = require('fs')
 const path = require('path')
 const { RichEmbed } = require('discord.js')
 const Log = require('./Log')
+const Promise = require('bluebird')
+const shelljs = require('shelljs')
 
 module.exports = class Utils {
   constructor() {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
+  }
+
+  static execAsync(cmd, opts = {}) {
+    return new Promise((resolve) => {
+      shelljs.exec(cmd, opts, (code, stdout, stderr) => {
+        return resolve({ code, stdout, stderr })
+      })
+    })
   }
 
   // make embed fields always fit within limits after spliiting
