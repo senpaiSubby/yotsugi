@@ -21,7 +21,6 @@ module.exports = class RemindMe extends Command {
     const { author, channel } = msg
 
     msg.delete(10000)
-    await channel.stopTyping()
 
     const Timer = args[0]
     const notice = args.splice(1, 1000).join(' ')

@@ -58,7 +58,6 @@ module.exports = class SystemInfo extends Command {
       const ramStats = await ramInfo()
       const { cores, percentage, load } = cpuStats
       const { total, free, used } = ramStats
-      await channel.stopTyping()
 
       await ms.edit(
         embed(msg)
