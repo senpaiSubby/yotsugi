@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useGlobal } from 'reactn'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
-import { capitalize } from '../utils'
 import { ToastContainer, toast, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const CommandButtons = () => {
-  const [data, setData] = useState(null)
+  const [commandList, setCommandList] = useGlobal('commandList')
 
   useEffect(() => {
     fetch('/ui/db')
       .then((response) => response.json())
       .then((data) => {
-        setData(data.uiButtons)
+        setCommandList(data)
       })
-  }, [])
+  })
 
   const notify = (message) =>
     toast(message, {
@@ -26,21 +25,10 @@ const CommandButtons = () => {
       className: 'toast',
       transition: Slide
     })
-  /*
-const lightSlider = async (command, value) => {
-  try {
-    const data = await sendCommand(`${command} ${value}`)
-    return notify(data.response)
-  } catch (error) {
-    console.log(error)
-  }
-}
-*/
+
   const sendCommand = async (command) => {
-    const postData = {
-      apiKey: 284695,
-      command: command
-    }
+    const postData = { command: command }
+
     try {
       const response = await fetch('/api/commands', {
         method: 'POST',
@@ -48,21 +36,21 @@ const lightSlider = async (command, value) => {
         body: JSON.stringify(postData)
       })
       const data = await response.json()
-      return notify(capitalize(data.response))
+      return notify(data.response)
     } catch {
       return notify('There was an error connecting.')
     }
   }
   const removeButton = async (id) => {
-    await fetch(`http://127.0.0.1:5700/ui/db/rm/${id}`, {
+    await fetch(`/ui/db/rm/${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     })
-    setData(null)
+    setCommandList(null)
   }
 
-  const renderedButtons = data
-    ? data.map((item, index) => {
+  const renderedButtons = commandList
+    ? commandList.map((item, index) => {
         const { id, name, command } = item
         return (
           <div key={index}>

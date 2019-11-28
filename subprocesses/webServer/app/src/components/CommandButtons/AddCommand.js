@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useGlobal, useState } from 'reactn'
 
 const AddCommand = () => {
   const [commandName, setCommandName] = useState()
   const [command, setCommand] = useState()
+  const [commandList, setCommandList] = useGlobal('commandList')
 
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    fetch('/ui/db', {
+    await fetch('/ui/db', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify([commandName, command])
     })
+    setCommandList(null)
   }
 
   return (

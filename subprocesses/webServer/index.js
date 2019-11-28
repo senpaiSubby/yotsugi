@@ -38,7 +38,7 @@ class WebServer extends Subprocess {
     app.get('/ui/db', async (req, res) => {
       const db = await generalConfig.findOne({ where: { id: ownerID } })
       const { webUI } = JSON.parse(db.dataValues.config)
-      return res.status(200).json({ uiButtons: webUI.commands })
+      return res.status(200).json(webUI.commands)
     })
 
     // set DB info
@@ -63,7 +63,7 @@ class WebServer extends Subprocess {
       const index = webUI.commands.findIndex((x) => x.id === req.params.id)
       webUI.commands.splice(index, 1)
 
-      await config.update({ config: JSON.stringify(config) })
+      await db.update({ config: JSON.stringify(config) })
       return res.status(200)
     })
 

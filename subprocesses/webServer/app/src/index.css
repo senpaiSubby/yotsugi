@@ -24,7 +24,7 @@ html {
   background-color: #333;
   padding: 5px;
   font-size: 0.8rem;
-  border: #b8bb26 solid 2px;
+  border: #8ec07c solid 2px;
   user-select: none;
   cursor: pointer;
 }
@@ -32,7 +32,7 @@ html {
   background-color: #444;
   padding: 5px;
   font-size: 0.8rem;
-  border: #b8bb26 solid 2px;
+  border: #8ec07c solid 2px;
   user-select: none;
   cursor: pointer;
 }
@@ -42,7 +42,7 @@ body {
 }
 
 button:focus {
-  background-color: #b8bb26 !important;
+  background-color: #8ec07c !important;
   border: none;
   padding: 5px;
   outline: none;
@@ -57,7 +57,7 @@ button:focus {
   align-items: center;
 }
 .apiButton {
-  background-color: #b8bb26;
+  background-color: #8ec07c;
   border: none;
   flex-direction: column;
   text-align: center;
@@ -95,10 +95,10 @@ button:focus {
   justify-content: space-between;
   padding: 5px 5px;
   align-items: center;
-  border-bottom: #b8bb26 2px solid;
+  border-bottom: #8ec07c 2px solid;
 }
 .toast {
-  background-color: #b8bb26 !important;
+  background-color: #8ec07c !important;
   font-family: 'Muli', monospace !important;
   color: #282828 !important;
   text-align: center !important;

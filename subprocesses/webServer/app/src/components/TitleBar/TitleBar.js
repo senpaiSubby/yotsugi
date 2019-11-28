@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'reactn'
 
 const TitleBar = () => {
   const [data, setData] = useState(null)
@@ -14,7 +14,7 @@ const TitleBar = () => {
         .then((data) => {
           setData(data)
         })
-    }, 2000)
+    }, 10000)
     return () => clearInterval(interval)
   }, [])
 
