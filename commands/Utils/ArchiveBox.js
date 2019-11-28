@@ -22,7 +22,7 @@ module.exports = class ArchiveBox extends Command {
 
     // * ------------------ Config --------------------
 
-    const { path } = db.config
+    const { path } = db.config.archivebox
 
     // * ------------------ Logic --------------------
     await standardMessage(
@@ -30,7 +30,7 @@ module.exports = class ArchiveBox extends Command {
       `:printer: Archiving the url\n\n- ${args[0]}\n\n:hourglass: This may take some time...`
     )
 
-    exec(`cd ${path} && echo "${args[0]}" | ./archive`, { silent: false }, async (code) => {
+    exec(`cd ${path} && echo "${args[0]}" | ./archive`, { silent: true }, async (code) => {
       if (code !== 0) {
         return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)
       }

@@ -3,9 +3,9 @@ const SubprocessManager = require('../core/SubprocessManager')
 
 // Hande ready event
 client.once('ready', async () => {
-  const { Log, user, guilds } = client
+  const { Log, user, config } = client
   Log.info('Client Ready', `Connected as ${user.username}`)
-  user.setActivity(`on ${guilds.size} servers`)
+  user.setActivity(`to ${config.prefix}`, { type: 'LISTENING' })
 
   // load Subprocesses
   const Subprocesses = new SubprocessManager(client)
