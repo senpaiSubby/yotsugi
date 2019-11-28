@@ -154,7 +154,7 @@ module.exports = class RClone extends Command {
                 )
               })
 
-              return paginate(client, msg, embedList, 1)
+              return paginate(msg, embedList)
             }
 
             if (code === 3) {

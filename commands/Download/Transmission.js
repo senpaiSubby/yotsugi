@@ -146,7 +146,7 @@ module.exports = class Transmission extends Command {
                 .addField('Rate Upload', `${rate.up}`, true)
             )
           })
-          return paginate(client, msg, embedList, 1)
+          return paginate(msg, embedList)
         }
         return
       }

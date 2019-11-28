@@ -247,7 +247,7 @@ module.exports = class Routines extends Command {
 
           embedList.push(e)
         })
-        return paginate(client, msg, embedList, 1)
+        return paginate(msg, embedList)
       }
 
       case 'add': {

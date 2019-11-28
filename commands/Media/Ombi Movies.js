@@ -150,7 +150,7 @@ module.exports = class OmbiMovies extends Command {
           await errorMessage(msg, text)
         }
       })
-      const itemPicked = await paginate(client, msg, embedList, 2, true)
+      const itemPicked = await paginate(msg, embedList, true)
       return requestMovie(results[itemPicked])
     }
   }

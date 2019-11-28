@@ -34,13 +34,13 @@ module.exports = class Help extends Command {
       })
       if (disabled) return false
 
-      if (i.permsNeeded.length) {
-        if (context.checkPerms(msg.member, i.permsNeeded)) return false
-      }
-      if (i.ownerOnly) {
-        if (author.id === client.config.ownerID) return true
-        return false
-      }
+      //if (i.permsNeeded.length) {
+      //  if (context.checkPerms(msg.member, i.permsNeeded)) return false
+      //}
+      //if (i.ownerOnly) {
+      //  if (author.id === client.config.ownerID) return true
+      //  return false
+      //}
       if (i.disabled) return false
       return true
     }
@@ -69,7 +69,7 @@ module.exports = class Help extends Command {
         embedList.push(e)
       })
 
-      return paginate(client, msg, embedList, 1)
+      return paginate(msg, embedList)
     }
     // Show individual command's help.
     const command = context.findCommand(args[0])

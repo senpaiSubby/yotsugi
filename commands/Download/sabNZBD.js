@@ -94,7 +94,7 @@ module.exports = class SabNZBD extends Command {
                 .addField('ETA', `${time.eta}`, true)
             )
           })
-          return paginate(client, msg, embedList, 1)
+          return paginate(msg, embedList)
         }
         return
       }

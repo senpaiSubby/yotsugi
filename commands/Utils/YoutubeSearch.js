@@ -46,7 +46,7 @@ module.exports = class YoutubeSearch extends Command {
             )
         )
       })
-      return paginate(client, msg, results, 2)
+      return paginate(msg, results)
     }
     // * ------------------ Usage Logic --------------------
     return fetchVideos(args.join(' '))

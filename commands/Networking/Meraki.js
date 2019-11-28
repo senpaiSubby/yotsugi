@@ -105,7 +105,7 @@ module.exports = class Meraki extends Command {
                 .addField('Recv', i.recv, true)
             )
           })
-          return paginate(client, msg, embedList, 2)
+          return paginate(msg, embedList)
         }
         return
       }

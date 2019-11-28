@@ -145,7 +145,7 @@ module.exports = class OmbiTV extends Command {
         }
       })
 
-      const itemPicked = await paginate(client, msg, embedList, 2, true)
+      const itemPicked = await paginate(msg, embedList, true)
       return requestTVShow(results[itemPicked])
     }
   }

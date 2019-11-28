@@ -31,7 +31,7 @@ module.exports = class Utils {
   }
 
   // paginates embeds
-  static async paginate(client, msg, embedList, topBottom = 1, acceptButton = false) {
+  static async paginate(msg, embedList, acceptButton = false) {
     // topBottom 1 = page status in description else in footer
     // start page at 0
     let page = 0
@@ -68,9 +68,7 @@ module.exports = class Utils {
 
       const collected = await editMessage.awaitReactions(
         (reaction, user) =>
-          ['⬅️', '➡️', '✅'].includes(reaction.emoji.name) &&
-          user.id === author.id &&
-          user.id !== client.user.id,
+          ['⬅️', '➡️', '✅'].includes(reaction.emoji.name) && user.id === author.id,
         { max: 1, time: 60000 }
       )
 
