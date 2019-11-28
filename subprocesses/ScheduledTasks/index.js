@@ -1,29 +1,53 @@
-const { scheduleJob } = require('node-schedule')
+const later = require('later')
 const Subprocess = require('../../core/Subprocess')
+const { Manager } = require('../../events/message')
 
 class ScheduledTasks extends Subprocess {
   constructor(client) {
     super(client, {
-      name: 'Scheduled Tasks',
+      name: 'ScheduledTasks',
       description: 'Scheduled Tasks',
       disabled: false
     })
   }
 
   async run() {
-    const { runCommand } = this.client.Utils
+    const { client } = this
+    const { Log, generalConfig } = client
+    const { ownerID } = client.config
 
-    // every morning at 10am
-    scheduleJob('0 10 * * *', async () => {
-      // turn cheetos tank on
-      await runCommand('plug tank on')
+    const db = await generalConfig.findOne({ where: { id: ownerID } })
+    const config = JSON.parse(db.dataValues.config)
+    const { scheduledTasks } = config
+
+    const runCommand = async (cmdName) => {
+      const generalDB = await client.generalConfig.findOne({ where: { id: ownerID } })
+      client.db.config = JSON.parse(generalDB.dataValues.config)
+
+      const args = cmdName.split(' ')
+      const cmd = args.shift().toLowerCase()
+      const command = Manager.findCommand(cmd)
+      return Manager.runCommand(this.client, command, null, args, true)
+    }
+
+    later.date.localTime()
+
+    scheduledTasks.forEach((i) => {
+      const { commands, time } = i
+      const sched = later.parse.text(`at ${time}`)
+      commands.forEach((c) => {
+        const [enabled, cmd] = c
+        if (enabled) {
+          later.setInterval(async () => {
+            Log.info('Scheduled Tasks', `Running [ ${time} ] task [ ${cmd} ]`)
+            const response = await runCommand(cmd)
+            Log.info('Scheduled Tasks', `[ ${cmd} ] => [ ${response} ]`)
+          }, sched)
+        }
+      })
     })
 
-    // every night at 8pm
-    scheduleJob('0 20 * * *', async () => {
-      // turn cheetos tank off
-      await runCommand('plug tank off')
-    })
+    Log.info('Scheduled Tasks', `Started scheduled tasks`)
   }
 }
 
