@@ -1,7 +1,7 @@
-const Transmission = require('transmission-promise')
+const Trans = require('transmission-promise')
 const Command = require('../../core/Command')
 
-module.exports = class TransmissionManagement extends Command {
+module.exports = class Transmission extends Command {
   constructor(client) {
     super(client, {
       name: 'tor',
@@ -45,7 +45,7 @@ module.exports = class TransmissionManagement extends Command {
       return missingConfig(msg, 'transmission', settings)
     }
 
-    const trans = new Transmission({
+    const trans = new Trans({
       host, // default 'localhost'
       port, // default 9091
       ssl, // default false use https

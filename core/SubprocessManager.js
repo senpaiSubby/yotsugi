@@ -14,14 +14,15 @@ module.exports = class SubprocessManager {
   }
 
   loadModules(dir) {
-    const subprocesses = fs.readdirSync(path.join(__dirname, dir))
+    const subprocesses = fs.readdirSync(dir)
 
     subprocesses.forEach((item) => {
-      const location = path.join(__dirname, dir, item, 'index.js')
+      const location = path.join(__dirname, '../', dir, item, 'index.js')
       if (!fs.existsSync(location)) return
 
       const Process = require(location)
       const instance = new Process(this.client)
+      instance.location = location
 
       if (!instance.disabled) {
         if (this.processes.has(instance.name)) {

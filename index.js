@@ -34,6 +34,16 @@ module.exports = { client }
 const eventFiles = client.Utils.findNested('./events', '.js')
 eventFiles.forEach((file) => require(file))
 
+client.on('warn', (info) => {
+  console.log(`warn: ${info}`)
+})
+client.on('reconnecting', () => {
+  console.log(`client tries to reconnect to the WebSocket`)
+})
+client.on('resume', (replayed) => {
+  console.log(`whenever a WebSocket resumes, ${replayed} replays`)
+})
+
 // Unhandled Promise Rejections
 process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejection', reason, true))
 

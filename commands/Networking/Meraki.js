@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-module.exports = class MerakiAPI extends Command {
+module.exports = class Meraki extends Command {
   constructor(client) {
     super(client, {
       name: 'meraki',
@@ -55,7 +55,7 @@ module.exports = class MerakiAPI extends Command {
             else description = device.dhcpHostname
 
             // general device info
-            const { ip, vlan } = device
+            const { ip, vlan, mac } = device
             const uploaded = bytesToSize(device.usage.recv * 1000) // convert kb to B and get true size
             const downloaded = bytesToSize(device.usage.sent * 1000) // convert kb to B and get true size
             sent += device.usage.recv
@@ -64,6 +64,7 @@ module.exports = class MerakiAPI extends Command {
             deviceList.push({
               name: description,
               ip,
+              mac,
               vlan,
               sent: uploaded,
               recv: downloaded
@@ -72,7 +73,7 @@ module.exports = class MerakiAPI extends Command {
           return {
             numDevices: deviceList.length,
             traffic: { sent: bytesToSize(sent * 1000), recv: bytesToSize(recv * 1000) },
-            devices: sortByKey(deviceList, 'ip')
+            devices: sortByKey(deviceList, '-ip')
           }
         }
       } catch (e) {
@@ -99,11 +100,12 @@ module.exports = class MerakiAPI extends Command {
                 .addField('Name', i.name, true)
                 .addField('IP', i.ip, true)
                 .addField('VLAN', i.vlan, true)
+                .addField('MAC', i.mac, true)
                 .addField('Sent', i.sent, true)
                 .addField('Recv', i.recv, true)
             )
           })
-          return paginate(client, msg, embedList)
+          return paginate(client, msg, embedList, 2)
         }
         return
       }

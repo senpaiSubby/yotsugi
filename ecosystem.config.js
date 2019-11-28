@@ -7,9 +7,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
-      error_file: './data/logs/bot/err.log',
-      out_file: './data/logs/bot/out.log',
-      log_file: './data/logs/bot/combined.log',
+      error_file: './data/logs/err.log',
+      out_file: './data/logs/out.log',
+      log_file: './data/logs/combined.log',
       time: false
     }
   ]

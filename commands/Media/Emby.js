@@ -2,7 +2,7 @@ const urljoin = require('url-join')
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-module.exports = class EmbyStats extends Command {
+module.exports = class Emby extends Command {
   constructor(client) {
     super(client, {
       name: 'emby',

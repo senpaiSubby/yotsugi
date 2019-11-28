@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-module.exports = class DBManagement extends Command {
+module.exports = class DB extends Command {
   constructor(client) {
     super(client, {
       name: 'db',

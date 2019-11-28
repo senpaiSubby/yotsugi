@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
-module.exports = class SabnzbdManagement extends Command {
+module.exports = class SabNZBD extends Command {
   constructor(client) {
     super(client, {
       name: 'sab',

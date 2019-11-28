@@ -10,7 +10,7 @@ module.exports = class Log {
 
   // Logging Time Format
   static time() {
-    return moment().format('MM-DD | h:mm:ss A')
+    return moment().format('MM-DD h:mm A')
   }
 
   // Log

@@ -4,7 +4,7 @@ const { dirname } = require('path')
 const fetch = require('node-fetch')
 const { client } = require('../index')
 
-module.exports = class MessageHandler {
+module.exports = class MessageManager {
   constructor() {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
   }
@@ -46,7 +46,7 @@ module.exports = class MessageHandler {
 
           try {
             const name = url.split('/').pop()
-            const dir = `./data/attachments/${guild.id}/${name}`
+            const dir = `./data/logs/attachments/${guild.id}/${name}`
 
             // check if dir exists and create if not
             if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })

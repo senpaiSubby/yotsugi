@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const Command = require('../../core/Command')
 
-module.exports = class SengledLightController extends Command {
+module.exports = class Sengled extends Command {
   constructor(client) {
     super(client, {
       name: 'lights',
@@ -120,18 +120,14 @@ module.exports = class SengledLightController extends Command {
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
-    const setBrightness = async (deviceID, deviceName, newBrightness) => {
+    const setBrightness = async (deviceUuid, deviceName, newBrightness) => {
       newBrightness = Number(newBrightness)
       try {
         // convert 0-100 to 0-255
-        const value = (newBrightness / 100) * 255
+        const brightness = (newBrightness / 100) * 255
 
-        const jsonData = {
-          deviceUuid: deviceID,
-          brightness: value
-        }
+        const jsonData = { deviceUuid, brightness }
         const response = await fetch(`${baseUrl}/device/deviceSetBrightness.json`, {
-          credentials: 'include',
           method: 'POST',
           headers,
           body: JSON.stringify(jsonData)

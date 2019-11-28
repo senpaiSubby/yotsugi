@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-module.exports = class ClearMessages extends Command {
+module.exports = class Clear extends Command {
   constructor(client) {
     super(client, {
       name: 'clear',

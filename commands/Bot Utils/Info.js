@@ -36,7 +36,7 @@ module.exports = class Info extends Command {
         .addField('Servers', client.guilds.size, true)
         .addField('Commands', context.commands.size, true)
         .setDescription(
-          `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/subbyBot)`
+          `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`
         )
     )
   }

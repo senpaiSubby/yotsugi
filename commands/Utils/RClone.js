@@ -2,14 +2,15 @@ const { exec } = require('shelljs')
 const { performance } = require('perf_hooks')
 const Command = require('../../core/Command')
 
-module.exports = class Drive extends Command {
+module.exports = class RClone extends Command {
   constructor(client) {
     super(client, {
-      name: 'drive',
+      name: 'rclone',
       category: 'Utils',
       description: 'Gets info on the Rclone folder you specify',
-      usage: ['drive size /Unsorted', 'drive ls /folder/to/check'],
-      args: true
+      usage: ['rclone size /Unsorted', 'rclone ls /folder/to/check'],
+      args: true,
+      aliases: ['drive']
     })
   }
 

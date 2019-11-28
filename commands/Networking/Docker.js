@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
-module.exports = class DockerManagement extends Command {
+module.exports = class Docker extends Command {
   constructor(client) {
     super(client, {
       name: 'docker',

@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-module.exports = class Get extends Command {
+module.exports = class ServerConfig extends Command {
   constructor(client) {
     super(client, {
       name: 'server',

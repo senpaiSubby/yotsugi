@@ -1,6 +1,6 @@
 const { Client } = require('discord.js')
 const Enmap = require('enmap')
-const MessageHandler = require('../core/MessageHandler')
+const MessageManager = require('../core/MessageManager')
 
 module.exports = class CommandManager {
   constructor(client) {
@@ -70,12 +70,14 @@ module.exports = class CommandManager {
     }
 
     try {
+      await client.user.setStatus('online')
       await msg.channel.startTyping()
       await command.run(client, msg, args, api)
+      await client.user.setStatus('idle')
       return msg.channel.stopTyping()
     } catch (err) {
       if (api) return 'failed'
-
+      await client.user.setStatus('idle')
       await msg.channel.stopTyping()
       return client.Utils.error(command.name, err, msg.channel)
     }
@@ -116,7 +118,7 @@ module.exports = class CommandManager {
     }
 
     // send all messages to our Log
-    await MessageHandler.logger(msg)
+    await MessageManager.logger(msg)
 
     // if msg doesnt start with prefix then ignore msg
     if (!content.startsWith(prefix) || content.length < 2) return
@@ -241,6 +243,7 @@ module.exports = class CommandManager {
         id: ownerID,
         config: JSON.stringify({
           routines: [],
+          scheduledTasks: {},
           archivebox: { path: null },
           webUI: { apiKey: null, commands: [] },
           pihole: { apiKey: null, host: null },

@@ -24,31 +24,30 @@ class DriveSize extends Subprocess {
 
       shell.exec(`rclone size --json goog:/`, { silent: true }, async (code, stdout) => {
         const stopTime = performance.now()
-
         // 3 doesnt exist 0 good
         if (code === 0) {
           const response = JSON.parse(stdout)
           const { count } = response
           const size = Utils.bytesToSize(response.bytes)
 
-          await channels
+          channels
             .get('646309179354513420')
             .setName(`📰\u2009\u2009\u2009ғiles\u2009\u2009\u2009${count}`)
 
-          await channels
+          channels
             .get('646309200686874643')
             .setName(
               `📁\u2009\u2009\u2009size\u2009\u2009\u2009${size
                 .replace('.', '_')
                 .replace(' ', '\u2009\u2009\u2009')}`
             )
-          Log.info(
+          return Log.info(
             'Drive Stats',
             `Updated Rclone stats in ${Utils.millisecondsToTime(stopTime - startTime)}`
           )
         }
 
-        Log.warn('Drive Stats', `Failed to update Rclone stats`)
+        return Log.warn('Drive Stats', `Failed to update Rclone stats`)
       })
     }
 

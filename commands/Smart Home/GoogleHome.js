@@ -1,7 +1,7 @@
 const { Device } = require('google-home-notify-client')
 const Command = require('../../core/Command')
 
-module.exports = class GoogleHomeSpeak extends Command {
+module.exports = class GoogleHome extends Command {
   constructor(client) {
     super(client, {
       name: 'say',

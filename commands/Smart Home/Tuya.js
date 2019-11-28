@@ -1,7 +1,7 @@
 const TuyAPI = require('tuyapi')
 const Command = require('../../core/Command')
 
-module.exports = class TuyaPlugController extends Command {
+module.exports = class Tuya extends Command {
   constructor(client) {
     super(client, {
       name: 'plug',
@@ -58,6 +58,7 @@ module.exports = class TuyaPlugController extends Command {
 
     const togglePlug = async (d) => {
       const { name, id, key } = d
+
       try {
         const device = new TuyAPI({ id, key })
 
@@ -86,14 +87,15 @@ module.exports = class TuyaPlugController extends Command {
         await device.find()
         await device.connect()
         const currentState = await device.get()
-        await device.disconnect()
         const newState = state === 'on'
 
         if (currentState === newState) {
+          await device.disconnect()
           if (api) return `${capitalize(name)} is already ${state}`
           return standardMessage(msg, `:electric_plug: ${capitalize(name)} is already ${state}`)
         }
         await device.set({ set: !currentState })
+        await device.disconnect()
         if (api) return `${capitalize(name)} turned ${state}`
         return standardMessage(msg, `:electric_plug: ${capitalize(name)} turned ${state}`)
       } catch (e) {

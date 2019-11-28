@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const wol = require('wol')
 const Command = require('../../core/Command')
 
-module.exports = class SystemPowerController extends Command {
+module.exports = class LinuxPower extends Command {
   constructor(client) {
     super(client, {
       name: 'pc',
@@ -34,6 +34,7 @@ module.exports = class SystemPowerController extends Command {
 
       const options = ['reboot', 'off', 'on']
       if (!options.includes(command)) {
+        if (api) return `Valid commands are [ ${options.join(', ')} ]`
         await validOptions(msg, options)
         return
       }

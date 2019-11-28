@@ -1,7 +1,7 @@
 module.exports = {
-  username: 'Nezuko',
   ownerID: '',
+  prefix: '//',
   token: '',
-  webServerPort: 5700,
-  prefix: '//'
+  username: 'Nezuko',
+  webServerPort: 5700
 }
