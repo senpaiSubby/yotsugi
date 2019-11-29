@@ -3,17 +3,18 @@ const Command = require('../../core/Command')
 module.exports = class ScheduledTasks extends Command {
   constructor(client) {
     super(client, {
-      name: 'tasks',
+      name: 'autocmd',
       category: 'Utils',
       description: 'Schedule tasks to run at specified times',
       usage: [
-        'task add <time ex: 10:15pm> <command>',
-        'task remove <time ex: 10:15pm> <command>',
-        'task add <time ex: 10:15pm>',
-        'task <time ex: 10:15pm>',
-        'task disable <time ex: 10:15pm> <command>',
-        'task enable <time ex: 10:15pm> <command>',
-        'task changetime <time ex: 10:15pm> <new name>'
+        'autocmd list',
+        'autocmd add <time ex: 10:15pm> <command>',
+        'autocmd remove <time ex: 10:15pm> <command>',
+        'autocmd add <time ex: 10:15pm>',
+        'autocmd <time ex: 10:15pm>',
+        'autocmd disable <time ex: 10:15pm> <command>',
+        'autocmd enable <time ex: 10:15pm> <command>',
+        'autocmd changetime <time ex: 10:15pm> <new name>'
       ],
       ownerOnly: true,
       args: true,

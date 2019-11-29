@@ -5,12 +5,13 @@ module.exports = class Routines extends Command {
     super(client, {
       name: 'routine',
       category: 'Utils',
-      description: 'Routines like good morning or goodnight',
+      description: 'Routines to run multiple commands at once',
       usage: [
+        'r list',
         'r add <routine name> <command>',
         'r remove <routine name> <command>',
         'r add <routine name>',
-        'r <routine name>',
+        'r run <routine name>',
         'r disable <routine name> <command>',
         'r enable <routine name> <command>',
         'r rename <routine name> <new name>'
