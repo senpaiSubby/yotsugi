@@ -1,6 +1,5 @@
 import React from 'reactn'
 import Settings from './Settings/Settings'
-import RunCommand from './RunCommand'
 import BotInfo from './BotInfo'
 
 const TitleBar = () => {
@@ -8,7 +7,6 @@ const TitleBar = () => {
     <div className="TitleBar">
       <BotInfo />
       <Settings />
-      <RunCommand />
     </div>
   )
 }

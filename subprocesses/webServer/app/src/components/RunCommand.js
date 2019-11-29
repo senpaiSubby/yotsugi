@@ -1,5 +1,5 @@
 import React, { useState } from 'reactn'
-import { sendCommand } from '../Utils'
+import { sendCommand } from './Utils'
 
 const RunCommand = () => {
   const [command, setCommand] = useState('')
@@ -18,19 +18,19 @@ const RunCommand = () => {
       style={{
         display: 'grid',
         gap: '5px',
-        gridTemplateColumns: '125px 50px'
+        padding: '10px',
+        gridTemplateColumns: '250px 50px'
       }}
     >
       <input
         type="text"
         style={{
-          width: '125px',
           border: 'none',
           fontSize: '0.7rem',
           backgroundColor: '#3E4245',
           color: '#dfdfdf',
           textAlign: 'center',
-          height: '45px'
+          height: '30px'
         }}
         placeholder="Command"
         name="command"
@@ -45,7 +45,7 @@ const RunCommand = () => {
           fontSize: '0.7rem',
           backgroundColor: '#3E4245',
           color: '#757163',
-          height: '45px'
+          height: '30px'
         }}
         value="Run"
       />

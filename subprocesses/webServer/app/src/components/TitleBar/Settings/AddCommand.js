@@ -1,9 +1,10 @@
-import React, { useState } from 'reactn'
+import React, { useState, useGlobal } from 'reactn'
 import { notify } from '../../Utils'
 
 const AddCommand = () => {
   const [commandName, setCommandName] = useState('')
   const [command, setCommand] = useState('')
+  const [state, setState] = useGlobal('state')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -16,6 +17,7 @@ const AddCommand = () => {
     notify(`Added [ ${commandName} - ${command} ]`)
     setCommand('')
     setCommandName('')
+    setState(state - 1)
   }
 
   return (

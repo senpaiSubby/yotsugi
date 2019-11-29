@@ -4,15 +4,18 @@ import { sendCommand } from '../Utils'
 
 const CommandButtons = () => {
   const [commandList, setCommandList] = useGlobal('commandList')
+  const [state, setState] = useGlobal('state')
 
   useEffect(() => {
     fetch('/api/db/ui')
       .then((response) => response.json())
       .then((data) => setCommandList(data))
-  }, [commandList, setCommandList])
+    setState(1)
+  }, [state])
 
   const removeButton = async (id) => {
-    return fetch(`/api/db/ui/rm/${id}`, { method: 'POST' })
+    setState(state + 1)
+    await fetch(`/api/db/ui/rm/${id}`, { method: 'POST' })
   }
 
   const renderedButtons = commandList
