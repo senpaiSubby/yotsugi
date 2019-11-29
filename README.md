@@ -59,14 +59,14 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 
 ![alt text](/data/images/webui.png 'Logo Title Text 1')
 
+Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use HTTP Request Shortcuts on my Galaxy. It has a nice UI with support for custom icons, etc.
+
 <div align="center">
 <img src="data/images/app1.png" width="300px" />
 <img src="data/images/app2.png" width="300px" />
 </div>
 
 <!------------------------- GETTING STARTED ------------------------->
-
-Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications.
 
 <h2 align="center"><b>Getting Started</b></h2>
 
