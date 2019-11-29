@@ -34,22 +34,21 @@ class WebServer extends Subprocess {
       const config = JSON.parse(db.dataValues.config)
       const { apiKey } = config.webUI
 
-      if (ip.address() !== req.ip && req.ip !== '127.0.0.1') {
-        if (!req.body.apiKey) {
-          Log.info(
-            'Web Server',
-            `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
-          )
-          return res.status(401).json({ response: "Missing params 'apiKey'" })
-        }
-        if (req.body.apiKey !== apiKey) {
-          Log.info(
-            'Web Server',
-            `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ] sent BAD APIKEY for command [ ${req.body.command} ]`
-          )
-          return res.status(401).json({ response: 'API key is incorrect' })
-        }
+      if (!req.body.apiKey) {
+        Log.info(
+          'Web Server',
+          `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
+        )
+        return res.status(401).json({ response: "Missing params 'apiKey'" })
       }
+      if (req.body.apiKey !== apiKey) {
+        Log.info(
+          'Web Server',
+          `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ] sent BAD APIKEY for command [ ${req.body.command} ]`
+        )
+        return res.status(401).json({ response: 'API key is incorrect' })
+      }
+
       return true
     }
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'reactn'
+import { notify } from '../../Utils'
 
 const AddCommand = () => {
   const [commandName, setCommandName] = useState('')
@@ -12,7 +13,7 @@ const AddCommand = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify([commandName, command])
     })
-
+    notify(`Added [ ${commandName} - ${command} ]`)
     setCommand('')
     setCommandName('')
   }
@@ -25,20 +26,19 @@ const AddCommand = () => {
         style={{
           display: 'grid',
           gap: '5px',
-          gridTemplateColumns: '150px 150px 50px',
+          gridTemplateColumns: '125px 125px 50px',
           paddingBottom: '5px'
         }}
       >
         <input
           type="text"
           style={{
-            width: '150px',
             border: 'none',
             fontSize: '0.7rem',
             backgroundColor: '#3E4245',
-            color: '#757163',
+            color: '#dfdfdf',
             textAlign: 'center',
-            height: '20px'
+            height: '35px'
           }}
           placeholder="Name"
           name="commandName"
@@ -49,13 +49,12 @@ const AddCommand = () => {
         <input
           type="text"
           style={{
-            width: '150px',
             border: 'none',
             fontSize: '0.7rem',
             backgroundColor: '#3E4245',
-            color: '#757163',
+            color: '#dfdfdf',
             textAlign: 'center',
-            height: '20px'
+            height: '35px'
           }}
           placeholder="Command"
           name="command"
@@ -71,7 +70,7 @@ const AddCommand = () => {
             padding: '0px 5px',
             backgroundColor: '#3E4245',
             color: '#757163',
-            height: '20px'
+            height: '35px'
           }}
           value="+"
         />

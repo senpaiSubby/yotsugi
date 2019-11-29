@@ -104,7 +104,40 @@ button:focus {
   min-height: 40px !important;
   box-shadow: 0 0px 50px 0 rgba(20, 20, 20, 1) !important;
 }
-
+.settings {
+  background-color: #282828;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.settingsItems {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-gap: 10px;
+  justify-items: center;
+  padding-top: 15px;
+}
+.settingsButton {
+  background-color: #8ec07c;
+  border: none;
+  flex-direction: column;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin: 2px;
+  justify-content: center;
+  font-weight: bold;
+  user-select: none;
+}
+.popup-content {
+  padding: 0 !important;
+  border: none !important;
+  min-width: fit-content;
+  width: fit-content !important;
+}
 :focus {
   outline: none;
 }

@@ -1,7 +1,6 @@
 import React, { useEffect, useGlobal } from 'reactn'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
-import { ToastContainer, toast, Flip } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { sendCommand } from '../Utils'
 
 const CommandButtons = () => {
   const [commandList, setCommandList] = useGlobal('commandList')
@@ -10,33 +9,8 @@ const CommandButtons = () => {
     fetch('/api/db/ui')
       .then((response) => response.json())
       .then((data) => setCommandList(data))
-  }, [])
+  }, [commandList, setCommandList])
 
-  const notify = (message) =>
-    toast(message, {
-      position: 'bottom-center',
-      autoClose: 4000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      className: 'toast',
-      transition: Flip
-    })
-
-  const sendCommand = async (command) => {
-    try {
-      const response = await fetch('/api/commands', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command })
-      })
-      const data = await response.json()
-      return notify(data.response)
-    } catch {
-      return notify('There was an error connecting.')
-    }
-  }
   const removeButton = async (id) => {
     return fetch(`/api/db/ui/rm/${id}`, { method: 'POST' })
   }
@@ -61,12 +35,7 @@ const CommandButtons = () => {
       })
     : 'No shortcut commands set. Please add one below.'
 
-  return (
-    <div className="apiButtons">
-      {renderedButtons}
-      <ToastContainer closeButton={false} />
-    </div>
-  )
+  return <div className="apiButtons">{renderedButtons}</div>
 }
 
 export default CommandButtons
