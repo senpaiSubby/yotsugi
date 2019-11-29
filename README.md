@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/callmekory/nezuko">
-    <img src="data/images/logo.png" alt="Logo" width="126" height="126">
+    <img src="data/images/logo.png" alt="Logo" width="256" height="256">
   </a>
 
 <h2 align="center"><b>Nezuko</b></h2>
@@ -47,7 +47,7 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 | routines   |  Y  | <details><summary>Routines to run multiple commands at once</summary><p>Commands:<p><ul><li><b>list</b> - List all routines</li><li><b>add [ routine name ][ command ]</b> - Add command to routine</li><li><b>remove [ routine name ][ command ]</b> - Remove command from routine</li><li><b>run [ routine name ]</b> - Runs specified routine</li><li><b>disable [ routine name ][ command ]</b> - Disabled a command inside a routine</li><li><b>enable [ routine name ][ command ]</b> - Enable a command inside a routine</li><li><b>rename [ routine name ][ new name ]</b> - Rename a routine</li></ul></details> |
 | sab        |  Y  | <details><summary>sabNZBD Management</summary><p>Commands:<p><ul><li><b>list</b> - List all downloads in queue</li><li><b>add</b> - Add NZB's via link</li></ul></details>                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | say        |  Y  | <details><summary>Speak through Google Home</summary><p>Commands:<p><ul><li><b>say [ wake up my g ]</b> - Text to be spoken</li></ul></details>                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| series     |     | <details><summary>Search and request TV shows in Ombi</summary><p>Commands:<p><ul><li><b>[series name]</b> - Series to search for</li></ul></details>                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| series     |     | <details><summary>Search and request TV shows in Ombi</summary><p>Commands:<p><ul><li><b>[ series name ]</b> - Series to search for</li></ul></details>                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | speedtest  |     | <details><summary>Runs a internet speedtest on the host the bot is running on</summary></details>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | todo       |  Y  | <details><summary>Your personal todo list</summary><p>Commands:<p><ul><li><b>list</b> - List all todos</li><li><b>add [ take out trash ]</b> - Add a todo</li><li><b>remove [ # ]</b> - Remove a todo</li></ul></details>                                                                                                                                                                                                                                                                                                                                                                                                 |
 | tor        |  Y  | <details><summary>Transmission Management</summary><p>Commands:<p><ul><li><b>list</b> - List all downloads in queue</li><li><b>add [ magnet link ]</b> - Add Torrent via link</li></ul></details>                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -80,17 +80,32 @@ git clone https://github.com/callmekory/nezuko.git
 
 2. Install Yarn
 
-`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
+Ubuntu / Debain
+```sh
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 
-`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
+echo deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
-`sudo apt install yarn`
+sudo apt install yarn
+```
 
-3: Install packages
+Arch Linux
+```sh
+sudo pacman -S yarn
+```
+
+3. Install packages
 
 ```sh
-yarn install
+> yarn install
 ```
+4. Setup Bot Token and Prefix
+
+> Navigate to /nezuko/data and rename `config.js.sample` to `config.js`. Open the file and edit as needed.
+
+5. Setup Command Configs
+
+> All commands and other settings are setup after the bot is added to your server and running `db get` which will list all the settings you can edit and how to edit them. Every is saved to the database at `/nezuko/data/db.sqlite`.
 
 <h2 align="center"><b>Roadmap</b></h2>
 
