@@ -3,6 +3,8 @@ const cors = require('cors')
 const shortid = require('shortid')
 const Subprocess = require('../../core/Subprocess')
 const { Manager } = require('../../events/message')
+const { duration } = require('moment')
+require('moment-duration-format')
 
 class WebServer extends Subprocess {
   constructor(client) {
@@ -69,16 +71,15 @@ class WebServer extends Subprocess {
 
     // general bot info
     app.get('/api/info', (req, res) => {
-      const { Utils, uptime, user, status } = client
+      const {  uptime, user, status } = client
       const { username, id, avatar, localPresence } = user
-      const { millisecondsToTime } = Utils
 
       return res.status(200).json({
         username,
         id,
         avatarId: avatar,
         status,
-        upTime: millisecondsToTime(uptime),
+        upTime: duration(uptime).format('d[d] h[h] m[m] s[s]'),
         presence: localPresence.game
       })
     })

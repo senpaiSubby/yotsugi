@@ -2,9 +2,9 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const { RichEmbed } = require('discord.js')
-const Log = require('./Log')
 const Promise = require('bluebird')
 const shelljs = require('shelljs')
+const Log = require('./Log')
 
 module.exports = class Utils {
   constructor() {
@@ -71,7 +71,7 @@ module.exports = class Utils {
       const collected = await editMessage.awaitReactions(
         (reaction, user) =>
           ['⬅️', '➡️', '✅'].includes(reaction.emoji.name) && user.id === author.id,
-        { max: 1, time: 60000 }
+        { max: 1, time: 3600000 }
       )
 
       const reaction = collected.first()
@@ -92,7 +92,7 @@ module.exports = class Utils {
         }
       } else {
         run = false
-        return editMessage.clearReactions()
+        await editMessage.clearReactions()
       }
       await editMessage.clearReactions()
     }

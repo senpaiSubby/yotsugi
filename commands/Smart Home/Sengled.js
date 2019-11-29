@@ -139,7 +139,7 @@ module.exports = class Sengled extends Command {
           if (newBrightness === 0 || newBrightness === 100) {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
-            if (api) return `${capitalize(deviceName)} light turned [ ${newStatus} ]`
+            if (api) return `[ ${capitalize(deviceName)} ] light turned [ ${newStatus} ]`
             return standardMessage(
               msg,
               `${icon} [ ${capitalize(deviceName)} ] light turned [ ${newStatus} ]`

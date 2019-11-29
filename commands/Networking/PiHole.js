@@ -75,7 +75,6 @@ module.exports = class PiHole extends Command {
 
     // * ------------------ Usage Logic --------------------
 
-    const caseOptions = ['enable', 'disable', 'stats']
     switch (args[0]) {
       case 'enable':
       case 'disable':
@@ -99,6 +98,6 @@ module.exports = class PiHole extends Command {
         return
       }
     }
-    return validOptions(msg, caseOptions)
+    return validOptions(msg, ['enable', 'disable', 'stats'])
   }
 }

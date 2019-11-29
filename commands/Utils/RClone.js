@@ -44,14 +44,13 @@ module.exports = class RClone extends Command {
     const command = args.shift()
     const dirPath = args.join(' ')
 
-    const caseOptions = ['ls', 'size']
     switch (command) {
       case 'size': {
         const waitMessage = await standardMessage(
           msg,
           `:file_cabinet: Calculating size of
 
-          - ${dirPath || '/'}
+          [ ${dirPath || '/'} ]
 
           :hourglass: This may take some time...`
         )
@@ -73,7 +72,7 @@ module.exports = class RClone extends Command {
 
           return msg.reply(
             embed(msg)
-              .setTitle(`:file_cabinet: GDrive Directory:\n- ${dirPath}`)
+              .setTitle(`:file_cabinet: GDrive Directory:\n- [ ${dirPath} ]`)
               .addField('Files', `:newspaper: ${count}`, true)
               .addField('Size', `:file_folder: ${size}`, true)
               .setDescription(`**Time Taken ${millisecondsToTime(stopTime - startTime)}**`)
@@ -81,7 +80,7 @@ module.exports = class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory | :file_folder: ${dirPath} | does not exist!`)
+          return warningMessage(msg, `Directory [ ${dirPath} ] does not exist!`)
         }
 
         return errorMessage(msg, `A error occured with Rclone`)
@@ -92,7 +91,7 @@ module.exports = class RClone extends Command {
           msg,
           `:file_cabinet: Getting Directory
 
-          - ${dirPath || '/'}
+          [ ${dirPath || '/'} ]
 
           :hourglass: This may take some time...`
         )
@@ -139,9 +138,9 @@ module.exports = class RClone extends Command {
           Object.keys(splitArray).forEach((key, index) => {
             embedList.push(
               embed(msg)
-                .setTitle(`:file_cabinet: ${dirPath || '/'}`)
+                .setTitle(`:file_cabinet: [ ${dirPath || '/'} ]`)
                 .setThumbnail(
-                  'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Google_Drive_logo.png/600px-Google_Drive_logo.png'
+                  'https://forum.rclone.org/uploads/default/original/2X/0/0f430bb0f2f7a9ed020a9e93c89f4d332adcac4b.gif'
                 )
                 .addField('Files', `${splitArray[index].join('\n')}`)
             )
@@ -151,13 +150,13 @@ module.exports = class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Folder | :file_folder: ${dirPath || '/'} | does not exist! `)
+          return warningMessage(msg, `Directory [ ${dirPath || '/'} ] does not exist! `)
         }
 
         return errorMessage(msg, 'A error occured with RClone')
       }
       default:
-        return validOptions(msg, caseOptions)
+        return validOptions(msg, ['ls', 'size'])
     }
   }
 }

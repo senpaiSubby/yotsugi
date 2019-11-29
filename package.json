@@ -2,12 +2,12 @@
   "name": "nezuko",
   "version": "1.0.0",
   "description": "",
-  "license": "ISC",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon .",
     "start": "pm2 start index.js",
-    "stop": "pm2 stop nezuko",
-    "dev": "nodemon ."
+    "stop": "pm2 stop nezuko"
   },
   "repository": {
     "type": "git",
@@ -25,11 +25,13 @@
     "express": "^4.17.1",
     "google-home-notify-client": "^0.3.1",
     "later": "^1.2.0",
+    "magnet2torrent-js": "^1.3.0",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "ms": "^2.1.2",
     "node-fetch": "^2.6.0",
     "node-os-utils": "^1.1.0",
+    "puppeteer": "^2.0.0",
     "sequelize": "^5.21.2",
     "shelljs": "^0.8.3",
     "shortid": "^2.2.15",
@@ -48,9 +50,11 @@
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^1.19.4",
     "prettier": "^1.19.1"

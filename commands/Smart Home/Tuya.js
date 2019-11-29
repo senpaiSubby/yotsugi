@@ -70,7 +70,7 @@ module.exports = class Tuya extends Command {
         await device.disconnect()
 
         const status = currentStatus ? 'off' : 'on'
-        if (api) return `${capitalize(name)} turned ${status}`
+        if (api) return `[ ${capitalize(name)} ] turned [ ${status} ]`
         return standardMessage(msg, `:electric_plug: [ ${capitalize(name)} ] turned [ ${status} ]`)
       } catch (e) {
         const text = `Failed to connect to [ ${capitalize(name)} ]`
@@ -99,7 +99,7 @@ module.exports = class Tuya extends Command {
         }
         await device.set({ set: !currentState })
         await device.disconnect()
-        if (api) return `${capitalize(name)} turned ${state}`
+        if (api) return `[ ${capitalize(name)} ] turned [ ${state} ]`
         return standardMessage(msg, `:electric_plug: [ ${capitalize(name)} ] turned [ ${state} ]`)
       } catch (e) {
         const text = `Failed to connect to [ ${capitalize(name)} ]`

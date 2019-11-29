@@ -30,7 +30,7 @@ module.exports = class Evaluator extends Command {
       `🚫 **Error:**\n\`\`\`js\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
     try {
-      let output = eval(args.join(' '))
+      let output = await eval(args.join(' '))
 
       if (typeof output !== 'string') output = require('util').inspect(output, { depth: 1 })
       const response = `📤 **Output:**\n\`\`\`js\n${output.replace(regex, '[Token]')}\n\`\`\``

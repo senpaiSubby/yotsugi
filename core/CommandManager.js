@@ -70,9 +70,12 @@ module.exports = class CommandManager {
     }
 
     try {
-      return command.run(client, msg, args, api)
+      await msg.channel.startTyping()
+      command.run(client, msg, args, api)
+      return msg.channel.stopTyping(true)
     } catch (err) {
-      return client.Utils.error(command.name, err, msg.channel)
+      await client.Utils.error(command.name, err, msg.channel)
+      return msg.channel.stopTyping(true)
     }
   }
 
@@ -228,25 +231,26 @@ module.exports = class CommandManager {
       await generalConfig.create({
         id: this.ownerID,
         config: JSON.stringify({
-          routines: [],
-          scheduledTasks: {},
           archivebox: { path: null },
-          webUI: { apiKey: null, commands: [] },
-          pihole: { apiKey: null, host: null },
-          rclone: { remote: null },
-          emby: { apiKey: null, host: null, userID: null },
-          docker: { host: null },
-          sengled: { jsessionid: null, password: null, username: null },
-          googleHome: { ip: null, language: null, name: null },
-          transmission: { host: null, port: '9091', ssl: false },
-          sabnzbd: { apiKey: null, host: null },
-          ombi: { apiKey: null, host: null, username: null },
-          meraki: { apiKey: null, serielNum: null },
-          pioneerAVR: { host: null },
-          systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
-          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
           disabledCommands: [],
-          shortcuts: []
+          docker: { host: null },
+          emby: { apiKey: null, host: null, userID: null },
+          googleHome: { ip: null, language: null, name: null },
+          jackett: { apiKey: null, host: null },
+          meraki: { apiKey: null, serielNum: null },
+          ombi: { apiKey: null, host: null, username: null },
+          pihole: { apiKey: null, host: null },
+          pioneerAVR: { host: null },
+          rclone: { remote: null },
+          routines: [],
+          sabnzbd: { apiKey: null, host: null },
+          scheduledTasks: {},
+          sengled: { jsessionid: null, password: null, username: null },
+          shortcuts: [],
+          systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
+          transmission: { host: null, port: '9091', ssl: false },
+          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
+          webUI: { apiKey: null, commands: [] }
         })
       })
     }
@@ -271,11 +275,11 @@ module.exports = class CommandManager {
         id,
         ownerID,
         config: JSON.stringify({
-          prefix: this.prefix,
-          welcomeChannel: null,
           logsChannel: null,
+          prefix: this.prefix,
+          rules: [],
           starboardChannel: null,
-          rules: []
+          welcomeChannel: null
         }),
         messages: JSON.stringify({ channels: {}, dm: {}, ignoredChannels: [] })
       })

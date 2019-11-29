@@ -227,7 +227,7 @@ module.exports = class Routines extends Command {
           if (api) return `Commands [ ${failedCommands.join(', ')} ] dont exist`
           return errorMessage(msg, `Commands [ ${failedCommands.join(', ')} ] dont exist`)
         }
-        if (api) return `Ran routine [ ${routineName} ]`
+        if (api) return `Running routine [ ${routineName} ]`
         break
       }
 

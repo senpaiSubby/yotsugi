@@ -10,11 +10,12 @@ module.exports = class SystemIP extends Command {
       description: 'Show Server IP',
       usage: [`ip <external/local>`],
       ownerOnly: true,
-      args: false
+      args: false,
+      webUI: true
     })
   }
 
-  async run(client, msg, api) {
+  async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
     const { warningMessage } = client.Utils
@@ -24,7 +25,7 @@ module.exports = class SystemIP extends Command {
     const response = await fetch('https://ifconfig.co/json')
 
     const data = await response.json()
-    if (api) return data
-    return warningMessage(msg, `${data.ip}`)
+    if (api) return data.ip
+    return warningMessage(msg, `[ ${data.ip} ]`)
   }
 }

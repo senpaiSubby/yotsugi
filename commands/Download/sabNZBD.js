@@ -74,7 +74,7 @@ module.exports = class SabNZBD extends Command {
       case 'list': {
         const data = await getQueue()
         if (data) {
-          if (!data.length > 0) return warningMessage(msg, `Nothing in download Queue`)
+          if (!data.length) return warningMessage(msg, `Nothing in download Queue`)
 
           const embedList = []
           data.forEach((item) => {

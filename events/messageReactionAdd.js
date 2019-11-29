@@ -4,7 +4,7 @@ const { client } = require('../index')
 client.on('messageReactionAdd', async (reaction, user) => {
   if (reaction.emoji.name !== '⭐') return
 
-  const { message } = reaction
+  const { message, guild } = reaction
   const { serverConfig } = client
 
   const db = await serverConfig.findOne({ where: { id: guild.id } })

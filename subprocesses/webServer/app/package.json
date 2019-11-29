@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:5700",
   "dependencies": {
+    "eslint-config-react-app": "^5.0.2",
     "react-contextmenu": "^2.13.0",
     "react-dom": "^16.11.0",
     "react-scripts": "3.2.0",

@@ -1,33 +1,49 @@
+<!---------------------------------- Badges ---------------------------------->
+
 <center>
-<p><a href="https://discord.gg/xhnkTUH"><img src="https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&amp;logo=appveyor" alt="Discord"></a> <img src="https://img.shields.io/discord/302306803880820736?style=for-the-badge" alt="Discord"> <img src="https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge" alt="GitHub contributors"> <img src="https://img.shields.io/github/followers/callmekory?style=for-the-badge" alt="GitHub followers"></p>
-<!-- PROJECT LOGO -->
-<p><br /></p>
-<p align="center">
-  <a href="https://github.com/callmekory/nezuko">
-    <img src="data/images/logo.png" alt="Logo" width="126" height="126">
-  </a>
 
-<strong><h2 align="center">Nezuko</h2></strong>
+[![Discord](https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&logo=appveyor)](https://discord.gg/xhnkTUH) ![Discord](https://img.shields.io/discord/302306803880820736?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge) ![GitHub followers](https://img.shields.io/github/followers/callmekory?style=for-the-badge)
 
-  <h4 align="center">
-    Smart Home, Automation, and all purpose server management bot.
-    <br />
-    <br />
-    <a href="https://github.com/callmekory/nezuko/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/callmekory/nezuko/issues">Request Feature</a>
-  </h4>
-</p>
+[![Logo](data/images/logo.png) ](https://github.com/callmekory/nezuko)
 
-<hr>
-<h2 align="center"><b>About The Project</b></h2>
+</center>
 
-<h4>I made Nezuko to automate my life. From controlling my lights and smart plugs to media management and Docker control. If its not here it&#39;ll be here. Feel free to PR and ask for new features!</h4>
+<!---------------------------------- Logo / header ---------------------------------->
 
-<hr>
-<h2 align="center"><b>Commands</b></h2>
+<center>
+
+## **Nezuko**
+
+#### Smart Home, Automation, and all purpose server management bot.
+
+[Report Bug](https://github.com/callmekory/nezuko/issues) · [Request Feature](https://github.com/callmekory/nezuko/issues)
+
+</center>
+
+---
+
+<!---------------------------------- About the project ---------------------------------->
+
+<center>
+
+## **About The Project**
+
+</center>
+
+#### I made Nezuko to automate my life. From controlling my lights and smart plugs to media management and Docker control. If its not here it'll be here. Feel free to PR and ask for new features!
+
+---
+
+<!---------------------------------- Command Table ---------------------------------->
+
+<center>
+
+## **Commands**
+
+</center>
 
 <table>
+
 <thead>
 <tr>
 <th>Command</th>
@@ -35,189 +51,371 @@
 <th>Description (Click for full details)</th>
 </tr>
 </thead>
+
 <tbody>
+
 <tr>
 <td>sab</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>sabNZBD Management</summary><p>Commands:<p><ul><li><b>list</b> - List all downloads in queue</li><li><b>add</b> - Add NZB&#39;s via link</li></ul></details></td>
-</tr>
+<td><details><summary>sabNZBD Management</summary>
+
+Commands:
+
+- **list** - List all downloads in queue
+- **add** - Add NZB's via link
+  </details></td>
+  </tr>
+
 <tr>
 <td>tor</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Transmission Management</summary><p>Commands:<p><ul><li><b>list</b> - List all downloads in queue</li><li><b>add [magnet link]</b> - Add Torrent via link</li></ul></details></td>
-</tr>
+<td><details><summary>Transmission Management</summary>
+
+Commands:
+
+- **list** - List all downloads in queue
+- **add [magnet link]** - Add Torrent via link
+  </details></td>
+  </tr>
+
+<tr>
+<td>jackett</td>
+<td style="text-align:center"></td>
+<td><details><summary>Search torrents via Jackett</summary>
+
+Commands:
+
+- **[search term]** - Torrent to search for
+  </details></td>
+  </tr>
+
+<tr>
+<td>yt</td>
+<td style="text-align:center"></td>
+<td><details><summary>Search for youtube videos</summary>
+
+Commands:
+
+- **[search term]** - Torrent to search for
+  </details></td>
+  </tr>
+
 <tr>
 <td>movie</td>
-
 <td style="text-align:center"></td>
-<td><details><summary>Search and request movies in Ombi</summary><p>Commands:<p><ul><li><b>[movie name]</b> - Movie to search for</li></ul></details></td>
-</tr>
+<td><details><summary>Search and request movies in Ombi</summary>
+
+Commands:
+
+- **[movie name]** - Movie to search for
+  </details></td>
+  </tr>
+
 <tr>
 <td>series</td>
-
 <td style="text-align:center"></td>
-<td><details><summary>Search and request TV shows in Ombi</summary><p>Commands:<p><ul><li><b>[series name]</b> - Series to search for</li></ul></details></td>
-</tr>
+<td><details><summary>Search and request TV shows in Ombi</summary>
+
+Commands:
+
+- **[series name]** - Series to search for
+  </details></td>
+  </tr>
+
 <tr>
 <td>emby</td>
-
 <td style="text-align:center"></td>
-<td><details><summary>Get stats from Emby</summary><p>Commands:<p><ul><li><b>stats</b> - Media library stats</li><li><b>recent [movies/series/music]</b> - View recent media and get links to watch</li><li><b>streams</b> - View who and whats currently streaming</li></ul></details></td>
-</tr>
+<td><details><summary>Get stats from Emby</summary>
+Commands:
+
+- **stats** - Media library stats
+- **recent [movies/series/music]** - View recent media and get links to watch
+- **streams** - View who and whats currently streaming
+  </details></td>
+  </tr>
+
 <tr>
 <td>plex</td>
-
 <td style="text-align:center"></td>
-<td><details><summary>Get stats from Plex via Tautulli</summary><p>Commands:<p><ul><li><b>stats</b> - Media library stats</li><li><b>recent [movies/series/music]</b> - View recent media and get links to watch</li><li><b>streams</b> - View who and whats currently streaming</li></ul></details></td>
-</tr>
+<td><details><summary>Get stats from Plex via Tautulli</summary>
+
+Commands:
+
+- **stats** - Media library stats
+- **recent [movies/series/music]** - View recent media and get links to watch
+- **streams** - View who and whats currently streaming
+  </details></td>
+  </tr>
+
 <tr>
 <td>archivebox</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Clone webpages via ArchiveBox</summary><p>Commands:<p><ul><li><b>[url]</b> - Url to add</li></ul></details></td>
-</tr>
+<td><details><summary>Clone webpages via ArchiveBox</summary>
+
+Commands:
+
+- **[url]** - Url to add
+  </details></td>
+  </tr>
+
 <tr>
 <td>rclone</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>List directories and get info on your rclone mounts</summary><p>Commands:<p><ul><li><b>ls [/some/rclone/dir]</b> - List files in a dir and navigate in pages</li><li><b>size[/some/rclone/dir]</b> - Get the size of a dir on rclone</li></ul></details></td>
-</tr>
+<td><details><summary>List directories and get info on your rclone mounts</summary>
+
+Commands:
+
+- **ls [/some/rclone/dir]** - List files in a dir and navigate in pages
+- **size[/some/rclone/dir]** - Get the size of a dir on rclone
+  </details></td>
+  </tr>
+
 <tr>
 <td>speedtest</td>
-
 <td style="text-align:center">Y</td>
 <td><details><summary>Runs a speedtest on the host the bot is running on</summary></details></td>
 </tr>
+
 <tr>
 <td>todo</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Your personal todo list</summary><p>Commands:<p><ul><li><b>list</b> - List all todos</li><li><b>add [take out trash]</b> - Add a todo</li><li><b>remove [1]</b> - Remove a todo</li></ul></details></td>
-</tr>
+<td><details><summary>Your personal todo list</summary>
+
+Commands:
+
+- **list** - List all todos
+- **add [take out trash]** - Add a todo
+- **remove [1]** - Remove a todo
+  </details></td>
+  </tr>
+
 <tr>
 <td>docker</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Manage Docker contaienrs</summary><p>Commands:<p><ul><li><b>list running/paused/exited/etc</b> - List containers</li><li><b>stop/start/restart/etc [CONTAINER]</b> - Manage container states</li></ul></details></td>
-</tr>
+<td><details><summary>Manage Docker contaienrs</summary>
+
+Commands:
+
+- **list running/paused/exited/etc** - List containers
+- **stop/start/restart/etc [CONTAINER]** - Manage container states
+  </details></td>
+  </tr>
+
 <tr>
 <td>avr</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Pioneer AVR controller</summary><p>Commands:<p><ul><li><b>on/off</b> - Power on/off</li><li><b>vol</b> - Show current volume</li><li><b>vol [0-100]</b> - Set AVR volume</li></ul></details></td>
-</tr>
+
+<td><details><summary>Pioneer AVR controller</summary>
+
+Commands:
+
+- **on/off** - Power on/off
+- **vol** - Show current volume
+- **vol [0-100]** - Set AVR volume
+  </details></td>
+  </tr>
+
 <tr>
 <td>lights</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Sengled light controller</summary><p>Commands:<p><ul><li><b>list</b> - List all lights</li><li><b>[light name]</b> - Toggle light on/off</li><li><b>[light name] 0-100</b> - Set light brightness</li></ul></details></td>
+<td><details><summary>Sengled light controller</summary>
+
+Commands:
+
+- **list** - List all lights
+- **[light name]** - Toggle light on/off
+- **[light name] 0-100** - Set light brightness
+  </details></td>
+
 </tr>
 <tr>
 <td>plug</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Meraki network statistics</summary><p>Commands:<p><ul><li><b>list</b> - List all devices on network</li></ul></details></td>
-</tr>
+<td><details><summary>Meraki network statistics</summary>
+
+Commands:
+
+- **list** - List all devices on network
+  </details></td>
+  </tr>
+
 <tr>
 <td>pihole</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>PiHole management</summary><p>Commands:<p><ul><li><b>stats</b> - List usage statistics</li><li><b>on/off</b> - Enable/disable DNS filtering</li></ul></details></td>
-</tr>
+<td><details><summary>PiHole management</summary>
+
+Commands:
+
+- **stats** - List usage statistics
+- **on/off** - Enable/disable DNS filtering
+  </details></td>
+  </tr>
+
 <tr>
 <td>pc</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Linux system power controller</summary><p>Commands:<p><ul><li><b>on/off/restart</b> - State to set system</li></ul><p>Requires addon in core/addons/powerserver to be running on the system you want to control.</p></details></td>
-</tr>
+<td><details><summary>Linux system power controller</summary>
+
+Commands:
+
+- **on/off/restart** - State to set system
+  Requires addon in core/addons/powerserver to be running on the system you want to control.
+  </details></td>
+  </tr>
+
 <tr>
 <td>routines</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Routines to run multiple commands at once</summary><p>Commands:<p><ul><li><b>add [routine name][command]</b> - Add a command to a routine</li><li><b>remove [routine name][command # from list command]</b> - Remove a command from routine</li><li><b>disable/enable [routine name][command # from list command]</b> - Enable/disable a command in a routine</li><li><b>list</b> - List all your routines and commands</li></ul></details></td>
-</tr>
+<td><details><summary>Routines to run multiple commands at once</summary>
+
+Commands:
+
+- **add [routine name][command]** - Add a command to a routine
+- **remove [routine name][command # from list command]** - Remove a command from routine
+- **disable/enable [routine name][command # from list command]** - Enable/disable a command in a routine
+- **list** - List all your routines and commands
+  </details></td>
+  </tr>
+
 <tr>
 <td>ip</td>
-
 <td style="text-align:center">Y</td>
 <td><details><summary>Shows server public and local IP</summary></details></td>
 </tr>
+
 <tr>
 <td>say</td>
-
 <td style="text-align:center">Y</td>
-<td><details><summary>Speak through Google Home</summary><p>Commands:<p><ul><li><b>say [waddup my dude]</b> - Text to be spoken</li></ul></details></td>
-</tr>
+<td><details><summary>Speak through Google Home</summary>
+
+Commands:
+
+- **say [waddup my dude]** - Text to be spoken
+  </details></td>
+  </tr>
+
 </tbody>
 </table>
 
-<hr>
-<h2 id="-web-ui-"><!-- Web UI --></h2>
-<h2 align="center"><b>Web UI - Work in progress</b></h2>
+---
 
-<img src="data/images/webui.png" alt="alt text" title="Logo Title Text 1">
+<!---------------------------------- Web UI ---------------------------------->
 
-<br>
-<br>
-<h4>Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use <a href="https://github.com/Waboodoo/HTTP-Shortcuts">HTTP Request Shortcuts</a> on my Galaxy. It has a nice UI with support for custom icons, etc.</h4>
-<br>
-<br>
+ <center>
 
-<div>
-<img src="data/images/app1.png" width="300px" />
-
-<img src="data/images/app2.png" width="300px" />
-
-</div>
-<br>
-<br>
-<!-- GETTING STARTED --></p>
-<hr>
-<h2 align="center"><b>Getting Started</b></h2>
-
-<h4>To get a local copy up and running follow these simple steps.</h4>
-<h4>1. Clone Nezuko</h4>
-<pre><code class="lang-sh">git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/callmekory/nezuko.git
-</code></pre>
-<h4 >2. Install Yarn</h4>
-<p><code>curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -</code></p>
-<p><code>echo &quot;deb https://dl.yarnpkg.com/debian/ stable main&quot; | sudo tee /etc/apt/sources.list.d/yarn.list</code></p>
-<p><code>sudo apt install yarn</code></p>
-<h4 >3: Install NPM packages</h4>
-<pre><code class="lang-sh">yarn <span class="hljs-keyword">install</span>
-</code></pre>
-<hr>
-<h2 align="center"><b>Roadmap</b></h2>
-
-<h3 id="see-the-open-issues-https-github-com-callmekory-nezuko-issues-for-a-list-of-proposed-features-and-known-issues-">See the <a href="https://github.com/callmekory/nezuko/issues">open issues</a> for a list of proposed features (and known issues).</h3>
-<!-- CONTRIBUTING -->
-<hr>
-<h2 align="center"><b>Contributing</b></h2>
-
-<h4>Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are <strong>greatly appreciated</strong>!</h3>
-<h4>1. Fork the Project</h4>
-<h4>2. Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</h4>
-<h4>3. Commit your Changes (<code>git commit -m &#39;Add some AmazingFeature&#39;</code>)</h4>
-<h4>4. Push to the Branch (<code>git push origin feature/AmazingFeature</code>)</h4>
-<h4>5. Open a Pull Request</h4>
-
-<hr>
-<h2 align="center"><b>License</b></h2>
-
-<h4>Distributed under the GPL3 License. See <code>LICENSE</code> for more information.</h4>
-
-<hr>
-<h2 align="center"><b>Contact</b></h2>
-
-<p><a href="https://discord.gg/xhnkTUH"><img src="https://img.shields.io/badge/Discord-Invite-7289DA.svg?style=for-the-badge&amp;logo=appveyor" alt="Discord"></a> <img src="https://img.shields.io/discord/302306803880820736?style=for-the-badge" alt="Discord"> <img src="https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge" alt="GitHub contributors"> <img src="https://img.shields.io/github/followers/callmekory?style=for-the-badge" alt="GitHub followers"></p>
-
-<hr>
-<h2 align="center"><b>Acknowledgements</b></h2>
-
-<a href="https://github.com/v0idp/Mellow">Mellow - Ombi movies/series code</a><br>
-<a href="https://github.com/nwithan8">nwithan8</a><br>
-<a href="https://github.com/codetheweb/tuyapi">codetheweb/tuyapi</a>
+## **Web UI - Work in progress**
 
 </center>
+
+![alt text](data/images/webui.png 'Logo Title Text 1')
+
+#### Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use [HTTP Request Shortcuts](https://github.com/Waboodoo/HTTP-Shortcuts) on my Galaxy. It has a nice UI with support for custom icons, etc.
+
+<center>
+
+<div>
+  <img src="data/images/app1.png" width="300px" />
+  <img src="data/images/app2.png" width="300px" />
+</div>
+
+</center>
+
+---
+
+<!---------------------------------- Getting Started ---------------------------------->
+
+<center>
+
+## **Getting Started**
+
+</center>
+
+#### To get a local copy up and running follow these simple steps.
+
+#### 1\. Clone Nezuko
+
+    git clone https://github.com/callmekory/nezuko.git
+
+#### 2\. Install Yarn
+
+`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
+
+`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
+
+`sudo apt install yarn`
+
+#### 3: Install NPM packages
+
+    yarn install
+
+---
+
+<!---------------------------------- Roadmap ---------------------------------->
+
+<center>
+
+## **Roadmap**
+
+</center>
+
+#### See the [open issues](https://github.com/callmekory/nezuko/issues) for a list of proposed features (and known issues).
+
+---
+
+<!---------------------------------- Contributing ---------------------------------->
+
+<center>
+
+## **Contributing**
+
+</center>
+
+#### Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**!
+
+#### 1\. Fork the Project
+
+#### 2\. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+
+#### 3\. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+
+#### 4\. Push to the Branch (`git push origin feature/AmazingFeature`)
+
+#### 5\. Open a Pull Request
+
+---
+
+<!---------------------------------- License ---------------------------------->
+
+<center>
+
+## **License**
+
+</center>
+
+#### Distributed under the GPL3 License. See `LICENSE` for more information.
+
+---
+
+<!---------------------------------- Contact ---------------------------------->
+
+<center>
+
+## **Contact**
+
+</center>
+
+#### You can find me on Discord on various servers. Shoot me a pm my tag is Sublime#4233 if you have any questions!
+
+---
+
+<!---------------------------------- Acknowledgements ---------------------------------->
+
+<center>
+
+## **Acknowledgements**
+
+</center>
+
+- [Mellow - Ombi movies/series code](https://github.com/v0idp/Mellow)
+- [nwithan8](https://github.com/nwithan8)
+- [codetheweb/tuyapi](https://github.com/codetheweb/tuyapi)</center>
