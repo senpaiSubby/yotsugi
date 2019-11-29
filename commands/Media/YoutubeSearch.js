@@ -12,22 +12,26 @@ module.exports = class YoutubeSearch extends Command {
     })
   }
 
-  async run(client, msg, args, api) {
+  async run(client, msg, args) {
     // * ------------------ Setup --------------------
-    const { Utils } = client
-    const { paginate, embed } = Utils
+    const { Utils, db, p } = client
+    const { paginate, embed, missingConfig } = Utils
     // * ------------------ Config --------------------
 
-    const apiKey = 'AIzaSyAXLT-ow7yYEhwaqewhCwgEEYkxEaUuEyA'
+    const { apiKey } = db.config.google
     const yt = new YoutubeDataAPI(apiKey)
 
     // * ------------------ Check Config --------------------
+
+    if (!apiKey) {
+      const settings = [`${p}db set google apiKey <key>`]
+      return missingConfig(msg, 'google', settings)
+    }
 
     // * ------------------ Logic --------------------
     const fetchVideos = async (searchTerm) => {
       const data = await yt.searchAll(searchTerm, 25)
       const results = []
-      console.log(data)
       data.items.forEach((i) => {
         const { description, channelTitle, thumbnails } = i.snippet
         const { videoId } = i.id
@@ -39,7 +43,7 @@ module.exports = class YoutubeSearch extends Command {
             .setURL(`https://youtube.com/watch?v=${videoId})`)
             .addField('Channel', channelTitle, true)
             .addField('Published', publishedAt.toString().substring(0, 10), true)
-            .addField('Description', description)
+            .addField('Description', description || 'No Description..')
             .setImage(thumbnail)
             .setThumbnail(
               'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1024px-YouTube_social_white_squircle_%282017%29.svg.png'

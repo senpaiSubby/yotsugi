@@ -17,7 +17,7 @@ module.exports = class Jackett extends Command {
     })
   }
 
-  async run(client, msg, args, api) {
+  async run(client, msg, args) {
     // * ------------------ Setup --------------------
     const { Utils, Log, db, p } = client
     const { channel } = msg

@@ -31,11 +31,11 @@ class DriveSize extends Subprocess {
         const { count } = response
         const size = Utils.bytesToSize(response.bytes)
 
-        channels
+        await channels
           .get('646309179354513420')
           .setName(`📰\u2009\u2009\u2009ғiles\u2009\u2009\u2009${count}`)
 
-        channels
+        await channels
           .get('646309200686874643')
           .setName(
             `📁\u2009\u2009\u2009size\u2009\u2009\u2009${size
@@ -52,7 +52,6 @@ class DriveSize extends Subprocess {
       return Log.warn('Drive Stats', `Failed to update Rclone stats`)
     }
 
-    Log.info('Drive Stats', 'Started Initial Rclone scan')
     await checkNewStats()
     start = 1
 

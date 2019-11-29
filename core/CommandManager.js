@@ -25,6 +25,7 @@ module.exports = class CommandManager {
     const Command = require(location)
     const instance = new Command(this.client)
     const commandName = instance.name.toLowerCase()
+
     instance.location = location
 
     if (instance.disabled) return
@@ -35,6 +36,8 @@ module.exports = class CommandManager {
     }
 
     this.commands.set(commandName, instance)
+
+    this.Log.ok('Command Manager', `Loaded command [ ${commandName} ]`)
 
     for (const alias of instance.aliases) {
       if (this.aliases.has(alias)) {
@@ -49,7 +52,7 @@ module.exports = class CommandManager {
     this.aliases = new Enmap()
     this.Log.warn('Reload Manager', 'Reinitialising Modules')
     this.loadCommands('./commands')
-    this.Log.success('Reload Manager', 'Reload Commands Success')
+    this.Log.ok('Reload Manager', 'Reload Commands Success')
     return true
   }
 
@@ -232,10 +235,12 @@ module.exports = class CommandManager {
         id: this.ownerID,
         config: JSON.stringify({
           archivebox: { path: null },
+          autocmd: {},
           disabledCommands: [],
           docker: { host: null },
           emby: { apiKey: null, host: null, userID: null },
           googleHome: { ip: null, language: null, name: null },
+          google: { apiKey: null },
           jackett: { apiKey: null, host: null },
           meraki: { apiKey: null, serielNum: null },
           ombi: { apiKey: null, host: null, username: null },
@@ -244,13 +249,12 @@ module.exports = class CommandManager {
           rclone: { remote: null },
           routines: [],
           sabnzbd: { apiKey: null, host: null },
-          scheduledTasks: {},
           sengled: { jsessionid: null, password: null, username: null },
           shortcuts: [],
           systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
           transmission: { host: null, port: '9091', ssl: false },
           tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
-          webUI: { apiKey: null, commands: [] }
+          webUI: { apiKey: '111', commands: [] }
         })
       })
     }

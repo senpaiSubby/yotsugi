@@ -40,6 +40,7 @@ module.exports = class SubprocessManager {
   startModule(subprocess) {
     try {
       subprocess.run()
+      this.client.Log.ok('Subprocess Manager', `Loaded subprocess [ ${subprocess.name} ]`)
     } catch (err) {
       this.client.Log.error('Subprocess', err)
     }

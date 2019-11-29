@@ -23,7 +23,9 @@
     "discord.js": "^11.5.1",
     "enmap": "^5.2.3",
     "express": "^4.17.1",
+    "express-device": "^0.4.2",
     "google-home-notify-client": "^0.3.1",
+    "ip": "^1.1.5",
     "later": "^1.2.0",
     "magnet2torrent-js": "^1.3.0",
     "moment": "^2.24.0",
@@ -42,6 +44,7 @@
     "transmission-promise": "^1.1.4",
     "tuyapi": "github:codetheweb/tuyapi",
     "url-join": "^4.0.1",
+    "useragent": "^2.3.0",
     "wol": "^1.0.6",
     "youtube-v3-api": "^1.1.1"
   },

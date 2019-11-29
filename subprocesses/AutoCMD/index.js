@@ -2,11 +2,11 @@ const later = require('later')
 const Subprocess = require('../../core/Subprocess')
 const { Manager } = require('../../events/message')
 
-class ScheduledTasks extends Subprocess {
+module.exports = class AutoCMD extends Subprocess {
   constructor(client) {
     super(client, {
-      name: 'ScheduledTasks',
-      description: 'Scheduled Tasks',
+      name: 'AutoCMD',
+      description: 'Schedule commands to run at specified times',
       disabled: false
     })
   }
@@ -18,7 +18,7 @@ class ScheduledTasks extends Subprocess {
 
     const db = await generalConfig.findOne({ where: { id: ownerID } })
     const config = JSON.parse(db.dataValues.config)
-    const { scheduledTasks } = config
+    const { autocmd } = config
 
     const runCommand = async (cmdName) => {
       const generalDB = await client.generalConfig.findOne({ where: { id: ownerID } })
@@ -32,23 +32,19 @@ class ScheduledTasks extends Subprocess {
 
     later.date.localTime()
 
-    scheduledTasks.forEach((i) => {
+    autocmd.forEach((i) => {
       const { commands, time } = i
       const sched = later.parse.text(`at ${time}`)
       commands.forEach((c) => {
         const [enabled, cmd] = c
         if (enabled) {
           later.setInterval(async () => {
-            Log.info('Scheduled Tasks', `Running [ ${time} ] task [ ${cmd} ]`)
+            Log.info('AutoCMD', `Running [ ${time} ] auto command [ ${cmd} ]`)
             const response = await runCommand(cmd)
-            Log.info('Scheduled Tasks', `[ ${cmd} ] => [ ${response} ]`)
+            Log.info('AutoCMD', `[ ${cmd} ] => ${response} `)
           }, sched)
         }
       })
     })
-
-    Log.info('Scheduled Tasks', `Started scheduled tasks`)
   }
 }
-
-module.exports = ScheduledTasks

@@ -30,8 +30,8 @@ module.exports = class Log {
     return console.log(msg)
   }
 
-  static success(name, message) {
-    return Log.log(chalk.green.bold, 'SUCCESS', name, message)
+  static ok(name, message) {
+    return Log.log(chalk.green.bold, 'OK', name, message)
   }
 
   static error(name, message, stacktrace) {

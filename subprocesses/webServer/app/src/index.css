@@ -99,10 +99,10 @@ button:focus {
 }
 .toast {
   background-color: #8ec07c !important;
-  font-family: 'Muli', monospace !important;
   color: #282828 !important;
   text-align: center !important;
-  margin: 0px !important;
+  min-height: 40px !important;
+  box-shadow: 0 0px 50px 0 rgba(20, 20, 20, 1) !important;
 }
 
 :focus {

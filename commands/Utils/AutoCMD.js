@@ -1,6 +1,6 @@
 const Command = require('../../core/Command')
 
-module.exports = class ScheduledTasks extends Command {
+module.exports = class AutoCMD extends Command {
   constructor(client) {
     super(client, {
       name: 'autocmd',
@@ -32,7 +32,7 @@ module.exports = class ScheduledTasks extends Command {
 
     const db = await generalConfig.findOne({ where: { id: client.config.ownerID } })
     const { config } = client.db
-    const { scheduledTasks } = config
+    const { autocmd } = config
 
     // * ------------------ Logic --------------------
     // * ------------------ Usage Logic --------------------
@@ -42,83 +42,83 @@ module.exports = class ScheduledTasks extends Command {
       case 'changetime': {
         const taskTime = args[1]
         const newTime = args[2]
-        const timeIndex = scheduledTasks.findIndex((i) => i.time === taskTime)
+        const timeIndex = autocmd.findIndex((i) => i.time === taskTime)
 
-        // check if Scheduled Task exists
+        // check if Autocmd exists
         if (timeIndex === -1) {
-          if (api) return `Scheduled Task at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Scheduled Task at [ ${taskTime} ] does not exist`)
+          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
+          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
         }
 
         // check for new name
         if (!newTime) {
-          if (api) return `Please specify the time for Scheduled Task [ ${newTime} ]`
-          return warningMessage(msg, `Please specify the time for Scheduled Task [ ${newTime} ]`)
+          if (api) return `Please specify the time for Autocmd [ ${newTime} ]`
+          return warningMessage(msg, `Please specify the time for Autocmd [ ${newTime} ]`)
         }
 
-        // rename Scheduled Task
-        scheduledTasks[timeIndex].time = newTime
+        // rename Autocmd
+        autocmd[timeIndex].time = newTime
 
         // save changes
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Retimed Scheduled Task [ ${taskTime} ] to [ ${newTime} ]`
-        await standardMessage(msg, `Retimed Scheduled Task [ ${taskTime} ] to [ ${newTime} ]`)
+        if (api) return `Retimed Autocmd [ ${taskTime} ] to [ ${newTime} ]`
+        await standardMessage(msg, `Retimed Autocmd [ ${taskTime} ] to [ ${newTime} ]`)
         return process.exit()
       }
 
       case 'enable': {
         const taskTime = args[1]
-        const timeIndex = scheduledTasks.findIndex((i) => i.time === taskTime)
+        const timeIndex = autocmd.findIndex((i) => i.time === taskTime)
 
-        // check if Scheduled Task exists
+        // check if Autocmd exists
         if (timeIndex === -1) {
-          if (api) return `Scheduled Task at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Scheduled Task at [ ${taskTime} ] does not exist`)
+          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
+          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
         }
 
         // check if user specified command
         if (!args[2]) {
           if (api) {
-            return `Please specify the command # in Scheduled Task at [ ${taskTime} ] to enable`
+            return `Please specify the command # in Autocmd at [ ${taskTime} ] to enable`
           }
           return warningMessage(
             msg,
-            `Please specify the command # in Scheduled Task at [ ${taskTime} ] to enable`
+            `Please specify the command # in Autocmd at [ ${taskTime} ] to enable`
           )
         }
 
         const command = args[2] - 1
 
         // get index of individual command list
-        const commandListIndex = scheduledTasks[timeIndex].commands[command]
+        const commandListIndex = autocmd[timeIndex].commands[command]
 
         // check if command exists
         if (!commandListIndex) {
           if (api) {
-            return `Scheduled Task at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            return `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
           }
           return warningMessage(
             msg,
-            `Scheduled Task at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
           )
         }
 
         // check current status
-        const status = scheduledTasks[timeIndex].commands[command]
+        const status = autocmd[timeIndex].commands[command]
         if (status[0]) {
           if (api) {
             return `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Scheduled Task at [ ${taskTime} ] is already enabled`
+            } ] in Autocmd at [ ${taskTime} ] is already enabled`
           }
           return warningMessage(
             msg,
             `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Scheduled Task at [ ${taskTime} ] is already enabled`
+            } ] in Autocmd at [ ${taskTime} ] is already enabled`
           )
         }
-        // enable command in Scheduled Task
+        // enable command in Autocmd
         commandListIndex[0] = true
 
         // save changes
@@ -126,70 +126,70 @@ module.exports = class ScheduledTasks extends Command {
         if (api) {
           return `Enabled command  [ ${command + 1} ] [ ${
             commandListIndex[1]
-          } ] in Scheduled Task at[ ${taskTime} ]`
+          } ] in Autocmd at[ ${taskTime} ]`
         }
         await standardMessage(
           msg,
           `Enabled command  [ ${command + 1} ] [ ${
             commandListIndex[1]
-          } ] in Scheduled Task at [ ${taskTime} ]`
+          } ] in Autocmd at [ ${taskTime} ]`
         )
         return process.exit()
       }
 
       case 'disable': {
         const taskTime = args[1]
-        const timeIndex = scheduledTasks.findIndex((i) => i.time === taskTime)
+        const timeIndex = autocmd.findIndex((i) => i.time === taskTime)
 
-        // check if Scheduled Task exists
+        // check if Autocmd exists
         if (timeIndex === -1) {
-          if (api) return `Scheduled Task at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Scheduled Task at [ ${taskTime} ] does not exist`)
+          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
+          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
         }
 
         // check if user specified command
         if (!args[2]) {
           if (api) {
-            return `Please specify the command # in Scheduled Task at [ ${taskTime} ] to disable`
+            return `Please specify the command # in Autocmd at [ ${taskTime} ] to disable`
           }
           return warningMessage(
             msg,
-            `Please specify the command # in Scheduled Task at [ ${taskTime} ] to disable`
+            `Please specify the command # in Autocmd at [ ${taskTime} ] to disable`
           )
         }
 
         const command = args[2] - 1
 
         // get index of individual command list
-        const commandListIndex = scheduledTasks[timeIndex].commands[command]
+        const commandListIndex = autocmd[timeIndex].commands[command]
 
         // check if command exists
         if (!commandListIndex) {
           if (api) {
-            return `Scheduled Task at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            return `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
           }
           return warningMessage(
             msg,
-            `Scheduled Task at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
           )
         }
 
         // check current status
-        const status = scheduledTasks[timeIndex].commands[command]
+        const status = autocmd[timeIndex].commands[command]
         if (!status[0]) {
           if (api) {
             return `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Scheduled Task at [ ${taskTime} ] is already disabled`
+            } ] in Autocmd at [ ${taskTime} ] is already disabled`
           }
           return warningMessage(
             msg,
             `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Scheduled Task at [ ${taskTime} ] is already disabled`
+            } ] in Autocmd at [ ${taskTime} ] is already disabled`
           )
         }
-        // disable command in Scheduled Task
+        // disable command in Autocmd
         commandListIndex[0] = false
 
         // save changes
@@ -197,26 +197,26 @@ module.exports = class ScheduledTasks extends Command {
         if (api) {
           return `Disabled command  [ ${command + 1} ][ ${
             commandListIndex[1]
-          } ] in Scheduled Task at [ ${taskTime} ]`
+          } ] in Autocmd at [ ${taskTime} ]`
         }
         await standardMessage(
           msg,
           `Disabled command  [ ${command + 1} ][ ${
             commandListIndex[1]
-          } ] in Scheduled Task at [ ${taskTime} ]`
+          } ] in Autocmd at [ ${taskTime} ]`
         )
         return process.exit()
       }
 
       case 'list': {
-        if (!scheduledTasks.length) {
-          if (api) return `There are no scheduledTasks!`
-          return warningMessage(msg, `There are no Scheduled Tasks!`)
+        if (!autocmd.length) {
+          if (api) return `There are no autocmd!`
+          return warningMessage(msg, `There are no Autocmds!`)
         }
 
         const embedList = []
-        scheduledTasks.forEach((i) => {
-          const e = embed(msg).setTitle(`Scheduled Tasks - [ ${i.time} ]`)
+        autocmd.forEach((i) => {
+          const e = embed(msg).setTitle(`Autocmds - [ ${i.time} ]`)
           i.commands.forEach((c, index) => {
             const status = c[0] ? ':green_square:' : ':red_square:'
             e.addField(`[ ${index + 1} ]`, `**${status} ${c[1]}**`, true)
@@ -229,50 +229,47 @@ module.exports = class ScheduledTasks extends Command {
 
       case 'add': {
         const taskTime = args[1]
-        let index = scheduledTasks.findIndex((i) => i.time === taskTime)
+        let index = autocmd.findIndex((i) => i.time === taskTime)
 
         args.splice(0, 2)
         const command = args.join(' ')
 
-        // create Scheduled Task if doesnt exist
+        // create Autocmd if doesnt exist
         if (index === -1) {
-          scheduledTasks.push({ time: taskTime, commands: [] })
-          index = scheduledTasks.findIndex((i) => i.time === taskTime)
+          autocmd.push({ time: taskTime, commands: [] })
+          index = autocmd.findIndex((i) => i.time === taskTime)
         }
 
         if (!command) {
-          if (api) return `Please specify the command to add to the Scheduled Task`
-          return warningMessage(msg, `Please specify the command to add to the Scheduled Task`)
+          if (api) return `Please specify the command to add to the Autocmd`
+          return warningMessage(msg, `Please specify the command to add to the Autocmd`)
         }
 
-        // check if command is already part of Scheduled Task
-        if (scheduledTasks[index].commands.includes(command)) {
-          if (api) return `Scheduled Task at [ ${taskTime} ] already has command [ ${command} ]`
+        // check if command is already part of Autocmd
+        if (autocmd[index].commands.includes(command)) {
+          if (api) return `Autocmd at [ ${taskTime} ] already has command [ ${command} ]`
           return warningMessage(
             msg,
-            `Scheduled Task at [ ${taskTime} ] already has command [ ${command} ]`
+            `Autocmd at [ ${taskTime} ] already has command [ ${command} ]`
           )
         }
 
         // save changes
-        scheduledTasks[index].commands.push([true, command])
+        autocmd[index].commands.push([true, command])
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Added command [ ${command} ] to Scheduled Task at [ ${taskTime} ]`
-        await standardMessage(
-          msg,
-          `Added command [ ${command} ] to Scheduled Task at [ ${taskTime} ]`
-        )
+        if (api) return `Added command [ ${command} ] to Autocmd at [ ${taskTime} ]`
+        await standardMessage(msg, `Added command [ ${command} ] to Autocmd at [ ${taskTime} ]`)
         return process.exit()
       }
 
       case 'remove': {
         const taskTime = args[1]
-        const timeIndex = scheduledTasks.findIndex((i) => i.time === taskTime)
+        const timeIndex = autocmd.findIndex((i) => i.time === taskTime)
 
-        // create Scheduled Task if doesnt exist
+        // create Autocmd if doesnt exist
         if (timeIndex === -1) {
-          if (api) return `Scheduled Task at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Scheduled Task at [ ${taskTime} ] does not exist`)
+          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
+          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
         }
 
         if (args[2]) {
@@ -280,37 +277,35 @@ module.exports = class ScheduledTasks extends Command {
           const command = args.join(' ')
 
           // get index of individual command list
-          const commandListIndex = scheduledTasks[timeIndex].commands.findIndex(
-            (i) => i[1] === command
-          )
+          const commandListIndex = autocmd[timeIndex].commands.findIndex((i) => i[1] === command)
           // check if command exists
-          if (!scheduledTasks[timeIndex].commands[commandListIndex].includes(command)) {
+          if (!autocmd[timeIndex].commands[commandListIndex].includes(command)) {
             if (api) {
-              return `Scheduled Task at [ ${taskTime} ] doesnt contain command [ ${command} ]`
+              return `Autocmd at [ ${taskTime} ] doesnt contain command [ ${command} ]`
             }
             return warningMessage(
               msg,
-              `Scheduled Task at [ ${taskTime} ] doesnt contain command [ ${command} ]`
+              `Autocmd at [ ${taskTime} ] doesnt contain command [ ${command} ]`
             )
           }
-          // remove command from Scheduled Task
-          const commandIndex = scheduledTasks[timeIndex].commands.findIndex((i) => i === command)
+          // remove command from Autocmd
+          const commandIndex = autocmd[timeIndex].commands.findIndex((i) => i === command)
           // save changes
-          scheduledTasks[timeIndex].commands.splice(commandIndex, 1)
+          autocmd[timeIndex].commands.splice(commandIndex, 1)
           await db.update({ config: JSON.stringify(config) })
-          if (api) return `Removed command [ ${command} ] from Scheduled Task at [ ${taskTime} ]`
+          if (api) return `Removed command [ ${command} ] from Autocmd at [ ${taskTime} ]`
           await standardMessage(
             msg,
-            `Removed command [ ${command} ] from Scheduled Task at [ ${taskTime} ]`
+            `Removed command [ ${command} ] from Autocmd at [ ${taskTime} ]`
           )
           return process.exit()
         }
 
         // save changes
-        scheduledTasks.splice(timeIndex, 1)
+        autocmd.splice(timeIndex, 1)
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Removed Scheduled Task at [ ${taskTime} ]`
-        await standardMessage(msg, `Removed Scheduled Task at [ ${taskTime} ]`)
+        if (api) return `Removed Autocmd at [ ${taskTime} ]`
+        await standardMessage(msg, `Removed Autocmd at [ ${taskTime} ]`)
         return process.exit()
       }
 
