@@ -19,6 +19,12 @@ module.exports = class Utils {
     })
   }
 
+  static async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array)
+    }
+  }
+
   // make embed fields always fit within limits after spliiting
   static arraySplitter(array) {
     // initial page size
