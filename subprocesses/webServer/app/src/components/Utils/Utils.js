@@ -1,10 +1,11 @@
 import { toast, Flip } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import './Utils.css'
 
 const notify = (message) =>
   toast(message, {
     position: 'bottom-center',
-    autoClose: 4000,
+    autoClose: 3000,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
@@ -12,6 +13,19 @@ const notify = (message) =>
     className: 'toast',
     transition: Flip
   })
+
+const updateDB = async (name, config) => {
+  try {
+    await fetch('/api/db/app', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ config })
+    })
+    return notify(`Saved [ ${name} ] config`)
+  } catch {
+    return notify('There was an error connecting.')
+  }
+}
 
 const sendCommand = async (command) => {
   const apiKey = localStorage.getItem('apiKey') || ''
@@ -28,4 +42,4 @@ const sendCommand = async (command) => {
   }
 }
 
-export { notify, sendCommand }
+export { notify, sendCommand, updateDB }

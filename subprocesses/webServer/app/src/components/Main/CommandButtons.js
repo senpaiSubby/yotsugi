@@ -1,6 +1,8 @@
 import React, { useEffect, useGlobal } from 'reactn'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
-import { sendCommand } from '../Utils'
+import { sendCommand } from '../Utils/Utils'
+
+import './CommandButtons.css'
 
 const CommandButtons = () => {
   const [commandList, setCommandList] = useGlobal('commandList')
@@ -11,6 +13,7 @@ const CommandButtons = () => {
       .then((response) => response.json())
       .then((data) => setCommandList(data))
     setState(1)
+    // eslint-disable-next-line
   }, [state])
 
   const removeButton = async (id) => {
@@ -24,7 +27,7 @@ const CommandButtons = () => {
         return (
           <div key={index}>
             <ContextMenuTrigger id={id}>
-              <button className="apiButton" onClick={async () => await sendCommand(command)}>
+              <button className="CommandButton" onClick={async () => await sendCommand(command)}>
                 {name}
               </button>
             </ContextMenuTrigger>
@@ -38,7 +41,7 @@ const CommandButtons = () => {
       })
     : 'No shortcut commands set. Please add one below.'
 
-  return <div className="apiButtons">{renderedButtons}</div>
+  return <div className="CommandButtonContainer">{renderedButtons}</div>
 }
 
 export default CommandButtons

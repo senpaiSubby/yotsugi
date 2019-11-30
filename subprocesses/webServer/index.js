@@ -3,7 +3,6 @@ const device = require('express-device')
 const cors = require('cors')
 const shortid = require('shortid')
 const { duration } = require('moment')
-const ip = require('ip')
 const Subprocess = require('../../core/Subprocess')
 const { Manager } = require('../../events/message')
 require('moment-duration-format')
@@ -29,7 +28,7 @@ class WebServer extends Subprocess {
     const { webServerPort, ownerID } = client.config
     const { Log, generalConfig } = client
 
-    const needApiKey = async (req, res) => {
+    const checkApiKey = async (req, res) => {
       const db = await generalConfig.findOne({ where: { id: ownerID } })
       const config = JSON.parse(db.dataValues.config)
       const { apiKey } = config.webUI
@@ -61,6 +60,25 @@ class WebServer extends Subprocess {
 
     // home page
     app.get('/', (req, res) => res.sendFile('/index.html'))
+
+    // get DB info
+    app.get('/api/db/app', async (req, res) => {
+      const db = await generalConfig.findOne({ where: { id: ownerID } })
+      return res.status(200).json(JSON.parse(db.dataValues.config))
+    })
+
+    // set DB info
+    app.post('/api/db/app', async (req, res) => {
+      Log.info(
+        'Web Server',
+        `DB update from [ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]`
+      )
+      const db = await generalConfig.findOne({ where: { id: ownerID } })
+      if (req.body.config) {
+        await db.update({ config: JSON.stringify(req.body.config) })
+        return res.sendStatus(200)
+      }
+    })
 
     // get DB info
     app.get('/api/db/ui', async (req, res) => {
@@ -117,7 +135,7 @@ class WebServer extends Subprocess {
 
     // endpoint for running commands
     app.post('/api/commands', async (req, res) => {
-      const verified = await needApiKey(req, res)
+      const verified = await checkApiKey(req, res)
 
       if (typeof verified === 'boolean') {
         Log.info(

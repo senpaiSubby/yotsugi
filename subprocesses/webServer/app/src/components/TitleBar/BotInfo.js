@@ -30,6 +30,8 @@ const BotInfo = () => {
         return 'Nearly'
       case 5:
         return 'Disconnected'
+      default:
+        break
     }
   }
 

@@ -1,0 +1,8 @@
+.toast {
+  background-color: #8ec07c !important;
+  color: #282828 !important;
+  text-align: center !important;
+  min-height: 40px !important;
+  box-shadow: 0 0px 10px 0 rgba(20, 20, 20, 1) !important;
+  margin-bottom: 0rem;
+}

@@ -1,9 +1,8 @@
 import React from 'reactn'
+import './App.css'
 
-import TitleBar from './TitleBar/TitleBar'
-import Main from './Main/Main'
-import CommandButtons from './Main/CommandButtons'
-import RunCommand from './RunCommand'
+import TitleBar from '../TitleBar/TitleBar'
+import Main from '../Main/Main'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -12,8 +11,7 @@ const App = () => {
   return (
     <div className="App">
       <TitleBar />
-      <CommandButtons />
-      <RunCommand />
+      <Main />
       <ToastContainer closeButton={false} />
     </div>
   )

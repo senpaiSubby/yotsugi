@@ -219,7 +219,7 @@ module.exports = class Utils {
     return new RichEmbed().setColor(colors[color] ? colors[color] : color)
   }
 
-  static async missingConfig(msg, name, params) {
+  static missingConfig(msg, name, params) {
     return msg.channel.send(
       Utils.embed(msg, 'red')
         .setTitle(`:gear: Missing ${name} DB config!`)
@@ -233,21 +233,15 @@ module.exports = class Utils {
     )
   }
 
-  static async errorMessage(msg, text) {
-    const m = await msg.channel.send(
-      Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`)
-    )
-    return m.delete(20000)
+  static errorMessage(msg, text) {
+    return msg.channel.send(Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`))
   }
 
-  static async warningMessage(msg, text) {
-    const m = await msg.channel.send(
-      Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`)
-    )
-    return m.delete(20000)
+  static warningMessage(msg, text) {
+    return msg.channel.send(Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`))
   }
 
-  static async standardMessage(msg, text) {
+  static standardMessage(msg, text) {
     return msg.channel.send(Utils.embed(msg).setDescription(`**${text}**`))
   }
 
