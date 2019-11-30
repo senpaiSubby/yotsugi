@@ -25,7 +25,7 @@ module.exports = class OmbiMovies extends Command {
     const { errorMessage, warningMessage, missingConfig, standardMessage, embed, paginate } = Utils
     const { author, channel, member } = msg
 
-    const role = msg.guild.roles.find('name', 'requestmovie')
+    const role = msg.guild.roles.find((r) => r.name === 'requestmovie')
     if (!role) {
       await msg.guild.createRole({ name: 'requestmovie' })
       return channel.send(
@@ -134,7 +134,7 @@ module.exports = class OmbiMovies extends Command {
 
     if (results) {
       const embedList = []
-      results.forEach(async (movie) => {
+      for (const movie of results) {
         try {
           const response = await fetch(
             urljoin(host, '/api/v1/Search/movie/info/', String(movie.id)),
@@ -149,7 +149,8 @@ module.exports = class OmbiMovies extends Command {
           Log.error('Ombi Movies', text, e)
           await errorMessage(msg, text)
         }
-      })
+      }
+
       const itemPicked = await paginate(msg, embedList, true)
       return requestMovie(results[itemPicked])
     }

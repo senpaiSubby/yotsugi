@@ -25,7 +25,7 @@ module.exports = class OmbiTV extends Command {
     const { errorMessage, warningMessage, standardMessage, missingConfig, embed, paginate } = Utils
     const { author, member } = msg
 
-    const role = msg.guild.roles.find('name', 'requesttv')
+    const role = msg.guild.roles.find((r) => r.name === 'requesttv')
     if (!role) {
       await msg.guild.createRole({ name: 'requesttv' })
       return msg.channel.send(
@@ -131,7 +131,7 @@ module.exports = class OmbiTV extends Command {
 
     if (results) {
       const embedList = []
-      results.forEach(async (show) => {
+      for (const show of results) {
         try {
           const response = await fetch(urljoin(host, '/api/v1/Search/tv/info/', String(show.id)), {
             headers: { ApiKey: apiKey, accept: 'application/json' }
@@ -143,7 +143,7 @@ module.exports = class OmbiTV extends Command {
           Log.error('Ombi Movies', text, e)
           await errorMessage(msg, text)
         }
-      })
+      }
 
       const itemPicked = await paginate(msg, embedList, true)
       return requestTVShow(results[itemPicked])
