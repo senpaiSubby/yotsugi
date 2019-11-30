@@ -37,7 +37,7 @@ module.exports = class CommandManager {
 
     this.commands.set(commandName, instance)
 
-    this.Log.ok('Command Manager', `Loaded command [ ${commandName} ]`)
+    this.Log.ok('Command Manager', `Loaded [ ${commandName} ]`)
 
     for (const alias of instance.aliases) {
       if (this.aliases.has(alias)) {
