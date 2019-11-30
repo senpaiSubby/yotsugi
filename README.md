@@ -55,15 +55,13 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 
 <!------------------------- Web UI ------------------------->
 
-
-
 Nezuko has a built in web UI / API server for remotely running commands. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use HTTP Request Shortcuts on my Galaxy. It has a nice UI with support for custom icons, etc.
 
 <div align="center">
-<img src="data/images/app1.png" width="250px" />
-<img src="data/images/app2.png" width="250px" />
-<img src="data/images/app3.png" width="250px" />
-<img src="data/images/app4.png" width="250px" />
+<img src="data/images/app1.png" width="200px" />
+<img src="data/images/app2.png" width="200px" />
+<img src="data/images/app3.png" width="200px" />
+<img src="data/images/app4.png" width="200px" />
 </div>
 
 <!------------------------- GETTING STARTED ------------------------->
@@ -81,6 +79,7 @@ git clone https://github.com/callmekory/nezuko.git
 2. Install Yarn
 
 Ubuntu / Debain
+
 ```sh
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 
@@ -90,6 +89,7 @@ sudo apt install yarn
 ```
 
 Arch Linux
+
 ```sh
 sudo pacman -S yarn
 ```
@@ -99,13 +99,14 @@ sudo pacman -S yarn
 ```sh
 > yarn install
 ```
+
 4. Setup Bot Token and Prefix
 
 > Navigate to /nezuko/data and rename `config.js.sample` to `config.js`. Open the file and edit as needed.
 
 5. Setup Command Configs
 
-> All commands and other settings are setup after the bot is added to your server and running `db get` which will list all the settings you can edit and how to edit them. Every is saved to the database at `/nezuko/data/db.sqlite`.
+> All commands and other settings are setup after the bot is added to your server. Either by running `db get` which will list all the settings you can edit and how to edit them or by navigating to `http://botIP:5700` and setting up your details there. Everything is saved to the database at `/nezuko/data/db.sqlite`.
 
 <h2 align="center"><b>Roadmap</b></h2>
 
