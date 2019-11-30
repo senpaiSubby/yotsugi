@@ -168,7 +168,7 @@ module.exports = class Sengled extends Command {
           if (api) return devices
           const e = embed(msg).setTitle(':bulb: Lights')
           devices.forEach((device) => {
-            encodeURIComponent.addField(
+            e.addField(
               `${device.name}`,
               `Status: ${device.status}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
               true
