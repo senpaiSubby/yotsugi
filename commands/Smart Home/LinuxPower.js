@@ -61,8 +61,8 @@ module.exports = class LinuxPower extends Command {
         }
       } else if (command === 'on') {
         await wol.wake(mac)
-        if (api) return `Sent  WOL to [ ${name} ]`
-        return standardMessage(msg, `:desktop: Sent  WOL to [ ${name} ]`)
+        if (api) return `Sent WOL to [ ${name} ]`
+        return standardMessage(msg, `:desktop: Sent WOL to [ ${name} ]`)
       }
     }
 
