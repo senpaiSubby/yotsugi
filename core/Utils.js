@@ -42,35 +42,43 @@ module.exports = class Utils {
 
   // paginates embeds
   static async paginate(msg, embedList, acceptButton = false) {
-    // topBottom 1 = page status in description else in footer
-    // start page at 0
-    let page = 0
-    let run = true
     const { author } = msg
+
+    let page = 1
+    let run = true
     const totalPages = embedList.length
 
     // run our loop to wait for user input
-    const editMessage = await msg.channel.send('|')
+    const paginated = await msg.channel.send('|')
     while (run) {
-      await editMessage.edit(embedList[page].setFooter(`Page ${page + 1}/${totalPages}`))
+      const index = page - 1
+      await paginated.edit(embedList[index].setFooter(`Page ${page}/${totalPages}`))
 
       if (totalPages !== 1) {
-        if (page === 0) {
-          await editMessage.react('➡️')
-          if (acceptButton) await editMessage.react('✅')
-        } else if (page + 1 === totalPages) {
-          await editMessage.react('⬅️')
-          if (acceptButton) await editMessage.react('✅')
+        if (page === 1) {
+          await paginated.react('⏭️')
+          await paginated.react('➡️')
+          if (acceptButton) await paginated.react('✅')
+          // await paginated.react('🛑')
+        } else if (page === totalPages) {
+          await paginated.react('⬅️')
+          await paginated.react('⏮️')
+          if (acceptButton) await paginated.react('✅')
+          // await paginated.react('🛑')
         } else {
-          await editMessage.react('⬅️')
-          await editMessage.react('➡️')
-          if (acceptButton) await editMessage.react('✅')
+          await paginated.react('⏮️')
+          await paginated.react('⬅️')
+          await paginated.react('➡️')
+          await paginated.react('⏭️')
+          if (acceptButton) paginated.react('✅')
+          // await paginated.react('🛑')
         }
       }
 
-      const collected = await editMessage.awaitReactions(
+      const collected = await paginated.awaitReactions(
         (reaction, user) =>
-          ['⬅️', '➡️', '✅'].includes(reaction.emoji.name) && user.id === author.id,
+          ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) &&
+          user.id === author.id,
         { max: 1, time: 3600000 }
       )
 
@@ -80,21 +88,32 @@ module.exports = class Utils {
           case '⬅️':
             page--
             break
+          case '⏮️':
+            page = 1
+            break
           case '➡️':
             page++
             break
+          case '⏭️':
+            page = totalPages
+            break
           case '✅':
             run = false
-            await editMessage.clearReactions()
-            return page
-          default:
+            await paginated.clearReactions()
+            return index
+          case '🛑': {
+            run = false
+            const m = await msg.channel.send(Utils.embed(msg).setDescription('Canceling..'))
+            await m.delete(2000)
+            await paginated.clearReactions()
             break
+          }
         }
       } else {
         run = false
-        await editMessage.clearReactions()
+        await paginated.clearReactions()
       }
-      await editMessage.clearReactions()
+      await paginated.clearReactions()
     }
   }
 
