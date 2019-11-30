@@ -4,16 +4,18 @@ module.exports = class Todo extends Command {
   constructor(client) {
     super(client, {
       name: 'todos',
+      category: 'General',
+      description: 'Your personal todo list',
       aliases: ['todo'],
-      category: 'Utils',
-      description: 'Your personal todo list'
+      usage: ['todo add do the dishes', 'todo list'],
+      args: true
     })
   }
 
   async run(client, msg, args) {
     const { p, Utils, memberConfig } = client
-    const { standardMessage, embed, asyncForEach, warningMessage } = Utils
-    const { author } = msg
+    const { standardMessage, embed, asyncForEach, warningMessage, validOptions } = Utils
+    const { author, channel } = msg
 
     const todo = args.slice(1).join(' ')
 
@@ -37,9 +39,9 @@ module.exports = class Todo extends Command {
         return standardMessage(msg, `Added [ ${todo} ] to todo list`)
       }
 
-      default: {
+      case 'list': {
         if (!todos.length) {
-          return msg.reply(
+          return channel.send(
             embed(msg, 'yellow')
               .setTitle(`Todo list is empty!`)
               .setDescription(`\`${p}todos add <todo to add>\` to add one`)
@@ -61,7 +63,7 @@ module.exports = class Todo extends Command {
         // setup inital embed
         const e = embed(msg).setTitle('Todo List')
         todos.forEach((i, index) => e.addField(`[ ${index + 1} ]`, `${i}`, true))
-        const m = await msg.reply(e)
+        const m = await channel.send(e)
 
         await asyncForEach(todos, async (i, index) => {
           await m.react(reactions[index])
@@ -106,7 +108,10 @@ module.exports = class Todo extends Command {
           })
           await m.react('🛑')
         })
+        break
       }
+      default:
+        return validOptions(msg, ['add', 'list'])
     }
   }
 }

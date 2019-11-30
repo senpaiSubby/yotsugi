@@ -7,7 +7,7 @@ module.exports = class Docker extends Command {
   constructor(client) {
     super(client, {
       name: 'docker',
-      category: 'Networking',
+      category: 'General',
       description: 'Docker Management',
       usage: [`docker <state> <name>`, `docker list <state>`],
       aliases: ['container'],

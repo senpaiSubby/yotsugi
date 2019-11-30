@@ -4,7 +4,7 @@ module.exports = class Clear extends Command {
   constructor(client) {
     super(client, {
       name: 'clear',
-      category: 'Utils',
+      category: 'Admin',
       description: 'Removes # of messages',
       usage: [`clear <0-100>`, 'clear <@user> <0-100>'],
       aliases: ['delete', 'rm', 'purge'],

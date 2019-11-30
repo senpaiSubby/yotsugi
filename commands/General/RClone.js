@@ -5,7 +5,7 @@ module.exports = class RClone extends Command {
   constructor(client) {
     super(client, {
       name: 'rclone',
-      category: 'Utils',
+      category: 'General',
       description: 'Gets info on the Rclone folder you specify',
       usage: ['rclone size /Unsorted', 'rclone ls /folder/to/check'],
       args: true,

@@ -51,19 +51,18 @@ module.exports = class Help extends Command {
     const commands = context.commands.filter((i) => checkPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
-      msg.delete(10000)
       // Filter all commands by which are available for the author's level, using the <Collection>.filter() method.
       const sorted = commands
         .array()
-        .sort((p, c) =>
-          p.category > c.category ? 1 : p.name > c.name && p.category === c.category ? 1 : -1
+        .sort((i, c) =>
+          i.category > c.category ? 1 : i.name > c.name && i.category === c.category ? 1 : -1
         )
 
       const newSorted = groupBy(sorted, 'category')
       const embedList = []
       Object.keys(newSorted).forEach((key) => {
         const e = Utils.embed(msg)
-          .setTitle(`${client.user.username} Help - ${key} Commands`)
+          .setTitle(`${client.user.username} Help - ${key}`)
           .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
           e.addField(`${prefix}${i.name}`, `${i.description}`, true)
