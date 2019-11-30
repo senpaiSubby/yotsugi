@@ -4,7 +4,7 @@ module.exports = class ArchiveBox extends Command {
   constructor(client) {
     super(client, {
       name: 'archive',
-      category: 'Utils',
+      category: 'Download',
       description: 'Archive web pages with ArchiveBox',
       usage: ['a <url to archive>'],
       aliases: ['a'],
