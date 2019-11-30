@@ -11,15 +11,16 @@ module.exports = class SpeedTest extends Command {
   }
 
   async run(client, msg) {
-    const { Utils, embed } = client
-    const { errorMessage } = Utils
+    const { Utils } = client
+    const { errorMessage, embed } = Utils
 
     const test = speedTest({ maxTime: 5000 })
-    const m = await embed(msg).setDescription(
-      msg,
-      `:desktop: Testing network throughput
+    const m = await msg.channel.send(
+      embed(msg).setDescription(
+        `:desktop: Testing network throughput
 
-      :hourglass: Be back in a few seconds`
+        :hourglass: Be back in a few seconds`
+      )
     )
 
     test.on('data', async (data) => {
