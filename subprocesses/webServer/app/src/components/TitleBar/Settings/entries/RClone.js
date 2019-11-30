@@ -25,7 +25,7 @@ const RClone = () => {
           onChange={(e) => setRemote(e.target.value)}
         />
 
-        <input className="SettingsEntryInput" type="submit" value="SAVE" />
+        <input className="SettingsEntryInput save" type="submit" value="SAVE" />
       </form>
     </div>
   )

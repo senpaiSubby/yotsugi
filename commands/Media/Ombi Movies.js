@@ -132,7 +132,7 @@ module.exports = class OmbiMovies extends Command {
 
     const results = await getTMDbID(movieName)
 
-    if (results) {
+    if (results.length) {
       const embedList = []
       for (const movie of results) {
         try {

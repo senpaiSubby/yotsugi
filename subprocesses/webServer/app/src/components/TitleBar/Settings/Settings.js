@@ -29,32 +29,53 @@ const Settings = () => {
       .then((data) => setDB(data))
   }, [setDB])
 
+  const line = (
+    <span className="line">
+      -------------------------------------------------------------------------------------
+    </span>
+  )
+
   return (
     <Popup trigger={<button className="TitleBarButton">Settings</button>} modal>
       {(close) => (
         <div className="Settings">
           <div className="SettingsHeader">
             <span style={{ fontSize: '1rem' }}>Settings</span>
-            <span style={{ cursor: 'pointer' }} onClick={close}>
+            <span style={{ cursor: 'pointer', fontSize: '1rem' }} onClick={close}>
               &times;
             </span>
           </div>
           <div className="SettingsContainer">
             <ApiKey />
+            {line}
             <AddCommand />
+            {line}
             <ArchiveBox />
+            {line}
             <Docker />
+            {line}
             <Emby />
+            {line}
             <Google />
+            {line}
             <GoogleHome />
+            {line}
             <Jackett />
+            {line}
             <Meraki />
+            {line}
             <Ombi />
+            {line}
             <PiHole />
+            {line}
             <PioneerAVR />
+            {line}
             <RClone />
+            {line}
             <SabNZBD />
+            {line}
             <Sengled />
+            {line}
             <Transmission />
           </div>
         </div>

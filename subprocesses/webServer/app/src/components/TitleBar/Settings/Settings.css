@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
 }
+
 .SettingsContainer {
   display: grid;
   flex-direction: column;
@@ -15,7 +16,7 @@
   display: flex;
   justify-content: space-between;
   border-bottom: #8ec07c 1px solid;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
 }
 
 .SettingsEntry {
@@ -24,8 +25,13 @@
   align-items: center;
 }
 .SettingsEntryTitle {
-  font-size: 0.7rem;
-  padding-bottom: 5px;
+  height: 35px;
+  width: 100%;
+  color: #282828;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #8ec07c;
 }
 .SettingsEntryForm {
   display: grid;
@@ -33,12 +39,13 @@
 }
 .SettingsEntryInput {
   border: none;
-  font-size: 0.7rem;
   background-color: #3e4245;
   color: #dfdfdf;
   text-align: center;
   height: 35px;
   width: 300px;
+}
+.SettingsEntryInput.save {
 }
 .popup-content {
   padding: 0 !important;

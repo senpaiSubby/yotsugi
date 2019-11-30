@@ -24,7 +24,7 @@ const ApiKey = () => {
           required={true}
           onChange={(e) => setApiKey(e.target.value)}
         />
-        <input className="SettingsEntryInput" type="submit" value="Save" />
+        <input className="SettingsEntryInput save" type="submit" value="SAVE" />
       </form>
     </div>
   )

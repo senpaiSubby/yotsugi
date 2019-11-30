@@ -34,7 +34,7 @@ const AddCommand = () => {
           onChange={(e) => setCommandName(e.target.value)}
         />
         <input
-          className="SettingsEntryInput"
+          className="SettingsEntryInput "
           type="text"
           placeholder="Command"
           name="command"
@@ -42,7 +42,7 @@ const AddCommand = () => {
           required={true}
           onChange={(e) => setCommand(e.target.value)}
         />
-        <input className="SettingsEntryInput" type="submit" value="+" />
+        <input className="SettingsEntryInput save" type="submit" value="ADD" />
       </form>
     </div>
   )
