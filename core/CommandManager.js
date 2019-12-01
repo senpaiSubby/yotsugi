@@ -89,23 +89,31 @@ module.exports = class CommandManager {
   async handleMessage(msg, client) {
     if (msg.author.bot) return
 
-    const { Utils, generalConfig } = client
+    // * -------------------- Setup --------------------
+
+    const { Utils, generalConfig, Log } = client
     const { errorMessage, warningMessage, standardMessage, embed } = Utils
     const { content, author, channel, guild } = msg
     const { ownerID } = client.config
     msg.context = this
+
+    // * -------------------- Handle DB Configs --------------------
+
     const prefix = guild ? await this.handleServer(guild) : this.prefix
     client.p = prefix
 
-    await this.handleConfig()
     await this.handleUser(msg)
 
     // set db configs
     const generalDB = await generalConfig.findOne({ where: { id: ownerID } })
     client.db.config = JSON.parse(generalDB.dataValues.config)
 
+    // * -------------------- Parse & Log Messages --------------------
+
     // send all messages to our parser
     await MessageManager.logger(msg)
+
+    // * -------------------- Find Command & Parse Args --------------------
 
     // if msg doesnt start with prefix then ignore msg
     if (!content.startsWith(prefix) || content.length < 2) return
@@ -125,6 +133,8 @@ module.exports = class CommandManager {
     const command = instance
     msg.command = instance.commandName
 
+    // * -------------------- Command Option Checks --------------------
+
     // Check if command is enabled
     let disabled = false
     const { disabledCommands } = client.db.config
@@ -132,7 +142,7 @@ module.exports = class CommandManager {
       if (instance.name === c.command || c.aliases.includes(commandName)) disabled = true
     })
     if (disabled) {
-      this.Log.info(
+      Log.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run disabled command[ ${msg.content.slice(prefix.length)} ]`
       )
@@ -142,7 +152,7 @@ module.exports = class CommandManager {
     // if command is marked 'ownerOnly: true' then don't excecute
     if (command.ownerOnly && author.id !== this.ownerID) {
       msg.delete(20000)
-      this.Log.info(
+      Log.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
       )
@@ -151,7 +161,7 @@ module.exports = class CommandManager {
 
     // if command is marked 'guildOnly: true' then don't excecute
     if (command.guildOnly && channel.type === 'dm') {
-      this.Log.info(
+      Log.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] in a DM`
       )
@@ -164,7 +174,7 @@ module.exports = class CommandManager {
         const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
 
         if (userMissingPerms) {
-          this.Log.info(
+          Log.info(
             'Command Manager',
             `[ ${author.tag} ] tried to run [ ${msg.content.slice(
               prefix.length
@@ -180,7 +190,7 @@ module.exports = class CommandManager {
         }
 
         if (botMissingPerms) {
-          this.Log.info(
+          Log.info(
             'Command Manager',
             `I lack the perms  [ ${msg.content.slice(
               prefix.length
@@ -199,7 +209,7 @@ module.exports = class CommandManager {
 
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
-      this.Log.info(
+      Log.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] without parameters`
       )
@@ -216,53 +226,20 @@ module.exports = class CommandManager {
       return m.delete(30000)
     }
 
-    // Run Command
-    this.Log.info(
+    // * -------------------- Run Command --------------------
+    Log.info(
       'Command Manager',
       `[ ${author.tag} ] ran command [ ${msg.content.slice(prefix.length)} ]`
     )
     return this.runCommand(client, command, msg, args)
   }
 
-  async handleConfig() {
-    const { generalConfig } = this.client
-
-    const config = await generalConfig.findOne({ where: { id: this.ownerID } })
-
-    if (!config) {
-      this.Log.info('Handle Config', `Created new general config for [ ${this.ownerID} ]`)
-      await generalConfig.create({
-        id: this.ownerID,
-        config: JSON.stringify({
-          archivebox: { path: null },
-          autocmd: {},
-          disabledCommands: [],
-          docker: { host: null },
-          emby: { apiKey: null, host: null, userID: null },
-          googleHome: { ip: null, language: null, name: null },
-          google: { apiKey: null },
-          jackett: { apiKey: null, host: null },
-          meraki: { apiKey: null, serielNum: null },
-          ombi: { apiKey: null, host: null, username: null },
-          pihole: { apiKey: null, host: null },
-          pioneerAVR: { host: null },
-          rclone: { remote: null },
-          routines: [],
-          sabnzbd: { apiKey: null, host: null },
-          sengled: { jsessionid: null, password: null, username: null },
-          shortcuts: [],
-          systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
-          transmission: { host: null, port: '9091', ssl: false },
-          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
-          webUI: { apiKey: '111', commands: [] }
-        })
-      })
-    }
-  }
-
   async handleServer(guild) {
+    // * -------------------- Setup --------------------
     const { id, ownerID, name } = guild
     const { serverConfig } = this.client
+
+    // * -------------------- Handle Per Server Configs --------------------
 
     // per server config
     if (!guild) return { prefix: this.prefix }
@@ -285,7 +262,7 @@ module.exports = class CommandManager {
           starboardChannel: null,
           welcomeChannel: null
         }),
-        messages: JSON.stringify({ channels: {}, dm: {}, ignoredChannels: [] })
+        messages: JSON.stringify({ channels: {}, dm: {} })
       })
     }
 
@@ -294,9 +271,12 @@ module.exports = class CommandManager {
   }
 
   async handleUser(msg) {
+    // * -------------------- Setup --------------------
     const { author } = msg
     const { id, tag: username } = author
     const { memberConfig } = this.client
+
+    // * -------------------- Setup --------------------
 
     const db = await memberConfig.findOne({ where: { id } })
 
