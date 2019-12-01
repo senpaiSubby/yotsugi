@@ -15,7 +15,7 @@ module.exports = class RClone extends Command {
 
   async run(client, msg, args) {
     const { Utils, p } = client
-    const { execAsync } = Utils
+    const { channel } = msg
 
     const {
       errorMessage,
@@ -26,19 +26,15 @@ module.exports = class RClone extends Command {
       bytesToSize,
       millisecondsToTime,
       arraySplitter,
-      paginate
+      paginate,
+      missingConfig,
+      execAsync
     } = Utils
-
-    const { channel } = msg
 
     const { remote } = client.db.config.rclone
     if (!remote) {
       const settings = [`${p}db set rclone remote <remote>`]
-      return channel.send(
-        embed('red')
-          .setTitle(':gear: Missing Rclone DB config!')
-          .setDescription(`Set them like so..\n\`\`\`css\n${settings.join('\n')}\n\`\`\``)
-      )
+      return missingConfig(msg, 'rclone', settings)
     }
 
     const command = args.shift()
@@ -46,13 +42,12 @@ module.exports = class RClone extends Command {
 
     switch (command) {
       case 'size': {
-        const waitMessage = await standardMessage(
-          msg,
-          `:file_cabinet: Calculating size of
+        const waitMessage = await channel.send(
+          embed('yellow', 'rclone.gif').setDescription(`**:file_cabinet: Calculating size of
 
           [ ${dirPath || '/'} ]
 
-          :hourglass: This may take some time...`
+          :hourglass: This may take some time...**`)
         )
 
         const startTime = performance.now()
@@ -87,13 +82,14 @@ module.exports = class RClone extends Command {
       }
 
       case 'ls': {
-        const waitMessage = await standardMessage(
-          msg,
-          `:file_cabinet: Getting Directory
+        const waitMessage = await channel.send(
+          embed('yellow', 'rclone.gif').setDescription(
+            `**:file_cabinet: Getting Directory
 
           [ ${dirPath || '/'} ]
 
-          :hourglass: This may take some time...`
+          :hourglass: This may take some time...**`
+          )
         )
 
         const { code, stdout } = await execAsync(`rclone lsjson ${remote}:"${dirPath}"`, {

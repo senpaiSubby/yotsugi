@@ -1,5 +1,4 @@
-// todo refactor code and functions
-const fetch = require('node-fetch')
+const { get, post } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
@@ -49,8 +48,10 @@ module.exports = class Docker extends Command {
     const getContainers = async (state = 'running') => {
       const params = `filters={%22status%22:[%22${state}%22]}`
       try {
-        const response = await fetch(urljoin(host, `/containers/json?${params}`))
-        const containers = await response.json()
+        const response = await get(urljoin(host, `/containers/json?${params}`)).headers({
+          accept: 'application/json'
+        })
+        const containers = await response.body
         const containerList = []
 
         containers.forEach((container) => {
@@ -85,33 +86,32 @@ module.exports = class Docker extends Command {
       const index = containers.findIndex((c) => c.name === containerName, newState)
       // if container name doesnt match
       if (!containers[index].id) {
-        return warningMessage(msg, `No container named: ${containerName} found`)
+        return warningMessage(msg, `No container named: [ ${containerName} ] found`)
       }
 
       try {
-        const response = await fetch(
-          urljoin(host, `/containers/${containers[index].id}/${newState}`),
-          {
-            method: 'POST'
-          }
+        const response = await post(
+          urljoin(host, `/containers/${containers[index].id}/${newState}`)
         )
         const { status } = response
         if (status >= 200 && status < 300) {
-          if (api) return `Container ${containerName} has been ${newState}ed successfully`
+          if (api) return `Container [ ${containerName}]  has been [ ${newState}ed ] successfully`
           return standardMessage(
             msg,
-            `Container ${containerName} has been ${newState}ed successfully`
+            `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`
           )
         }
         if (newState !== 'restart' && status >= 300 && status < 400) {
           if (api) {
-            return `Container ${containerName} is already ${newState}${
+            return `Container [ ${containerName} ] is already [ ${newState}${
               newState === 'stop' ? 'ped' : 'ed'
-            }`
+            } ]`
           }
           return warningMessage(
             msg,
-            `Container ${containerName} is already ${newState}${newState === 'stop' ? 'ped' : 'ed'}`
+            `Container [ ${containerName} ] is already [ ${newState}${
+              newState === 'stop' ? 'ped' : 'ed'
+            } ]`
           )
         }
       } catch (e) {

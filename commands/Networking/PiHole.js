@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
@@ -38,14 +38,19 @@ module.exports = class PiHole extends Command {
 
     const setState = async (newState) => {
       try {
-        const response = await fetch(urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`))
-        const data = await response.json()
+        const response = await get(
+          urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`)
+        ).headers({ accept: 'application/json' })
+        const data = await response.body
+
         if (data.status !== 'enabled' && data.status !== 'disabled') {
           if (api) return `API key is incorrect`
           return errorMessage(`API key is incorrect`)
         }
+
         const text = newState === 'enable' ? 'enabled' : 'disabled'
         const color = newState === 'enable' ? 'green' : 'yellow'
+
         if (api) return `PiHole [ ${text} ]`
         return channel.send(embed(color).setDescription(`**PiHole [ ${text} ]**`))
       } catch (e) {
@@ -57,14 +62,22 @@ module.exports = class PiHole extends Command {
 
     const getStats = async () => {
       try {
-        const response = await fetch(urljoin(host, '/admin/api.php'))
-        const data = await response.json()
+        const response = await get(urljoin(host, '/admin/api.php')).headers({
+          accept: 'application/json'
+        })
+        const data = await response.body
+
         return {
           status: data.status,
           domainsBeingBlocked: data.domains_being_blocked,
           totalQueries: data.dns_queries_all_types,
           queriesToday: data.dns_queries_today,
-          adsBlockedToday: data.ads_blocked_today
+          adsBlockedToday: data.ads_blocked_today,
+          clientsSeen: data.clients_ever_seen,
+          clientsUnique: data.unique_clients,
+          forwarded: data.queries_forwarded,
+          cached: data.queries_cached,
+          blockedPercentage: data.ads_percentage_today
         }
       } catch (e) {
         if (api) return `Failed to connect to PiHole`
@@ -87,11 +100,15 @@ module.exports = class PiHole extends Command {
           return channel.send(
             embed(statusColor, 'pi.png')
               .setTitle('PiHole Stats')
-              .addField('Status', capitalize(status.status))
-              .addField('Domains Being Blocked', status.domainsBeingBlocked)
-              .addField('Total Queries', status.totalQueries)
-              .addField('Queries Today', status.queriesToday)
-              .addField('Ads Blocked Today', status.adsBlockedToday)
+              .addField('Status', capitalize(status.status), true)
+              .addField("URL's Being Blocked", status.domainsBeingBlocked, true)
+              .addField('Total Queries', status.totalQueries, true)
+              .addField('Queries Today', status.queriesToday, true)
+              .addField('Blocked Today', status.adsBlockedToday, true)
+              .addField('Queries Today', status.queriesToday, true)
+              .addField('Forwarded', status.forwarded, true)
+              .addField('Cached', status.cached, true)
+              .addField('Percentage', Math.round(status.blockedPercentage), true)
           )
         }
         return

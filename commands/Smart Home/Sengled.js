@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get, post } = require('unirest')
 const Command = require('../../core/Command')
 
 module.exports = class Sengled extends Command {
@@ -54,20 +54,18 @@ module.exports = class Sengled extends Command {
 
     // eslint-disable-next-line no-unused-vars
     const login = async () => {
-      const jsonData = {
-        uuid: 'xxx',
-        isRemote: 'true',
-        user: username,
-        pwd: password,
-        os_type: 'ios'
-      }
       try {
-        const response = await fetch(`${baseUrl}/customer/remoteLogin.json`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(jsonData)
-        })
-        const data = await response.json()
+        const response = await post(`${baseUrl}/customer/remoteLogin.json`)
+          .headers({ 'Content-Type': 'application/json' })
+          .send({
+            uuid: 'xxx',
+            isRemote: 'true',
+            user: username,
+            pwd: password,
+            os_type: 'ios'
+          })
+
+        const data = await response.body
         return data
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
@@ -78,11 +76,8 @@ module.exports = class Sengled extends Command {
 
     const getDevices = async () => {
       try {
-        const response = await fetch(`${baseUrl}/room/getUserRoomsDetail.json`, {
-          method: 'POST',
-          headers
-        })
-        const data = await response.json()
+        const response = await post(`${baseUrl}/room/getUserRoomsDetail.json`).headers(headers)
+        const data = await response.body
         const deviceList = []
 
         data.roomList.forEach((room) => {
@@ -106,15 +101,12 @@ module.exports = class Sengled extends Command {
 
     const setLight = async (deviceID, deviceName, newState) => {
       try {
-        const jsonData = {
-          deviceUuid: deviceID,
-          onoff: newState === 'off' ? 0 : 1
-        }
-        await fetch(`${baseUrl}/device/deviceSetOnOff.json`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(jsonData)
-        })
+        await post(`${baseUrl}/device/deviceSetOnOff.json`)
+          .headers(headers)
+          .send({
+            deviceUuid: deviceID,
+            onoff: newState === 'off' ? 0 : 1
+          })
 
         const icon = newState === 'on' ? ':full_moon:' : ':new_moon:'
         const state = newState === 'on' ? 'on' : 'off'
@@ -133,18 +125,19 @@ module.exports = class Sengled extends Command {
         // convert 0-100 to 0-255
         const brightness = (newBrightness / 100) * 255
 
-        const jsonData = { deviceUuid, brightness }
-        const response = await fetch(`${baseUrl}/device/deviceSetBrightness.json`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(jsonData)
-        })
+        const response = await post(`${baseUrl}/device/deviceSetBrightness.json`)
+          .headers(headers)
+          .send({ deviceUuid, brightness })
+
         if (response.status === 200) {
           if (newBrightness === 0 || newBrightness === 100) {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
-            if (api) return `[ ${deviceName} ] light turned [ ${newStatus} ]`
-            return standardMessage(msg, `${icon} [ ${deviceName} ] light turned [ ${newStatus} ]`)
+            if (api) return `[ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`
+            return standardMessage(
+              msg,
+              `${icon} [ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`
+            )
           }
           if (api) return `[ ${deviceName} ] brightness set to [ ${newBrightness} ]`
           return standardMessage(

@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get, post } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
@@ -21,7 +21,7 @@ module.exports = class PioneerAVR extends Command {
 
     const { sleep } = client.Utils
     const { p, Utils } = client
-    const { missingConfig, warningMessage, validOptions, standardMessage } = Utils
+    const { missingConfig, warningMessage, validOptions, standardMessage, capitalize } = Utils
 
     // * ------------------ Config --------------------
 
@@ -37,8 +37,10 @@ module.exports = class PioneerAVR extends Command {
     // * ------------------ Logic --------------------
 
     const getStatus = async () => {
-      const response = await fetch(urljoin(host, '/StatusHandler.asp'))
-      const data = await response.json()
+      const response = await get(urljoin(host, '/StatusHandler.asp')).headers({
+        accept: 'application/json'
+      })
+      const data = await response.body
       return data
     }
 
@@ -55,29 +57,37 @@ module.exports = class PioneerAVR extends Command {
         // setting the volume higher
         const raiseVal = (number - currentVol) * 2
         for (let i = 0; i < raiseVal; i++) {
-          await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VU'))
+          await get(urljoin(host, '/EventHandler.asp?WebToHostItem=VU')).headers({
+            accept: 'application/json'
+          })
         }
       } else if (number <= currentVol) {
         // setting the volume lower
         const lowerVal = Math.abs((number - currentVol) * 2)
 
         for (let i = 0; i < lowerVal; i++) {
-          await fetch(urljoin(host, '/EventHandler.asp?WebToHostItem=VD'))
+          await get(urljoin(host, '/EventHandler.asp?WebToHostItem=VD')).headers({
+            accept: 'application/json'
+          })
         }
       }
     }
 
     const setPower = async (onoff) => {
       const state = onoff === 'on' ? 'PO' : 'PF'
-      await fetch(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`))
-      if (api) return `AVR turned [ ${onoff} ]`
-      return standardMessage(msg, `:radio: AVR turned [ ${onoff} ]`)
+      await get(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)).headers({
+        accept: 'application/json'
+      })
+      if (api) return `AVR turned [ ${capitalize(onoff)} ]`
+      return standardMessage(msg, `:radio: AVR turned [ ${capitalize(onoff)} ]`)
     }
 
     const toggleMute = async () => {
       const status = await getStatus()
       const state = status.Z[0].M === 0 ? 'MO' : 'MF'
-      await fetch(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`))
+      await get(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)).headers({
+        accept: 'application/json'
+      })
       const muteStatus = status.Z[0].M === 0 ? ':mute:' : ':speaker:'
       if (api) return `AVR [ ${muteStatus} ]`
       return standardMessage(msg, `${muteStatus} AVR [ ${muteStatus} ]`)

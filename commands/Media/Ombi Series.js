@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get, post } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
@@ -76,13 +76,11 @@ module.exports = class OmbiTV extends Command {
 
     const getTVDBID = async (name) => {
       try {
-        const response = await fetch(urljoin(host, '/api/v1/Search/tv/', name), {
-          headers: {
-            accept: 'application/json',
-            ApiKey: apiKey
-          }
+        const response = await get(urljoin(host, '/api/v1/Search/tv/', name)).headers({
+          accept: 'application/json',
+          ApiKey: apiKey
         })
-        return response.json()
+        return response.body
       } catch (e) {
         const text = 'Failed to connect to Ombi'
         Log.error('Ombi Movies', text, e)
@@ -92,27 +90,30 @@ module.exports = class OmbiTV extends Command {
 
     const requestTVShow = async (show) => {
       if (!member.roles.some((r) => r.name === 'requesttv')) {
-        return warningMessage(msg, 'You must be part of the `requesttv` role to request TV Shows.')
+        return warningMessage(
+          msg,
+          'You must be part of the [ `requesttv` ] role to request TV Shows.'
+        )
       }
 
-      if (show.available) return warningMessage(msg, `${show.title} is already available in Ombi`)
+      if (show.available)
+        return warningMessage(msg, `[ ${show.title} ] is already available in Ombi`)
 
-      if (show.approved) return warningMessage(msg, `${show.title} is already approved in Ombi`)
+      if (show.approved) return warningMessage(msg, `[ ${show.title} ] is already approved in Ombi`)
 
-      if (show.requested) return warningMessage(msg, `${show.title} is already requested in Ombi`)
+      if (show.requested)
+        return warningMessage(msg, `[ ${show.title} ] is already requested in Ombi`)
 
       if (!show.available && !show.requested && !show.approved) {
         try {
-          await fetch(urljoin(host, '/api/v1/Request/tv/'), {
-            method: 'POST',
-            headers: {
+          await post(urljoin(host, '/api/v1/Request/tv/'))
+            .headers({
               'Content-Type': 'application/json',
               ApiKey: apiKey,
               ApiAlias: `${author.tag}`
-            },
-            body: JSON.stringify({ tvDbId: show.id, requestAll: true })
-          })
-          return standardMessage(msg, `Requested ${show.title} in Ombi`)
+            })
+            .send({ tvDbId: show.id, requestAll: true })
+          return standardMessage(msg, `Requested [ ${show.title} ] in Ombi`)
         } catch (e) {
           const text = 'Failed to connect to Ombi'
           Log.error('Ombi Movies', text, e)
@@ -133,10 +134,10 @@ module.exports = class OmbiTV extends Command {
       const embedList = []
       for (const show of results) {
         try {
-          const response = await fetch(urljoin(host, '/api/v1/Search/tv/info/', String(show.id)), {
-            headers: { ApiKey: apiKey, accept: 'application/json' }
-          })
-          const data = await response.json()
+          const response = await get(
+            urljoin(host, '/api/v1/Search/tv/info/', String(show.id))
+          ).headers({ ApiKey: apiKey, accept: 'application/json' })
+          const data = await response.body
           embedList.push(outputTVShow(data))
         } catch (e) {
           const text = 'Failed to connect to Ombi'

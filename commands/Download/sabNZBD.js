@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
@@ -46,8 +46,8 @@ module.exports = class SabNZBD extends Command {
     const getQueue = async () => {
       try {
         const endpoint = '/api?output=json&mode=queue'
-        const response = await fetch(urljoin(host, endpoint, `&apikey=${apiKey}`))
-        const data = await response.json()
+        const response = await get(urljoin(host, endpoint, `&apikey=${apiKey}`))
+        const data = await response.body
         const downloadQueue = []
 
         data.queue.slots.forEach((key) => {

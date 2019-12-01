@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get, post } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 
@@ -76,14 +76,12 @@ module.exports = class OmbiMovies extends Command {
     }
     const getTMDbID = async (name) => {
       try {
-        const response = await fetch(urljoin(host, '/api/v1/Search/movie/', name), {
-          headers: {
-            accept: 'application/json',
-            ApiKey: apiKey,
-            'User-Agent': `Mellow/${process.env.npm_package_version}`
-          }
+        const response = await get(urljoin(host, '/api/v1/Search/movie/', name)).headers({
+          accept: 'application/json',
+          ApiKey: apiKey,
+          'User-Agent': `Mellow/${process.env.npm_package_version}`
         })
-        return response.json()
+        return response.body
       } catch (e) {
         const text = 'Failed to connect to Ombi'
         Log.error('Ombi Movies', text, e)
@@ -93,29 +91,34 @@ module.exports = class OmbiMovies extends Command {
 
     const requestMovie = async (movie) => {
       if (!member.roles.some((r) => r.name === 'requestmovie')) {
-        return warningMessage(msg, 'You must be part of the `requestmovie` role to request movies.')
+        return warningMessage(
+          msg,
+          'You must be part of the [ `requestmovie` ] role to request movies.'
+        )
       }
 
-      if (movie.available) return warningMessage(msg, `${movie.title} is already available in Ombi`)
+      if (movie.available)
+        return warningMessage(msg, `[ ${movie.title} ] is already available in Ombi`)
 
-      if (movie.approved) return warningMessage(msg, `${movie.title} is already approved in Ombi`)
+      if (movie.approved)
+        return warningMessage(msg, `[ ${movie.title} ] is already approved in Ombi`)
 
-      if (movie.requested) return warningMessage(msg, `${movie.title} is already requested in Ombi`)
+      if (movie.requested)
+        return warningMessage(msg, `[ ${movie.title} ] is already requested in Ombi`)
 
       if (!movie.available && !movie.requested && !movie.approved) {
         try {
-          await fetch(urljoin(host, '/api/v1/Request/movie/'), {
-            method: 'POST',
-            headers: {
+          await post(urljoin(host, '/api/v1/Request/movie/'))
+            .headers({
               accept: 'application/json',
               'Content-Type': 'application/json',
               ApiKey: apiKey,
               ApiAlias: `${author.username}#${author.discriminator}`,
               UserName: username || undefined
-            },
-            body: JSON.stringify({ theMovieDbId: movie.theMovieDbId })
-          })
-          return standardMessage(msg, `Requested ${movie.title} in Ombi.`)
+            })
+            .send({ theMovieDbId: movie.theMovieDbId })
+
+          return standardMessage(msg, `Requested [ ${movie.title} ] in Ombi.`)
         } catch (e) {
           const text = 'Failed to connect to Ombi'
           Log.error('Ombi Movies', text, e)
@@ -136,13 +139,10 @@ module.exports = class OmbiMovies extends Command {
       const embedList = []
       for (const movie of results) {
         try {
-          const response = await fetch(
-            urljoin(host, '/api/v1/Search/movie/info/', String(movie.id)),
-            {
-              headers: { ApiKey: apiKey, accept: 'application/json' }
-            }
-          )
-          const data = await response.json()
+          const response = await get(
+            urljoin(host, '/api/v1/Search/movie/info/', String(movie.id))
+          ).headers({ ApiKey: apiKey, accept: 'application/json' })
+          const data = response.body
           embedList.push(outputMovie(data))
         } catch (e) {
           const text = 'Failed to connect to Ombi'

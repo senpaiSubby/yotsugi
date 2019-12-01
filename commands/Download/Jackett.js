@@ -1,7 +1,8 @@
-const fetch = require('node-fetch')
+const { get } = require('unirest')
 const urljoin = require('url-join')
 const puppeteer = require('puppeteer')
-const { writeFileSync } = require('fs')
+const { writeFileSync, existsSync, mkdirSync } = require('fs')
+const { dirname } = require('path')
 const Magnet2torrent = require('magnet2torrent-js')
 const Command = require('../../core/Command')
 
@@ -46,10 +47,10 @@ module.exports = class Jackett extends Command {
     // * ------------------ Logic --------------------
     const fetchResults = async (term) => {
       try {
-        const response = await fetch(
+        const response = await get(
           urljoin(host, `/api/v2.0/indexers/all/results?apikey=${apiKey}&Query=${term}`)
-        )
-        const { Results } = await response.json()
+        ).headers({ Accept: 'application/json' })
+        const { Results } = response.body
 
         if (Results.length) {
           const filteredResults = []
@@ -98,6 +99,9 @@ module.exports = class Jackett extends Command {
           const m2t = new Magnet2torrent()
           const buffer = await m2t.getTorrentBuffer(links[index])
           const path = `./data/logs/torrents/${fileName}.torrent`
+
+          if (!existsSync(dirname(path))) mkdirSync(dirname(path), { recursive: true })
+
           writeFileSync(path, buffer)
           return path
         } catch (e) {

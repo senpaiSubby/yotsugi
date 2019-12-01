@@ -16,11 +16,7 @@ module.exports = class SpeedTest extends Command {
 
     const test = speedTest({ maxTime: 5000 })
     const m = await msg.channel.send(
-      embed('green', 'speedtest.png').setDescription(
-        `**:desktop: Testing network throughput
-
-        :hourglass: Be back in a few seconds**`
-      )
+      embed('green').setDescription(`**:desktop: Testing network throughput...**`)
     )
 
     test.on('data', async (data) => {

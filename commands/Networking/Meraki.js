@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { get } = require('unirest')
 const Command = require('../../core/Command')
 
 module.exports = class Meraki extends Command {
@@ -38,8 +38,11 @@ module.exports = class Meraki extends Command {
       try {
         // general network devices
         const url = `https://n263.meraki.com/api/v0/devices/${serielNum}/clients?timespan=86400`
-        const response = await fetch(url, { headers: { 'X-Cisco-Meraki-API-Key': apiKey } })
-        const devices = await response.json()
+        const response = await get(url).headers({
+          'X-Cisco-Meraki-API-Key': apiKey,
+          accept: 'application/json'
+        })
+        const devices = await response.body
         let sent = 0 // total send data counter
         let recv = 0 // total recv data counter
 

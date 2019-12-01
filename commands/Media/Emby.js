@@ -1,5 +1,5 @@
 const urljoin = require('url-join')
-const fetch = require('node-fetch')
+const { get } = require('unirest')
 const Command = require('../../core/Command')
 
 module.exports = class Emby extends Command {
@@ -43,7 +43,7 @@ module.exports = class Emby extends Command {
       ]
       return missingConfig(msg, 'emby', settings)
     }
-    const headers = { 'X-Emby-Token': apiKey }
+    const headers = { 'X-Emby-Token': apiKey, accept: 'application/json' }
 
     // * ------------------ Logic --------------------
 
@@ -57,11 +57,11 @@ module.exports = class Emby extends Command {
 
     const fetchStats = async (endPoint) => {
       try {
-        const response = await fetch(`${urljoin(host, endPoint)}`, { headers })
+        const response = await get(`${urljoin(host, endPoint)}`).headers(headers)
 
         switch (response.status) {
           case 200: {
-            const json = await response.json()
+            const json = response.body
             return json
           }
           case 401: {
@@ -142,7 +142,7 @@ module.exports = class Emby extends Command {
         if (stats) {
           const { MovieCount, SeriesCount, EpisodeCount, ArtistCount, SongCount, BookCount } = stats
           return channel.send(
-            embed
+            embed()
               .setTitle('Emby Stats')
               .addField(':film_frames: Movies', MovieCount, true)
               .addField(':dvd: Series', SeriesCount, true)
@@ -164,24 +164,20 @@ module.exports = class Emby extends Command {
         if (stats) {
           switch (args[1]) {
             case 'movies': {
-              embed.setTitle('Recently added movies')
+              e.setTitle('Recently added movies')
               let text = ''
               stats.forEach(
                 (key, index) => (text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`)
               )
-              embed.setDescription(text)
-              return channel.send(embed)
+              e.setDescription(text)
+              return channel.send(e)
             }
             case 'series': {
-              embed.setTitle('Recently added series')
+              e.setTitle('Recently added series')
               stats.forEach((key) => {
-                embed.addField(
-                  `${key.SeriesName}`,
-                  `- ${key.Name}\n- [Link](${getLink(key)})`,
-                  true
-                )
+                e.addField(`${key.SeriesName}`, `- ${key.Name}\n- [Link](${getLink(key)})`, true)
               })
-              return channel.send(embed)
+              return channel.send(e)
             }
             default:
               return validOptions(msg, ['series', 'movies'])

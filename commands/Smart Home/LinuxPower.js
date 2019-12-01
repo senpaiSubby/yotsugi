@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const { post } = require('unirest')
 const wol = require('wol')
 const Command = require('../../core/Command')
 
@@ -41,11 +41,9 @@ module.exports = class LinuxPower extends Command {
 
       if (command === 'reboot' || command === 'off') {
         try {
-          const response = await fetch(`${host}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ command })
-          })
+          const response = await post(host)
+            .headers({ 'Content-Type': 'application/json' })
+            .send({ command })
 
           const statusCode = response.status
 

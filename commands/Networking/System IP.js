@@ -1,5 +1,4 @@
-// todo change to list external and internal ip's
-const fetch = require('node-fetch')
+const { get } = require('unirest')
 const Command = require('../../core/Command')
 
 module.exports = class SystemIP extends Command {
@@ -22,9 +21,9 @@ module.exports = class SystemIP extends Command {
 
     // * ------------------ Logic --------------------
 
-    const response = await fetch('https://ifconfig.co/json')
+    const response = await get('https://ifconfig.co/json').headers({ accept: 'application/json' })
 
-    const data = await response.json()
+    const data = await response.body
     if (api) return data.ip
     return warningMessage(msg, `[ ${data.ip} ]`)
   }
