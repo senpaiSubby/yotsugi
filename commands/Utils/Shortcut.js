@@ -33,13 +33,9 @@ module.exports = class Shortcut extends Command {
       case 'list': {
         if (!shortcuts.length) return warningMessage(msg, `There are no shortcuts!`)
 
-        let todoList = ''
-        shortcuts.forEach((i) => (todoList += `**${i.name} - ${i.command} ${i.arg.join(' ')}**\n`))
-        return msg.reply(
-          embed('green')
-            .setTitle('Shortcuts')
-            .setDescription(todoList)
-        )
+        const e = embed('green', 'shortcut.png').setTitle('Shortcuts')
+        shortcuts.forEach((i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`))
+        return msg.reply(e)
       }
       case 'add': {
         const name = args[1]
