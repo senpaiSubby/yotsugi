@@ -37,24 +37,23 @@ module.exports = class DB extends Command {
           delete config.routines
           delete config.shortcuts
 
-          const e = embed('green').setTitle('Database Keys').setDescription(`**[ ${p}db get <key> ]
-            for more detailed info**`)
+          const e = embed('green', 'settings.png')
+            .setTitle('Database Config')
+            .setDescription(`[ \`${p}db get <key>\` ] for more detailed info`)
 
           const splitArray = chunkArray(Object.keys(config).sort(), 7)
           splitArray.forEach((item) => {
             let text = ''
-            item.forEach((i) => (text += `**${i}**\n`))
+            item.forEach((i) => (text += `${i}\n`))
             e.addField(`\u200b`, text, true)
           })
           return channel.send(e)
         }
         if (key1 in config) {
           const keys = Object.keys(config[key1])
-          const e = embed('green')
-            .setTitle(`Database Keys [ ${key1} ]`)
-            .setDescription(
-              `**[ ${p}db set ${key1} <${keys.join(' | ')}> <new value> ] to change**`
-            )
+          const e = embed('green', 'settings.png')
+            .setTitle(`Database Config [ ${key1} ]`)
+            .setDescription(`[ \`${p}db set ${key1} <key> <new value>\` ] to change`)
 
           keys.forEach((i) => {
             e.addField(`${i}`, `${config[key1][i]}`, true)

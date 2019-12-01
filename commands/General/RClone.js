@@ -35,7 +35,7 @@ module.exports = class RClone extends Command {
     if (!remote) {
       const settings = [`${p}db set rclone remote <remote>`]
       return channel.send(
-        embed( 'red')
+        embed('red')
           .setTitle(':gear: Missing Rclone DB config!')
           .setDescription(`Set them like so..\n\`\`\`css\n${settings.join('\n')}\n\`\`\``)
       )
@@ -71,7 +71,7 @@ module.exports = class RClone extends Command {
           const size = bytesToSize(response.bytes)
 
           return msg.reply(
-            embed('green')
+            embed('green', 'rclone.gif')
               .setTitle(`:file_cabinet: GDrive Directory:\n- [ ${dirPath} ]`)
               .addField('Files', `:newspaper: ${count}`, true)
               .addField('Size', `:file_folder: ${size}`, true)
@@ -137,11 +137,8 @@ module.exports = class RClone extends Command {
           const embedList = []
           Object.keys(splitArray).forEach((key, index) => {
             embedList.push(
-              embed('green')
+              embed('green', 'rclone.gif')
                 .setTitle(`:file_cabinet: [ ${dirPath || '/'} ]`)
-                .setThumbnail(
-                  'https://forum.rclone.org/uploads/default/original/2X/0/0f430bb0f2f7a9ed020a9e93c89f4d332adcac4b.gif'
-                )
                 .addField('Files', `${splitArray[index].join('\n')}`)
             )
           })

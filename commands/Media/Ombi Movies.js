@@ -29,7 +29,7 @@ module.exports = class OmbiMovies extends Command {
     if (!role) {
       await msg.guild.createRole({ name: 'requestmovie' })
       return channel.send(
-        Utils.embed( 'yellow')
+        Utils.embed('yellow')
           .setTitle('Missing role [ requestmovie ]')
           .setDescription(
             'I created a role called **requestmovie**. Assign this role to members to let them request movies!'
@@ -55,7 +55,7 @@ module.exports = class OmbiMovies extends Command {
     // * ------------------ Logic --------------------
 
     const outputMovie = (movie) => {
-      const e = embed('green')
+      const e = embed('green', 'ombi.png')
         .setTitle(
           `${movie.title} ${
             movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''

@@ -19,7 +19,7 @@ module.exports = class Tuya extends Command {
     // * ------------------ Setup --------------------
     const { Utils, Log } = client
     const { capitalize, embed } = Utils
-    const { errorMessage, warningMessage, standardMessage } = Utils
+    const { errorMessage, warningMessage, standardMessage, asyncForEach } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -29,10 +29,11 @@ module.exports = class Tuya extends Command {
     // * ------------------ Logic --------------------
 
     const listPlugs = async () => {
+      console.log(tuyaDevices)
       try {
         const deviceList = []
 
-        tuyaDevices.forEach(async (d) => {
+        await asyncForEach(tuyaDevices, async (d) => {
           const device = new TuyAPI({ id: d.id, key: d.key })
 
           await device.find()
@@ -114,11 +115,14 @@ module.exports = class Tuya extends Command {
     switch (args[0]) {
       case 'list': {
         const deviceList = await listPlugs()
+        console.log(deviceList)
         if (deviceList) {
           if (api) return deviceList
-          const e = embed('green').setTitle(':electric_plug: Smart Plugs')
+          const e = embed('green', 'plug.png').setTitle(':electric_plug: Smart Plugs')
 
-          deviceList.forEach((device) => e.addField(`${device.name}`, `Status: ${device.status}`))
+          deviceList.forEach((device) =>
+            e.addField(`${device.name}`, `Status: [ ${device.status} ]`)
+          )
           return channel.send(e)
         }
         return

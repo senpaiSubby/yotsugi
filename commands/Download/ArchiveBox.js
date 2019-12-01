@@ -17,20 +17,20 @@ module.exports = class ArchiveBox extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, db } = client
-    const { standardMessage, errorMessage, execAsync } = Utils
+    const { standardMessage, errorMessage, execAsync, embed } = Utils
+    const { channel } = msg
 
     // * ------------------ Config --------------------
 
     const { path } = db.config.archivebox
 
     // * ------------------ Logic --------------------
-    await standardMessage(
-      msg,
-      `:printer: Archiving the url
+    await channel.send(
+      embed('green', 'archivebox.png').setDescription(`**:printer: Archiving the url
 
-      - ${args[0]}
+    - ${args[0]}
 
-      :hourglass: This may take some time...`
+    :hourglass: This may take some time...**`)
     )
 
     const { code } = await execAsync(`cd ${path} && echo "${args[0]}" | ./archive`, {

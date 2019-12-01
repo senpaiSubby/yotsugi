@@ -91,7 +91,7 @@ module.exports = class CommandManager {
 
     // * -------------------- Setup --------------------
 
-    const { Utils, generalConfig, Log } = client
+    const { Utils, generalConfig, serverConfig, Log } = client
     const { errorMessage, warningMessage, standardMessage, embed } = Utils
     const { content, author, channel, guild } = msg
     const { ownerID } = client.config
@@ -108,6 +108,8 @@ module.exports = class CommandManager {
     // set db configs
     const generalDB = await generalConfig.findOne({ where: { id: ownerID } })
     client.db.config = JSON.parse(generalDB.dataValues.config)
+    const serverDB = await serverConfig.findOne({ where: { id: guild.id } })
+    client.db.server = JSON.parse(serverDB.dataValues.config)
 
     // * -------------------- Parse & Log Messages --------------------
 

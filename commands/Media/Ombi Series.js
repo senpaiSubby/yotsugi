@@ -29,7 +29,7 @@ module.exports = class OmbiTV extends Command {
     if (!role) {
       await msg.guild.createRole({ name: 'requesttv' })
       return msg.channel.send(
-        embed( 'yellow')
+        embed('yellow')
           .setTitle('Missing role [ requesttv ]')
           .setDescription(
             'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
@@ -55,7 +55,7 @@ module.exports = class OmbiTV extends Command {
     // * ------------------ Logic --------------------
 
     const outputTVShow = (show) => {
-      const e = embed('green')
+      const e = embed('green', 'ombi.png')
         .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
         .setDescription(`${show.overview.substr(0, 255)}(...)`)
         .setThumbnail(show.banner)

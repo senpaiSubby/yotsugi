@@ -92,11 +92,8 @@ module.exports = class Meraki extends Command {
           const embedList = []
           status.devices.forEach((i) => {
             embedList.push(
-              embed('green')
+              embed('green', 'cisco.png')
                 .setTitle('Meraki Devices')
-                .setThumbnail(
-                  'https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000'
-                )
                 .addField('Name', i.name, true)
                 .addField('IP', i.ip, true)
                 .addField('VLAN', i.vlan, true)

@@ -38,16 +38,13 @@ module.exports = class YoutubeSearch extends Command {
         const { publishedAt, title } = i.snippet
         const thumbnail = thumbnails.high.url
         results.push(
-          embed( 'red')
+          embed('red', 'youtube.png')
             .setTitle(`YT - ${title}`)
             .setURL(`https://youtube.com/watch?v=${videoId})`)
             .addField('Channel', channelTitle, true)
             .addField('Published', publishedAt.toString().substring(0, 10), true)
             .addField('Description', description || 'No Description..')
             .setImage(thumbnail)
-            .setThumbnail(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1024px-YouTube_social_white_squircle_%282017%29.svg.png'
-            )
         )
       })
       return paginate(msg, results)

@@ -18,7 +18,7 @@ module.exports = class Shortcut extends Command {
 
     const { Utils, generalConfig } = client
     const { warningMessage, standardMessage, errorMessage, embed } = Utils
-    const { author, context } = msg
+    const { author, context, channel } = msg
 
     // * ------------------ Config --------------------
 
@@ -34,8 +34,8 @@ module.exports = class Shortcut extends Command {
         if (!shortcuts.length) return warningMessage(msg, `There are no shortcuts!`)
 
         const e = embed('green', 'shortcut.png').setTitle('Shortcuts')
-        shortcuts.forEach((i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`))
-        return msg.reply(e)
+        shortcuts.forEach((i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`), true)
+        return channel.send(e)
       }
       case 'add': {
         const name = args[1]
@@ -48,16 +48,16 @@ module.exports = class Shortcut extends Command {
         const arg = args.join(' ')
         shortcuts.push({ name, command, arg: arg.split(' ') })
         await db.update({ config: JSON.stringify(config) })
-        return standardMessage(msg, `${name}\n\nAdded to shortcut list`)
+        return standardMessage(msg, `[ ${name} ] added to shortcut list`)
       }
       case 'remove': {
         const name = args[1]
         const index = shortcuts.findIndex((d) => d.name === name)
-        if (index === -1) return warningMessage(msg, `Shortcut does not exist`)
+        if (index === -1) return warningMessage(msg, `Shortcut [ ${name} ] does not exist`)
 
         shortcuts.splice(index, 1)
         await db.update({ config: JSON.stringify(config) })
-        if (name) return standardMessage(msg, `${name}\n\nRemoved from shortcut list`)
+        if (name) return standardMessage(msg, `[ ${name} ] removed from shortcut list`)
 
         break
       }

@@ -137,7 +137,7 @@ module.exports = class Docker extends Command {
         if (containers) {
           if (containers.length) {
             if (api) return containers
-            const e = embed('green').setDescription('Docker Containers')
+            const e = embed('green', 'docker.png').setDescription('Docker Containers')
 
             containers.forEach((container) => {
               const { name, ports, state } = container

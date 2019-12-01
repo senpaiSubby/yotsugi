@@ -1,7 +1,7 @@
 const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
-const { RichEmbed, Attachment } = require('discord.js')
+const { RichEmbed } = require('discord.js')
 const Promise = require('bluebird')
 const shelljs = require('shelljs')
 const Log = require('./Log')
@@ -244,6 +244,8 @@ module.exports = class Utils {
     const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
 
     if (image) {
+      // e.attachFile(join(`${__dirname}`, '../', `/core/images/icons/${image}`))
+      // e.setThumbnail(`attachment://${image}`)
       e.setThumbnail(
         `https://raw.githubusercontent.com/callmekory/nezuko/master/core/images/icons/${image}`
       )

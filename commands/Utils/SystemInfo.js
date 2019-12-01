@@ -51,7 +51,9 @@ module.exports = class SystemInfo extends Command {
       }
     }
 
-    const ms = await channel.send(embed('green').setDescription('**:timer: Loading system stats..**'))
+    const ms = await channel.send(
+      embed('green').setDescription('**:timer: Loading system stats..**')
+    )
     await ms.react('🛑')
     const interval = setInterval(async () => {
       const cpuStats = await cpuInfo()

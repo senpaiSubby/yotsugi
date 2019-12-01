@@ -45,9 +45,9 @@ module.exports = class PiHole extends Command {
           return errorMessage(`API key is incorrect`)
         }
         const text = newState === 'enable' ? 'enabled' : 'disabled'
-        const color = newState === 'enable' ? 'green' : 'red'
-        if (api) return `PiHole ${text}`
-        return channel.send(embed( color).setDescription(`**PiHole ${text}**`))
+        const color = newState === 'enable' ? 'green' : 'yellow'
+        if (api) return `PiHole [ ${text} ]`
+        return channel.send(embed(color).setDescription(`**PiHole [ ${text} ]**`))
       } catch (e) {
         if (api) return `Failed to connect to PiHole`
         Log.error('PiHole', 'Failed to connect to PiHole', e)
@@ -83,10 +83,9 @@ module.exports = class PiHole extends Command {
       case 'stats': {
         const status = await getStats()
         if (status) {
+          const statusColor = status.status === 'enabled' ? 'green' : 'yellow'
           return channel.send(
-            embed('green')
-              .attachFile('./data/images/icons/pihole.png')
-              .setThumbnail('attachment://pihole.png')
+            embed(statusColor, 'pi.png')
               .setTitle('PiHole Stats')
               .addField('Status', status.status)
               .addField('Domains Being Blocked', status.domainsBeingBlocked)
