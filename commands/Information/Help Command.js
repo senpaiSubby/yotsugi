@@ -64,9 +64,7 @@ module.exports = class Help extends Command {
         const e = Utils.embed('green')
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
-          .setDescription(
-            `**Prefix is \`${prefix}\` | \`${prefix}help [ command ]\` for more info**`
-          )
+          .setDescription(`**\`${prefix}help [ command ]\` for more info**`)
         newSorted[key].forEach((i) => {
           let aliases = ''
           if (i.aliases.length) {
