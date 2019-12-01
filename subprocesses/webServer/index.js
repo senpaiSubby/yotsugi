@@ -1,5 +1,6 @@
 const express = require('express')
 const device = require('express-device')
+const serveIndex = require('serve-index')
 const cors = require('cors')
 const shortid = require('shortid')
 const { duration } = require('moment')
@@ -56,7 +57,12 @@ class WebServer extends Subprocess {
     app.use(express.json())
     app.use(cors({ credentials: true, origin: ['http://127.0.0.1:3000'] }))
     app.use(express.static(`${__dirname}/app/build`))
+
     app.use(device.capture({ parseUserAgent: true }))
+
+    // serve out icons folder
+    app.use('/icons', express.static(`${__dirname}/../../data/images/icons`))
+    app.use('/icons', serveIndex(`${__dirname}/../../data/images/icons`))
 
     // home page
     app.get('/', (req, res) => res.sendFile('/index.html'))
