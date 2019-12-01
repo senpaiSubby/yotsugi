@@ -40,14 +40,15 @@ module.exports = class MessageManager {
 
     const attachmentHandler = async () => {
       // check if msg contains attachments
-      if (attachments.size) {
-        await asyncForEach(attachments, async (a) => {
+
+      if (attachments) {
+        attachments.forEach(async (a) => {
           const { url } = a
           await attachmentParser(url)
 
           try {
             const name = url.split('/').pop()
-            const dir = `./data/logs/attachments/${guild.id}/${name}`
+            const dir = `${__dirname}/../data/logs/attachments/${guild.id}/${name}`
 
             // check if dir exists and create if not
             if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })
