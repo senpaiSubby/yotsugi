@@ -240,7 +240,7 @@ module.exports = class Routines extends Command {
 
         const embedList = []
         routines.forEach((i) => {
-          const e = embed('green').setTitle(`Routines - [ ${i.name} ]`)
+          const e = embed('green', 'routine.png').setTitle(`Routines - [ ${i.name} ]`)
           i.commands.forEach((c, index) => {
             const status = c[0] ? ':green_square:' : ':red_square:'
             e.addField(`[ ${index + 1} ]`, `**${status} ${c[1]}**`, true)
