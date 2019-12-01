@@ -154,7 +154,6 @@ module.exports = class CommandManager {
 
     // if command is marked 'ownerOnly: true' then don't excecute
     if (command.ownerOnly && author.id !== this.ownerID) {
-      msg.delete(20000)
       Log.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
@@ -183,13 +182,12 @@ module.exports = class CommandManager {
               prefix.length
             )} ] but lacks the perms [ ${userMissingPerms.join(', ')} ]`
           )
-          const m = await msg.reply(
+          return msg.reply(
             embed('red')
               .setTitle('You lack the perms')
               .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
               .setFooter('Message will self destruct in 30 seconds')
           )
-          return m.delete(30000)
         }
 
         if (botMissingPerms) {
@@ -199,13 +197,12 @@ module.exports = class CommandManager {
               prefix.length
             )} ] for command [ ${userMissingPerms.join(', ')} ]`
           )
-          const m = await channel.send(
+          return channel.send(
             embed('red')
               .setTitle('I lack the perms needed to perform that action')
               .setFooter('Message will self destruct in 30 seconds')
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
           )
-          return m.delete(30000)
         }
       }
     }
