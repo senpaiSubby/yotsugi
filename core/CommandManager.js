@@ -101,6 +101,7 @@ module.exports = class CommandManager {
 
     const prefix = guild ? await this.handleServer(guild) : this.prefix
     client.p = prefix
+    msg.p = prefix
 
     await this.handleUser(msg)
 
@@ -181,7 +182,7 @@ module.exports = class CommandManager {
             )} ] but lacks the perms [ ${userMissingPerms.join(', ')} ]`
           )
           const m = await msg.reply(
-            embed( 'red')
+            embed('red')
               .setTitle('You lack the perms')
               .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
               .setFooter('Message will self destruct in 30 seconds')
@@ -197,7 +198,7 @@ module.exports = class CommandManager {
             )} ] for command [ ${userMissingPerms.join(', ')} ]`
           )
           const m = await channel.send(
-            embed( 'red')
+            embed('red')
               .setTitle('I lack the perms needed to perform that action')
               .setFooter('Message will self destruct in 30 seconds')
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
@@ -214,7 +215,7 @@ module.exports = class CommandManager {
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] without parameters`
       )
       const m = await msg.reply(
-        embed( 'yellow')
+        embed('yellow')
           .setTitle('Command requires parameters')
           .setFooter('Message will self destruct in 30 seconds')
           .setDescription(

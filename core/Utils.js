@@ -1,7 +1,7 @@
 const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
-const { RichEmbed } = require('discord.js')
+const { RichEmbed, Attachment } = require('discord.js')
 const Promise = require('bluebird')
 const shelljs = require('shelljs')
 const Log = require('./Log')
@@ -244,18 +244,19 @@ module.exports = class Utils {
     const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
 
     if (image) {
-      e.attachFile(`http://127.0.0.1:5700/icons/${image}`, image)
-      e.setThumbnail(`attachment://${image}`)
+      e.setThumbnail(
+        `https://raw.githubusercontent.com/callmekory/nezuko/master/core/images/icons/${image}`
+      )
     }
     return e
   }
 
   static missingConfig(msg, name, params) {
     return msg.channel.send(
-      Utils.embed('red')
-        .setTitle(`:gear: Missing ${name} DB config!`)
+      Utils.embed('red', 'settings.png')
+        .setTitle(`Missing [ ${name} ] DB config!`)
         .setDescription(
-          `${msg.prefix}db get ${name} for current config.
+          `\`${msg.p}db get ${name}\` for current config.
 
           Set them like so..
 

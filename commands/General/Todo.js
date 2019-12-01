@@ -74,7 +74,7 @@ module.exports = class Todo extends Command {
           '🔟'
         ]
         // setup inital embed
-        const e = embed('green', 'arch.png').setTitle('Todo List')
+        const e = embed('green', 'todo.png').setTitle('Todo List')
         todos.forEach((i, index) => e.addField(`[ ${index + 1} ]`, `${i}`, true))
         const m = await channel.send(e)
 
