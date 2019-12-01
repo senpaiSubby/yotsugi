@@ -1,15 +1,14 @@
 const { client } = require('../index')
 
 client.on('guildMemberAdd', async (member) => {
-  const { serverConfig, config, Utils } = client
-  const { colors } = config
+  const { serverConfig, Utils } = client
   const { embed } = Utils
 
   const db = await serverConfig.findOne({ where: { id: member.guild.id } })
   const { welcomeChannel, prefix } = JSON.parse(db.dataValues.config)
 
   const e = embed()
-    .setColor(colors.green)
+    .setColor('RANDOM')
     .setThumbnail(member.guild.iconURL)
     .setAuthor(member.user.username, member.user.avatarURL)
     .setTitle(`Welcome To ${member.guild.name}!`)

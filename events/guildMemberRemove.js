@@ -1,15 +1,14 @@
 const { client } = require('../index')
 
 client.on('guildMemberRemove', async (member) => {
-  const { config, serverConfig, Utils } = client
-  const { colors } = config
+  const { serverConfig, Utils } = client
   const { embed } = Utils
 
   const db = await serverConfig.findOne({ where: { id: member.guild.id } })
   const { welcomeChannel } = JSON.parse(db.dataValues.config)
 
   const e = embed()
-    .setColor(colors.yellow)
+    .setColor('RANDOM')
     .setThumbnail(member.guild.iconURL)
     .setAuthor(member.user.username, member.user.avatarURL)
     .setTitle(`Left the server!`)
