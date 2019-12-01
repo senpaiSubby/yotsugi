@@ -34,7 +34,7 @@ module.exports = class Info extends Command {
     const { byExt } = JSON.parse(stdout)
 
     return channel.send(
-      embed(msg)
+      embed('green')
         .setTitle(`Nezuko Status`)
         .setThumbnail(user.avatarURL)
         .addField('Uptime', duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)

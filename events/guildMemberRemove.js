@@ -2,7 +2,8 @@ const { RichEmbed } = require('discord.js')
 const { client } = require('../index')
 
 client.on('guildMemberRemove', async (member) => {
-  const { colors, serverConfig } = client
+  const { config, serverConfig } = client
+  const { colors } = config
 
   const db = await serverConfig.findOne({ where: { id: member.guild.id } })
   const { welcomeChannel } = JSON.parse(db.dataValues.config)

@@ -16,7 +16,7 @@ module.exports = class SpeedTest extends Command {
 
     const test = speedTest({ maxTime: 5000 })
     const m = await msg.channel.send(
-      embed(msg).setDescription(
+      embed('green').setDescription(
         `:desktop: Testing network throughput
 
         :hourglass: Be back in a few seconds`
@@ -29,7 +29,7 @@ module.exports = class SpeedTest extends Command {
       const { location, ping } = data.server
 
       return m.edit(
-        embed(msg)
+        embed('green')
           .addField(':arrow_down: Download', `${download}`, true)
           .addField(' :arrow_up: Upload', `${upload}`, true)
           .addField(':globe_with_meridians: Ping', `${ping}`, true)

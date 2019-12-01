@@ -54,7 +54,7 @@ module.exports = class Todo extends Command {
         if (!todos.length) {
           if (api) return `Todo list is empty!`
           return channel.send(
-            embed(msg, 'yellow')
+            embed('yellow')
               .setTitle(`Todo list is empty!`)
               .setDescription(`\`${p}todos add <todo to add>\` to add one`)
           )
@@ -74,7 +74,7 @@ module.exports = class Todo extends Command {
           '🔟'
         ]
         // setup inital embed
-        const e = embed(msg).setTitle('Todo List')
+        const e = embed('green', 'arch.png').setTitle('Todo List')
         todos.forEach((i, index) => e.addField(`[ ${index + 1} ]`, `${i}`, true))
         const m = await channel.send(e)
 
@@ -108,12 +108,12 @@ module.exports = class Todo extends Command {
           await m.clearReactions()
           if (!todos.length) {
             return m.edit(
-              embed(msg, 'yellow')
+              embed('yellow')
                 .setTitle(`There are no more todos!`)
                 .setDescription(`\`${p}todos add <todo to add>\` to add one`)
             )
           }
-          const newEmbed = embed(msg).setTitle('Todo List')
+          const newEmbed = embed('green').setTitle('Todo List')
           todos.forEach((i, ind) => newEmbed.addField(`[ ${ind + 1} ]`, `${i}`, true))
           await m.edit(newEmbed)
           await asyncForEach(todos, async (i, ind) => {

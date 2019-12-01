@@ -17,17 +17,6 @@ client.generalConfig = Database.Models.generalConfig
 client.serverConfig = Database.Models.serverConfig
 client.memberConfig = Database.Models.memberConfig
 
-client.colors = {
-  red: '#fb4934',
-  green: '#8ec07c',
-  blue: '#83a598',
-  yellow: '#fabd2f',
-  orange: '#d79921',
-  white: '#ebdbb2',
-  black: '#282828',
-  grey: '#928374'
-}
-
 module.exports = { client }
 
 // handle DB config

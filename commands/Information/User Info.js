@@ -28,7 +28,7 @@ module.exports = class UserInfo extends Command {
     const inGuild = msg.guild.members.has(user.id)
     const roles = user.roles.map((role) => role.name)
 
-    const e = embed(msg)
+    const e = embed('green')
       .setTitle(`${user.user.tag}'s User Info`)
       .setThumbnail(user.user.avatarURL)
       .addField('ID:', `${user.id}`, true)

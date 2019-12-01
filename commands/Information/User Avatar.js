@@ -24,7 +24,7 @@ module.exports = class UserAvatar extends Command {
     const avatar = member.user.avatarURL
 
     return channel.send(
-      embed(msg)
+      embed('green')
         .setAuthor(`${member.user.tag}`, avatar)
         .setDescription(`[Avatar URL](${avatar})`)
         .setImage(avatar)

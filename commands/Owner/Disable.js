@@ -62,7 +62,7 @@ module.exports = class Disable extends Command {
 
       if (cannotDisable.length) {
         const m = await channel.send(
-          embed(msg, 'red')
+          embed( 'red')
             .setTitle('The following commands CANNOT be disabled since they are required!')
             .setDescription(`**- ${cannotDisable.join('\n- ')}**`)
         )
@@ -71,7 +71,7 @@ module.exports = class Disable extends Command {
 
       if (alreadyDisabled.length) {
         const m = await channel.send(
-          embed(msg, 'yellow')
+          embed( 'yellow')
             .setTitle('The following commands are already disabled')
             .setDescription(`**- ${alreadyDisabled.join('\n- ')}**`)
         )
@@ -80,7 +80,7 @@ module.exports = class Disable extends Command {
 
       if (willDisable.length) {
         await channel.send(
-          embed(msg)
+          embed('green')
             .setTitle('Disabled the Commands')
             .setDescription(`**- ${willDisable.join('\n- ')}**`)
         )

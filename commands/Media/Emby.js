@@ -90,7 +90,7 @@ module.exports = class Emby extends Command {
 
     let e
     if (!api) {
-      e = embed(msg).setThumbnail(
+      e = embed('green').setThumbnail(
         'https://emby.media/community/public/style_images/master/meta_image1.png'
       )
     }

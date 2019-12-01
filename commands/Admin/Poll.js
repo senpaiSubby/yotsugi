@@ -18,7 +18,7 @@ module.exports = class Poll extends Command {
 
     // * ------------------ Logic --------------------
 
-    const pollembed = embed(msg)
+    const pollembed = embed('green')
       .setFooter('React to vote')
       .setDescription(args.join(' '))
       .setTitle(`Poll created by ${msg.author.username}`)

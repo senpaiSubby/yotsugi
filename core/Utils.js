@@ -5,6 +5,7 @@ const { RichEmbed } = require('discord.js')
 const Promise = require('bluebird')
 const shelljs = require('shelljs')
 const Log = require('./Log')
+const { colors } = require('../data/config')
 
 module.exports = class Utils {
   constructor() {
@@ -109,7 +110,7 @@ module.exports = class Utils {
             return index
           case '🛑': {
             run = false
-            const m = await msg.channel.send(Utils.embed(msg).setDescription('Canceling..'))
+            const m = await msg.channel.send(Utils.embed('green').setDescription('Canceling..'))
             await m.delete(2000)
             await paginated.clearReactions()
             break
@@ -239,14 +240,19 @@ module.exports = class Utils {
   }
 
   // global embed template
-  static embed(msg, color = 'green') {
-    const { colors } = msg.context.client
-    return new RichEmbed().setColor(colors[color] ? colors[color] : color)
+  static embed(color = 'green', image = false) {
+    const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
+
+    if (image) {
+      e.attachFile(`http://127.0.0.1:5700/icons/${image}`, image)
+      e.setThumbnail(`attachment://${image}`)
+    }
+    return e
   }
 
   static missingConfig(msg, name, params) {
     return msg.channel.send(
-      Utils.embed(msg, 'red')
+      Utils.embed('red')
         .setTitle(`:gear: Missing ${name} DB config!`)
         .setDescription(
           `${msg.prefix}db get ${name} for current config.
@@ -259,21 +265,21 @@ module.exports = class Utils {
   }
 
   static errorMessage(msg, text) {
-    return msg.channel.send(Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`))
+    return msg.channel.send(Utils.embed('red').setDescription(`:rotating_light: **${text}**`))
   }
 
   static warningMessage(msg, text) {
-    return msg.channel.send(Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`))
+    return msg.channel.send(Utils.embed('yellow').setDescription(`:warning: **${text}**`))
   }
 
   static standardMessage(msg, text) {
-    return msg.channel.send(Utils.embed(msg).setDescription(`**${text}**`))
+    return msg.channel.send(Utils.embed('green').setDescription(`**${text}**`))
   }
 
   // standard valid options return
   static async validOptions(msg, options) {
     const m = await msg.channel.send(
-      Utils.embed(msg, 'yellow').setDescription(
+      Utils.embed('yellow').setDescription(
         `:grey_question: **Valid options are:\n\n- ${options.join('\n- ')}**`
       )
     )

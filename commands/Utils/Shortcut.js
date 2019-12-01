@@ -36,7 +36,7 @@ module.exports = class Shortcut extends Command {
         let todoList = ''
         shortcuts.forEach((i) => (todoList += `**${i.name} - ${i.command} ${i.arg.join(' ')}**\n`))
         return msg.reply(
-          embed(msg)
+          embed('green')
             .setTitle('Shortcuts')
             .setDescription(todoList)
         )

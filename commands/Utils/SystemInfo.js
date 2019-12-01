@@ -51,7 +51,7 @@ module.exports = class SystemInfo extends Command {
       }
     }
 
-    const ms = await channel.send(embed(msg).setDescription('**:timer: Loading system stats..**'))
+    const ms = await channel.send(embed('green').setDescription('**:timer: Loading system stats..**'))
     await ms.react('🛑')
     const interval = setInterval(async () => {
       const cpuStats = await cpuInfo()
@@ -60,7 +60,7 @@ module.exports = class SystemInfo extends Command {
       const { total, free, used } = ramStats
 
       await ms.edit(
-        embed(msg)
+        embed('green')
           .setTitle(':computer: Live System Stats')
           .addField('Host', `**[${hostname()}] ${type()} ${arch()} ${release()}**`)
           .addField('CPU Cores', cores, true)

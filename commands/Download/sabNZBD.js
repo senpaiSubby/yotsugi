@@ -80,7 +80,7 @@ module.exports = class SabNZBD extends Command {
           data.forEach((item) => {
             const { filename, status, percentage, time, size } = item
             embedList.push(
-              embed(msg)
+              embed('green')
                 .setTitle('SabNZBD Queue')
                 .setThumbnail(
                   'https://dashboard.snapcraft.io/site_media/appmedia/2018/10/icon.svg_WxcxD3g.png'

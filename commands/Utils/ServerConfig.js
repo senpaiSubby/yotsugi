@@ -33,7 +33,7 @@ module.exports = class ServerConfig extends Command {
         delete server.rules
         const keys = Object.keys(server).sort()
 
-        const e = embed(msg)
+        const e = embed('green')
           .setTitle('Server Database Keys')
           .setDescription(`**[ ${p}server set <key> <new value> ] to set new value**`)
 

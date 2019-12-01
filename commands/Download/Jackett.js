@@ -116,7 +116,7 @@ module.exports = class Jackett extends Command {
       results.forEach((i) => {
         const { name, tracker, link, size, seeders, peers } = i
         embedList.push(
-          embed(msg)
+          embed('green')
             .setTitle(`Torrent Results [ ${args.join(' ')} ]`)
             .setThumbnail(
               'https://www.plagiarismtoday.com/wp-content/uploads/2017/06/bittorrent-06-535x535-250x250.png'

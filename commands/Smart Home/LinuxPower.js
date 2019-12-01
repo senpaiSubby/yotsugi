@@ -71,7 +71,7 @@ module.exports = class LinuxPower extends Command {
     switch (args[0]) {
       case 'list': {
         // todo add listing functionality
-        return channel.send(embed(msg))
+        return channel.send(embed('green'))
       }
 
       default: {

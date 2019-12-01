@@ -61,7 +61,7 @@ module.exports = class Help extends Command {
       const newSorted = groupBy(sorted, 'category')
       const embedList = []
       Object.keys(newSorted).forEach((key) => {
-        const e = Utils.embed(msg)
+        const e = Utils.embed('green')
           .setTitle(`${client.user.username} Help - ${key}`)
           .setThumbnail(client.user.avatarURL)
         newSorted[key].forEach((i) => {
@@ -78,7 +78,7 @@ module.exports = class Help extends Command {
     msg.delete(10000)
     if (command && checkPerms(command)) {
       const m = await channel.send(
-        embed(msg)
+        embed('green')
           .setTitle(`Help - ${capitalize(command.name)}`)
           .setDescription(
             `**${command.description}**\n\`\`\`css\n${command.usage.join('\n')}\n\`\`\`\n${

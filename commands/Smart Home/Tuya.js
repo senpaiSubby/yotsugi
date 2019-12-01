@@ -116,7 +116,7 @@ module.exports = class Tuya extends Command {
         const deviceList = await listPlugs()
         if (deviceList) {
           if (api) return deviceList
-          const e = embed(msg).setTitle(':electric_plug: Smart Plugs')
+          const e = embed('green').setTitle(':electric_plug: Smart Plugs')
 
           deviceList.forEach((device) => e.addField(`${device.name}`, `Status: ${device.status}`))
           return channel.send(e)

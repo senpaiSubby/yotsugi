@@ -132,7 +132,7 @@ module.exports = class Transmission extends Command {
           data.forEach((item) => {
             const { name, id, status, percentage, rate, size } = item
             embedList.push(
-              embed(msg)
+              embed('green')
                 .setTitle('Transmission Queue')
                 .setThumbnail(
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transmission_Icon.svg/1200px-Transmission_Icon.svg.png'

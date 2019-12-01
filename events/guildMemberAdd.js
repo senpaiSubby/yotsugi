@@ -2,7 +2,8 @@ const { RichEmbed } = require('discord.js')
 const { client } = require('../index')
 
 client.on('guildMemberAdd', async (member) => {
-  const { colors, serverConfig } = client
+  const { serverConfig, config } = client
+  const { colors } = config
 
   const db = await serverConfig.findOne({ where: { id: member.guild.id } })
   const { welcomeChannel, prefix } = JSON.parse(db.dataValues.config)

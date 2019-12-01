@@ -27,7 +27,7 @@ module.exports = class Disabled extends Command {
     disabledCommands.forEach((i) => commandList.push(i.command))
     if (commandList.length) {
       return channel.send(
-        embed(msg)
+        embed('green')
           .setTitle('Disabled Commands')
           .setDescription(`**- ${commandList.join('\n- ')}**`)
       )

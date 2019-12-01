@@ -37,7 +37,7 @@ module.exports = class RemoveRole extends Command {
 
     try {
       return rMember.send(
-        embed(msg, 'yellow').setDescription(
+        embed( 'yellow').setDescription(
           `**You have been removed from the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
         )
       )

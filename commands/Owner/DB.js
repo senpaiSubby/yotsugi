@@ -37,7 +37,7 @@ module.exports = class DB extends Command {
           delete config.routines
           delete config.shortcuts
 
-          const e = embed(msg).setTitle('Database Keys').setDescription(`**[ ${p}db get <key> ]
+          const e = embed('green').setTitle('Database Keys').setDescription(`**[ ${p}db get <key> ]
             for more detailed info**`)
 
           const splitArray = chunkArray(Object.keys(config).sort(), 7)
@@ -50,7 +50,7 @@ module.exports = class DB extends Command {
         }
         if (key1 in config) {
           const keys = Object.keys(config[key1])
-          const e = embed(msg)
+          const e = embed('green')
             .setTitle(`Database Keys [ ${key1} ]`)
             .setDescription(
               `**[ ${p}db set ${key1} <${keys.join(' | ')}> <new value> ] to change**`

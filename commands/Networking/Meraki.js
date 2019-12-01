@@ -92,7 +92,7 @@ module.exports = class Meraki extends Command {
           const embedList = []
           status.devices.forEach((i) => {
             embedList.push(
-              embed(msg)
+              embed('green')
                 .setTitle('Meraki Devices')
                 .setThumbnail(
                   'https://pmcvariety.files.wordpress.com/2015/10/cisco-logo1.jpg?w=1000'

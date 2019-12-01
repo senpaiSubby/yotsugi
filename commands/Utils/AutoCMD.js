@@ -216,7 +216,7 @@ module.exports = class AutoCMD extends Command {
 
         const embedList = []
         autocmd.forEach((i) => {
-          const e = embed(msg).setTitle(`Autocmds - [ ${i.time} ]`)
+          const e = embed('green').setTitle(`Autocmds - [ ${i.time} ]`)
           i.commands.forEach((c, index) => {
             const status = c[0] ? ':green_square:' : ':red_square:'
             e.addField(`[ ${index + 1} ]`, `**${status} ${c[1]}**`, true)

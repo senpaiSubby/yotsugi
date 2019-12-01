@@ -29,7 +29,7 @@ module.exports = class GetServerInvite extends Command {
 
     if (list.length) {
       return channel.send(
-        embed(msg)
+        embed('green')
           .setTitle('I found the following existing invites')
           .setDescription(`**- https://discord.gg/${list.join('\n- https://discord.gg/')}**`)
       )
@@ -44,7 +44,7 @@ module.exports = class GetServerInvite extends Command {
 
     const newInvite = await invitechannels.random().createInvite()
     return channel.send(
-      embed(msg)
+      embed('green')
         .setTitle('I created a new invite')
         .setDescription(`**- ${newInvite}**`)
     )

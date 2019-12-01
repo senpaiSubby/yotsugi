@@ -62,7 +62,7 @@ module.exports = class Enable extends Command {
 
       if (alreadyEnabled.length) {
         const m = await channel.send(
-          embed(msg, 'yellow')
+          embed( 'yellow')
             .setTitle('The following commands are already enabled')
             .setDescription(`**- ${alreadyEnabled.join('\n- ')}**`)
         )
@@ -71,7 +71,7 @@ module.exports = class Enable extends Command {
 
       if (willEnable.length) {
         await channel.send(
-          embed(msg)
+          embed('green')
             .setTitle('Enabled the Commands')
             .setDescription(`**- ${willEnable.join('\n- ')}**`)
         )

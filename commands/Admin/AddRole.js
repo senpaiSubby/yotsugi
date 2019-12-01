@@ -38,7 +38,7 @@ module.exports = class AddRole extends Command {
 
     try {
       return rMember.send(
-        embed(msg).setDescription(
+        embed('green').setDescription(
           `**You have been given the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
         )
       )

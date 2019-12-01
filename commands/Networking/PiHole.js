@@ -47,7 +47,7 @@ module.exports = class PiHole extends Command {
         const text = newState === 'enable' ? 'enabled' : 'disabled'
         const color = newState === 'enable' ? 'green' : 'red'
         if (api) return `PiHole ${text}`
-        return channel.send(embed(msg, color).setDescription(`**PiHole ${text}**`))
+        return channel.send(embed( color).setDescription(`**PiHole ${text}**`))
       } catch (e) {
         if (api) return `Failed to connect to PiHole`
         Log.error('PiHole', 'Failed to connect to PiHole', e)
@@ -84,7 +84,7 @@ module.exports = class PiHole extends Command {
         const status = await getStats()
         if (status) {
           return channel.send(
-            embed(msg)
+            embed('green')
               .attachFile('./data/images/icons/pihole.png')
               .setThumbnail('attachment://pihole.png')
               .setTitle('PiHole Stats')

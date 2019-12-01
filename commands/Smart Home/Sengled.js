@@ -166,7 +166,7 @@ module.exports = class Sengled extends Command {
       switch (option) {
         case 'list': {
           if (api) return devices
-          const e = embed(msg).setTitle(':bulb: Lights')
+          const e = embed('green').setTitle(':bulb: Lights')
           devices.forEach((device) => {
             e.addField(
               `${device.name}`,

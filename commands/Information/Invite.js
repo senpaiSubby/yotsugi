@@ -29,7 +29,7 @@ module.exports = class Invite extends Command {
     ])
 
     return channel.send(
-      embed(msg)
+      embed('green')
         .setTitle('SubbyBot')
         .setDescription(
           'Thanks for showing interest in SubbyBot! Click the link below to invite her to your server.'

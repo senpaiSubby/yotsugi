@@ -20,16 +20,16 @@ module.exports = class restart extends Command {
     let count = 10
 
     const m = await channel.send(
-      embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`)
+      embed( 'yellow').setDescription(`Restarting in ${count} seconds..`)
     )
     const interval = setInterval(async () => {
       if (count === 0) {
-        await m.edit(embed(msg, 'yellow').setDescription(`Restarting..`))
+        await m.edit(embed( 'yellow').setDescription(`Restarting..`))
         clearInterval(interval)
         return process.exit()
       }
       count--
-      await m.edit(embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`))
+      await m.edit(embed( 'yellow').setDescription(`Restarting in ${count} seconds..`))
     }, 1000)
   }
 }

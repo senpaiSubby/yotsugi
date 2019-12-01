@@ -43,7 +43,7 @@ module.exports = class BanUser extends Command {
     if (!target) return warningMessage(msg, `Please specify a member to ban!`)
     if (!reason) return warningMessage(msg, `Please specify a reason for this ban!`)
 
-    const e = embed(msg, 'red')
+    const e = embed( 'red')
       .setThumbnail(target.user.avatarURL)
       .addField('Banned Member', `**${target.user.username}** with an ID: ${target.user.id}`)
       .addField('Banned By', `**${author.username}** with an ID: ${author.id}`)

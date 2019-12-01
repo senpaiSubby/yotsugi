@@ -38,7 +38,7 @@ module.exports = class YoutubeSearch extends Command {
         const { publishedAt, title } = i.snippet
         const thumbnail = thumbnails.high.url
         results.push(
-          embed(msg, 'red')
+          embed( 'red')
             .setTitle(`YT - ${title}`)
             .setURL(`https://youtube.com/watch?v=${videoId})`)
             .addField('Channel', channelTitle, true)

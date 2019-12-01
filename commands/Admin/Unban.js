@@ -50,7 +50,7 @@ module.exports = class UnbanUser extends Command {
     await guild.unban(target, reason)
 
     return serverLogsChannel.send(
-      embed(msg)
+      embed('green')
         .addField('Unbanned Member', `**${target.username}** with an ID: ${target.id}`)
         .addField('Unbanned By', `**${author.username}** with an ID: ${author.id}`)
         .addField('Unbanned Time', msg.createdAt)

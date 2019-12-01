@@ -59,7 +59,7 @@ module.exports = class Rules extends Command {
       default: {
         if (!rules.length) {
           return msg.reply(
-            embed(msg, 'yellow')
+            embed( 'yellow')
               .setTitle(`There are no rules!`)
               .setDescription(`\`${prefix}rules add <rule to add>\`\nTo add some!`)
           )
@@ -70,7 +70,7 @@ module.exports = class Rules extends Command {
           ruleList += `${index + 1} | ${i}\n`
         })
         return msg.reply(
-          embed(msg)
+          embed('green')
             .setTitle('Rules')
             .setDescription(ruleList)
         )

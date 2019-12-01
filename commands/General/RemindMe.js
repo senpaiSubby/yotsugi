@@ -36,7 +36,7 @@ module.exports = class RemindMe extends Command {
 
     setTimeout(() => {
       return author.send(
-        embed(msg).setDescription(
+        embed('green').setDescription(
           `**It's been [ ${ms(ms(Timer), {
             long: true
           })} ] Here's your reminder to [ ${notice} ]**`
