@@ -5,7 +5,7 @@ module.exports = class Enable extends Command {
     super(client, {
       name: 'enable',
       category: 'Owner',
-      description: 'Enable commands you have disabled',
+      description: 'Enable disabled commands',
       usage: ['enable <command name>', 'enable all'],
       args: true,
       ownerOnly: true

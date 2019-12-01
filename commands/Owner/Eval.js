@@ -5,7 +5,7 @@ module.exports = class Evaluator extends Command {
     super(client, {
       name: 'eval',
       category: 'Owner',
-      description: 'Evals Code',
+      description: 'Eval javascript code',
       ownerOnly: true
     })
   }

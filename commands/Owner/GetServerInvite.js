@@ -3,9 +3,9 @@ const Command = require('../../core/Command')
 module.exports = class GetServerInvite extends Command {
   constructor(client) {
     super(client, {
-      name: 'bd',
+      name: 'getInvite',
       category: 'Owner',
-      description: 'Creates invite to any guild the bot is on',
+      description: 'Creates invites to guilds the bot is on',
       usage: ['bd <guild ID>'],
       ownerOnly: true,
       args: true

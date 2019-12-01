@@ -7,7 +7,7 @@ module.exports = class LinuxPower extends Command {
     super(client, {
       name: 'pc',
       category: 'Smart Home',
-      description: 'Power linux systems on/off',
+      description: 'Linux system power control',
       usage: [`system gaara off`, `pc thinkboi reboot`],
       aliases: ['system'],
       ownerOnly: true,

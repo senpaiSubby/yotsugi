@@ -8,7 +8,7 @@ module.exports = class Info extends Command {
     super(client, {
       name: 'info',
       category: 'Information',
-      description: 'Learn about the bot.'
+      description: 'Info about Nezuko'
     })
   }
 

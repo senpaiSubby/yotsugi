@@ -7,7 +7,7 @@ module.exports = class PioneerAVR extends Command {
     super(client, {
       name: 'avr',
       category: 'Smart Home',
-      description: 'Pioneer AVR Controller',
+      description: 'Pioneer AVR controller',
       usage: [`avr vol <1-100>`, `avr <off/on>`, `avr <mute>`],
       aliases: ['vol'],
       ownerOnly: true,

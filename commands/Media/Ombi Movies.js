@@ -11,7 +11,7 @@ module.exports = class OmbiMovies extends Command {
     super(client, {
       name: 'movie',
       category: 'Media',
-      description: 'Search and Request Movies in Ombi.',
+      description: 'Search and request movies via Ombi',
       usage: [`movie <Movie Name>`, `movie tmdb:603`],
       aliases: ['film'],
       args: true

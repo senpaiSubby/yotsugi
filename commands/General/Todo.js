@@ -5,7 +5,7 @@ module.exports = class Todo extends Command {
     super(client, {
       name: 'todos',
       category: 'General',
-      description: 'Your personal todo list',
+      description: 'A personal todo list',
       aliases: ['todo'],
       usage: ['todo add do the dishes', 'todo list'],
       args: true,

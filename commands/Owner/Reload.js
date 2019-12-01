@@ -5,7 +5,7 @@ module.exports = class Reload extends Command {
     super(client, {
       name: 'reload',
       category: 'Owner',
-      description: 'Reloads Commands',
+      description: 'Reloads commands',
       aliases: ['reset', 'flush'],
       ownerOnly: true
     })

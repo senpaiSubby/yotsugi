@@ -6,7 +6,7 @@ module.exports = class RemindMe extends Command {
     super(client, {
       name: 'remindme',
       category: 'General',
-      description: 'Sets a reminder with a message',
+      description: 'Set some reminders',
       usage: [
         'remindme 10s do the dishes',
         'remindme 1h make memes',

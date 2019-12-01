@@ -6,7 +6,7 @@ module.exports = class Meraki extends Command {
     super(client, {
       name: 'meraki',
       category: 'Networking',
-      description: 'Meraki network statistics',
+      description: 'Meraki network info',
       usage: [`meraki list`],
       ownerOnly: true,
       webUI: true,

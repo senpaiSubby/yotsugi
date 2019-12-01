@@ -5,7 +5,7 @@ module.exports = class Help extends Command {
     super(client, {
       name: 'help',
       category: 'Information',
-      description: 'Gets Help On Commands',
+      description: 'Get command help',
       aliases: ['halp'],
       guildOnly: true
     })

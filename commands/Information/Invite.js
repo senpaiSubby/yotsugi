@@ -5,7 +5,7 @@ module.exports = class Invite extends Command {
     super(client, {
       name: 'invite',
       category: 'Information',
-      description: 'Invite Subby to your own server'
+      description: 'Invite Nezuko to your own server'
     })
   }
 
@@ -30,9 +30,9 @@ module.exports = class Invite extends Command {
 
     return channel.send(
       embed('green')
-        .setTitle('SubbyBot')
+        .setTitle('Nezuko')
         .setDescription(
-          'Thanks for showing interest in SubbyBot! Click the link below to invite her to your server.'
+          'Thanks for showing interest in Nezuko! Click the link below to invite her to your server.'
         )
         .setThumbnail(client.user.avatarURL)
         .addField('\u200b', `[Click Here](${invite})`)

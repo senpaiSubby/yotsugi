@@ -5,7 +5,7 @@ module.exports = class SetName extends Command {
     super(client, {
       name: 'setname',
       category: 'Owner',
-      description: 'Set the bot username',
+      description: 'Set the bots username',
       usage: ['setname <new name>'],
       ownerOnly: true,
       args: true

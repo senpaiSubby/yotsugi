@@ -5,7 +5,7 @@ module.exports = class Ping extends Command {
     super(client, {
       name: 'ping',
       category: 'Networking',
-      description: 'Check discord latency.',
+      description: 'Check discord latency',
       ownerOnly: true
     })
   }
@@ -18,6 +18,6 @@ module.exports = class Ping extends Command {
 
     // * ------------------ Logic --------------------
 
-    return standardMessage(msg, `Pong! Your ping is ${Date.now() - createdTimestamp} ms`)
+    return standardMessage(msg, `Pong! Your ping is [ ${Date.now() - createdTimestamp} ] ms`)
   }
 }

@@ -5,7 +5,7 @@ module.exports = class Disable extends Command {
     super(client, {
       name: 'disable',
       category: 'Owner',
-      description: 'Disable commands you dont want to use',
+      description: 'Disable commands',
       usage: ['disable <command name>', 'disable all'],
       args: true,
       ownerOnly: true

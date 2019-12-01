@@ -5,7 +5,7 @@ module.exports = class ArchiveBox extends Command {
     super(client, {
       name: 'archive',
       category: 'Download',
-      description: 'Archive web pages with ArchiveBox',
+      description: 'Archive web pages via ArchiveBox',
       usage: ['a <url to archive>'],
       aliases: ['a'],
       args: true,

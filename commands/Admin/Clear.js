@@ -5,7 +5,7 @@ module.exports = class Clear extends Command {
     super(client, {
       name: 'clear',
       category: 'Admin',
-      description: 'Removes # of messages',
+      description: 'Removes messages',
       usage: [`clear <0-100>`, 'clear <@user> <0-100>'],
       aliases: ['delete', 'rm', 'purge'],
       guildOnly: true,

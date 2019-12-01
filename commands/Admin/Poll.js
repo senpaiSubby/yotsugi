@@ -5,7 +5,7 @@ module.exports = class Poll extends Command {
     super(client, {
       name: 'poll',
       category: 'Admin',
-      description: 'Template',
+      description: 'Poll your members',
       usage: ['poll <whats the poll for?>'],
       permsNeeded: ['ADMINISTRATOR']
     })

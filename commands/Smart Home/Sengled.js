@@ -1,4 +1,4 @@
-const { get, post } = require('unirest')
+const { post } = require('unirest')
 const Command = require('../../core/Command')
 
 module.exports = class Sengled extends Command {
@@ -6,7 +6,7 @@ module.exports = class Sengled extends Command {
     super(client, {
       name: 'lights',
       category: 'Smart Home',
-      description: 'Sengled Light Control',
+      description: 'Sengled light control',
       usage: [`lights desk`, `lights list`],
       aliases: ['light', 'lamp', 'sengled'],
       ownerOnly: true,

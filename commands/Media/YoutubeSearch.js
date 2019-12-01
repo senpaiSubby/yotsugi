@@ -6,7 +6,7 @@ module.exports = class YoutubeSearch extends Command {
     super(client, {
       name: 'yt',
       category: 'Media',
-      description: 'Search Youtube',
+      description: 'Search Youtube videos',
       usage: ['yt <video to search for>'],
       args: true
     })

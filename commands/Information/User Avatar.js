@@ -5,7 +5,7 @@ module.exports = class UserAvatar extends Command {
     super(client, {
       name: 'avatar',
       category: 'Information',
-      description: 'Show the avatar of users.',
+      description: 'Show the avatar of users',
       usage: [`avatar`, `avatar @user`],
       guildOnly: true
     })

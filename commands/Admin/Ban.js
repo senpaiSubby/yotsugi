@@ -5,7 +5,7 @@ module.exports = class BanUser extends Command {
     super(client, {
       name: 'ban',
       category: 'Admin',
-      description: 'Ban a user',
+      description: 'The ban hammer',
       usage: ['ban @user <reason for ban>'],
       guildOnly: true,
       args: true,
@@ -43,7 +43,7 @@ module.exports = class BanUser extends Command {
     if (!target) return warningMessage(msg, `Please specify a member to ban!`)
     if (!reason) return warningMessage(msg, `Please specify a reason for this ban!`)
 
-    const e = embed( 'red')
+    const e = embed('red')
       .setThumbnail(target.user.avatarURL)
       .addField('Banned Member', `**${target.user.username}** with an ID: ${target.user.id}`)
       .addField('Banned By', `**${author.username}** with an ID: ${author.id}`)

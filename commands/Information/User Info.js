@@ -7,7 +7,7 @@ module.exports = class UserInfo extends Command {
     super(client, {
       name: 'userinfo',
       category: 'Information',
-      description: 'Get info on yourself and others.',
+      description: 'Get info on yourself and others',
       usage: [`userinfo`, `userinfo @user`],
       aliases: ['user'],
       guildOnly: true

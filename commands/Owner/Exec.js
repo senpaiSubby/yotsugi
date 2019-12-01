@@ -5,7 +5,7 @@ module.exports = class Executor extends Command {
     super(client, {
       name: 'exec',
       category: 'Owner',
-      description: 'Executes shell commands',
+      description: 'Run shell commands',
       ownerOnly: true,
       args: true,
       usage: ['exec <command>']

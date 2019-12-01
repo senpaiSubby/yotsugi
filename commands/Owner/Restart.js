@@ -5,7 +5,7 @@ module.exports = class restart extends Command {
     super(client, {
       name: 'restart',
       category: 'Owner',
-      description: 'Restarts the bot.',
+      description: 'Restarts Nezuko',
       ownerOnly: true
     })
   }
@@ -19,17 +19,15 @@ module.exports = class restart extends Command {
     // * ------------------ Logic --------------------
     let count = 10
 
-    const m = await channel.send(
-      embed( 'yellow').setDescription(`Restarting in ${count} seconds..`)
-    )
+    const m = await channel.send(embed('yellow').setDescription(`Restarting in ${count} seconds..`))
     const interval = setInterval(async () => {
       if (count === 0) {
-        await m.edit(embed( 'yellow').setDescription(`Restarting..`))
+        await m.edit(embed('yellow').setDescription(`Restarting..`))
         clearInterval(interval)
         return process.exit()
       }
       count--
-      await m.edit(embed( 'yellow').setDescription(`Restarting in ${count} seconds..`))
+      await m.edit(embed('yellow').setDescription(`Restarting in ${count} seconds..`))
     }, 1000)
   }
 }

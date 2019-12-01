@@ -6,7 +6,7 @@ module.exports = class SystemIP extends Command {
     super(client, {
       name: 'ip',
       category: 'Networking',
-      description: 'Show Server IP',
+      description: 'Get the server IP',
       usage: [`ip <external/local>`],
       ownerOnly: true,
       args: false,

@@ -11,7 +11,7 @@ module.exports = class OmbiTV extends Command {
     super(client, {
       name: 'tv',
       category: 'Media',
-      description: 'Search and Request TV Shows in Ombi.',
+      description: 'Search and request TV Shows via Ombi',
       usage: [`tv <Series Name>`],
       aliases: ['shows', 'series'],
       args: true

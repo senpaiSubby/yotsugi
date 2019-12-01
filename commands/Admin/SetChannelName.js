@@ -5,7 +5,7 @@ module.exports = class SetChannelName extends Command {
     super(client, {
       name: 'cname',
       category: 'Admin',
-      description: 'Sets a channel name',
+      description: 'Rename channels',
       usage: ['cname <channelID> <newName>'],
       aliases: ['channelname'],
       args: true,

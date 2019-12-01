@@ -6,7 +6,7 @@ module.exports = class SpeedTest extends Command {
     super(client, {
       name: 'speedtest',
       category: 'Networking',
-      description: 'Runs a speedtest'
+      description: 'Runs a network speedtest'
     })
   }
 

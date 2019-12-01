@@ -6,7 +6,7 @@ module.exports = class RClone extends Command {
     super(client, {
       name: 'rclone',
       category: 'General',
-      description: 'Gets info on the Rclone folder you specify',
+      description: 'Get info on RClone directories',
       usage: ['rclone size /Unsorted', 'rclone ls /folder/to/check'],
       args: true,
       aliases: ['drive']
@@ -21,7 +21,6 @@ module.exports = class RClone extends Command {
       errorMessage,
       warningMessage,
       validOptions,
-      standardMessage,
       embed,
       bytesToSize,
       millisecondsToTime,

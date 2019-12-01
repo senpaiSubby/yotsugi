@@ -7,7 +7,7 @@ module.exports = class Emby extends Command {
     super(client, {
       name: 'emby',
       category: 'Media',
-      description: 'Gets library stats on Emby.',
+      description: 'Emby media info',
       usage: ['emby streams', 'emby stats', 'emby recent <movies/series>'],
       args: true,
       webUI: true

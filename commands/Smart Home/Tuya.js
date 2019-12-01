@@ -6,7 +6,7 @@ module.exports = class Tuya extends Command {
     super(client, {
       name: 'plug',
       category: 'Smart Home',
-      description: 'Tuya Plug Control',
+      description: 'Tuya plug control',
       usage: [`plug <name>`],
       aliases: ['socket', 'tuya'],
       ownerOnly: true,
