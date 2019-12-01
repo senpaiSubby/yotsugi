@@ -66,7 +66,7 @@ Nezuko has a built in web UI / API server for remotely running commands. For API
 
 <!------------------------- GETTING STARTED ------------------------->
 
-<h2 align="center"><b>Getting Started</b></h2>
+<h2 align="center"><b>Prerequisites</b></h2>
 
 To get a local copy up and running follow these simple steps.
 
@@ -100,13 +100,36 @@ sudo pacman -S yarn
 > yarn install
 ```
 
-4. Setup Bot Token and Prefix
+<h2 align="center"><b>Setup</b></h2>
+
+1. Setup Bot Token and Prefix
 
 > Navigate to /nezuko/data and rename `config.js.sample` to `config.js`. Open the file and edit as needed.
 
-5. Setup Command Configs
+2. Setup Command Configs
 
-> All commands and other settings are setup after the bot is added to your server. Either by running `db get` which will list all the settings you can edit and how to edit them or by navigating to `http://botIP:5700` and setting up your details there. Everything is saved to the database at `/nezuko/data/db.sqlite`.
+> All commands and other settings are setup after the bot is added to your server. Either by running `config get` which will list all the settings you can edit and how to edit them or by navigating to `http://botIP:5700` and setting up your details there. Everything is saved to the database at `/nezuko/data/db.sqlite`.
+
+If you would like to run Nezuko as a Docker container you'll need to build the image yourself.
+
+1. Clone the repo to a folder of choice
+2. CD into the folder and inside the folder `data` rename `config.js.sample` to `config.js` and enter your discord user ID and your bot token.
+3. Navigate back into the main directory and run `docker build -t nezuko .`
+4. After the build is finished you can run Nezuko with `docker run -p 570:5700 --name nezuko nezuko`. If you'd rather use Docker-Compose as I do then you can use the following sample config. Simply save it as `docker-compose.yml` and run `docker-compose up -d` to start her up. The webUI will be available at `http://BOTIP:5700`.
+
+```json
+version: '3'
+services:
+  vscode:
+    image: nezuko
+    container_name: nezuko
+    volumes:
+      - ./config:/app/data # if you use a host directory for config make sure you copy the config.js file into it before running the bot
+    ports:
+      - 5700:5700
+    network_mode: bridge
+    restart: unless-stopped
+```
 
 <h2 align="center"><b>Roadmap</b></h2>
 
