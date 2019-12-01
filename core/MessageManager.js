@@ -74,9 +74,6 @@ module.exports = class MessageManager {
     if (channel.type === 'text') {
       const db = await serverConfig.findOne({ where: { id: guild.id } })
       const messages = JSON.parse(db.dataValues.messages)
-      const { ignoredChannels } = messages
-
-      if (ignoredChannels.includes(channel.id)) return
 
       if (!messages.channels[channel.id]) messages.channels[channel.id] = []
 
