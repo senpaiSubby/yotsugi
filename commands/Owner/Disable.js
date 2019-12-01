@@ -16,7 +16,7 @@ module.exports = class Disable extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { warningMessage, embed } = Utils
+    const { warningMessage, embed, asyncForEach } = Utils
     const { channel } = msg
 
     const nonDisableable = ['disable', 'disabled', 'enable', 'help']
@@ -43,7 +43,7 @@ module.exports = class Disable extends Command {
       const willDisable = []
       const cannotDisable = []
 
-      await commands.forEach(async (i) => {
+      await asyncForEach(commands, async (i) => {
         const cmd = msg.context.findCommand(i)
         if (!cmd) return warningMessage(msg, `No command named [ ${i} ]`)
         if (!nonDisableable.includes(i)) {
@@ -62,7 +62,7 @@ module.exports = class Disable extends Command {
 
       if (cannotDisable.length) {
         const m = await channel.send(
-          embed( 'red')
+          embed('red')
             .setTitle('The following commands CANNOT be disabled since they are required!')
             .setDescription(`**- ${cannotDisable.join('\n- ')}**`)
         )
@@ -71,7 +71,7 @@ module.exports = class Disable extends Command {
 
       if (alreadyDisabled.length) {
         const m = await channel.send(
-          embed( 'yellow')
+          embed('yellow')
             .setTitle('The following commands are already disabled')
             .setDescription(`**- ${alreadyDisabled.join('\n- ')}**`)
         )

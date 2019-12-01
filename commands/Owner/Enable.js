@@ -16,7 +16,7 @@ module.exports = class Enable extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { warningMessage, embed } = Utils
+    const { warningMessage, embed, asyncForEach } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -40,7 +40,7 @@ module.exports = class Enable extends Command {
       const alreadyEnabled = []
       const willEnable = []
 
-      await commands.forEach(async (i) => {
+      await asyncForEach(commands, async (i) => {
         const cmd = msg.context.findCommand(i)
         if (!cmd) return warningMessage(msg, `No command named [ ${i} ]`)
 
@@ -50,7 +50,7 @@ module.exports = class Enable extends Command {
 
         if (isDisabled) {
           willEnable.push(i)
-          await disabledCommands.forEach(async (c, index) => {
+          await asyncForEach(disabledCommands, async (c, index) => {
             const { aliases, command } = c
 
             if (aliases.includes(i) || command === i) disabledCommands.splice(index, 1)
@@ -62,7 +62,7 @@ module.exports = class Enable extends Command {
 
       if (alreadyEnabled.length) {
         const m = await channel.send(
-          embed( 'yellow')
+          embed('yellow')
             .setTitle('The following commands are already enabled')
             .setDescription(`**- ${alreadyEnabled.join('\n- ')}**`)
         )

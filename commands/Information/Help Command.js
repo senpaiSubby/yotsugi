@@ -62,10 +62,21 @@ module.exports = class Help extends Command {
       const embedList = []
       Object.keys(newSorted).forEach((key) => {
         const e = Utils.embed('green')
-          .setTitle(`${client.user.username} Help - ${key}`)
+          .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
+          .setDescription(
+            `**Prefix is \`${prefix}\` | \`${prefix}help [ command ]\` for more info**`
+          )
         newSorted[key].forEach((i) => {
-          e.addField(`${prefix}${i.name}`, `${i.description}`, true)
+          let aliases = ''
+          if (i.aliases.length) {
+            if (i.aliases.length > 1) {
+              aliases += `| ${i.aliases.join(' | ')}`
+            } else {
+              aliases += `| ${i.aliases}`
+            }
+          }
+          e.addField(`**${i.name} ${aliases}**`, `${i.description}`, true)
         })
         embedList.push(e)
       })

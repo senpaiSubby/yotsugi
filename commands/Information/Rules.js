@@ -59,16 +59,14 @@ module.exports = class Rules extends Command {
       default: {
         if (!rules.length) {
           return msg.reply(
-            embed( 'yellow')
+            embed('yellow')
               .setTitle(`There are no rules!`)
               .setDescription(`\`${prefix}rules add <rule to add>\`\nTo add some!`)
           )
         }
 
         let ruleList = ''
-        rules.forEach((i, index) => {
-          ruleList += `${index + 1} | ${i}\n`
-        })
+        rules.forEach((i, index) => (ruleList += `${index + 1} | ${i}\n`))
         return msg.reply(
           embed('green')
             .setTitle('Rules')

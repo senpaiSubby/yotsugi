@@ -121,7 +121,14 @@ module.exports = class Emby extends Command {
           currentStreams.forEach((i) => {
             e.addField(
               `\u200b`,
-              `**Username**\n- ${i.user}\n**Client Type**\n- ${i.client}\n**Device Name**\n- ${i.device}\n**Playing Item**\n- ${i.item}\n`,
+              `**Username**
+              - ${i.user}
+              **Client Type**
+              - ${i.client}
+              **Device Name**
+              - ${i.device}
+              **Playing Item**
+              - ${i.item}\n`,
               true
             )
           })
@@ -159,9 +166,9 @@ module.exports = class Emby extends Command {
             case 'movies': {
               embed.setTitle('Recently added movies')
               let text = ''
-              stats.forEach((key, index) => {
-                text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`
-              })
+              stats.forEach(
+                (key, index) => (text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`)
+              )
               embed.setDescription(text)
               return channel.send(embed)
             }

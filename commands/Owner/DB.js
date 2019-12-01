@@ -7,6 +7,7 @@ module.exports = class DB extends Command {
       category: 'Owner',
       description: 'Get/Set data in the DB',
       usage: ['db get', 'db get emby', 'db set emby host https://emby.url'],
+      aliases: ['config'],
       ownerOnly: true,
       args: true
     })

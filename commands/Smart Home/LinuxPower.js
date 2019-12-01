@@ -20,7 +20,7 @@ module.exports = class LinuxPower extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, Log } = client
-    const { errorMessage, validOptions, standardMessage, embed } = Utils
+    const { errorMessage, validOptions, standardMessage, embed, capitalize } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -51,18 +51,18 @@ module.exports = class LinuxPower extends Command {
 
           if (statusCode === 200) {
             const text = command === 'reboot' ? 'reboot' : 'power off'
-            if (api) return `Told [ ${name} ] to [ ${text} ]`
-            return standardMessage(msg, `:desktop: Told [ ${name} ] to [ ${text}] `)
+            if (api) return `Told [ ${capitalize(name)} ] to [ ${text} ]`
+            return standardMessage(msg, `:desktop: Told [ ${capitalize(name)} ] to [ ${text}] `)
           }
         } catch (e) {
-          if (api) return `Failed to connect to ${name}`
-          Log.error('System Power Control', `Failed to connect to [ ${name} ]`, e)
-          await errorMessage(msg, `Failed to connect to [ ${name} ]`)
+          if (api) return `Failed to connect to ${capitalize(name)}`
+          Log.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
+          await errorMessage(msg, `Failed to connect to [ ${capitalize(name)} ]`)
         }
       } else if (command === 'on') {
         await wol.wake(mac)
-        if (api) return `Sent WOL to [ ${name} ]`
-        return standardMessage(msg, `:desktop: Sent WOL to [ ${name} ]`)
+        if (api) return `Sent WOL to [ ${capitalize(name)} ]`
+        return standardMessage(msg, `:desktop: Sent WOL to [ ${capitalize(name)} ]`)
       }
     }
 

@@ -20,7 +20,7 @@ module.exports = class PiHole extends Command {
     // * ------------------ Setup --------------------
 
     const { p, Log, Utils } = client
-    const { errorMessage, validOptions, missingConfig, embed } = Utils
+    const { errorMessage, validOptions, missingConfig, embed, capitalize } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -87,7 +87,7 @@ module.exports = class PiHole extends Command {
           return channel.send(
             embed(statusColor, 'pi.png')
               .setTitle('PiHole Stats')
-              .addField('Status', status.status)
+              .addField('Status', capitalize(status.status))
               .addField('Domains Being Blocked', status.domainsBeingBlocked)
               .addField('Total Queries', status.totalQueries)
               .addField('Queries Today', status.queriesToday)

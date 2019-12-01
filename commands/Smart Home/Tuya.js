@@ -8,7 +8,7 @@ module.exports = class Tuya extends Command {
       category: 'Smart Home',
       description: 'Tuya Plug Control',
       usage: [`plug <name>`],
-      aliases: ['socket'],
+      aliases: ['socket', 'tuya'],
       ownerOnly: true,
       webUI: true,
       args: true
@@ -18,8 +18,7 @@ module.exports = class Tuya extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
     const { Utils, Log } = client
-    const { capitalize, embed } = Utils
-    const { errorMessage, warningMessage, standardMessage, asyncForEach } = Utils
+    const { errorMessage, warningMessage, standardMessage, asyncForEach, capitalize, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -29,7 +28,6 @@ module.exports = class Tuya extends Command {
     // * ------------------ Logic --------------------
 
     const listPlugs = async () => {
-      console.log(tuyaDevices)
       try {
         const deviceList = []
 
@@ -42,7 +40,7 @@ module.exports = class Tuya extends Command {
 
           const currentStatus = await device.get()
           deviceList.push({
-            name: d.name,
+            name: capitalize(d.name),
             status: currentStatus === 1 ? 'on' : 'off'
           })
           await device.disconnect()
@@ -50,7 +48,7 @@ module.exports = class Tuya extends Command {
 
         return deviceList
       } catch (e) {
-        const text = `Failed to connect to devices`
+        const text = `Failed to collect device list`
         if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
@@ -58,7 +56,9 @@ module.exports = class Tuya extends Command {
     }
 
     const togglePlug = async (d) => {
-      const { name, id, key } = d
+      const { id, key } = d
+      let { name } = d
+      name = capitalize(name)
 
       try {
         const device = new TuyAPI({ id, key })
@@ -70,11 +70,11 @@ module.exports = class Tuya extends Command {
         await device.set({ set: !currentStatus })
         await device.disconnect()
 
-        const status = currentStatus ? 'off' : 'on'
-        if (api) return `[ ${capitalize(name)} ] turned [ ${status} ]`
-        return standardMessage(msg, `:electric_plug: [ ${capitalize(name)} ] turned [ ${status} ]`)
+        const status = currentStatus ? 'Off' : 'On'
+        if (api) return `[ ${name} ] turned [ ${status} ]`
+        return standardMessage(msg, `:electric_plug: [ ${name} ] turned [ ${status} ]`)
       } catch (e) {
-        const text = `Failed to connect to [ ${capitalize(name)} ]`
+        const text = `Failed to connect to [ ${name} ]`
         if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
@@ -82,28 +82,29 @@ module.exports = class Tuya extends Command {
     }
 
     const setPlug = async (d, state) => {
-      const { id, key, name } = d
+      const { id, key } = d
+      let { name } = d
+      name = capitalize(name)
+
       try {
         const device = new TuyAPI({ id, key })
         await device.find()
         await device.connect()
         const currentState = await device.get()
         const newState = state === 'on'
+        state = capitalize(state)
 
         if (currentState === newState) {
           await device.disconnect()
-          if (api) return `[ ${capitalize(name)} ] is already [ ${state} ]`
-          return standardMessage(
-            msg,
-            `:electric_plug: [ ${capitalize(name)} ] is already [ ${state} ]`
-          )
+          if (api) return `[ ${name} ] is already [ ${state} ]`
+          return standardMessage(msg, `:electric_plug: [ ${name} ] is already [ ${state} ]`)
         }
         await device.set({ set: !currentState })
         await device.disconnect()
-        if (api) return `[ ${capitalize(name)} ] turned [ ${state} ]`
-        return standardMessage(msg, `:electric_plug: [ ${capitalize(name)} ] turned [ ${state} ]`)
+        if (api) return `[ ${name} ] turned [ ${state} ]`
+        return standardMessage(msg, `:electric_plug: [ ${name} ] turned [ ${state} ]`)
       } catch (e) {
-        const text = `Failed to connect to [ ${capitalize(name)} ]`
+        const text = `Failed to connect to [ ${name} ]`
         if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
@@ -115,20 +116,20 @@ module.exports = class Tuya extends Command {
     switch (args[0]) {
       case 'list': {
         const deviceList = await listPlugs()
-        console.log(deviceList)
         if (deviceList) {
           if (api) return deviceList
-          const e = embed('green', 'plug.png').setTitle(':electric_plug: Smart Plugs')
+          const e = embed('green', 'plug.png').setTitle(':electric_plug: Tuya Smart Plugs')
 
           deviceList.forEach((device) =>
-            e.addField(`${device.name}`, `Status: [ ${device.status} ]`)
+            e.addField(`${device.name}`, `Status: [ ${capitalize(device.status)} ]`)
           )
           return channel.send(e)
         }
         return
       }
       default: {
-        const index = tuyaDevices.findIndex((d) => d.name === args[0])
+        const deviceName = args[0].toLowerCase()
+        const index = tuyaDevices.findIndex((d) => d.name.toLowerCase() === deviceName)
         const device = tuyaDevices[index]
         const name = capitalize(args[0])
         // if plug name not found

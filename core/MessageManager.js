@@ -12,8 +12,9 @@ module.exports = class MessageManager {
   static async logger(msg) {
     const { content, guild, author, channel, createdAt, context, attachments } = msg
     const { id, tag, username } = author
-    const { serverConfig, Log } = client
-    const { ownerID } = client.config
+    const { serverConfig, Log, Utils, config } = client
+    const { ownerID } = config
+    const { asyncForEach } = Utils
 
     const runCommand = async (cmdString) => {
       const commandName = cmdString.split(' ').shift()
@@ -40,7 +41,7 @@ module.exports = class MessageManager {
     const attachmentHandler = async () => {
       // check if msg contains attachments
       if (attachments.size) {
-        attachments.forEach(async (a) => {
+        await asyncForEach(attachments, async (a) => {
           const { url } = a
           await attachmentParser(url)
 

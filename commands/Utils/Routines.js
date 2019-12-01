@@ -27,7 +27,15 @@ module.exports = class Routines extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { validOptions, warningMessage, errorMessage, standardMessage, embed, paginate } = Utils
+    const {
+      validOptions,
+      warningMessage,
+      errorMessage,
+      standardMessage,
+      embed,
+      paginate,
+      asyncForEach
+    } = Utils
 
     // * ------------------ Config --------------------
 
@@ -210,7 +218,7 @@ module.exports = class Routines extends Command {
         if (!api) await standardMessage(msg, `Running routine [ ${routineName} ]`)
 
         const failedCommands = []
-        routines[index].commands.forEach(async (i) => {
+        await asyncForEach(routines[index].commands, async (i) => {
           const params = i[1].split(' ')
 
           // if command is enabled then run
