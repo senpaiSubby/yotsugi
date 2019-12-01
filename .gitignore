@@ -8,6 +8,13 @@ logs
 *.sqlite-journal
 *.sqlite3
 *.sqlite3*
+testing.js
+db.json
+config.js
+attachments
+_WIP
+_todo
+_old
 
 # OS generated files #
 ######################
@@ -31,10 +38,4 @@ venv
 *.pyc
 *.idea
 .vscode
-testing.js
-db.json
-config.js
-attachments
-_WIP
-_todo
-_old
+yarn.lock
