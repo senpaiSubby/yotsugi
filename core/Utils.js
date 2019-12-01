@@ -5,7 +5,6 @@ const { RichEmbed } = require('discord.js')
 const Promise = require('bluebird')
 const shelljs = require('shelljs')
 const Log = require('./Log')
-const { colors } = require('../data/config')
 
 module.exports = class Utils {
   constructor() {
@@ -241,6 +240,16 @@ module.exports = class Utils {
 
   // global embed template
   static embed(color = 'green', image = false) {
+    const colors = {
+      red: '#fb4934',
+      green: '#8ec07c',
+      blue: '#83a598',
+      yellow: '#fabd2f',
+      orange: '#d79921',
+      white: '#ebdbb2',
+      black: '#282828',
+      grey: '#928374'
+    }
     const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
 
     if (image) {

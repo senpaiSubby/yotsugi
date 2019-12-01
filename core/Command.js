@@ -1,10 +1,7 @@
-const config = require('../data/config')
-
 module.exports = class Command {
   constructor(client, data = {}) {
     if (typeof data !== 'object') throw new TypeError('Client data parameter must be an object')
     this.client = client
-    this.config = config
     this.name = data.name
     this.category = data.category || ''
     this.description = data.description
