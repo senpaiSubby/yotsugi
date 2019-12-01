@@ -1,0 +1,11 @@
+version: '3'
+services:
+  vscode:
+    image: nezuko
+    container_name: nezuko
+    volumes:
+      - ./config:/app/data
+    ports:
+      - 5700:5700
+    network_mode: bridge
+    restart: unless-stopped
