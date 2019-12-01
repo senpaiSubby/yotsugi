@@ -21,13 +21,14 @@ module.exports = { client }
 
 // handle DB config
 const handleConfig = async () => {
-  const config = await client.generalConfig.findOne({ where: { id: client.config.ownerID } })
+  const { ownerID } = client.config
+  const config = await client.generalConfig.findOne({ where: { id: ownerID } })
 
   if (!config) {
-    client.Log.info('Handle Config', `Created new general config for [ ${client.config.ownerID} ]`)
+    client.Log.info('Handle Config', `Created new general config for [ ${ownerID} ]`)
     await client.generalConfig.create({
       username: 'Nezuko',
-      id: client.config.ownerID,
+      id: ownerID,
       config: JSON.stringify({
         archivebox: { path: null },
         autocmd: [],
@@ -60,19 +61,13 @@ handleConfig()
 const eventFiles = client.Utils.findNested('./events', '.js')
 eventFiles.forEach((file) => require(file))
 
-client.on('warn', (info) => {
-  console.log(`warn: ${info}`)
-})
-client.on('reconnecting', () => {
-  console.log(`client tries to reconnect to the WebSocket`)
-})
-client.on('resume', (replayed) => {
-  console.log(`whenever a WebSocket resumes, ${replayed} replays`)
-})
+// Log discord warnings
+client.on('warn', (info) => console.log(`warn: ${info}`))
+client.on('reconnecting', () => console.log(`client tries to reconnect to the WebSocket`))
+client.on('resume', (replayed) => console.log(`whenever a WebSocket resumes, ${replayed} replays`))
 
 // Unhandled Promise Rejections
 process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejection', reason, true))
-
 // Unhandled Errors
 process.on('uncaughtException', (error) => client.Log.error('Uncaught Exception', error, true))
 
