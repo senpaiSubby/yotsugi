@@ -38,7 +38,7 @@ module.exports = class SystemInfo extends Command {
       return {
         total: bytesToSize(ram.total),
         used: bytesToSize(ram.used),
-        free: bytesToSize(ram.free)
+        free: bytesToSize(ram.active)
       }
     }
 
@@ -55,7 +55,8 @@ module.exports = class SystemInfo extends Command {
       embed('green').setDescription('**:timer: Loading system stats..**')
     )
     await ms.react('🛑')
-    const interval = setInterval(async () => {
+
+    const refreshEmbed = async () => {
       const cpuStats = await cpuInfo()
       const ramStats = await ramInfo()
       const { cores, percentage, load } = cpuStats
@@ -72,7 +73,10 @@ module.exports = class SystemInfo extends Command {
           .addField('RAM Free', free, true)
           .addField('RAM Used', used, true)
       )
-    }, args[0] * 1000)
+    }
+
+    await refreshEmbed()
+    const interval = setInterval(async () => refreshEmbed(), args[0] * 1000)
 
     const collected = await ms.awaitReactions(
       (reaction, user) => ['🛑'].includes(reaction.emoji.name) && user.id === author.id,
