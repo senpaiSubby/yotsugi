@@ -40,8 +40,8 @@ module.exports = class PioneerAVR extends Command {
       const response = await get(urljoin(host, '/StatusHandler.asp')).headers({
         accept: 'application/json'
       })
-      const data = await response.body
-      return data
+
+      return JSON.parse(response.body)
     }
 
     const getVolume = async () => {
@@ -110,8 +110,9 @@ module.exports = class PioneerAVR extends Command {
       case 'vol': // set volume
         // set volume
         if (!level) {
-          if (api) return `Current volume is [ ${await getVolume()} / 100 ]`
-          return standardMessage(msg, `:speaker: Current volume is [ ${await getVolume()} / 100 ]`)
+          const currentVol = await getVolume()
+          if (api) return `Current volume is [ ${currentVol} / 100 ]`
+          return standardMessage(msg, `:speaker: Current volume is [ ${currentVol} / 100 ]`)
         }
         if (isNaN(level)) {
           if (api) return `Volume should be a number between 1-100`
@@ -119,7 +120,7 @@ module.exports = class PioneerAVR extends Command {
         }
         for (let i = 0; i < 3; i++) {
           await setVolume(level)
-          await sleep(2000)
+          await sleep(600)
         }
 
         if (api) return `Volume set to ${level}`
