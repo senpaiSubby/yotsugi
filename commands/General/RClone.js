@@ -71,7 +71,7 @@ module.exports = class RClone extends Command {
 
         const startTime = performance.now()
         const { code, stdout } = await execAsync(
-          `rclone size --json ${remote}:"${dirPath}" --config="${configPath}"`,
+          `rclone size --json ${remote}:"${dirPath}" --config=${configPath}`,
           {
             silent: true
           }
@@ -114,7 +114,7 @@ module.exports = class RClone extends Command {
         )
 
         const { code, stdout } = await execAsync(
-          `rclone lsjson ${remote}:"${dirPath}" --config="${configPath}"`,
+          `rclone lsjson ${remote}:"${dirPath}" --config=${configPath}`,
           {
             silent: true
           }
