@@ -1,4 +1,5 @@
 const { performance } = require('perf_hooks')
+const { existsSync } = require('fs')
 const Command = require('../../core/Command')
 
 module.exports = class RClone extends Command {
@@ -14,6 +15,8 @@ module.exports = class RClone extends Command {
   }
 
   async run(client, msg, args) {
+    // * ------------------ Setup --------------------
+
     const { Utils, p } = client
     const { channel } = msg
 
@@ -30,11 +33,28 @@ module.exports = class RClone extends Command {
       execAsync
     } = Utils
 
+    // * ------------------ Config --------------------
+
     const { remote } = client.db.config.rclone
+    const configPath = `${__dirname}/../../data/rclone.conf`
+
+    // * ------------------ Check Config --------------------
+
+    if (!existsSync(configPath)) {
+      return errorMessage(
+        msg,
+        `RClone config is missing!
+
+        Place your \`rclone.conf\` file inside the \`data\` directory of Nezuko!`
+      )
+    }
+
     if (!remote) {
-      const settings = [`${p}db set rclone remote <remote>`]
+      const settings = [`${p}config set rclone remote <remote>`]
       return missingConfig(msg, 'rclone', settings)
     }
+
+    // * ------------------ Logic --------------------
 
     const command = args.shift()
     const dirPath = args.join(' ')
@@ -50,10 +70,12 @@ module.exports = class RClone extends Command {
         )
 
         const startTime = performance.now()
-
-        const { code, stdout } = await execAsync(`rclone size --json ${remote}:"${dirPath}"`, {
-          silent: true
-        })
+        const { code, stdout } = await execAsync(
+          `rclone size --json ${remote}:"${dirPath}" --config="${configPath}"`,
+          {
+            silent: true
+          }
+        )
 
         await waitMessage.delete()
         const stopTime = performance.now()
@@ -91,9 +113,12 @@ module.exports = class RClone extends Command {
           )
         )
 
-        const { code, stdout } = await execAsync(`rclone lsjson ${remote}:"${dirPath}"`, {
-          silent: true
-        })
+        const { code, stdout } = await execAsync(
+          `rclone lsjson ${remote}:"${dirPath}" --config="${configPath}"`,
+          {
+            silent: true
+          }
+        )
 
         await waitMessage.delete()
         // 3 doesnt exist 0 good

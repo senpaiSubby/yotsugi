@@ -38,9 +38,9 @@ module.exports = class Transmission extends Command {
 
     if (!host || !port) {
       const settings = [
-        `${p}db set transmission host <http://ip>`,
-        `${p}db set transmission port <port>`,
-        `${p}db set transmission ssl <true/false>`
+        `${p}config set transmission host <http://ip>`,
+        `${p}config set transmission port <port>`,
+        `${p}config set transmission ssl <true/false>`
       ]
       return missingConfig(msg, 'transmission', settings)
     }

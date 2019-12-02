@@ -45,9 +45,9 @@ module.exports = class OmbiMovies extends Command {
 
     if (!host || !apiKey || !username) {
       const settings = [
-        `${p}db set ombi host <http://ip>`,
-        `${p}db set ombi apiKey <APIKEY>`,
-        `${p}db set ombi username <USER>`
+        `${p}config set ombi host <http://ip>`,
+        `${p}config set ombi apiKey <APIKEY>`,
+        `${p}config set ombi username <USER>`
       ]
       return missingConfig(msg, 'ombi', settings)
     }

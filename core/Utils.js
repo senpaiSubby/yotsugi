@@ -265,9 +265,9 @@ module.exports = class Utils {
   static missingConfig(msg, name, params) {
     return msg.channel.send(
       Utils.embed('red', 'settings.png')
-        .setTitle(`Missing [ ${name} ] DB config!`)
+        .setTitle(`Missing [ ${name} ] config!`)
         .setDescription(
-          `\`${msg.p}db get ${name}\` for current config.
+          `\`${msg.p}config get ${name}\` for current config.
 
           Set them like so..
 

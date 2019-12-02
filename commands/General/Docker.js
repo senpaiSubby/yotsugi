@@ -39,7 +39,7 @@ module.exports = class Docker extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host) {
-      const settings = [`${p}db set docker host <http://ip>`]
+      const settings = [`${p}config set docker host <http://ip>`]
       return missingConfig(msg, 'docker', settings)
     }
 

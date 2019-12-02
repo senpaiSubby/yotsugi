@@ -30,7 +30,7 @@ module.exports = class PiHole extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [`${p}db set pihole host <PIHOLEURL>`, `${p}db set pihole apiKey <APIKEY>`]
+      const settings = [`${p}config set pihole host <PIHOLEURL>`, `${p}config set pihole apiKey <APIKEY>`]
       return missingConfig(msg, 'pihole', settings)
     }
 

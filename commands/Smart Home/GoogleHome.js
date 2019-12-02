@@ -29,9 +29,9 @@ module.exports = class GoogleHome extends Command {
 
     if (!ip || !name || !language) {
       const settings = [
-        `${p}db set googleHome name <name>`,
-        `${p}db set googleHome ip <ip addy>`,
-        `${p}db set googleHome language <en/fr>`
+        `${p}config set googleHome name <name>`,
+        `${p}config set googleHome ip <ip addy>`,
+        `${p}config set googleHome language <en/fr>`
       ]
       return missingConfig(msg, 'googleHome', settings)
     }

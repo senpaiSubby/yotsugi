@@ -37,9 +37,9 @@ module.exports = class Emby extends Command {
 
     if (!host || !apiKey || !userID) {
       const settings = [
-        `${p}db set emby host <http://ip>`,
-        `${p}db set emby apiKey <APIKEY>`,
-        `${p}db set emby userID <USERID>`
+        `${p}config set emby host <http://ip>`,
+        `${p}config set emby apiKey <APIKEY>`,
+        `${p}config set emby userID <USERID>`
       ]
       return missingConfig(msg, 'emby', settings)
     }

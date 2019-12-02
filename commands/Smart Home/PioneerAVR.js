@@ -30,7 +30,7 @@ module.exports = class PioneerAVR extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host) {
-      const settings = [`${p}db set pioneerAVR host <http://ip>`]
+      const settings = [`${p}config set pioneerAVR host <http://ip>`]
       return missingConfig(msg, 'pioneerAVR', settings)
     }
 

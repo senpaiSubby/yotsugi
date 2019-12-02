@@ -37,9 +37,9 @@ module.exports = class Sengled extends Command {
 
     if (!jsessionid || !username || !password) {
       const settings = [
-        `${p}db set sengled jsessionid <id>`,
-        `${p}db set sengled username <user>`,
-        `${p}db set sengled password <pass>`
+        `${p}config set sengled jsessionid <id>`,
+        `${p}config set sengled username <user>`,
+        `${p}config set sengled password <pass>`
       ]
       return missingConfig(msg, 'sengled', settings)
     }

@@ -40,7 +40,10 @@ module.exports = class Jackett extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [`${p}db set jackett host <http://ip>`, `${p}db set jackett apiKey <APIKEY>`]
+      const settings = [
+        `${p}config set jackett host <http://ip>`,
+        `${p}config set jackett apiKey <APIKEY>`
+      ]
       return missingConfig(msg, 'jackett', settings)
     }
 
@@ -49,7 +52,7 @@ module.exports = class Jackett extends Command {
       try {
         const response = await get(
           urljoin(host, `/api/v2.0/indexers/all/results?apikey=${apiKey}&Query=${term}`)
-        ).headers({ Accept: 'application/json' })
+        ).headers({ accept: 'application/json' })
         const { Results } = response.body
 
         if (Results.length) {

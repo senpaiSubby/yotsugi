@@ -24,7 +24,7 @@ module.exports = class YoutubeSearch extends Command {
     // * ------------------ Check Config --------------------
 
     if (!apiKey) {
-      const settings = [`${p}db set google apiKey <key>`]
+      const settings = [`${p}config set google apiKey <key>`]
       return missingConfig(msg, 'google', settings)
     }
 

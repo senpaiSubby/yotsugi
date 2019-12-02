@@ -6,7 +6,7 @@ module.exports = class DB extends Command {
       name: 'db',
       category: 'Owner',
       description: 'Get/Set database configs',
-      usage: ['db get', 'db get emby', 'db set emby host https://emby.url'],
+      usage: ['db get', 'db get emby', 'config set emby host https://emby.url'],
       aliases: ['config'],
       ownerOnly: true,
       args: true
@@ -19,8 +19,6 @@ module.exports = class DB extends Command {
     const { Utils, generalConfig, p } = client
     const { warningMessage, validOptions, standardMessage, chunkArray, embed } = Utils
     const { channel } = msg
-
-    msg.delete(10000)
 
     // * ------------------ Config --------------------
 
@@ -54,7 +52,7 @@ module.exports = class DB extends Command {
           const keys = Object.keys(config[key1])
           const e = embed('green', 'settings.png')
             .setTitle(`Database Config [ ${key1} ]`)
-            .setDescription(`[ \`${p}db set ${key1} <key> <new value>\` ] to change`)
+            .setDescription(`[ \`${p}config set ${key1} <key> <new value>\` ] to change`)
 
           keys.forEach((i) => {
             e.addField(`${i}`, `${config[key1][i]}`, true)
