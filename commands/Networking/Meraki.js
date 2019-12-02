@@ -28,7 +28,10 @@ module.exports = class Meraki extends Command {
     // * ------------------ Check Config --------------------
 
     if (!serielNum || !apiKey) {
-      const settings = [`${p}config set meraki serielNum <SERIEL>`, `${p}config set meraki apiKey <APIKEY>`]
+      const settings = [
+        `${p}config set meraki serielNum <SERIEL>`,
+        `${p}config set meraki apiKey <APIKEY>`
+      ]
       return missingConfig(msg, 'meraki', settings)
     }
 

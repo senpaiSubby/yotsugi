@@ -97,14 +97,17 @@ module.exports = class OmbiMovies extends Command {
         )
       }
 
-      if (movie.available)
+      if (movie.available) {
         return warningMessage(msg, `[ ${movie.title} ] is already available in Ombi`)
+      }
 
-      if (movie.approved)
+      if (movie.approved) {
         return warningMessage(msg, `[ ${movie.title} ] is already approved in Ombi`)
+      }
 
-      if (movie.requested)
+      if (movie.requested) {
         return warningMessage(msg, `[ ${movie.title} ] is already requested in Ombi`)
+      }
 
       if (!movie.available && !movie.requested && !movie.approved) {
         try {

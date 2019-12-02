@@ -7,10 +7,9 @@ module.exports = class RClone extends Command {
     super(client, {
       name: 'rclone',
       category: 'General',
-      description: 'Get info on RClone directories',
-      usage: ['rclone size <remote> <dir>', 'rclone ls <remote> <dir>', 'rclone list'],
-      args: true,
-      aliases: ['drive']
+      description: 'Get info on RClone remotes',
+      usage: ['rclone list', 'rclone size <remote> <dir>', 'rclone ls <remote> <dir>'],
+      args: true
     })
   }
 
