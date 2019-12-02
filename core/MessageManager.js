@@ -12,9 +12,8 @@ module.exports = class MessageManager {
   static async logger(msg) {
     const { content, guild, author, channel, createdAt, context, attachments } = msg
     const { id, tag, username } = author
-    const { serverConfig, Log, Utils, config } = client
+    const { serverConfig, Log, config } = client
     const { ownerID } = config
-    const { asyncForEach } = Utils
 
     const runCommand = async (cmdString) => {
       const commandName = cmdString.split(' ').shift()
@@ -48,7 +47,7 @@ module.exports = class MessageManager {
 
           try {
             const name = url.split('/').pop()
-            const dir = `${__dirname}/../data/logs/attachments/${guild.id}/${name}`
+            const dir = `${__dirname}/../logs/attachments/${guild.id}/${name}`
 
             // check if dir exists and create if not
             if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })

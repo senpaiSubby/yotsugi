@@ -3,7 +3,7 @@ const { client } = require('../index')
 
 // Load commands
 const Manager = new CommandManager(client)
-Manager.loadCommands('./commands')
+Manager.loadCommands(`${__dirname}/../commands`)
 
 // Handle messages
 client.on('message', (message) => Manager.handleMessage(message, client))

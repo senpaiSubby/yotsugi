@@ -16,7 +16,7 @@ RUN npm install
 EXPOSE 5700
 
 # Expose volume
-VOLUME /app/data
+VOLUME /app/config
 
 # Start
 CMD ["pm2-runtime", "index.js"]

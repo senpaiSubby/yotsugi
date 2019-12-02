@@ -36,7 +36,7 @@ module.exports = class RClone extends Command {
     // * ------------------ Config --------------------
 
     const { remote } = client.db.config.rclone
-    const configPath = `${__dirname}/../../data/rclone.conf`
+    const configPath = `${__dirname}/../../config/rclone.conf`
 
     // * ------------------ Check Config --------------------
 
@@ -45,7 +45,7 @@ module.exports = class RClone extends Command {
         msg,
         `RClone config is missing!
 
-        Place your \`rclone.conf\` file inside the \`data\` directory of Nezuko!`
+        Place your \`rclone.conf\` file inside the \`config\` directory of Nezuko!`
       )
     }
 

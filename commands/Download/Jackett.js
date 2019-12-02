@@ -101,7 +101,7 @@ module.exports = class Jackett extends Command {
         try {
           const m2t = new Magnet2torrent()
           const buffer = await m2t.getTorrentBuffer(links[index])
-          const path = `./data/logs/torrents/${fileName}.torrent`
+          const path = `./logs/torrents/${fileName}.torrent`
 
           if (!existsSync(dirname(path))) mkdirSync(dirname(path), { recursive: true })
 

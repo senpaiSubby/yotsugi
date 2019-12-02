@@ -51,7 +51,7 @@ module.exports = class CommandManager {
     this.commands = new Enmap()
     this.aliases = new Enmap()
     this.Log.warn('Reload Manager', 'Reinitialising Modules')
-    this.loadCommands('./commands')
+    this.loadCommands(`${__dirname}/../commands`)
     this.Log.ok('Reload Manager', 'Reload Commands Success')
     return true
   }

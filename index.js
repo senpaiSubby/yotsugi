@@ -8,7 +8,7 @@ exec('clear')
 // Initialise
 const client = new Client()
 
-client.config = require('./data/config')
+client.config = require('./config/config')
 client.Log = require('./core/Log')
 client.Utils = require('./core/Utils')
 
@@ -58,7 +58,7 @@ const handleConfig = async () => {
 handleConfig()
 
 // Load event handlers
-const eventFiles = client.Utils.findNested('./events', '.js')
+const eventFiles = client.Utils.findNested(`${__dirname}/events`, '.js')
 eventFiles.forEach((file) => require(file))
 
 // Log discord warnings
