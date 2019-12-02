@@ -37,8 +37,8 @@ module.exports = class SystemInfo extends Command {
       const ram = await si.mem()
       return {
         total: bytesToSize(ram.total),
-        used: bytesToSize(ram.used),
-        free: bytesToSize(ram.active)
+        used: bytesToSize(ram.active),
+        free: bytesToSize(ram.available)
       }
     }
 
