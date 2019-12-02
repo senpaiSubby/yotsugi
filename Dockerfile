@@ -1,8 +1,9 @@
 FROM node:latest
 
 # Update system
-RUN apt update && apt install git yarn rclone -y
+RUN apt update && apt install git -y
 RUN npm install -g pm2
+RUN curl https://rclone.org/install.sh | bash
 
 # Create the directory
 RUN mkdir -p /app
