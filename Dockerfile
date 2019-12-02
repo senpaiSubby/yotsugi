@@ -1,7 +1,7 @@
 FROM node:latest
 
 # Update system
-RUN apt update && apt install git yarn -y
+RUN apt update && apt install git yarn rclone -y
 RUN npm install -g pm2
 
 # Create the directory
