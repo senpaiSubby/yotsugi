@@ -8,7 +8,7 @@ module.exports = class RClone extends Command {
       name: 'rclone',
       category: 'General',
       description: 'Get info on RClone directories',
-      usage: ['rclone size /Unsorted', 'rclone ls /folder/to/check'],
+      usage: ['rclone size <remote> <dir>', 'rclone ls <remote> <dir>', 'rclone list'],
       args: true,
       aliases: ['drive']
     })
@@ -17,7 +17,7 @@ module.exports = class RClone extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { Utils, p } = client
+    const { Utils } = client
     const { channel } = msg
 
     const {
@@ -35,13 +35,12 @@ module.exports = class RClone extends Command {
 
     // * ------------------ Config --------------------
 
-    const { remote } = client.db.config.rclone
     const configPath = `${__dirname}/../../config/rclone.conf`
 
     // * ------------------ Check Config --------------------
 
     if (!existsSync(configPath)) {
-      return errorMessage(
+      return missingConfig(
         msg,
         `RClone config is missing!
 
@@ -49,17 +48,34 @@ module.exports = class RClone extends Command {
       )
     }
 
-    if (!remote) {
-      const settings = [`${p}config set rclone remote <remote>`]
-      return missingConfig(msg, 'rclone', settings)
-    }
+    // * get remotes from config
+    const { code: c, stdout: o } = await execAsync(`rclone listremotes --config=${configPath}`, {
+      silent: true
+    })
+    if (c !== 0) return errorMessage(msg, `A error occured with Rclone`)
+
+    const remotes = o
+      .replace(/:/g, '')
+      .split('\n')
+      .filter(Boolean)
 
     // * ------------------ Logic --------------------
 
     const command = args.shift()
+    const remote = args.shift()
     const dirPath = args.join(' ')
 
+    if (!remotes.includes(remote) && command !== 'list') {
+      return errorMessage(msg, `Remote [ ${remote} ] does not exist in RClone config`)
+    }
+
     switch (command) {
+      case 'list': {
+        const e = embed('green', 'rclone.gif')
+          .setTitle('RClone Remotes')
+          .setDescription(`**- ${remotes.join('\n- ')}**`)
+        return channel.send(e)
+      }
       case 'size': {
         const waitMessage = await channel.send(
           embed('yellow', 'rclone.gif').setDescription(`**:file_cabinet: Calculating size of
@@ -181,7 +197,7 @@ module.exports = class RClone extends Command {
         return errorMessage(msg, 'A error occured with RClone')
       }
       default:
-        return validOptions(msg, ['ls', 'size'])
+        return validOptions(msg, ['ls', 'size', 'list'])
     }
   }
 }
