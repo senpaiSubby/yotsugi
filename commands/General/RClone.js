@@ -64,7 +64,7 @@ module.exports = class RClone extends Command {
         const waitMessage = await channel.send(
           embed('yellow', 'rclone.gif').setDescription(`**:file_cabinet: Calculating size of
 
-          [ ${dirPath || '/'} ]
+          ${remote.toUpperCase()}:${dirPath || '/'}
 
           :hourglass: This may take some time...**`)
         )
@@ -88,7 +88,9 @@ module.exports = class RClone extends Command {
 
           return msg.reply(
             embed('green', 'rclone.gif')
-              .setTitle(`:file_cabinet: GDrive Directory:\n- [ ${dirPath} ]`)
+              .setTitle(
+                `:file_cabinet: GDrive Directory:\n${remote.toUpperCase()}:${dirPath || '/'}`
+              )
               .addField('Files', `:newspaper: ${count}`, true)
               .addField('Size', `:file_folder: ${size}`, true)
               .setDescription(`**Time Taken ${millisecondsToTime(stopTime - startTime)}**`)
@@ -96,7 +98,10 @@ module.exports = class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory [ ${dirPath} ] does not exist!`)
+          return warningMessage(
+            msg,
+            `Directory [ ${remote.toUpperCase()}:${dirPath} ] does not exist!`
+          )
         }
 
         return errorMessage(msg, `A error occured with Rclone`)
@@ -107,7 +112,7 @@ module.exports = class RClone extends Command {
           embed('yellow', 'rclone.gif').setDescription(
             `**:file_cabinet: Getting Directory
 
-          [ ${dirPath || '/'} ]
+          ${remote.toUpperCase()}:${dirPath || '/'}
 
           :hourglass: This may take some time...**`
           )
@@ -158,7 +163,7 @@ module.exports = class RClone extends Command {
           Object.keys(splitArray).forEach((key, index) => {
             embedList.push(
               embed('green', 'rclone.gif')
-                .setTitle(`:file_cabinet: [ ${dirPath || '/'} ]`)
+                .setTitle(`:file_cabinet: ${remote.toUpperCase()}:${dirPath || '/'}`)
                 .addField('Files', `${splitArray[index].join('\n')}`)
             )
           })
@@ -167,7 +172,10 @@ module.exports = class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory [ ${dirPath || '/'} ] does not exist! `)
+          return warningMessage(
+            msg,
+            `Directory [ ${remote.toUpperCase()}:${dirPath || '/'} ] does not exist`
+          )
         }
 
         return errorMessage(msg, 'A error occured with RClone')
