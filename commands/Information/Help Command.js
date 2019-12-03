@@ -84,9 +84,8 @@ module.exports = class Help extends Command {
     // Show individual command's help.
     const command = context.findCommand(args[0])
 
-    msg.delete(10000)
     if (command && checkPerms(command)) {
-      const m = await channel.send(
+      return channel.send(
         embed('green')
           .setTitle(`Help - ${capitalize(command.name)}`)
           .setDescription(
@@ -97,7 +96,6 @@ module.exports = class Help extends Command {
             }`
           )
       )
-      return m.delete(30000)
     }
   }
 }

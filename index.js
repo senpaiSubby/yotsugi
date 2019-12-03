@@ -22,9 +22,15 @@ module.exports = { client }
 // handle DB config
 const handleConfig = async () => {
   const { ownerID } = client.config
-  const config = await client.generalConfig.findOne({ where: { id: ownerID } })
+  const db = await client.generalConfig.findOne({ where: { id: ownerID } })
 
-  if (!config) {
+  const config = JSON.parse(db.config)
+  if (!config.lockedCommands) {
+    config.lockedCommands = []
+    await db.update({ config: JSON.stringify(config) })
+  }
+
+  if (!db) {
     client.Log.info('Handle Config', `Created new general config for [ ${ownerID} ]`)
     await client.generalConfig.create({
       username: 'Nezuko',

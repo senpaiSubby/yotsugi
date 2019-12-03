@@ -24,7 +24,7 @@ module.exports = class CMD extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { warningMessage, standardMessage, asyncForEach, embed } = Utils
+    const { warningMessage, standardMessage, asyncForEach, embed, validOptions } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -123,8 +123,8 @@ module.exports = class CMD extends Command {
       const cannotDisable = []
 
       await asyncForEach(commands, async (i) => {
-        const cmd = msg.context.findCommand(i)
-        if (!cmd) return warningMessage(msg, `No command named [ ${i} ]`)
+        const c = msg.context.findCommand(i)
+        if (!c) return warningMessage(msg, `No command named [ ${i} ]`)
         if (!nonDisableable.includes(i)) {
           const isDisabled = await checkIfDisabled(i)
 
@@ -132,7 +132,7 @@ module.exports = class CMD extends Command {
 
           if (!isDisabled) {
             willDisable.push(i)
-            disabledCommands.push({ command: cmd.name, aliases: cmd.aliases })
+            disabledCommands.push({ command: c.name, aliases: c.aliases })
             await db.update({ config: JSON.stringify(config) })
           }
         }
@@ -171,8 +171,8 @@ module.exports = class CMD extends Command {
       const willEnable = []
 
       await asyncForEach(commands, async (i) => {
-        const cmd = msg.context.findCommand(i)
-        if (!cmd) return warningMessage(msg, `No command named [ ${i} ]`)
+        const cm = msg.context.findCommand(i)
+        if (!cm) return warningMessage(msg, `No command named [ ${i} ]`)
 
         const isDisabled = await checkIfDisabled(i)
 
@@ -252,6 +252,8 @@ module.exports = class CMD extends Command {
         return unlockCommand(args.join(' '))
       case 'locked':
         return listLocked()
+      default:
+        return validOptions(msg, ['disable', 'enable', 'disabled', 'lock', 'unlock', 'locked'])
     }
   }
 }
