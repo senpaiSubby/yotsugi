@@ -7,7 +7,7 @@ module.exports = class Clear extends Command {
       category: 'Admin',
       description: 'Removes messages',
       usage: [`clear <0-100>`, 'clear <@user> <0-100>'],
-      aliases: ['delete', 'rm', 'purge'],
+      aliases: ['rm'],
       guildOnly: true,
       args: true,
       permsNeeded: ['MANAGE_MESSAGES']

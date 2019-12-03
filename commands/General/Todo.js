@@ -3,10 +3,9 @@ const Command = require('../../core/Command')
 module.exports = class Todo extends Command {
   constructor(client) {
     super(client, {
-      name: 'todos',
+      name: 'todo',
       category: 'General',
       description: 'A personal todo list',
-      aliases: ['todo'],
       usage: ['todo add do the dishes', 'todo list'],
       args: true,
       webUI: true

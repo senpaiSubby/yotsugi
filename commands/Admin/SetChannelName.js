@@ -3,11 +3,10 @@ const Command = require('../../core/Command')
 module.exports = class SetChannelName extends Command {
   constructor(client) {
     super(client, {
-      name: 'cname',
+      name: 'channelname',
       category: 'Admin',
       description: 'Rename channels',
       usage: ['cname <channelID> <newName>'],
-      aliases: ['channelname'],
       args: true,
       guildOnly: true,
       permsNeeded: ['MANAGE_CHANNELS']

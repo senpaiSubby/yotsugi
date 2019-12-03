@@ -7,7 +7,6 @@ module.exports = class RemoveRole extends Command {
       category: 'Admin',
       description: 'Remove roles from members',
       usage: ['removerole @user rolename'],
-      aliases: ['rrole'],
       permsNeeded: ['MANAGE_ROLES'],
       args: true
     })
@@ -37,7 +36,7 @@ module.exports = class RemoveRole extends Command {
 
     try {
       return rMember.send(
-        embed( 'yellow').setDescription(
+        embed('yellow').setDescription(
           `**You have been removed from the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
         )
       )

@@ -6,7 +6,6 @@ module.exports = class Help extends Command {
       name: 'help',
       category: 'Information',
       description: 'Get command help',
-      aliases: ['halp'],
       guildOnly: true
     })
   }
@@ -64,7 +63,7 @@ module.exports = class Help extends Command {
         const e = Utils.embed('green')
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
-          .setDescription(`**\`${prefix}help [ command ]\` for more info**`)
+          .setDescription(`**\`${prefix}help [ command ]\` for command usage**`)
         newSorted[key].forEach((i) => {
           let aliases = ''
           if (i.aliases.length) {

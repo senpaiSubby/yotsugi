@@ -8,7 +8,6 @@ module.exports = class GoogleHome extends Command {
       category: 'Smart Home',
       description: 'Speak through Google Home',
       usage: [`say <msg>`],
-      aliases: ['speak'],
       webUI: true,
       args: true
     })

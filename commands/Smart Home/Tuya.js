@@ -8,7 +8,7 @@ module.exports = class Tuya extends Command {
       category: 'Smart Home',
       description: 'Tuya plug control',
       usage: [`plug <name>`],
-      aliases: ['socket', 'tuya'],
+      aliases: ['tuya'],
       webUI: true,
       args: true
     })

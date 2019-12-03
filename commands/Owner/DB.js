@@ -6,7 +6,7 @@ module.exports = class DB extends Command {
       name: 'db',
       category: 'Owner',
       description: 'Get/Set database configs',
-      usage: ['db get', 'db get emby', 'config set emby host https://emby.url'],
+      usage: ['config get', 'config get emby', 'config set emby host https://emby.url'],
       aliases: ['config'],
       ownerOnly: true,
       args: true
@@ -38,7 +38,7 @@ module.exports = class DB extends Command {
 
           const e = embed('green', 'settings.png')
             .setTitle('Database Config')
-            .setDescription(`[ \`${p}db get <key>\` ] for more detailed info`)
+            .setDescription(`[ \`${p}config get <key>\` ] for more detailed info`)
 
           const splitArray = chunkArray(Object.keys(config).sort(), 7)
           splitArray.forEach((item) => {
@@ -52,7 +52,7 @@ module.exports = class DB extends Command {
           const keys = Object.keys(config[key1])
           const e = embed('green', 'settings.png')
             .setTitle(`Database Config [ ${key1} ]`)
-            .setDescription(`[ \`${p}config set ${key1} <key> <new value>\` ] to change`)
+            .setDescription(`[ \`${p}config set ${key1} <option> <new value>\` ] to change`)
 
           keys.forEach((i) => {
             e.addField(`${i}`, `${config[key1][i]}`, true)
@@ -60,7 +60,7 @@ module.exports = class DB extends Command {
 
           return channel.send(e)
         }
-        return warningMessage(msg, `Key [ ${key1} ] doesnt exist`)
+        return warningMessage(msg, `Option [ ${key1} ] doesnt exist`)
       }
       case 'set': {
         const keyToChange = args[1]
@@ -72,7 +72,7 @@ module.exports = class DB extends Command {
           const m = await standardMessage(msg, `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`)
           return m.delete(10000)
         }
-        return warningMessage(msg, `Key [ ${key1} ] doesnt exist`)
+        return warningMessage(msg, `Option [ ${key1} ] doesnt exist`)
       }
       default:
         return validOptions(msg, ['get', 'set'])

@@ -13,7 +13,7 @@ module.exports = class OmbiTV extends Command {
       category: 'Media',
       description: 'Search and request TV Shows via Ombi',
       usage: [`tv <Series Name>`],
-      aliases: ['shows', 'series'],
+      aliases: ['series'],
       args: true
     })
   }

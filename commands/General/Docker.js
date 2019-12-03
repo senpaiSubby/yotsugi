@@ -9,7 +9,6 @@ module.exports = class Docker extends Command {
       category: 'General',
       description: 'Docker Management',
       usage: [`docker <state> <name>`, `docker list <state>`],
-      aliases: ['container'],
       webUI: true,
       args: true
     })

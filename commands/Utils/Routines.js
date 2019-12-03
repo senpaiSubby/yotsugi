@@ -16,7 +16,7 @@ module.exports = class Routines extends Command {
         'r enable <routine name> <command>',
         'r rename <routine name> <new name>'
       ],
-      aliases: ['r', 'routines'],
+      aliases: ['r'],
       ownerOnly: true,
       args: true,
       webUI: true
