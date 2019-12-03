@@ -164,7 +164,7 @@ module.exports = class CommandManager {
       })
 
       lockedCommands.forEach((c) => {
-        if (commandName === c.command || possibleCommands.includes(c.command)) {
+        if (commandName === c.command || command.aliases.includes(c.command)) {
           lockedMessage = commandName
           locked = true
         } else if (`${commandName} ${args.join(' ')}` === c.command) {
@@ -178,7 +178,7 @@ module.exports = class CommandManager {
       if (locked) {
         Log.info(
           'Command Manager',
-          `[ ${author.tag} ] tried to run locked command[ ${lockedMessage} ]`
+          `[ ${author.tag} ] tried to run locked command [ ${lockedMessage} ]`
         )
         return warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
       }
