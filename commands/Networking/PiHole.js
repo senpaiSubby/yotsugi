@@ -10,7 +10,6 @@ module.exports = class PiHole extends Command {
       description: 'PiHole stats and management',
       usage: [`pihole <enable/disable>`, `pihole stats`],
       aliases: ['dns'],
-      ownerOnly: true,
       webUI: true,
       args: true
     })

@@ -10,7 +10,6 @@ module.exports = class LinuxPower extends Command {
       description: 'Linux system power control',
       usage: [`system gaara off`, `pc thinkboi reboot`],
       aliases: ['system'],
-      ownerOnly: true,
       webUI: true,
       args: true
     })

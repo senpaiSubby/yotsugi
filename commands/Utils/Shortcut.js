@@ -8,8 +8,7 @@ module.exports = class Shortcut extends Command {
       category: 'Utils',
       usage: ['s list', 's add <name> <command>', 's remove <name>'],
       description: 'Shortcut to run specific commands',
-      args: true,
-      ownerOnly: true
+      args: true
     })
   }
 

@@ -8,7 +8,6 @@ module.exports = class Meraki extends Command {
       category: 'Networking',
       description: 'Meraki network info',
       usage: [`meraki list`],
-      ownerOnly: true,
       webUI: true,
       args: true
     })

@@ -9,7 +9,6 @@ module.exports = class Sengled extends Command {
       description: 'Sengled light control',
       usage: [`lights desk`, `lights list`],
       aliases: ['light', 'lamp', 'sengled'],
-      ownerOnly: true,
       webUI: true,
       args: true
     })

@@ -9,7 +9,6 @@ module.exports = class Tuya extends Command {
       description: 'Tuya plug control',
       usage: [`plug <name>`],
       aliases: ['socket', 'tuya'],
-      ownerOnly: true,
       webUI: true,
       args: true
     })

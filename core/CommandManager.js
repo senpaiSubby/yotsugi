@@ -89,6 +89,11 @@ module.exports = class CommandManager {
   async handleMessage(msg, client) {
     if (msg.author.bot) return
 
+    // * -------------------- Parse & Log Messages --------------------
+
+    // send all messages to our parser
+    await MessageManager.logger(msg)
+
     // * -------------------- Setup --------------------
 
     const { Utils, generalConfig, serverConfig, Log } = client
@@ -111,11 +116,6 @@ module.exports = class CommandManager {
     const serverDB = await serverConfig.findOne({ where: { id: guild.id } })
     client.db.server = JSON.parse(serverDB.dataValues.config)
 
-    // * -------------------- Parse & Log Messages --------------------
-
-    // send all messages to our parser
-    await MessageManager.logger(msg)
-
     // * -------------------- Find Command & Parse Args --------------------
 
     // if msg doesnt start with prefix then ignore msg
@@ -131,34 +131,73 @@ module.exports = class CommandManager {
     const instance = this.findCommand(commandName)
 
     // if no command or alias do nothing
-    if (!instance) return errorMessage(msg, `No command: ${commandName}`)
+    if (!instance) return errorMessage(msg, `No command: [ ${commandName} ]`)
 
     const command = instance
     msg.command = instance.commandName
 
     // * -------------------- Command Option Checks --------------------
 
+    if (author.id !== ownerID) {
+      // if command is marked 'ownerOnly: true' then don't excecute
+      if (command.ownerOnly) {
+        Log.info(
+          'Command Manager',
+          `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(
+            prefix.length
+          )} ]`
+        )
+        return errorMessage(msg, `This command is owner only nerd`)
+      }
+
+      // Check if command is locked
+      let locked = false
+      let lockedMessage = ''
+
+      const { lockedCommands } = client.db.config
+
+      // check all aliases for locked commands
+      const possibleCommands = []
+      this.commands.forEach((i) => {
+        possibleCommands.push(i.name)
+        if (i.aliases) i.aliases.forEach((a) => possibleCommands.push(a))
+      })
+
+      lockedCommands.forEach((c) => {
+        if (commandName === c.command || possibleCommands.includes(c.command)) {
+          lockedMessage = commandName
+          locked = true
+        } else if (`${commandName} ${args.join(' ')}` === c.command) {
+          if (`${commandName} ${args.join(' ')}` === c.command) {
+            lockedMessage = `${commandName} ${args.join(' ')}`
+            locked = true
+          }
+        }
+      })
+
+      if (locked) {
+        Log.info(
+          'Command Manager',
+          `[ ${author.tag} ] tried to run locked command[ ${lockedMessage} ]`
+        )
+        return warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
+      }
+    }
+
     // Check if command is enabled
     let disabled = false
     const { disabledCommands } = client.db.config
+
     disabledCommands.forEach((c) => {
       if (instance.name === c.command || c.aliases.includes(commandName)) disabled = true
     })
+
     if (disabled) {
       Log.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run disabled command[ ${msg.content.slice(prefix.length)} ]`
       )
       return warningMessage(msg, `Command [ ${commandName} ] is disabled`)
-    }
-
-    // if command is marked 'ownerOnly: true' then don't excecute
-    if (command.ownerOnly && author.id !== this.ownerID) {
-      Log.info(
-        'Command Manager',
-        `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
-      )
-      return errorMessage(msg, `This command is owner only nerd`)
     }
 
     // if command is marked 'guildOnly: true' then don't excecute
@@ -169,6 +208,7 @@ module.exports = class CommandManager {
       )
       return standardMessage(msg, `This command cannot be slid into my DM`)
     }
+
     // check if user and bot has all required perms in permsNeeded
     if (channel.type !== 'dm') {
       if (command.permsNeeded) {
@@ -213,6 +253,7 @@ module.exports = class CommandManager {
         'Command Manager',
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] without parameters`
       )
+
       const m = await msg.reply(
         embed('yellow')
           .setTitle('Command requires parameters')

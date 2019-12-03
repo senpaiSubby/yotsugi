@@ -10,7 +10,6 @@ module.exports = class SabNZBD extends Command {
       description: 'sabNZBD Management',
       usage: [`sab list`],
       aliases: ['nzb'],
-      ownerOnly: true,
       args: true
     })
   }

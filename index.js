@@ -38,6 +38,7 @@ const handleConfig = async () => {
         googleHome: { ip: null, language: null, name: null },
         google: { apiKey: null },
         jackett: { apiKey: null, host: null },
+        lockedCommands: [],
         meraki: { apiKey: null, serielNum: null },
         ombi: { apiKey: null, host: null, username: null },
         pihole: { apiKey: null, host: null },

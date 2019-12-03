@@ -9,7 +9,6 @@ module.exports = class Transmission extends Command {
       description: 'Transmission Management',
       usage: [`tor list`, 'tor add <magnet link>'],
       aliases: ['transmission'],
-      ownerOnly: true,
       args: true
     })
   }
