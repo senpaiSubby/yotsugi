@@ -1,4 +1,4 @@
-const { client } = require('../index')
+const { client } = require('../../nezuko')
 
 client.on('messageReactionAdd', async (reaction, user) => {
   if (reaction.emoji.name !== '⭐') return

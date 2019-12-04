@@ -8,10 +8,10 @@ module.exports = class Routines extends Command {
       description: 'Routines to run multiple commands at once',
       usage: [
         'r list',
+        'r run <routine name>',
         'r add <routine name> <command>',
         'r remove <routine name> <command>',
         'r add <routine name>',
-        'r run <routine name>',
         'r disable <routine name> <command>',
         'r enable <routine name> <command>',
         'r rename <routine name> <new name>'

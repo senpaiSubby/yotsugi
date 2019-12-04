@@ -1,6 +1,6 @@
 const { performance } = require('perf_hooks')
 const Subprocess = require('../../core/Subprocess')
-const { client } = require('../../index')
+const { client } = require('../../../nezuko')
 
 class DriveSize extends Subprocess {
   constructor(client) {

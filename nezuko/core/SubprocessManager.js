@@ -17,7 +17,7 @@ module.exports = class SubprocessManager {
     const subprocesses = fs.readdirSync(dir)
 
     subprocesses.forEach((item) => {
-      const location = path.join(__dirname, '../', dir, item, 'index.js')
+      const location = path.join(dir, item, 'index.js')
       if (!fs.existsSync(location)) return
 
       const Process = require(location)

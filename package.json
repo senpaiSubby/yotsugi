@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "license": "GPL3",
-  "main": "index.js",
+  "main": "nezuko.js",
   "scripts": {
     "dev": "nodemon .",
-    "start": "pm2 start index.js",
+    "start": "pm2 start nezuko.js",
     "stop": "pm2 stop nezuko"
   },
   "repository": {

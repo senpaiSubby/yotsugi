@@ -1,5 +1,5 @@
 const CommandManager = require('../core/CommandManager')
-const { client } = require('../index')
+const { client } = require('../../nezuko')
 
 // Load commands
 const Manager = new CommandManager(client)

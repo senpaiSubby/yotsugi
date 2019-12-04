@@ -1,4 +1,4 @@
-const { client } = require('../index')
+const { client } = require('../../nezuko')
 const SubprocessManager = require('../core/SubprocessManager')
 
 // Hande ready event
@@ -10,5 +10,5 @@ client.once('ready', async () => {
 
   // load Subprocesses
   const Subprocesses = new SubprocessManager(client)
-  Subprocesses.loadModules('./subprocesses/')
+  Subprocesses.loadModules(`${__dirname}/../subprocesses`)
 })

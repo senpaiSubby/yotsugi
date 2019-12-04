@@ -1,6 +1,6 @@
 const { Client } = require('discord.js')
 const { exec } = require('shelljs')
-const Database = require('./core/Database/Database')
+const Database = require('./nezuko/core/Database/Database')
 
 // clear terminal
 exec('clear')
@@ -9,8 +9,8 @@ exec('clear')
 const client = new Client()
 
 client.config = require('./config/config')
-client.Log = require('./core/Log')
-client.Utils = require('./core/Utils')
+client.Log = require('./nezuko/core/Log')
+client.Utils = require('./nezuko/core/Utils')
 
 client.db = []
 client.generalConfig = Database.Models.generalConfig
@@ -29,6 +29,10 @@ const handleConfig = async () => {
     config.lockedCommands = []
     await db.update({ config: JSON.stringify(config) })
   }
+  if (!config.autorun) {
+    config.autorun = []
+    await db.update({ config: JSON.stringify(config) })
+  }
 
   if (!db) {
     client.Log.info('Handle Config', `Created new general config for [ ${ownerID} ]`)
@@ -37,7 +41,7 @@ const handleConfig = async () => {
       id: ownerID,
       config: JSON.stringify({
         archivebox: { path: null },
-        autocmd: [],
+        autorun: [],
         disabledCommands: [],
         docker: { host: null },
         emby: { apiKey: null, host: null, userID: null },
@@ -65,7 +69,7 @@ const handleConfig = async () => {
 handleConfig()
 
 // Load event handlers
-const eventFiles = client.Utils.findNested(`${__dirname}/events`, '.js')
+const eventFiles = client.Utils.findNested(`${__dirname}/nezuko/events`, '.js')
 eventFiles.forEach((file) => require(file))
 
 // Log discord warnings

@@ -1,5 +1,5 @@
 const { RichEmbed } = require('discord.js')
-const { client } = require('../index')
+const { client } = require('../../nezuko')
 
 client.on('messageReactionRemove', async (reaction) => {
   if (reaction.emoji.name !== '⭐') return

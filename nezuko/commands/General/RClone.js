@@ -34,7 +34,7 @@ module.exports = class RClone extends Command {
 
     // * ------------------ Config --------------------
 
-    const configPath = `${__dirname}/../../config/rclone.conf`
+    const configPath = `${__dirname}/../../../config/rclone.conf`
 
     // * ------------------ Check Config --------------------
 
@@ -65,6 +65,7 @@ module.exports = class RClone extends Command {
     const dirPath = args.join(' ')
 
     if (!remotes.includes(remote) && command !== 'list') {
+      if (!remote) return warningMessage(msg, 'Please specify the remote to use')
       return errorMessage(msg, `Remote [ ${remote} ] does not exist in RClone config`)
     }
 

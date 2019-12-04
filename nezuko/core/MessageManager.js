@@ -2,7 +2,7 @@ const torrent2magnet = require('torrent2magnet')
 const { existsSync, mkdirSync, createWriteStream } = require('fs')
 const { dirname } = require('path')
 const fetch = require('node-fetch')
-const { client } = require('../index')
+const { client } = require('../../nezuko')
 
 module.exports = class MessageManager {
   constructor() {
@@ -47,7 +47,7 @@ module.exports = class MessageManager {
 
           try {
             const name = url.split('/').pop()
-            const dir = `${__dirname}/../logs/attachments/${guild.id}/${name}`
+            const dir = `${__dirname}/../../logs/attachments/${guild.id}/${name}`
 
             // check if dir exists and create if not
             if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })

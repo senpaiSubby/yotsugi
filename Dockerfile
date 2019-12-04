@@ -20,4 +20,4 @@ EXPOSE 5700
 VOLUME /app/config
 
 # Start
-CMD ["pm2-runtime", "index.js"]
+CMD ["pm2-runtime", "nezuko.js"]
