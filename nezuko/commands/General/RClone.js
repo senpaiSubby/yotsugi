@@ -9,6 +9,7 @@ module.exports = class RClone extends Command {
       category: 'General',
       description: 'Get info on RClone remotes',
       usage: ['rclone list', 'rclone size <remote>:/<dir>', 'rclone ls <remote>:/<dir>'],
+      aliases: ['drive'],
       args: true
     })
   }
