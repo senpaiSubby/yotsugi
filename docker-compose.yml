@@ -4,7 +4,7 @@ services:
     image: nezuko
     container_name: nezuko
     volumes:
-      - ./config:/app/nezuko/config
+      - ./config:/app/config
     ports:
       - 5700:5700
     network_mode: bridge
