@@ -8,7 +8,7 @@ module.exports = class RClone extends Command {
       name: 'rclone',
       category: 'General',
       description: 'Get info on RClone remotes',
-      usage: ['rclone list', 'rclone size <remote> <dir>', 'rclone ls <remote> <dir>'],
+      usage: ['rclone list', 'rclone size <remote>:/<dir>', 'rclone ls <remote>:/<dir>'],
       args: true
     })
   }
@@ -62,8 +62,9 @@ module.exports = class RClone extends Command {
     // * ------------------ Logic --------------------
 
     const command = args.shift()
-    const remote = args.shift()
-    const dirPath = args.join(' ')
+    const resp = args.join()
+    const remote = resp.substring(resp.lastIndexOf(':'), resp.lastIndexOf()).trim()
+    const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim()
 
     switch (command) {
       case 'list': {
@@ -112,7 +113,10 @@ module.exports = class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory [ ${remote}:${dirPath} ] doesn't exist!`)
+          return warningMessage(
+            msg,
+            `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`
+          )
         }
 
         return errorMessage(msg, `A error occured with Rclone`)
@@ -193,7 +197,10 @@ module.exports = class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory [ ${remote}:${dirPath || '/'} ] doesn't exist`)
+          return warningMessage(
+            msg,
+            `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`
+          )
         }
 
         return errorMessage(msg, 'A error occured with RClone')
