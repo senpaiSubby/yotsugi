@@ -21,7 +21,7 @@ module.exports = class OmbiMovies extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
     const { errorMessage, warningMessage, missingConfig, standardMessage, embed, paginate } = Utils
     const { author, channel, member } = msg
 
@@ -84,7 +84,7 @@ module.exports = class OmbiMovies extends Command {
         return response.body
       } catch (e) {
         const text = 'Failed to connect to Ombi'
-        Log.error('Ombi Movies', text, e)
+        Logger.error('Ombi Movies', text, e)
         await errorMessage(msg, text)
       }
     }
@@ -124,7 +124,7 @@ module.exports = class OmbiMovies extends Command {
           return standardMessage(msg, `Requested [ ${movie.title} ] in Ombi.`)
         } catch (e) {
           const text = 'Failed to connect to Ombi'
-          Log.error('Ombi Movies', text, e)
+          Logger.error('Ombi Movies', text, e)
           await errorMessage(msg, text)
         }
       }
@@ -149,7 +149,7 @@ module.exports = class OmbiMovies extends Command {
           embedList.push(outputMovie(data))
         } catch (e) {
           const text = 'Failed to connect to Ombi'
-          Log.error('Ombi Movies', text, e)
+          Logger.error('Ombi Movies', text, e)
           await errorMessage(msg, text)
         }
       }

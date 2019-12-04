@@ -3,8 +3,8 @@ const SubprocessManager = require('../core/SubprocessManager')
 
 // Hande ready event
 client.once('ready', async () => {
-  const { Log, user, config } = client
-  Log.ok('Client Ready', `Connected as [ ${user.username} ]`)
+  const { Logger, user, config } = client
+  Logger.ok('Client Ready', `Connected as [ ${user.username} ]`)
 
   await user.setActivity(`${config.prefix}`, { type: 'LISTENING' })
 

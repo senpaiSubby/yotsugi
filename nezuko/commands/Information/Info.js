@@ -25,7 +25,6 @@ module.exports = class Info extends Command {
 
     const npmv = await worker.process('npm -v').death()
     const {
-      code,
       stdout
     } = await execAsync(
       'sloc --format json --exclude "node_modules|build" /home/sublime/git/nezuko',

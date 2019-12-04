@@ -16,7 +16,7 @@ module.exports = class Transmission extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log, db } = client
+    const { p, Utils, Logger, db } = client
     const {
       bytesToSize,
       sortByKey,
@@ -102,7 +102,7 @@ module.exports = class Transmission extends Command {
         return sortByKey(downloadQueue, 'percentage')
       } catch (e) {
         const text = 'Failed to connect to Transmission'
-        Log.error('Transmission', text, e)
+        Logger.error('Transmission', text, e)
         await errorMessage(msg, text)
       }
     }
@@ -113,7 +113,7 @@ module.exports = class Transmission extends Command {
         return standardMessage(msg, `[ ${response.name} ] Added to Transmission`)
       } catch (e) {
         const text = 'Failed to connect to Transmission'
-        Log.error('Transmission', text, e)
+        Logger.error('Transmission', text, e)
         await errorMessage(msg, text)
       }
     }

@@ -16,7 +16,7 @@ module.exports = class GoogleHome extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
     const { errorMessage, missingConfig, standardMessage } = Utils
 
     // * ------------------ Config --------------------
@@ -44,7 +44,7 @@ module.exports = class GoogleHome extends Command {
         return standardMessage(msg, `Told Google Home to say [ ${speach} ]`)
       } catch (e) {
         if (api) return `Failed to connect to Google Home`
-        Log.error('Google Home', 'Failed to connect to Google Home', e)
+        Logger.error('Google Home', 'Failed to connect to Google Home', e)
         await errorMessage(msg, `Failed to connect to Google Home`)
       }
     }

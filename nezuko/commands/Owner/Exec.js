@@ -32,7 +32,7 @@ module.exports = class Executor extends Command {
     const error = (err) =>
       `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
-    const { code, stdout, stderr } = await execAsync(args.join(' '), { silent: false })
+    const { stdout, stderr } = await execAsync(args.join(' '), { silent: false })
 
     if (stderr) {
       try {

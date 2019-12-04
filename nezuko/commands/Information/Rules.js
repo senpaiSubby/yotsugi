@@ -29,15 +29,15 @@ module.exports = class Rules extends Command {
     const rule = args.slice(1).join(' ')
 
     const db = await serverConfig.findOne({ where: { id: guild.id } })
-    const { rules, logsChannel, prefix } = JSON.parse(db.dataValues.config)
+    const { rules, LoggersChannel, prefix } = JSON.parse(db.dataValues.config)
 
-    const serverLogsChannel = msg.guild.channels.get(logsChannel)
+    const serverLoggersChannel = msg.guild.channels.get(LoggersChannel)
 
-    if (!serverLogsChannel) {
+    if (!serverLoggersChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.
-        Please set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a Loggers channel.
+        Please set one with \`${prefix}server set LoggersChannel <channelID>\``
       )
     }
 

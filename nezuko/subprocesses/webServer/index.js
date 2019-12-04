@@ -27,7 +27,7 @@ class WebServer extends Subprocess {
      */
     const { client } = this
     const { webServerPort, ownerID } = client.config
-    const { Log, generalConfig } = client
+    const { Logger, generalConfig } = client
 
     const checkApiKey = async (req, res) => {
       const db = await generalConfig.findOne({ where: { id: ownerID } })
@@ -35,14 +35,14 @@ class WebServer extends Subprocess {
       const { apiKey } = config.webUI
 
       if (!req.body.apiKey) {
-        Log.info(
+        Logger.info(
           'Web Server',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
         )
         return res.status(401).json({ response: "Missing params 'apiKey'" })
       }
       if (req.body.apiKey !== apiKey) {
-        Log.info(
+        Logger.info(
           'Web Server',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ] sent BAD APIKEY for command [ ${req.body.command} ]`
         )
@@ -75,7 +75,7 @@ class WebServer extends Subprocess {
 
     // set DB info
     app.post('/api/db/app', async (req, res) => {
-      Log.info(
+      Logger.info(
         'Web Server',
         `DB update from [ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]`
       )
@@ -88,7 +88,7 @@ class WebServer extends Subprocess {
 
     // get DB info
     app.get('/api/db/ui', async (req, res) => {
-      Log.info(
+      Logger.info(
         'Web Server',
         `New connection from [ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]`
       )
@@ -144,7 +144,7 @@ class WebServer extends Subprocess {
       const verified = await checkApiKey(req, res)
 
       if (typeof verified === 'boolean') {
-        Log.info(
+        Logger.info(
           'Web Server',
           `Running command [ ${req.body.command} ] from [ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]`
         )
@@ -177,7 +177,7 @@ class WebServer extends Subprocess {
 
     // Start server
     app.listen(webServerPort, '0.0.0.0', () => {
-      Log.ok(`Web Server`, `Active on port [ ${webServerPort} ]`)
+      Logger.ok(`Web Server`, `Active on port [ ${webServerPort} ]`)
     })
   }
 }

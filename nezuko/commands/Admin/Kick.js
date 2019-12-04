@@ -22,17 +22,17 @@ module.exports = class KickUsers extends Command {
 
     // * ------------------ Config --------------------
 
-    const { prefix, logsChannel } = db.server
+    const { prefix, LoggersChannel } = db.server
 
-    const serverLogsChannel = guild.channels.get(logsChannel)
+    const serverLoggersChannel = guild.channels.get(LoggersChannel)
 
     // * ------------------ Check Config --------------------
 
-    if (!serverLogsChannel) {
+    if (!serverLoggersChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.
-        Please set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a Loggers channel.
+        Please set one with \`${prefix}server set LoggersChannel <channelID>\``
       )
     }
 
@@ -49,8 +49,8 @@ module.exports = class KickUsers extends Command {
     const target = await kickMember.kick(args.join(' '))
 
     const reason = args.slice(1).join(' ')
-    return serverLogsChannel.send(
-      embed( 'yellow')
+    return serverLoggersChannel.send(
+      embed('yellow')
         .setThumbnail(target.user.avatarURL)
         .addField('Kicked Member', `**${target.user.username}** with an ID: ${target.user.id}`)
         .addField('Kicked By', `**${author.username}** with an ID: ${author.id}`)

@@ -17,7 +17,7 @@ module.exports = class Meraki extends Command {
     // * ------------------ Setup --------------------
 
     const { bytesToSize, sortByKey } = client.Utils
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
     const { errorMessage, validOptions, missingConfig, embed, paginate } = Utils
 
     // * ------------------ Config --------------------
@@ -83,7 +83,7 @@ module.exports = class Meraki extends Command {
         }
       } catch (e) {
         if (api) return `Failed to connect to Meraki`
-        Log.error('Meraki', 'Failed to connect to Meraki', e)
+        Logger.error('Meraki', 'Failed to connect to Meraki', e)
         await errorMessage(msg, `Failed to connect to Meraki`)
       }
     }

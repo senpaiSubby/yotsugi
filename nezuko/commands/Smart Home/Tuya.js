@@ -16,7 +16,7 @@ module.exports = class Tuya extends Command {
 
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
-    const { Utils, Log } = client
+    const { Utils, Logger } = client
     const { errorMessage, warningMessage, standardMessage, asyncForEach, capitalize, embed } = Utils
     const { channel } = msg
 
@@ -49,7 +49,7 @@ module.exports = class Tuya extends Command {
       } catch (e) {
         const text = `Failed to collect device list`
         if (api) return text
-        Log.error('Tuya', text, e)
+        Logger.error('Tuya', text, e)
         await errorMessage(msg, text)
       }
     }
@@ -75,7 +75,7 @@ module.exports = class Tuya extends Command {
       } catch (e) {
         const text = `Failed to connect to [ ${name} ]`
         if (api) return text
-        Log.error('Tuya', text, e)
+        Logger.error('Tuya', text, e)
         await errorMessage(msg, text)
       }
     }
@@ -105,7 +105,7 @@ module.exports = class Tuya extends Command {
       } catch (e) {
         const text = `Failed to connect to [ ${name} ]`
         if (api) return text
-        Log.error('Tuya', text, e)
+        Logger.error('Tuya', text, e)
         await errorMessage(msg, text)
       }
     }

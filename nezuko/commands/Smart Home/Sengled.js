@@ -17,7 +17,7 @@ module.exports = class Sengled extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { Log, Utils, p, db } = client
+    const { Logger, Utils, p, db } = client
     const {
       missingConfig,
       warningMessage,
@@ -52,7 +52,7 @@ module.exports = class Sengled extends Command {
     }
 
     // eslint-disable-next-line no-unused-vars
-    const login = async () => {
+    const Login = async () => {
       try {
         const response = await post(`${baseUrl}/customer/remoteLogin.json`)
           .headers({ 'Content-Type': 'application/json' })
@@ -68,7 +68,7 @@ module.exports = class Sengled extends Command {
         return data
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
-        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        Logger.error('Sengled', 'Failed to connect to Sengled', e)
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
@@ -93,11 +93,12 @@ module.exports = class Sengled extends Command {
         return deviceList
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
-        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        Logger.error('Sengled', 'Failed to connect to Sengled', e)
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
 
+    // eslint-disable-next-line no-unused-vars
     const setLight = async (deviceID, deviceName, newState) => {
       try {
         await post(`${baseUrl}/device/deviceSetOnOff.json`)
@@ -113,7 +114,7 @@ module.exports = class Sengled extends Command {
         return standardMessage(msg, `${icon} [ ${deviceName} ] light turned [ ${state} ]`)
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
-        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        Logger.error('Sengled', 'Failed to connect to Sengled', e)
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }
@@ -146,7 +147,7 @@ module.exports = class Sengled extends Command {
         }
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
-        Log.error('Sengled', 'Failed to connect to Sengled', e)
+        Logger.error('Sengled', 'Failed to connect to Sengled', e)
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
     }

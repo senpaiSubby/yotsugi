@@ -5,7 +5,7 @@ const MessageManager = require('../core/MessageManager')
 module.exports = class CommandManager {
   constructor(client) {
     this.client = client
-    this.Log = client.Log
+    this.Logger = client.Logger
     this.commands = new Enmap()
     this.aliases = new Enmap()
     this.prefix = client.config.prefix
@@ -31,28 +31,27 @@ module.exports = class CommandManager {
     if (instance.disabled) return
 
     if (this.commands.has(commandName)) {
-      this.Log.error('Start Module', `"${commandName}" already exists!`)
+      this.Logger.error('Start Module', `"${commandName}" already exists!`)
       throw new Error('Commands cannot have the same name')
     }
 
     this.commands.set(commandName, instance)
+    this.Logger.ok('Command Manager', `Loaded [ ${commandName} ]`)
 
-    this.Log.ok('Command Manager', `Loaded [ ${commandName} ]`)
-
-    for (const alias of instance.aliases) {
+    instance.aliases.forEach((alias) => {
       if (this.aliases.has(alias)) {
         throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
       } else this.aliases.set(alias, instance)
-    }
+    })
   }
 
   reloadCommands() {
-    this.Log.warn('Reload Manager', 'Clearing Module Cache')
+    this.Logger.warn('Reload Manager', 'Clearing Module Cache')
     this.commands = new Enmap()
     this.aliases = new Enmap()
-    this.Log.warn('Reload Manager', 'Reinitialising Modules')
+    this.Logger.warn('Reload Manager', 'Reinitialising Modules')
     this.loadCommands(`${__dirname}/../commands`)
-    this.Log.ok('Reload Manager', 'Reload Commands Success')
+    this.Logger.ok('Reload Manager', 'Reload Commands Success')
     return true
   }
 
@@ -91,7 +90,7 @@ module.exports = class CommandManager {
 
     // * -------------------- Setup --------------------
 
-    const { Utils, generalConfig, serverConfig, Log } = client
+    const { Utils, generalConfig, serverConfig, Logger } = client
     const { errorMessage, warningMessage, standardMessage, embed } = Utils
     const { content, author, channel, guild } = msg
     const { ownerID } = client.config
@@ -111,10 +110,10 @@ module.exports = class CommandManager {
     const serverDB = await serverConfig.findOne({ where: { id: guild.id } })
     client.db.server = JSON.parse(serverDB.dataValues.config)
 
-    // * -------------------- Parse & Log Messages --------------------
+    // * -------------------- Parse & Logger Messages --------------------
 
     // send all messages to our parser
-    await MessageManager.logger(msg)
+    await MessageManager.Logger(msg)
 
     // * -------------------- Find Command & Parse Args --------------------
 
@@ -141,7 +140,7 @@ module.exports = class CommandManager {
     if (author.id !== ownerID) {
       // if command is marked 'ownerOnly: true' then don't excecute
       if (command.ownerOnly) {
-        Log.info(
+        Logger.info(
           'Command Manager',
           `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(
             prefix.length
@@ -176,7 +175,7 @@ module.exports = class CommandManager {
       })
 
       if (locked) {
-        Log.info(
+        Logger.info(
           'Command Manager',
           `[ ${author.tag} ] tried to run locked command [ ${lockedMessage} ]`
         )
@@ -193,7 +192,7 @@ module.exports = class CommandManager {
     })
 
     if (disabled) {
-      Log.info(
+      Logger.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run disabled command[ ${msg.content.slice(prefix.length)} ]`
       )
@@ -202,7 +201,7 @@ module.exports = class CommandManager {
 
     // if command is marked 'guildOnly: true' then don't excecute
     if (command.guildOnly && channel.type === 'dm') {
-      Log.info(
+      Logger.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] in a DM`
       )
@@ -216,7 +215,7 @@ module.exports = class CommandManager {
         const botMissingPerms = this.checkPerms(msg.guild.me, command.permsNeeded)
 
         if (userMissingPerms) {
-          Log.info(
+          Logger.info(
             'Command Manager',
             `[ ${author.tag} ] tried to run [ ${msg.content.slice(
               prefix.length
@@ -231,7 +230,7 @@ module.exports = class CommandManager {
         }
 
         if (botMissingPerms) {
-          Log.info(
+          Logger.info(
             'Command Manager',
             `I lack the perms  [ ${msg.content.slice(
               prefix.length
@@ -249,7 +248,7 @@ module.exports = class CommandManager {
 
     // if commands is marked 'args: true' run this if no args sent
     if (command.args && !args.length) {
-      Log.info(
+      Logger.info(
         'Command Manager',
         `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] without parameters`
       )
@@ -268,7 +267,7 @@ module.exports = class CommandManager {
     }
 
     // * -------------------- Run Command --------------------
-    Log.info(
+    Logger.info(
       'Command Manager',
       `[ ${author.tag} ] ran command [ ${msg.content.slice(prefix.length)} ]`
     )
@@ -288,7 +287,7 @@ module.exports = class CommandManager {
     let db = await serverConfig.findOne({ where: { id } })
 
     if (!db) {
-      this.Log.info(
+      this.Logger.info(
         'Handle Server',
         `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`
       )
@@ -298,7 +297,7 @@ module.exports = class CommandManager {
         ownerID,
         config: JSON.stringify({
           announcementChannel: null,
-          logsChannel: null,
+          LoggersChannel: null,
           prefix: this.prefix,
           rules: [],
           starboardChannel: null,
@@ -330,7 +329,10 @@ module.exports = class CommandManager {
     const db = await memberConfig.findOne({ where: { id } })
 
     if (!db) {
-      this.Log.info('Handle Server', `Created new member config for user [ ${id} ] [ ${username} ]`)
+      this.Logger.info(
+        'Handle Server',
+        `Created new member config for user [ ${id} ] [ ${username} ]`
+      )
       await memberConfig.create({ username, id, config: JSON.stringify({ todos: [] }) })
     }
   }

@@ -9,7 +9,7 @@ exec('clear')
 const client = new Client()
 
 client.config = require('./config/config')
-client.Log = require('./nezuko/core/Log')
+client.Logger = require('./nezuko/core/Logger')
 client.Utils = require('./nezuko/core/Utils')
 
 client.db = []
@@ -35,7 +35,7 @@ const handleConfig = async () => {
   }
 
   if (!db) {
-    client.Log.info('Handle Config', `Created new general config for [ ${ownerID} ]`)
+    client.Logger.info('Handle Config', `Created new general config for [ ${ownerID} ]`)
     await client.generalConfig.create({
       username: 'Nezuko',
       id: ownerID,
@@ -72,15 +72,19 @@ handleConfig()
 const eventFiles = client.Utils.findNested(`${__dirname}/nezuko/events`, '.js')
 eventFiles.forEach((file) => require(file))
 
-// Log discord warnings
-client.on('warn', (info) => console.log(`warn: ${info}`))
-client.on('reconnecting', () => console.log(`client tries to reconnect to the WebSocket`))
-client.on('resume', (replayed) => console.log(`whenever a WebSocket resumes, ${replayed} replays`))
+// Logger discord warnings
+client.on('warn', (info) => console.Logger(`warn: ${info}`))
+client.on('reconnecting', () => console.Logger(`client tries to reconnect to the WebSocket`))
+client.on('resume', (replayed) =>
+  console.Logger(`whenever a WebSocket resumes, ${replayed} replays`)
+)
 
 // Unhandled Promise Rejections
-process.on('unhandledRejection', (reason) => client.Log.error('Unhandled Rejection', reason, true))
+process.on('unhandledRejection', (reason) =>
+  client.Logger.error('Unhandled Rejection', reason, true)
+)
 // Unhandled Errors
-process.on('uncaughtException', (error) => client.Log.error('Uncaught Exception', error, true))
+process.on('uncaughtException', (error) => client.Logger.error('Uncaught Exception', error, true))
 
-// login
+// Login
 client.login(client.config.token)

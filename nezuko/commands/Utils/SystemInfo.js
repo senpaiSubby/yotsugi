@@ -90,6 +90,6 @@ module.exports = class SystemInfo extends Command {
         return ms.clearReactions()
       }
     }
-    console.log('FUCK')
+    console.Logger('FUCK')
   }
 }

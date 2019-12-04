@@ -2,10 +2,10 @@ const later = require('later')
 const Subprocess = require('../../core/Subprocess')
 const { Manager } = require('../../events/message')
 
-module.exports = class AutoCMD extends Subprocess {
+module.exports = class AutoRun extends Subprocess {
   constructor(client) {
     super(client, {
-      name: 'AutoCMD',
+      name: 'AutoRun',
       description: 'Schedule commands to run at specified times',
       disabled: false
     })
@@ -13,13 +13,13 @@ module.exports = class AutoCMD extends Subprocess {
 
   async run() {
     const { client } = this
-    const { Log, generalConfig } = client
+    const { Logger, generalConfig } = client
     const { ownerID } = client.config
 
     const db = await generalConfig.findOne({ where: { id: ownerID } })
     if (db) {
       const config = JSON.parse(db.dataValues.config)
-      const { autocmd } = config
+      const { autorun } = config
 
       const runCommand = async (cmdName) => {
         const generalDB = await client.generalConfig.findOne({ where: { id: ownerID } })
@@ -33,16 +33,16 @@ module.exports = class AutoCMD extends Subprocess {
 
       later.date.localTime()
 
-      autocmd.forEach((i) => {
+      autorun.forEach((i) => {
         const { commands, time } = i
         const sched = later.parse.text(`at ${time}`)
         commands.forEach((c) => {
           const [enabled, cmd] = c
           if (enabled) {
             later.setInterval(async () => {
-              Log.info('AutoCMD', `Running [ ${time} ] auto command [ ${cmd} ]`)
+              Logger.info('Auto Run', `Running [ ${time} ] command [ ${cmd} ]`)
               const response = await runCommand(cmd)
-              Log.info('AutoCMD', `[ ${cmd} ] => ${response} `)
+              Logger.info('Auto Run', `[ ${cmd} ] => ${response} `)
             }, sched)
           }
         })

@@ -64,11 +64,6 @@ module.exports = class RClone extends Command {
     const remote = args.shift()
     const dirPath = args.join(' ')
 
-    if (!remotes.includes(remote) && command !== 'list') {
-      if (!remote) return warningMessage(msg, 'Please specify the remote to use')
-      return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
-    }
-
     switch (command) {
       case 'list': {
         const e = embed('green', 'rclone.gif')
@@ -77,6 +72,10 @@ module.exports = class RClone extends Command {
         return channel.send(e)
       }
       case 'size': {
+        if (!remotes.includes(remote)) {
+          return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
+        }
+
         const waitMessage = await channel.send(
           embed('yellow', 'rclone.gif').setDescription(`**:file_cabinet: Calculating size of
 
@@ -87,7 +86,7 @@ module.exports = class RClone extends Command {
 
         const startTime = performance.now()
         const { code, stdout } = await execAsync(
-          `rclone size --json ${remote}:"${dirPath}" --config=${configPath}`,
+          `rclone size --json "${remote}":"${dirPath}" --config="${configPath}"`,
           {
             silent: true
           }
@@ -124,6 +123,10 @@ module.exports = class RClone extends Command {
       }
 
       case 'ls': {
+        if (!remotes.includes(remote)) {
+          return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
+        }
+
         const waitMessage = await channel.send(
           embed('yellow', 'rclone.gif').setDescription(
             `**:file_cabinet: Getting Directory
@@ -135,7 +138,7 @@ module.exports = class RClone extends Command {
         )
 
         const { code, stdout } = await execAsync(
-          `rclone lsjson ${remote}:"${dirPath}" --config=${configPath}`,
+          `rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`,
           {
             silent: true
           }

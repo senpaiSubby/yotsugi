@@ -21,7 +21,7 @@ module.exports = class OmbiTV extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
     const { errorMessage, warningMessage, standardMessage, missingConfig, embed, paginate } = Utils
     const { author, member } = msg
 
@@ -83,7 +83,7 @@ module.exports = class OmbiTV extends Command {
         return response.body
       } catch (e) {
         const text = 'Failed to connect to Ombi'
-        Log.error('Ombi Movies', text, e)
+        Logger.error('Ombi Movies', text, e)
         await errorMessage(msg, text)
       }
     }
@@ -96,13 +96,15 @@ module.exports = class OmbiTV extends Command {
         )
       }
 
-      if (show.available)
+      if (show.available) {
         return warningMessage(msg, `[ ${show.title} ] is already available in Ombi`)
+      }
 
       if (show.approved) return warningMessage(msg, `[ ${show.title} ] is already approved in Ombi`)
 
-      if (show.requested)
+      if (show.requested) {
         return warningMessage(msg, `[ ${show.title} ] is already requested in Ombi`)
+      }
 
       if (!show.available && !show.requested && !show.approved) {
         try {
@@ -116,7 +118,7 @@ module.exports = class OmbiTV extends Command {
           return standardMessage(msg, `Requested [ ${show.title} ] in Ombi`)
         } catch (e) {
           const text = 'Failed to connect to Ombi'
-          Log.error('Ombi Movies', text, e)
+          Logger.error('Ombi Movies', text, e)
           await errorMessage(msg, text)
         }
       }
@@ -141,7 +143,7 @@ module.exports = class OmbiTV extends Command {
           embedList.push(outputTVShow(data))
         } catch (e) {
           const text = 'Failed to connect to Ombi'
-          Log.error('Ombi Movies', text, e)
+          Logger.error('Ombi Movies', text, e)
           await errorMessage(msg, text)
         }
       }

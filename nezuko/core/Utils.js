@@ -4,7 +4,7 @@ const path = require('path')
 const { RichEmbed } = require('discord.js')
 const Promise = require('bluebird')
 const shelljs = require('shelljs')
-const Log = require('./Log')
+const Logger = require('./Logger')
 
 module.exports = class Utils {
   constructor() {
@@ -228,11 +228,11 @@ module.exports = class Utils {
     const embed = new RichEmbed()
       .setColor('#cc241d') // .setColor(config.colours.error)
       .addField('Module', name, true)
-      .addField('Time', Log.time(), true)
+      .addField('Time', new Date(), true)
       .addField('Message', message)
 
     channel = channel || null
-    Log.error(name, message)
+    Logger.error(name, message)
 
     if (channel) channel.send({ embed })
     return false
@@ -291,7 +291,7 @@ module.exports = class Utils {
   // standard valid options return
   static async validOptions(msg, options) {
     const m = await msg.channel.send(
-      Utils.embed('yellow').setDescription(
+      Utils.embed('yellow', 'question.png').setDescription(
         `:grey_question: **Valid options are:\n\n- ${options.join('\n- ')}**`
       )
     )

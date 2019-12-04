@@ -12,13 +12,13 @@ class DriveSize extends Subprocess {
   }
 
   async run() {
-    const { Log, channels, Utils } = client
+    const { Logger, channels, Utils } = client
     const { execAsync } = Utils
 
     let start = 0
 
     const checkNewStats = async () => {
-      if (start === 1) Log.info('Drive Stats', 'Started Update')
+      if (start === 1) Logger.info('Drive Stats', 'Started Update')
 
       const startTime = performance.now()
 
@@ -43,13 +43,13 @@ class DriveSize extends Subprocess {
               .replace(' ', '\u2009\u2009\u2009')}`
           )
 
-        return Log.info(
+        return Logger.info(
           'Drive Stats',
           `Updated Rclone stats in ${Utils.millisecondsToTime(stopTime - startTime)}`
         )
       }
 
-      return Log.warn('Drive Stats', `Failed to update Rclone stats`)
+      return Logger.warn('Drive Stats', `Failed to update Rclone stats`)
     }
 
     await checkNewStats()

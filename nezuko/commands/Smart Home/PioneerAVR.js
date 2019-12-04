@@ -1,4 +1,4 @@
-const { get, post } = require('unirest')
+const { get } = require('unirest')
 const urljoin = require('url-join')
 const Command = require('../../core/Command')
 

@@ -17,7 +17,7 @@ module.exports = class Emby extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
     const { channel } = msg
     const {
       errorMessage,
@@ -68,20 +68,20 @@ module.exports = class Emby extends Command {
             const text = 'Bad API key'
             if (api) return text
             await warningMessage(msg, text)
-            Log.error('Emby', text)
+            Logger.error('Emby', text)
             break
           }
           default: {
             const text = 'Failed to connect to Emby'
             if (api) return text
-            Log.error('Emby', text)
+            Logger.error('Emby', text)
             await errorMessage(msg, text)
           }
         }
       } catch (e) {
         const text = 'Failed to connect to Emby'
         if (api) return text
-        Log.error('Emby', text)
+        Logger.error('Emby', text)
         await errorMessage(msg, text)
       }
     }

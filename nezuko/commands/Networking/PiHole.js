@@ -17,7 +17,7 @@ module.exports = class PiHole extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { p, Log, Utils } = client
+    const { p, Logger, Utils } = client
     const { errorMessage, validOptions, missingConfig, embed, capitalize } = Utils
     const { channel } = msg
 
@@ -56,7 +56,7 @@ module.exports = class PiHole extends Command {
         return channel.send(embed(color).setDescription(`**PiHole [ ${text} ]**`))
       } catch (e) {
         if (api) return `Failed to connect to PiHole`
-        Log.error('PiHole', 'Failed to connect to PiHole', e)
+        Logger.error('PiHole', 'Failed to connect to PiHole', e)
         await errorMessage(msg, `Failed to connect to PiHole`)
       }
     }
@@ -82,7 +82,7 @@ module.exports = class PiHole extends Command {
         }
       } catch (e) {
         if (api) return `Failed to connect to PiHole`
-        Log.error('PiHole', 'Failed to connect to PiHole', e)
+        Logger.error('PiHole', 'Failed to connect to PiHole', e)
         await errorMessage(msg, `Failed to connect to PiHole`)
       }
     }

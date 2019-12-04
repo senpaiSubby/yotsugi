@@ -4,7 +4,7 @@ const { join } = require('path')
 const database = new Sequelize({
   logging: false,
   dialect: 'sqlite',
-  storage: join(__dirname, '../../..', 'config', 'db.sqlite')
+  storage: join(`${__dirname}/../../../config/db.sqlite`)
 })
 
 module.exports = class Database {

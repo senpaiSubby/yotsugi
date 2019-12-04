@@ -1,8 +1,8 @@
-<!------------------------- PROJECT LOGO ------------------------->
+<!------------------------- PROJECT LoggerO ------------------------->
 <br />
 <p align="center">
   <a href="https://github.com/callmekory/nezuko">
-    <img src="nezuko/core/images/logo.png" alt="Logo" width="256" height="256">
+    <img src="nezuko/core/images/Loggero.png" alt="Loggero" width="256" height="256">
   </a>
 
 <h2 align="center"><b>Nezuko</b></h2>

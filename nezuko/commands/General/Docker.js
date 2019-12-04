@@ -17,7 +17,7 @@ module.exports = class Docker extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
 
     const {
       errorMessage,
@@ -71,7 +71,7 @@ module.exports = class Docker extends Command {
         return containerList
       } catch (e) {
         if (api) return `Failed to connect to Docker daemon`
-        Log.error('Docker', 'Failed to connect to Docker', e)
+        Logger.error('Docker', 'Failed to connect to Docker', e)
         await errorMessage(msg, `Failed to connect to Docker daemon`)
       }
     }
@@ -114,7 +114,7 @@ module.exports = class Docker extends Command {
         }
       } catch (e) {
         if (api) return `Failed to connect to Docker daemon`
-        Log.error('Docker', 'Failed to connect to Docker', e)
+        Logger.error('Docker', 'Failed to connect to Docker', e)
         await errorMessage(msg, `Failed to connect to Docker daemon`)
       }
     }

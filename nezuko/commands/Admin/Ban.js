@@ -22,19 +22,19 @@ module.exports = class BanUser extends Command {
 
     // * ------------------ Config --------------------
 
-    const { prefix, logsChannel } = db.server
+    const { prefix, LoggersChannel } = db.server
 
     // * ------------------ Check Config --------------------
 
-    const serverLogsChannel = guild.channels.get(logsChannel)
+    const serverLoggersChannel = guild.channels.get(LoggersChannel)
 
     // * ------------------ Logic --------------------
 
-    if (!serverLogsChannel) {
+    if (!serverLoggersChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.
-        Please set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a Loggers channel.
+        Please set one with \`${prefix}server set LoggersChannel <channelID>\``
       )
     }
     const target = guild.member(mentions.users.first() || guild.members.get(args[0]))
@@ -54,6 +54,6 @@ module.exports = class BanUser extends Command {
 
     await target.ban(reason)
     await standardMessage(msg, `${target.user.username} was banned by ${author} for ${reason}`)
-    return serverLogsChannel.send(e)
+    return serverLoggersChannel.send(e)
   }
 }

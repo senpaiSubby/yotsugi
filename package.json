@@ -2,7 +2,7 @@
   "name": "nezuko",
   "version": "1.0.0",
   "description": "",
-  "license": "GPL3",
+  "license": "GPL-3",
   "main": "nezuko.js",
   "scripts": {
     "dev": "nodemon .",
@@ -61,7 +61,6 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-standard": "^4.0.1",
-    "nodemon": "^1.19.4",
     "prettier": "^1.19.1"
   }
 }

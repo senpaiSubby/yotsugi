@@ -9,10 +9,10 @@ module.exports = class MessageManager {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
   }
 
-  static async logger(msg) {
+  static async Logger(msg) {
     const { content, guild, author, channel, createdAt, context, attachments } = msg
     const { id, tag, username } = author
-    const { serverConfig, Log, config } = client
+    const { serverConfig, Logger, config } = client
     const { ownerID } = config
 
     const runCommand = async (cmdString) => {
@@ -47,7 +47,7 @@ module.exports = class MessageManager {
 
           try {
             const name = url.split('/').pop()
-            const dir = `${__dirname}/../../logs/attachments/${guild.id}/${name}`
+            const dir = `${__dirname}/../../Loggers/attachments/${guild.id}/${name}`
 
             // check if dir exists and create if not
             if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })
@@ -61,7 +61,7 @@ module.exports = class MessageManager {
               fileStream.on('finish', () => resolve())
             })
           } catch (error) {
-            Log.warn('Attachment Handler', `Failed to handle attachment`, error)
+            Logger.warn('Attachment Handler', `Failed to handle attachment`, error)
           }
         })
       }
@@ -70,7 +70,7 @@ module.exports = class MessageManager {
     // forward all messages to our attachment parser
     await attachmentHandler()
 
-    // log every msg inside of guilds
+    // Logger every msg inside of guilds
     if (channel.type === 'text') {
       const db = await serverConfig.findOne({ where: { id: guild.id } })
       const messages = JSON.parse(db.dataValues.messages)
@@ -81,7 +81,7 @@ module.exports = class MessageManager {
       await db.update({ messages: JSON.stringify(messages) })
     }
 
-    // log every msg inside of DM's
+    // Logger every msg inside of DM's
     if (msg.channel.type === 'dm') {
       if (id === ownerID) return
 

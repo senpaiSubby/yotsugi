@@ -17,7 +17,7 @@ module.exports = class SabNZBD extends Command {
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p, Utils, Logger } = client
 
     const {
       errorMessage,
@@ -65,7 +65,7 @@ module.exports = class SabNZBD extends Command {
         return sortByKey(downloadQueue, '-index')
       } catch (e) {
         const text = 'Could not connect to sabNZBD'
-        Log.error('sabNZBD', text, e)
+        Logger.error('sabNZBD', text, e)
         await errorMessage(msg, text)
       }
     }

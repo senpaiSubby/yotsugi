@@ -17,7 +17,7 @@ module.exports = class LinuxPower extends Command {
   async run(client, msg, args, api) {
     // * ------------------ Setup --------------------
 
-    const { Utils, Log } = client
+    const { Utils, Logger } = client
     const { errorMessage, validOptions, standardMessage, embed, capitalize } = Utils
     const { channel } = msg
 
@@ -52,7 +52,7 @@ module.exports = class LinuxPower extends Command {
           }
         } catch (e) {
           if (api) return `Failed to connect to ${capitalize(name)}`
-          Log.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
+          Logger.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
           await errorMessage(msg, `Failed to connect to [ ${capitalize(name)} ]`)
         }
       } else if (command === 'on') {

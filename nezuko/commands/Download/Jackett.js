@@ -20,7 +20,7 @@ module.exports = class Jackett extends Command {
 
   async run(client, msg, args) {
     // * ------------------ Setup --------------------
-    const { Utils, Log, db, p } = client
+    const { Utils, Logger, db, p } = client
     const { channel } = msg
     const {
       bytesToSize,
@@ -73,7 +73,7 @@ module.exports = class Jackett extends Command {
         await warningMessage(msg, `No results for [ ${term} ]`)
       } catch (e) {
         const text = 'Could not connect to Jackett'
-        Log.error('Jackett', text, e)
+        Logger.error('Jackett', text, e)
         await errorMessage(msg, text)
       }
     }
@@ -94,14 +94,14 @@ module.exports = class Jackett extends Command {
         await browser.close()
       } catch (e) {
         const text = 'Could not find a magnet link of the page'
-        Log.error('Jackett', text, e)
+        Logger.error('Jackett', text, e)
         await errorMessage(msg, text)
       }
       if (index !== -1) {
         try {
           const m2t = new Magnet2torrent()
           const buffer = await m2t.getTorrentBuffer(links[index])
-          const path = `${__dirname}/../../../logs/torrents/${fileName}.torrent`
+          const path = `${__dirname}/../../../Loggers/torrents/${fileName}.torrent`
 
           if (!existsSync(dirname(path))) mkdirSync(dirname(path), { recursive: true })
 
@@ -109,7 +109,7 @@ module.exports = class Jackett extends Command {
           return path
         } catch (e) {
           const text = 'Failed to download .torrent file'
-          Log.error('Jackett', text, e)
+          Logger.error('Jackett', text, e)
           await errorMessage(msg, text)
         }
       }

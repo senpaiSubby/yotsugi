@@ -11,7 +11,6 @@ module.exports = class Command {
     this.usage = data.usage || []
     this.guildOnly = data.guildOnly || false
     this.ownerOnly = data.ownerOnly || false
-    this.adminOnly = data.adminOnly || false
     this.permsNeeded = data.permsNeeded || []
 
     if (!this.name) throw new Error('Command Name is required')
@@ -39,9 +38,6 @@ module.exports = class Command {
     if (typeof this.guildOnly !== 'boolean') {
       throw new TypeError('Command guildOnly property must be a boolean')
     }
-    if (typeof this.adminOnly !== 'boolean') {
-      throw new TypeError('Command adminOnly property must be a boolean')
-    }
     if (typeof this.args !== 'boolean') {
       throw new TypeError('Command args property must be a boolean')
     }
@@ -49,7 +45,7 @@ module.exports = class Command {
       throw new TypeError('Command webUI property must be a boolean')
     }
     if (typeof this.ownerOnly !== 'boolean') {
-      throw new TypeError('Command adminOnly property must be a boolean')
+      throw new TypeError('Command ownerOnly property must be a boolean')
     }
   }
 

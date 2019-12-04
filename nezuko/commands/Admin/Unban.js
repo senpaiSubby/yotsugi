@@ -21,17 +21,17 @@ module.exports = class UnbanUser extends Command {
 
     // * ------------------ Config --------------------
 
-    const { prefix, logsChannel } = db.server
+    const { prefix, LoggersChannel } = db.server
 
-    const serverLogsChannel = msg.guild.channels.get(logsChannel)
+    const serverLoggersChannel = msg.guild.channels.get(LoggersChannel)
 
     // * ------------------ Check Config --------------------
 
-    if (!serverLogsChannel) {
+    if (!serverLoggersChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a logs channel.
-        Please set one with \`${prefix}server set logsChannel <channelID>\``
+        `It appears that you do not have a Loggers channel.
+        Please set one with \`${prefix}server set LoggersChannel <channelID>\``
       )
     }
 
@@ -49,7 +49,7 @@ module.exports = class UnbanUser extends Command {
     if (!reason) return warningMessage(msg, `Please specify a reason for this unban!`)
     await guild.unban(target, reason)
 
-    return serverLogsChannel.send(
+    return serverLoggersChannel.send(
       embed('green')
         .addField('Unbanned Member', `**${target.username}** with an ID: ${target.id}`)
         .addField('Unbanned By', `**${author.username}** with an ID: ${author.id}`)
