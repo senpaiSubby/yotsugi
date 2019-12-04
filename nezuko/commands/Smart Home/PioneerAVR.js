@@ -9,7 +9,6 @@ module.exports = class PioneerAVR extends Command {
       category: 'Smart Home',
       description: 'Pioneer AVR controller',
       usage: [`avr vol <1-100>`, `avr <off/on>`, `avr <mute>`],
-      aliases: ['vol'],
       webUI: true,
       args: true
     })

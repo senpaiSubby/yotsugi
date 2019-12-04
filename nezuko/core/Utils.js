@@ -256,7 +256,7 @@ module.exports = class Utils {
       // e.attachFile(join(`${__dirname}`, '../', `/core/images/icons/${image}`))
       // e.setThumbnail(`attachment://${image}`)
       e.setThumbnail(
-        `https://raw.githubusercontent.com/callmekory/nezuko/master/core/images/icons/${image}`
+        `https://raw.githubusercontent.com/callmekory/nezuko/master/nezuko/core/images/icons/${image}`
       )
     }
     return e
