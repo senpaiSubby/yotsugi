@@ -4,7 +4,7 @@ module.exports = class ServerConfig extends Command {
   constructor(client) {
     super(client, {
       name: 'server',
-      category: 'Utils',
+      category: 'Admin',
       description: 'Set/Get server config for bot',
       usage: ['server get', 'server set <key> <value'],
       args: true,
@@ -34,8 +34,8 @@ module.exports = class ServerConfig extends Command {
         const keys = Object.keys(server).sort()
 
         const e = embed('green', 'settings.png')
-          .setTitle('Server Database Keys')
-          .setDescription(`**[ ${p}server set <key> <new value> ] to set new value**`)
+          .setTitle('Server Config')
+          .setDescription(`**[ ${p}server set <settings> <new value> ] to change**`)
 
         keys.forEach((i) => e.addField(`${i}`, `${server[i]}`, false))
         return channel.send(e)
@@ -47,10 +47,10 @@ module.exports = class ServerConfig extends Command {
         if (keyToChange in server) {
           server[keyToChange] = newValue
           await db.update({ config: JSON.stringify(server) })
-          const m = await standardMessage(msg, `Key [ ${keyToChange} ] changed to [ ${newValue} ]`)
+          const m = await standardMessage(msg, `[ ${keyToChange} ] changed to [ ${newValue} ]`)
           return m.delete(10000)
         }
-        return warningMessage(msg, `Key [${keyToChange}] doesnt exist`)
+        return warningMessage(msg, `[${keyToChange}] doesnt exist`)
       }
       default:
         return validOptions(msg, ['get', 'set'])

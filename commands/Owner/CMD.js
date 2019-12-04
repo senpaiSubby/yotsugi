@@ -101,7 +101,7 @@ module.exports = class CMD extends Command {
         return channel.send(
           embed('green')
             .setTitle('Locked Commands')
-            .setDescription(`**- ${commandList.join('\n- ')}**`)
+            .setDescription(`**- ${commandList.sort().join('\n- ')}**`)
         )
       }
 
@@ -215,7 +215,7 @@ module.exports = class CMD extends Command {
         return channel.send(
           embed('green')
             .setTitle('Disabled Commands')
-            .setDescription(`**- ${commandList.join('\n- ')}**`)
+            .setDescription(`**- ${commandList.sort().join('\n- ')}**`)
         )
       }
 

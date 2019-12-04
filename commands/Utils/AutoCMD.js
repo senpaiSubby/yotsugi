@@ -46,8 +46,8 @@ module.exports = class AutoCMD extends Command {
 
         // check if Autocmd exists
         if (timeIndex === -1) {
-          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
+          if (api) return `[ ${taskTime} ] autocmd does not exist`
+          return warningMessage(msg, `[ ${taskTime} ] autocmd at does not exist`)
         }
 
         // check for new name
@@ -61,8 +61,8 @@ module.exports = class AutoCMD extends Command {
 
         // save changes
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Retimed Autocmd [ ${taskTime} ] to [ ${newTime} ]`
-        await standardMessage(msg, `Retimed Autocmd [ ${taskTime} ] to [ ${newTime} ]`)
+        if (api) return `Retimed [ ${taskTime} ] autocmd to [ ${newTime} ]`
+        await standardMessage(msg, `Retimed [ ${taskTime} ] autocmd to [ ${newTime} ]`)
         return process.exit()
       }
 
@@ -72,18 +72,18 @@ module.exports = class AutoCMD extends Command {
 
         // check if Autocmd exists
         if (timeIndex === -1) {
-          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
+          if (api) return `[ ${taskTime} ] autocmd does not exist`
+          return warningMessage(msg, `[ ${taskTime} ] autocmd does not exist`)
         }
 
         // check if user specified command
         if (!args[2]) {
           if (api) {
-            return `Please specify the command # in Autocmd at [ ${taskTime} ] to enable`
+            return `Please specify the command # in [ ${taskTime} ] autocmd to enable`
           }
           return warningMessage(
             msg,
-            `Please specify the command # in Autocmd at [ ${taskTime} ] to enable`
+            `Please specify the command # in [ ${taskTime} ] autocmd to enable`
           )
         }
 
@@ -95,11 +95,11 @@ module.exports = class AutoCMD extends Command {
         // check if command exists
         if (!commandListIndex) {
           if (api) {
-            return `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            return `[ ${taskTime} ] autocmd doesnt contain command # [ ${command} ]`
           }
           return warningMessage(
             msg,
-            `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            `[ ${taskTime} ] autocmd doesnt contain command # [ ${command} ]`
           )
         }
 
@@ -109,13 +109,13 @@ module.exports = class AutoCMD extends Command {
           if (api) {
             return `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Autocmd at [ ${taskTime} ] is already enabled`
+            } ] in [ ${taskTime} ] autocmd is already enabled`
           }
           return warningMessage(
             msg,
             `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Autocmd at [ ${taskTime} ] is already enabled`
+            } ] in [ ${taskTime} ] autocmd is already enabled`
           )
         }
         // enable command in Autocmd
@@ -132,7 +132,7 @@ module.exports = class AutoCMD extends Command {
           msg,
           `Enabled command  [ ${command + 1} ] [ ${
             commandListIndex[1]
-          } ] in Autocmd at [ ${taskTime} ]`
+          } ] in [ ${taskTime} ] autocmd`
         )
         return process.exit()
       }
@@ -143,18 +143,18 @@ module.exports = class AutoCMD extends Command {
 
         // check if Autocmd exists
         if (timeIndex === -1) {
-          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
+          if (api) return `[ ${taskTime} ] autocmd does not exist`
+          return warningMessage(msg, `[ ${taskTime} ] autocmd does not exist`)
         }
 
         // check if user specified command
         if (!args[2]) {
           if (api) {
-            return `Please specify the command # in Autocmd at [ ${taskTime} ] to disable`
+            return `Please specify the command # in [ ${taskTime} ] autocmd to disable`
           }
           return warningMessage(
             msg,
-            `Please specify the command # in Autocmd at [ ${taskTime} ] to disable`
+            `Please specify the command # in [ ${taskTime} ] autocmd to disable`
           )
         }
 
@@ -166,11 +166,11 @@ module.exports = class AutoCMD extends Command {
         // check if command exists
         if (!commandListIndex) {
           if (api) {
-            return `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            return `[ ${taskTime} ] autocmd doesnt contain command # [ ${command} ]`
           }
           return warningMessage(
             msg,
-            `Autocmd at [ ${taskTime} ] doesnt contain command # [ ${command} ]`
+            `[ ${taskTime} ] autocmd doesnt contain command # [ ${command} ]`
           )
         }
 
@@ -180,13 +180,13 @@ module.exports = class AutoCMD extends Command {
           if (api) {
             return `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Autocmd at [ ${taskTime} ] is already disabled`
+            } ] in [ ${taskTime} ] autocmd is already disabled`
           }
           return warningMessage(
             msg,
             `Command [ ${command + 1} ] [ ${
               commandListIndex[1]
-            } ] in Autocmd at [ ${taskTime} ] is already disabled`
+            } ] in [ ${taskTime} ] autocmd is already disabled`
           )
         }
         // disable command in Autocmd
@@ -197,13 +197,13 @@ module.exports = class AutoCMD extends Command {
         if (api) {
           return `Disabled command  [ ${command + 1} ][ ${
             commandListIndex[1]
-          } ] in Autocmd at [ ${taskTime} ]`
+          } ] in [ ${taskTime} ] autocmd`
         }
         await standardMessage(
           msg,
           `Disabled command  [ ${command + 1} ][ ${
             commandListIndex[1]
-          } ] in Autocmd at [ ${taskTime} ]`
+          } ] in [ ${taskTime} ] autocmd`
         )
         return process.exit()
       }
@@ -211,7 +211,7 @@ module.exports = class AutoCMD extends Command {
       case 'list': {
         if (!autocmd.length) {
           if (api) return `There are no autocmd!`
-          return warningMessage(msg, `There are no Autocmds!`)
+          return warningMessage(msg, `There are no autocmds!`)
         }
 
         const embedList = []
@@ -247,18 +247,15 @@ module.exports = class AutoCMD extends Command {
 
         // check if command is already part of Autocmd
         if (autocmd[index].commands.includes(command)) {
-          if (api) return `Autocmd at [ ${taskTime} ] already has command [ ${command} ]`
-          return warningMessage(
-            msg,
-            `Autocmd at [ ${taskTime} ] already has command [ ${command} ]`
-          )
+          if (api) return `[ ${taskTime} ] autocmd already has command [ ${command} ]`
+          return warningMessage(msg, `[ ${taskTime} ] autocmd already has command [ ${command} ]`)
         }
 
         // save changes
         autocmd[index].commands.push([true, command])
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Added command [ ${command} ] to Autocmd at [ ${taskTime} ]`
-        await standardMessage(msg, `Added command [ ${command} ] to Autocmd at [ ${taskTime} ]`)
+        if (api) return `Added command [ ${command} ] to [ ${taskTime} ] autocmd`
+        await standardMessage(msg, `Added command [ ${command} ] to [ ${taskTime} ] autocmd`)
         return process.exit()
       }
 
@@ -268,8 +265,8 @@ module.exports = class AutoCMD extends Command {
 
         // create Autocmd if doesnt exist
         if (timeIndex === -1) {
-          if (api) return `Autocmd at [ ${taskTime} ] does not exist`
-          return warningMessage(msg, `Autocmd at [ ${taskTime} ] does not exist`)
+          if (api) return `[ ${taskTime} ] autocmd does not exist`
+          return warningMessage(msg, `[ ${taskTime} ] autocmd does not exist`)
         }
 
         if (args[2]) {
@@ -281,11 +278,11 @@ module.exports = class AutoCMD extends Command {
           // check if command exists
           if (!autocmd[timeIndex].commands[commandListIndex].includes(command)) {
             if (api) {
-              return `Autocmd at [ ${taskTime} ] doesnt contain command [ ${command} ]`
+              return `[ ${taskTime} ] autocmd doesnt contain command [ ${command} ]`
             }
             return warningMessage(
               msg,
-              `Autocmd at [ ${taskTime} ] doesnt contain command [ ${command} ]`
+              `[ ${taskTime} ] autocmd doesnt contain command [ ${command} ]`
             )
           }
           // remove command from Autocmd
@@ -293,19 +290,16 @@ module.exports = class AutoCMD extends Command {
           // save changes
           autocmd[timeIndex].commands.splice(commandIndex, 1)
           await db.update({ config: JSON.stringify(config) })
-          if (api) return `Removed command [ ${command} ] from Autocmd at [ ${taskTime} ]`
-          await standardMessage(
-            msg,
-            `Removed command [ ${command} ] from Autocmd at [ ${taskTime} ]`
-          )
+          if (api) return `Removed command [ ${command} ] from [ ${taskTime} ] autocmd`
+          await standardMessage(msg, `Removed command [ ${command} ] from [ ${taskTime} ] autocmd`)
           return process.exit()
         }
 
         // save changes
         autocmd.splice(timeIndex, 1)
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Removed Autocmd at [ ${taskTime} ]`
-        await standardMessage(msg, `Removed Autocmd at [ ${taskTime} ]`)
+        if (api) return `Removed [ ${taskTime} ] autocmd`
+        await standardMessage(msg, `Removed [ ${taskTime} ] autocmd`)
         return process.exit()
       }
 
