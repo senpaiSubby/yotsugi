@@ -55,8 +55,8 @@ module.exports = class Routines extends Command {
 
         // check if routine exists
         if (routineIndex === -1) {
-          if (api) return `Routine [ ${routineName} ] does not exist`
-          return warningMessage(msg, `Routine [ ${routineName} ] does not exist`)
+          if (api) return `Routine [ ${routineName} ] doesn't exist`
+          return warningMessage(msg, `Routine [ ${routineName} ] doesn't exist`)
         }
 
         // check for new name
@@ -80,8 +80,8 @@ module.exports = class Routines extends Command {
 
         // check if routine exists
         if (routineIndex === -1) {
-          if (api) return `Routine [ ${routineName} ] does not exist`
-          return warningMessage(msg, `Routine [ ${routineName} ] does not exist`)
+          if (api) return `Routine [ ${routineName} ] doesn't exist`
+          return warningMessage(msg, `Routine [ ${routineName} ] doesn't exist`)
         }
 
         // check if user specified command
@@ -146,8 +146,8 @@ module.exports = class Routines extends Command {
 
         // check if routine exists
         if (routineIndex === -1) {
-          if (api) return `Routine [ ${routineName} ] does not exist`
-          return warningMessage(msg, `Routine [ ${routineName} ] does not exist`)
+          if (api) return `Routine [ ${routineName} ] doesn't exist`
+          return warningMessage(msg, `Routine [ ${routineName} ] doesn't exist`)
         }
 
         // check if user specified command
@@ -211,8 +211,8 @@ module.exports = class Routines extends Command {
         const index = routines.findIndex((i) => i.name === routineName)
 
         if (index === -1) {
-          if (api) return `Routine [ ${routineName} ] does not exist`
-          return warningMessage(msg, `Routine [ ${routineName} ] does not exist`)
+          if (api) return `Routine [ ${routineName} ] doesn't exist`
+          return warningMessage(msg, `Routine [ ${routineName} ] doesn't exist`)
         }
 
         if (!api) await standardMessage(msg, `Running routine [ ${routineName} ]`)
@@ -299,8 +299,8 @@ module.exports = class Routines extends Command {
 
         // create routine if doesnt exist
         if (routineIndex === -1) {
-          if (api) return `Routine [ ${routineName} ] does not exist`
-          return warningMessage(msg, `Routine [ ${routineName} ] does not exist`)
+          if (api) return `Routine [ ${routineName} ] doesn't exist`
+          return warningMessage(msg, `Routine [ ${routineName} ] doesn't exist`)
         }
 
         if (args[2]) {

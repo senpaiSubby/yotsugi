@@ -89,11 +89,6 @@ module.exports = class CommandManager {
   async handleMessage(msg, client) {
     if (msg.author.bot) return
 
-    // * -------------------- Parse & Log Messages --------------------
-
-    // send all messages to our parser
-    await MessageManager.logger(msg)
-
     // * -------------------- Setup --------------------
 
     const { Utils, generalConfig, serverConfig, Log } = client
@@ -115,6 +110,11 @@ module.exports = class CommandManager {
     client.db.config = JSON.parse(generalDB.dataValues.config)
     const serverDB = await serverConfig.findOne({ where: { id: guild.id } })
     client.db.server = JSON.parse(serverDB.dataValues.config)
+
+    // * -------------------- Parse & Log Messages --------------------
+
+    // send all messages to our parser
+    await MessageManager.logger(msg)
 
     // * -------------------- Find Command & Parse Args --------------------
 

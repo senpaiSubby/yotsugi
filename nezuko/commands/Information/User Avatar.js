@@ -20,7 +20,7 @@ module.exports = class UserAvatar extends Command {
     // * ------------------ Logic --------------------
 
     const member = msg.mentions.members.first() || author
-    if (!member.user.avatar) return warningMessage(msg, 'This user does not have an avatar!')
+    if (!member.user.avatar) return warningMessage(msg, "This user doesn't have an avatar!")
     const avatar = member.user.avatarURL
 
     return channel.send(

@@ -54,7 +54,7 @@ module.exports = class Rules extends Command {
         await db.update({ rules: JSON.stringify(rules) })
         if (name) return standardMessage(msg, `[ ${name} ] removed from rules`)
 
-        return warningMessage(msg, `Rule [ ${name} ] does not exist`)
+        return warningMessage(msg, `Rule [ ${name} ] doesn't exist`)
       }
       default: {
         if (!rules.length) {

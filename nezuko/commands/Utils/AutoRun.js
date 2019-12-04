@@ -46,8 +46,8 @@ module.exports = class AutoRun extends Command {
 
         // check if autorun exists
         if (timeIndex === -1) {
-          if (api) return `[ ${taskTime} ] autorun does not exist`
-          return warningMessage(msg, `[ ${taskTime} ] autorun at does not exist`)
+          if (api) return `[ ${taskTime} ] autorun doesn't exist`
+          return warningMessage(msg, `[ ${taskTime} ] autorun at doesn't exist`)
         }
 
         // check for new name
@@ -72,8 +72,8 @@ module.exports = class AutoRun extends Command {
 
         // check if autorun exists
         if (timeIndex === -1) {
-          if (api) return `[ ${taskTime} ] autorun does not exist`
-          return warningMessage(msg, `[ ${taskTime} ] autorun does not exist`)
+          if (api) return `[ ${taskTime} ] autorun doesn't exist`
+          return warningMessage(msg, `[ ${taskTime} ] autorun doesn't exist`)
         }
 
         // check if user specified command
@@ -143,8 +143,8 @@ module.exports = class AutoRun extends Command {
 
         // check if autorun exists
         if (timeIndex === -1) {
-          if (api) return `[ ${taskTime} ] autorun does not exist`
-          return warningMessage(msg, `[ ${taskTime} ] autorun does not exist`)
+          if (api) return `[ ${taskTime} ] autorun doesn't exist`
+          return warningMessage(msg, `[ ${taskTime} ] autorun doesn't exist`)
         }
 
         // check if user specified command
@@ -265,8 +265,8 @@ module.exports = class AutoRun extends Command {
 
         // create autorun if doesnt exist
         if (timeIndex === -1) {
-          if (api) return `[ ${taskTime} ] autorun does not exist`
-          return warningMessage(msg, `[ ${taskTime} ] autorun does not exist`)
+          if (api) return `[ ${taskTime} ] autorun doesn't exist`
+          return warningMessage(msg, `[ ${taskTime} ] autorun doesn't exist`)
         }
 
         if (args[2]) {

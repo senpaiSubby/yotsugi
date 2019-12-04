@@ -52,7 +52,7 @@ module.exports = class Shortcut extends Command {
       case 'remove': {
         const name = args[1]
         const index = shortcuts.findIndex((d) => d.name === name)
-        if (index === -1) return warningMessage(msg, `Shortcut [ ${name} ] does not exist`)
+        if (index === -1) return warningMessage(msg, `Shortcut [ ${name} ] doesn't exist`)
 
         shortcuts.splice(index, 1)
         await db.update({ config: JSON.stringify(config) })
@@ -62,13 +62,13 @@ module.exports = class Shortcut extends Command {
       }
       default: {
         const index = shortcuts.findIndex((i) => i.name === args[0])
-        if (index === -1) return warningMessage(msg, `Shortcut does not exist`)
+        if (index === -1) return warningMessage(msg, `Shortcut doesn't exist`)
 
         const { command, arg } = shortcuts[index]
 
         const cmd = context.findCommand(command)
         if (cmd) return context.runCommand(client, cmd, msg, arg)
-        return errorMessage(msg, `Command [ ${command} ] does not exist`)
+        return errorMessage(msg, `Command [ ${command} ] doesn't exist`)
       }
     }
   }

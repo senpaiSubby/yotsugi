@@ -66,7 +66,7 @@ module.exports = class RClone extends Command {
 
     if (!remotes.includes(remote) && command !== 'list') {
       if (!remote) return warningMessage(msg, 'Please specify the remote to use')
-      return errorMessage(msg, `Remote [ ${remote} ] does not exist in RClone config`)
+      return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
     }
 
     switch (command) {
@@ -116,7 +116,7 @@ module.exports = class RClone extends Command {
         if (code === 3) {
           return warningMessage(
             msg,
-            `Directory [ ${remote.toUpperCase()}:${dirPath} ] does not exist!`
+            `Directory [ ${remote.toUpperCase()}:${dirPath} ] doesn't exist!`
           )
         }
 
@@ -190,7 +190,7 @@ module.exports = class RClone extends Command {
         if (code === 3) {
           return warningMessage(
             msg,
-            `Directory [ ${remote.toUpperCase()}:${dirPath || '/'} ] does not exist`
+            `Directory [ ${remote.toUpperCase()}:${dirPath || '/'} ] doesn't exist`
           )
         }
 

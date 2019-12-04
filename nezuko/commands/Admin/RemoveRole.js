@@ -27,7 +27,7 @@ module.exports = class RemoveRole extends Command {
 
     if (!role) return msg.reply('Please specify a role')
     const gRole = msg.guild.roles.find((a) => a.name === role)
-    if (!gRole) return errorMessage(msg, `Role does not exist`)
+    if (!gRole) return errorMessage(msg, `Role doesn't exist`)
 
     if (!rMember.roles.has(gRole.id)) {
       return warningMessage(msg, `${rMember} doesn't have the role [ ${role} ]`)

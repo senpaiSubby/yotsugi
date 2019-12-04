@@ -29,7 +29,7 @@ module.exports = class AddRole extends Command {
 
     if (!role) return msg.reply('Please specify a role')
     const gRole = guild.roles.find((a) => a.name === role)
-    if (!gRole) return errorMessage(msg, `Role does not exist`)
+    if (!gRole) return errorMessage(msg, `Role doesn't exist`)
 
     if (rMember.roles.has(gRole.id)) {
       return warningMessage(msg, `${rMember} already has the role [ ${role} ]`)
