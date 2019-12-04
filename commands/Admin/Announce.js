@@ -18,7 +18,7 @@ module.exports = class Announce extends Command {
 
     const { Utils, db } = client
     const { warningMessage, embed } = Utils
-    const { author, createdAt, guild, mentions } = msg
+    const { author, guild } = msg
 
     // * ------------------ Config --------------------
 
@@ -42,9 +42,10 @@ module.exports = class Announce extends Command {
     await serverAnnouncementChannel.send(everyone.toString())
     return serverAnnouncementChannel.send(
       embed('blue', 'news.png')
-        .setTitle('ANNOUNCEMENT')
+        .setTitle('ANNOUNCEMENT!')
         .setDescription(`**${args.join(' ')}**`)
-        .setAuthor(author.tag, author.avatarURL)
+        .setTimestamp(new Date())
+        .setFooter(`From ${author.tag}`, author.avatarURL)
     )
   }
 }

@@ -297,6 +297,7 @@ module.exports = class CommandManager {
         id,
         ownerID,
         config: JSON.stringify({
+          announcementChannel: null,
           logsChannel: null,
           prefix: this.prefix,
           rules: [],
@@ -305,6 +306,13 @@ module.exports = class CommandManager {
         }),
         messages: JSON.stringify({ channels: {}, dm: {} })
       })
+    }
+
+    // * just to handle db updates when adding commands
+    const conf = JSON.parse(db.config)
+    if (!conf.announcementChannel) {
+      conf.announcementChannel = null
+      await db.update({ config: JSON.stringify(conf) })
     }
 
     const prefix = db.prefix || this.prefix
