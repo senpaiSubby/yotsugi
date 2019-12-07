@@ -73,10 +73,10 @@ const eventFiles = client.Utils.findNested(`${__dirname}/nezuko/events`, '.js')
 eventFiles.forEach((file) => require(file))
 
 // Logger discord warnings
-client.on('warn', (info) => console.Logger(`warn: ${info}`))
-client.on('reconnecting', () => console.Logger(`client tries to reconnect to the WebSocket`))
+client.on('warn', (info) => console.log(`warn: ${info}`))
+client.on('reconnecting', () => console.log(`client tries to reconnect to the WebSocket`))
 client.on('resume', (replayed) =>
-  console.Logger(`whenever a WebSocket resumes, ${replayed} replays`)
+  console.log(`whenever a WebSocket resumes, ${replayed} replays`)
 )
 
 // Unhandled Promise Rejections

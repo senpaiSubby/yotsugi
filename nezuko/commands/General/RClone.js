@@ -63,9 +63,6 @@ module.exports = class RClone extends Command {
     // * ------------------ Logic --------------------
 
     const command = args.shift()
-    const resp = args.join()
-    const remote = resp.substring(resp.lastIndexOf(':'), resp.lastIndexOf()).trim()
-    const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim()
 
     switch (command) {
       case 'list': {
@@ -75,6 +72,10 @@ module.exports = class RClone extends Command {
         return channel.send(e)
       }
       case 'size': {
+        const resp = args.join()
+        const remote = resp.substring(resp.lastIndexOf(':'), resp.lastIndexOf()).trim()
+        const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim()
+
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
         }
@@ -124,6 +125,10 @@ module.exports = class RClone extends Command {
       }
 
       case 'ls': {
+        const resp = args.join()
+        const remote = resp.substring(resp.lastIndexOf(':'), resp.lastIndexOf()).trim()
+        const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim()
+
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
         }
