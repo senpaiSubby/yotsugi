@@ -7,6 +7,7 @@ module.exports = class RClone extends Command {
     super(client, {
       name: 'rclone',
       category: 'General',
+      aliases: ['drive'],
       description: 'Get info on RClone remotes',
       usage: ['rclone list', 'rclone size <remote>:/<dir>', 'rclone ls <remote>:/<dir>'],
       aliases: ['drive'],
@@ -74,7 +75,7 @@ module.exports = class RClone extends Command {
       case 'size': {
         const resp = args.join()
         const remote = resp.substring(resp.lastIndexOf(':'), resp.lastIndexOf()).trim()
-        const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim()
+        const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim().replace(/,/g, ' ').trim()
 
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
@@ -127,7 +128,7 @@ module.exports = class RClone extends Command {
       case 'ls': {
         const resp = args.join()
         const remote = resp.substring(resp.lastIndexOf(':'), resp.lastIndexOf()).trim()
-        const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim()
+        const dirPath = resp.substring(resp.lastIndexOf(':') + 1).trim().replace(/,/g, ' ').trim()
 
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
