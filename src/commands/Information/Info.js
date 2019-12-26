@@ -16,7 +16,7 @@ export default  class Info extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, user } = client
-    const { embed } = Utils
+    const { embed, execAsync } = Utils
     const { channel, context } = msg
     const { round } = Math
     const { memoryUsage } = process
@@ -24,6 +24,13 @@ export default  class Info extends Command {
     // * ------------------ Logic --------------------
 
     const npmv = await worker.process('npm -v').death()
+    const {
+      stdout
+    } = await execAsync(
+      'sloc --format json --exclude "node_modules|build" /home/sublime/git/nezuko',
+      { silent: true }
+    )
+    const { byExt } = JSON.parse(stdout)
 
     return channel.send(
       embed('green')
@@ -34,6 +41,7 @@ export default  class Info extends Command {
         .addField('Node Version', process.version.replace('v', ''), true)
         .addField('NPM Version', npmv.data.replace('\n', ''), true)
         .addField('Commands', context.commands.size, true)
+        .addField('Lines of Code', byExt.js.summary.source, true)
         .setDescription(
           `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`
         )
