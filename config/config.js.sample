@@ -1,0 +1,6 @@
+module.exports = {
+  ownerID: '',
+  prefix: '//',
+  token: '',
+  webServerPort: 5700,
+}
