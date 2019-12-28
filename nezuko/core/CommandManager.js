@@ -286,6 +286,17 @@ module.exports = class CommandManager {
 
     let db = await serverConfig.findOne({ where: { id } })
 
+    if (db && db.config) {
+      const config = JSON.parse(db.config)
+
+      if (config) {
+        if (!config.modMailChannel) {
+          config.modMailChannel = null
+          await db.update({ config: JSON.stringify(config) })
+        }
+      }
+    }
+
     if (!db) {
       this.Logger.info(
         'Handle Server',
@@ -298,6 +309,7 @@ module.exports = class CommandManager {
         config: JSON.stringify({
           announcementChannel: null,
           LoggersChannel: null,
+          modMailChannel: null,
           prefix: this.prefix,
           rules: [],
           starboardChannel: null,

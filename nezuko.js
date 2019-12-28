@@ -24,14 +24,19 @@ const handleConfig = async () => {
   const { ownerID } = client.config
   const db = await client.generalConfig.findOne({ where: { id: ownerID } })
 
-  const config = JSON.parse(db.config)
-  if (!config.lockedCommands) {
-    config.lockedCommands = []
-    await db.update({ config: JSON.stringify(config) })
-  }
-  if (!config.autorun) {
-    config.autorun = []
-    await db.update({ config: JSON.stringify(config) })
+  if (db && db.config) {
+    const config = JSON.parse(db.config)
+
+    if (config) {
+      if (!config.lockedCommands) {
+        config.lockedCommands = []
+        await db.update({ config: JSON.stringify(config) })
+      }
+      if (!config.autorun) {
+        config.autorun = []
+        await db.update({ config: JSON.stringify(config) })
+      }
+    }
   }
 
   if (!db) {
@@ -75,9 +80,7 @@ eventFiles.forEach((file) => require(file))
 // Logger discord warnings
 client.on('warn', (info) => console.log(`warn: ${info}`))
 client.on('reconnecting', () => console.log(`client tries to reconnect to the WebSocket`))
-client.on('resume', (replayed) =>
-  console.log(`whenever a WebSocket resumes, ${replayed} replays`)
-)
+client.on('resume', (replayed) => console.log(`whenever a WebSocket resumes, ${replayed} replays`))
 
 // Unhandled Promise Rejections
 process.on('unhandledRejection', (reason) =>
