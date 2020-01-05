@@ -2,7 +2,7 @@ export default {
   apps: [
     {
       name: 'nezuko',
-      script: 'nezuko.js',
+      script: '/build/index.js',
       instances: 1,
       autorestart: true,
       watch: false,
