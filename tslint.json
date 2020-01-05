@@ -1,0 +1,50 @@
+{
+  "rulesDirectory": ["tslint-plugin-prettier", "node_modules/tslint-lines-between-class-members"],
+  "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-config-airbnb"],
+  "rules": {
+    "forin": false,
+    "interface-name": [true, "never-prefix"],
+    "member-ordering": true,
+    "no-console": [false],
+    "no-namespace": [true, "allow-declarations"],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "quotemark": [true, "single"],
+    "only-arrow-functions": true,
+    "trailing-comma": false,
+    "semicolon": false,
+    "max-classes-per-file": false,
+    "object-literal-sort-keys": false,
+    "no-eval": false,
+    "ter-arrow-parens": true,
+    "no-parameter-reassignment": false,
+    "no-increment-decrement": false,
+    "brace-style": false,
+    "lines-between-class-members": [true, 1],
+    "jsdoc-format": false,
+    "ordered-imports": true,
+    "whitespace": true,
+    "triple-equals": true,
+    "arrow-return-shorthand": [true, "multiline"],
+    "comment-format": [true, "check-space", "check-uppercase"],
+    "class-name": true,
+    "no-unnecessary-initializer": true,
+    "no-angle-bracket-type-assertion": true,
+    "object-shorthand-properties-first": true,
+    "no-boolean-literal-compare": true,
+    "object-literal-key-quotes": [true, "as-needed"],
+    "prefer-switch": true,
+    "prefer-template": true,
+    "align": [true, "parameters", "statements"],
+    "eofline": true,
+    "no-consecutive-blank-lines": true,
+    "import-name": false,
+    "file-header": [
+      true,
+      {
+        "match": "Coded by CallMeKory - https://github.com/callmekory",
+        "allow-single-line-comments": true,
+        "default": "Coded by CallMeKory - https://github.com/callmekory\n'It’s not a bug – it’s an undocumented feature.'"
+      }
+    ]
+  }
+}

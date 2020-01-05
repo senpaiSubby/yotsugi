@@ -1,20 +1,7 @@
 {
-  "name": "nezuko",
-  "version": "1.0.0",
-  "description": "",
-  "license": "GPL-3",
-  "main": "nezuko.js",
-  "scripts": {
-    "dev": "nodemon .",
-    "start": "pm2 start nezuko.js",
-    "stop": "pm2 stop nezuko"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/callmekory/nezuko.git"
-  },
   "author": "callmekory",
   "dependencies": {
+    "@types/node-fetch": "^2.5.4",
     "bluebird": "^3.7.2",
     "chalk": "^3.0.0",
     "core-worker": "^0.3.5",
@@ -25,6 +12,7 @@
     "express": "^4.17.1",
     "express-device": "^0.4.2",
     "google-home-notify-client": "^0.3.1",
+    "gulp": "^4.0.2",
     "later": "^1.2.0",
     "magnet2torrent-js": "^1.3.0",
     "moment": "^2.24.0",
@@ -33,8 +21,10 @@
     "node-fetch": "^2.6.0",
     "node-os-utils": "^1.2.0",
     "puppeteer": "^2.0.0",
+    "reflect-metadata": "^0.1.13",
     "sanitize-filename": "^1.6.3",
     "sequelize": "^5.21.3",
+    "sequelize-typescript": "^1.1.0",
     "serve-index": "^1.9.1",
     "shelljs": "^0.8.3",
     "shortid": "^2.2.15",
@@ -51,17 +41,49 @@
     "wol": "^1.0.7",
     "youtube-v3-api": "^1.1.1"
   },
+  "description": "",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.8.0",
-    "eslint-plugin-import": "^2.19.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-standard": "^4.0.1",
-    "prettier": "^1.19.1"
-  }
+    "@types/bluebird": "^3.5.29",
+    "@types/cors": "^2.8.6",
+    "@types/dateformat": "^3.0.1",
+    "@types/express": "^4.17.2",
+    "@types/later": "^1.2.5",
+    "@types/lodash": "4.14.149",
+    "@types/lodash-es": "^4.17.3",
+    "@types/moment-duration-format": "^2.2.2",
+    "@types/node": "^13.1.1",
+    "@types/node-os-utils": "^1.1.0",
+    "@types/puppeteer": "^2.0.0",
+    "@types/serve-index": "^1.7.30",
+    "@types/shortid": "^0.0.29",
+    "@types/url-join": "^4.0.0",
+    "@types/validator": "^12.0.1",
+    "lodash": "^4.17.15",
+    "prettier": "^1.19.1",
+    "source-map": "~0.7.3",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "tslint": "^5.20.1",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-lines-between-class-members": "^1.3.6",
+    "tslint-plugin-prettier": "^2.1.0",
+    "typescript": "^3.7.4",
+    "typescript-memoize": "^1.0.0-alpha.3"
+  },
+  "license": "GPL-3",
+  "main": "nezuko.js",
+  "name": "nezuko",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callmekory/nezuko.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon .",
+    "lint": "tslint -p tsconfig.json \"src/**/*.ts\"",
+    "start": "pm2 start nezuko.js",
+    "stop": "pm2 stop nezuko",
+    "watch": "tsc -w"
+  },
+  "version": "1.0.0"
 }

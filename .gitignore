@@ -10,7 +10,7 @@ logs
 *.sqlite3*
 testing.js
 db.json
-config.js
+.config.json
 attachments
 _WIP
 _todo
