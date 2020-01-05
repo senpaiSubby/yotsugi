@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Muli', monospace;
+  font-weight: bold;
+}
+
+html {
+  height: 100%;
+  outline: 0;
+}
+#root {
+  height: 100%;
+  color: #dfdfdf;
+}
+
+body {
+  height: 100%;
+  background-color: #282828;
+}
+
+:focus {
+  outline: none;
+}
+::-moz-focus-inner {
+  border: 0;
+}
