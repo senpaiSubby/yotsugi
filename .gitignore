@@ -1,6 +1,4 @@
-
-# Logs and databases #
-######################
+/build/
 *.log
 logs
 *.sql
@@ -12,31 +10,5 @@ testing.js
 db.json
 .config.json
 attachments
-_WIP
-_todo
-_old
 rclone.conf
-
-# OS generated files #
-######################
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-*.bak
-*.swp
-
-# Programming #
-######################
 node_modules
-__pycache__
-env
-.env
-venv
-*.pyc
-*.idea
-.vscode
-yarn.lock

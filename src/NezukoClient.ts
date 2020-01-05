@@ -5,14 +5,16 @@
 
 import * as config from './config/config.json'
 
-import { Client, GuildMember, Message, TextChannel } from 'discord.js'
-import { ClientDB, NezukoMessage, ServerDBConfig } from 'typings'
+import { Client, GuildMember, Message } from 'discord.js'
+import { ClientDB, NezukoMessage } from 'typings'
 import { CommandManager } from './core/managers/CommandManager'
 import { ConfigManager } from './core/managers/ConfigManager'
 import { SubprocessManager } from './core/managers/SubprocessManager'
 import { Log } from './core/utils/Logger'
 import { Utils } from './core/utils/Utils'
 
+import { guildMemberAdd } from 'events/guildMemberAdd'
+import { guildMemberRemove } from 'events/guildMemberRemove'
 import { database } from './core/database/database'
 
 export class NezukoClient extends Client {
@@ -71,6 +73,7 @@ export class NezukoClient extends Client {
    * Starts Nezuko
    */
   public start() {
+    const { handleMessage } = this.commandManager
     // Login
     this.login(this.config.token)
 
@@ -81,53 +84,18 @@ export class NezukoClient extends Client {
       // Handle general config
       ConfigManager.handleGeneralConfig()
 
-      // * ---------- Handle messages ----------
+      // * ---------- Events ----------
 
       // On message
-      this.on('message', async (message: NezukoMessage) => {
-        await this.commandManager.handleMessage(message, this, true)
-      })
+      this.on('message', async (message: NezukoMessage) => await handleMessage(message, this, true))
 
       // On message edits
       this.on('messageUpdate', async (old: Message, _new: NezukoMessage) => {
         if (old.content !== _new.content) await this.commandManager.handleMessage(_new, this)
       })
 
-      // * ---------- Handle Member Join / Leave ----------
-
-      this.on('guildMemberAdd', async (member: GuildMember) => {
-        const { embed } = Utils
-
-        const db = await this.serverConfig.findOne({ where: { id: member.guild.id } })
-        const { welcomeChannel, prefix } = JSON.parse(db.dataValues.config)
-
-        const e = embed()
-          .setColor('RANDOM')
-          .setThumbnail(member.guild.iconURL)
-          .setAuthor(member.user.username, member.user.avatarURL)
-          .setTitle(`Welcome To ${member.guild.name}!`)
-          .setDescription(
-            `Please take a look at our rules by typing **${prefix}rules**!\nView our commands with **${prefix}help**\nEnjoy your stay!`
-          )
-        const channel = member.guild.channels.get(welcomeChannel) as TextChannel
-        return channel.send(e)
-      })
-
-      this.on('guildMemberRemove', async (member) => {
-        const { embed } = Utils
-
-        const db = await this.serverConfig.findOne({ where: { id: member.guild.id } })
-        const { welcomeChannel } = JSON.parse(db.dataValues.config)
-
-        const e = embed()
-          .setColor('RANDOM')
-          .setThumbnail(member.guild.iconURL)
-          .setAuthor(member.user.username, member.user.avatarURL)
-          .setTitle(`Left the server!`)
-          .setDescription(`Sorry to see you go!`)
-        const channel = member.guild.channels.get(welcomeChannel) as TextChannel
-        return channel.send(e)
-      })
+      this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
+      this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
 
       // * ---------- Load and start subprocessess ----------
       await new SubprocessManager(this).loadModules()

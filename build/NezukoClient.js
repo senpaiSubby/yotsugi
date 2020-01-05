@@ -18,6 +18,8 @@ const ConfigManager_1 = require("./core/managers/ConfigManager");
 const SubprocessManager_1 = require("./core/managers/SubprocessManager");
 const Logger_1 = require("./core/utils/Logger");
 const Utils_1 = require("./core/utils/Utils");
+const guildMemberAdd_1 = require("events/guildMemberAdd");
+const guildMemberRemove_1 = require("events/guildMemberRemove");
 const database_1 = require("./core/database/database");
 class NezukoClient extends discord_js_1.Client {
     constructor() {
@@ -49,6 +51,7 @@ class NezukoClient extends discord_js_1.Client {
      * Starts Nezuko
      */
     start() {
+        const { handleMessage } = this.commandManager;
         // Login
         this.login(this.config.token);
         // Once bot connects to discord
@@ -56,43 +59,16 @@ class NezukoClient extends discord_js_1.Client {
             Logger_1.Log.ok('Client Ready', `Connected as [ ${this.user.username} ]`);
             // Handle general config
             ConfigManager_1.ConfigManager.handleGeneralConfig();
-            // * ---------- Handle messages ----------
+            // * ---------- Events ----------
             // On message
-            this.on('message', async (message) => {
-                await this.commandManager.handleMessage(message, this, true);
-            });
+            this.on('message', async (message) => await handleMessage(message, this, true));
             // On message edits
             this.on('messageUpdate', async (old, _new) => {
                 if (old.content !== _new.content)
                     await this.commandManager.handleMessage(_new, this);
             });
-            // * ---------- Handle Member Join / Leave ----------
-            this.on('guildMemberAdd', async (member) => {
-                const { embed } = Utils_1.Utils;
-                const db = await this.serverConfig.findOne({ where: { id: member.guild.id } });
-                const { welcomeChannel, prefix } = JSON.parse(db.dataValues.config);
-                const e = embed()
-                    .setColor('RANDOM')
-                    .setThumbnail(member.guild.iconURL)
-                    .setAuthor(member.user.username, member.user.avatarURL)
-                    .setTitle(`Welcome To ${member.guild.name}!`)
-                    .setDescription(`Please take a look at our rules by typing **${prefix}rules**!\nView our commands with **${prefix}help**\nEnjoy your stay!`);
-                const channel = member.guild.channels.get(welcomeChannel);
-                return channel.send(e);
-            });
-            this.on('guildMemberRemove', async (member) => {
-                const { embed } = Utils_1.Utils;
-                const db = await this.serverConfig.findOne({ where: { id: member.guild.id } });
-                const { welcomeChannel } = JSON.parse(db.dataValues.config);
-                const e = embed()
-                    .setColor('RANDOM')
-                    .setThumbnail(member.guild.iconURL)
-                    .setAuthor(member.user.username, member.user.avatarURL)
-                    .setTitle(`Left the server!`)
-                    .setDescription(`Sorry to see you go!`);
-                const channel = member.guild.channels.get(welcomeChannel);
-                return channel.send(e);
-            });
+            this.on('guildMemberAdd', async (member) => await guildMemberAdd_1.guildMemberAdd(member));
+            this.on('guildMemberRemove', async (member) => await guildMemberRemove_1.guildMemberRemove(member));
             // * ---------- Load and start subprocessess ----------
             await new SubprocessManager_1.SubprocessManager(this).loadModules();
         });

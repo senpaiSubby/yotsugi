@@ -3,11 +3,11 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { CommandManager } from '../../core/managers/CommandManager'
-import { NezukoClient } from '../../NezukoClient'
-import { Subprocess } from '../../core/Subprocess'
-import database from '../../core/database'
 import later from 'later'
+import database from '../../core/database'
+import { CommandManager } from '../../core/managers/CommandManager'
+import { Subprocess } from '../../core/Subprocess'
+import { NezukoClient } from '../../NezukoClient'
 
 export default class AutoRun extends Subprocess {
   public commandManager: CommandManager

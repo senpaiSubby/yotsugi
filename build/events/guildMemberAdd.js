@@ -4,12 +4,12 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const main_1 = require("../main");
-main_1.client.on('guildMemberAdd', async (member) => {
-    const { serverConfig, Utils } = main_1.client;
-    const { embed } = Utils;
-    const db = await serverConfig.findOne({ where: { id: member.guild.id } });
-    const { welcomeChannel, prefix } = JSON.parse(db.dataValues.config);
+const database_1 = require("../core/database/database");
+const Utils_1 = require("../core/utils/Utils");
+exports.guildMemberAdd = async (member) => {
+    const { embed } = Utils_1.Utils;
+    const db = await database_1.database.models.ServerConfig.findOne({ where: { id: member.guild.id } });
+    const { welcomeChannel, prefix } = JSON.parse(db.get('config'));
     const e = embed()
         .setColor('RANDOM')
         .setThumbnail(member.guild.iconURL)
@@ -18,4 +18,4 @@ main_1.client.on('guildMemberAdd', async (member) => {
         .setDescription(`Please take a look at our rules by typing **${prefix}rules**!\nView our commands with **${prefix}help**\nEnjoy your stay!`);
     const channel = member.guild.channels.get(welcomeChannel);
     return channel.send(e);
-});
+};

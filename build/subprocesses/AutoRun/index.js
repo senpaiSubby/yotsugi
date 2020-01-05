@@ -7,9 +7,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Subprocess_1 = require("../../core/Subprocess");
-const database_1 = __importDefault(require("../../core/database"));
 const later_1 = __importDefault(require("later"));
+const database_1 = __importDefault(require("../../core/database"));
+const Subprocess_1 = require("../../core/Subprocess");
 class AutoRun extends Subprocess_1.Subprocess {
     constructor(client) {
         super(client, {
