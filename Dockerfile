@@ -17,7 +17,7 @@ RUN npm install
 EXPOSE 5700
 
 # Expose volume
-VOLUME /app/config
+VOLUME /app/build/config
 
 # Start
-CMD ["pm2-runtime", "nezuko.js"]
+CMD ["pm2-runtime", "/build/index.js"]
