@@ -77,6 +77,6 @@ export default class PriceTracker extends Subprocess {
     }
 
     await checkPrices()
-    setInterval(checkPrices, 60 * 1000)
+    setInterval(checkPrices, 60 * 10000)
   }
 }
