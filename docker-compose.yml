@@ -1,7 +1,7 @@
 version: '3'
 services:
   nezukoBot:
-    image: nezuko_test
+    image: callmekory/nezuko
     container_name: nezuko
     volumes:
       - ./config:/app/build/config
