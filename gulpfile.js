@@ -1,14 +1,18 @@
 const gulp = require('gulp')
+var ts = require('gulp-typescript')
+var tsProject = ts.createProject('tsconfig.json')
 
 const copyFiles = () => {
   return gulp
     .src(['./src/subprocesses/webServer/app/**/*'])
-    .pipe(gulp.dest('./dist/subprocesses/webServer/app'))
+    .pipe(gulp.dest('./build/subprocesses/webServer/app'))
 }
 
-// Complex tasks
-// const js = gulp.series(scriptsLint, scripts)
+const buildProject = () => {
+  return tsProject
+    .src()
+    .pipe(tsProject())
+    .js.pipe(gulp.dest('build'))
+}
 
-// Export tasks
-exports.copy = copyFiles
-// exports.js = js
+exports.default = gulp.series(buildProject, copyFiles)

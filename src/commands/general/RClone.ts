@@ -18,7 +18,12 @@ export default class RClone extends Command {
       category: 'General',
       aliases: ['drive'],
       description: 'Get info on RClone remotes',
-      usage: ['rclone list', 'rclone size <remote>:/<dir>', 'rclone ls <remote>:/<dir>'],
+      usage: [
+        'rclone list',
+        'rclone size <remote>:/<dir>',
+        'rclone ls <remote>:/<dir>',
+        'rclone sizeof <remote1> <remote2> <remote3> <remote4>'
+      ],
       args: true
     })
   }
@@ -90,7 +95,9 @@ export default class RClone extends Command {
 
         const waitMessage = (await channel.send(
           embed('yellow', 'rclone.gif').setDescription(`**Calculating size of
+
           [ ${remote}:${dirPath || '/'} ]
+
           :hourglass: This may take some time...**`)
         )) as Message
 
@@ -132,7 +139,56 @@ export default class RClone extends Command {
 
         return errorMessage(msg, `A error occured with Rclone`)
       }
+      case 'sizeof': {
+        for (const remote of args) {
+          if (!remotes.includes(remote)) {
+            return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
+          }
+        }
 
+        const waitMessage = (await channel.send(
+          embed('yellow', 'rclone.gif').setDescription(`**Calculating size of
+
+          [ ${args.join(', ')} ]
+
+          :hourglass: This is going to take a while...**`)
+        )) as Message
+
+        const startTime = performance.now()
+
+        let totalSize = 0
+        let totalFiles = 0
+
+        for (const remote of args) {
+          const { code, stdout } = (await execAsync(
+            `rclone size --json "${remote}:/" --config="${configPath}"`,
+            {
+              silent: true
+            }
+          )) as ExecAsync
+
+          if (code === 0) {
+            const response = JSON.parse(stdout)
+            const { count, bytes } = response
+
+            totalSize += bytes
+            totalFiles += count
+          }
+        }
+
+        await waitMessage.delete()
+
+        const stopTime = performance.now()
+
+        return msg.reply(
+          embed('green', 'rclone.gif')
+            .setTitle('Rclone Batch Scan')
+            .addField('Scanned Remotes', `${args.join(', ')}`)
+            .addField('Files', `:newspaper: ${totalFiles}`, true)
+            .addField('Size', `:file_folder: ${bytesToSize(totalSize)}`, true)
+            .addField('Scan Time', millisecondsToTime(stopTime - startTime), true)
+        )
+      }
       case 'ls': {
         const resp = args.join().split(':')
         const remote = resp[0]
@@ -145,7 +201,9 @@ export default class RClone extends Command {
         const waitMessage = (await channel.send(
           embed('yellow', 'rclone.gif').setDescription(
             `**Getting Directory
+
           [ ${remote}:${dirPath || '/'} ]
+
           :hourglass: This may take some time...**`
           )
         )) as Message

@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/callmekory/nezuko">
-    <img src="src/core/images/Logo.png" alt="Loggero" width="256" height="256">
+    <img src="src/core/images/logo.png" alt="Loggero" width="256" height="256">
   </a>
 
 <h2 align="center"><b>Nezuko</b></h2>
@@ -120,15 +120,16 @@ If you would like to run Nezuko as a Docker container you'll need to build the i
 ```json
 version: '3'
 services:
-  vscode:
-    image: nezuko
+  nezukoBot:
+    image: callmekory/nezuko
     container_name: nezuko
     volumes:
-      - ./config:/app/data # if you use a host directory for config make sure you copy the config.js file into it before running the bot
+      - ./config:/app/build/config
     ports:
       - 5700:5700
     network_mode: bridge
     restart: unless-stopped
+
 ```
 
 <h2 align="center"><b>Roadmap</b></h2>
