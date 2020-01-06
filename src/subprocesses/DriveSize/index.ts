@@ -3,11 +3,11 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { ExecAsync } from 'typings'
-import { NezukoClient } from '../../core/NezukoClient'
-import { Subprocess } from '../../core/base/Subprocess'
 import { TextChannel } from 'discord.js'
 import { performance } from 'perf_hooks'
+import { ExecAsync } from 'typings'
+import { Subprocess } from '../../core/base/Subprocess'
+import { NezukoClient } from '../../core/NezukoClient'
 
 class DriveSize extends Subprocess {
   constructor(client: NezukoClient) {
@@ -22,48 +22,66 @@ class DriveSize extends Subprocess {
 
   public async run() {
     const { Log, channels, Utils } = this.client
-    const { execAsync } = Utils
+    const { execAsync, bytesToSize } = Utils
 
-    let start = 0
+    const configPath = `${__dirname}/../../config/rclone.conf`
 
     const checkNewStats = async () => {
-      if (start === 1) Log.info('Drive Stats', 'Started Update')
+      Log.info('Drive Stats', 'Started Update')
+
+      const args = [
+        'tld-0day',
+        'tld-anime',
+        'tld-books',
+        'tld-games',
+        'tld-main',
+        'tld-music',
+        'tld-programs',
+        'tld-showsMovies',
+        'tld-websites'
+      ]
+
+      let totalSize = 0
+      let totalFiles = 0
 
       const startTime = performance.now()
 
-      const { code, stdout } = (await execAsync(`rclone size --json goog:/`, {
-        silent: true
-      })) as ExecAsync
+      for (const remote of args) {
+        const { code, stdout } = (await execAsync(
+          `rclone size --json "${remote}:/" --config="${configPath}"`,
+          {
+            silent: true
+          }
+        )) as ExecAsync
+
+        if (code === 0) {
+          const response = JSON.parse(stdout)
+          const { count, bytes } = response
+
+          totalSize += bytes
+          totalFiles += count
+        }
+      }
 
       const stopTime = performance.now()
 
-      // 3 doesnt exist 0 good
-      if (code === 0) {
-        const response = JSON.parse(stdout)
-        const { count } = response
-        const size = Utils.bytesToSize(response.bytes)
+      const fileCountChannel = channels.get('646309179354513420') as TextChannel
+      await fileCountChannel.setName(`📰\u2009\u2009\u2009ғiles\u2009\u2009\u2009${totalFiles}`)
 
-        const fileCountChannel = channels.get('646309179354513420') as TextChannel
-        await fileCountChannel.setName(`📰\u2009\u2009\u2009ғiles\u2009\u2009\u2009${count}`)
+      const driveSizeChannel = channels.get('646309200686874643') as TextChannel
+      await driveSizeChannel.setName(
+        `📁\u2009\u2009\u2009size\u2009\u2009\u2009${bytesToSize(totalSize)
+          .replace('.', '_')
+          .replace(' ', '\u2009\u2009\u2009')}`
+      )
 
-        const driveSizeChannel = channels.get('646309200686874643') as TextChannel
-        await driveSizeChannel.setName(
-          `📁\u2009\u2009\u2009size\u2009\u2009\u2009${size
-            .replace('.', '_')
-            .replace(' ', '\u2009\u2009\u2009')}`
-        )
-
-        return Log.info(
-          'Drive Stats',
-          `Updated Rclone stats in ${Utils.millisecondsToTime(stopTime - startTime)}`
-        )
-      }
-
-      return Log.warn('Drive Stats', `Failed to update Rclone stats`)
+      return Log.info(
+        'Drive Stats',
+        `Updated Rclone stats in ${Utils.millisecondsToTime(stopTime - startTime)}`
+      )
     }
 
     await checkNewStats()
-    start = 1
 
     setInterval(checkNewStats, 14400000)
   }
