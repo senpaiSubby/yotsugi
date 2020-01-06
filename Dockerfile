@@ -2,7 +2,7 @@ FROM node:latest
 
 # Update system
 RUN apt update && apt install git -y
-RUN npm install -g pm2 typescript
+RUN npm install -g pm2 typescript gulp-cli
 RUN curl https://rclone.org/install.sh | bash
 
 # Create the directory
@@ -14,6 +14,7 @@ COPY . /app
 RUN npm install
 RUN npm install --only=dev
 RUN tsc
+RUN gulp
 
 # Expose ports
 EXPOSE 5700

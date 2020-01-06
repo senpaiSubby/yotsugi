@@ -1,4 +1,5 @@
 build
+config
 *.log
 logs
 *.sql
@@ -11,4 +12,4 @@ db.json
 .config.json
 attachments
 rclone.conf
-node_modules
+node_modules/
