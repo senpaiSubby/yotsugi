@@ -6,8 +6,8 @@
 import { NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class SabNZBD extends Command {
   constructor(client: NezukoClient) {

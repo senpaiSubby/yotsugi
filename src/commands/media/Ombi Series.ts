@@ -5,8 +5,8 @@
 
 import { get, post } from 'unirest'
 
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
 import urljoin from 'url-join'
 

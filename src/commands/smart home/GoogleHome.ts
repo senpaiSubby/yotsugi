@@ -5,8 +5,8 @@
 
 import { Device } from 'google-home-notify-client'
 import { NezukoMessage } from 'typings'
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class GoogleHome extends Command {
   constructor(client: NezukoClient) {

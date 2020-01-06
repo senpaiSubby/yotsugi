@@ -4,9 +4,9 @@
  */
 
 import { NezukoMessage, ServerDBConfig } from 'typings'
-import { Command } from '../../core/Command'
+import { Command } from '../../core/base/Command'
 import { database } from '../../core/database/database'
-import { NezukoClient } from '../../NezukoClient'
+import { NezukoClient } from '../../core/NezukoClient'
 
 /**
  * Get and set server config

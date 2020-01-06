@@ -5,11 +5,11 @@
 
 import { ExecAsync, NezukoMessage } from 'typings'
 
-import { Command } from '../../core/Command'
 import { Message } from 'discord.js'
-import { NezukoClient } from '../../NezukoClient'
 import { existsSync } from 'fs'
 import { performance } from 'perf_hooks'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class RClone extends Command {
   constructor(client: NezukoClient) {
@@ -52,7 +52,6 @@ export default class RClone extends Command {
       return warningMessage(
         msg,
         `RClone config is missing!
-
         Place your \`rclone.conf\` file inside the \`/build/config\` directory of Nezuko!`
       )
     }
@@ -91,13 +90,12 @@ export default class RClone extends Command {
 
         const waitMessage = (await channel.send(
           embed('yellow', 'rclone.gif').setDescription(`**Calculating size of
-
           [ ${remote}:${dirPath || '/'} ]
-
           :hourglass: This may take some time...**`)
         )) as Message
 
         const startTime = performance.now()
+
         const { code, stdout } = (await execAsync(
           `rclone size --json "${remote}":"${dirPath}" --config="${configPath}"`,
           {
@@ -106,7 +104,9 @@ export default class RClone extends Command {
         )) as ExecAsync
 
         await waitMessage.delete()
+
         const stopTime = performance.now()
+
         // 3 doesnt exist 0 good
 
         if (code === 0) {
@@ -145,9 +145,7 @@ export default class RClone extends Command {
         const waitMessage = (await channel.send(
           embed('yellow', 'rclone.gif').setDescription(
             `**Getting Directory
-
           [ ${remote}:${dirPath || '/'} ]
-
           :hourglass: This may take some time...**`
           )
         )) as Message

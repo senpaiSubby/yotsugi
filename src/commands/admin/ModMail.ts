@@ -4,9 +4,9 @@
  */
 
 import { Message, TextChannel } from 'discord.js'
-import { NezukoClient } from 'NezukoClient'
+import { NezukoClient } from 'core/NezukoClient'
 import { NezukoMessage } from 'typings'
-import { Command } from '../../core/Command'
+import { Command } from '../../core/base/Command'
 
 export default class ModMail extends Command {
   constructor(client: NezukoClient) {

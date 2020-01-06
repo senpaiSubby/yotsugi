@@ -3,19 +3,19 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import * as config from './config/config.json'
+import * as config from '../config/config.json'
 
 import { Client, GuildMember, Message } from 'discord.js'
 import { ClientDB, NezukoMessage } from 'typings'
-import { CommandManager } from './core/managers/CommandManager'
-import { ConfigManager } from './core/managers/ConfigManager'
-import { SubprocessManager } from './core/managers/SubprocessManager'
-import { Log } from './core/utils/Logger'
-import { Utils } from './core/utils/Utils'
+import { CommandManager } from './managers/CommandManager'
+import { ConfigManager } from './managers/ConfigManager'
+import { SubprocessManager } from './managers/SubprocessManager'
+import { Log } from './utils/Logger'
+import { Utils } from './utils/Utils'
 
-import { guildMemberAdd } from 'events/guildMemberAdd'
-import { guildMemberRemove } from 'events/guildMemberRemove'
-import { database } from './core/database/database'
+import { guildMemberAdd } from '../events/guildMemberAdd'
+import { guildMemberRemove } from '../events/guildMemberRemove'
+import { database } from './database/database'
 
 export class NezukoClient extends Client {
   public config: {
@@ -73,7 +73,6 @@ export class NezukoClient extends Client {
    * Starts Nezuko
    */
   public start() {
-    const { handleMessage } = this.commandManager
     // Login
     this.login(this.config.token)
 
@@ -87,7 +86,11 @@ export class NezukoClient extends Client {
       // * ---------- Events ----------
 
       // On message
-      this.on('message', async (message: NezukoMessage) => await handleMessage(message, this, true))
+      this.on(
+        'message',
+        async (message: NezukoMessage) =>
+          await this.commandManager.handleMessage(message, this, true)
+      )
 
       // On message edits
       this.on('messageUpdate', async (old: Message, _new: NezukoMessage) => {

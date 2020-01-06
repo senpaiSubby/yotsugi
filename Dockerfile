@@ -2,7 +2,7 @@ FROM node:latest
 
 # Update system
 RUN apt update && apt install git -y
-RUN npm install -g pm2
+RUN npm install -g pm2 tsc yarn
 RUN curl https://rclone.org/install.sh | bash
 
 # Create the directory
@@ -11,7 +11,8 @@ WORKDIR /app
 
 # Copy and Install bot
 COPY . /app
-RUN npm install
+RUN yarn install
+RUN tsc
 
 # Expose ports
 EXPOSE 5700

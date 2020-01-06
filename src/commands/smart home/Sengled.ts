@@ -6,8 +6,8 @@
 import fs from 'fs'
 import { NezukoMessage } from 'typings'
 import { post } from 'unirest'
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Sengled extends Command {
   constructor(client: NezukoClient) {

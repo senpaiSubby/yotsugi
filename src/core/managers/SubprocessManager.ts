@@ -6,8 +6,8 @@
 import path, { join } from 'path'
 
 import Enmap from 'enmap'
-import { NezukoClient } from '../../NezukoClient'
-import { Subprocess } from '../Subprocess'
+import { NezukoClient } from '../NezukoClient'
+import { Subprocess } from '../base/Subprocess'
 import fs from 'fs'
 
 // tslint:disable: completed-docs

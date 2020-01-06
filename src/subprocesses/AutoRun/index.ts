@@ -6,8 +6,8 @@
 import later from 'later'
 import database from '../../core/database'
 import { CommandManager } from '../../core/managers/CommandManager'
-import { Subprocess } from '../../core/Subprocess'
-import { NezukoClient } from '../../NezukoClient'
+import { Subprocess } from '../../core/base/Subprocess'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class AutoRun extends Subprocess {
   public commandManager: CommandManager

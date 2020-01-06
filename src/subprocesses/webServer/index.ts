@@ -4,8 +4,8 @@
  */
 
 import { CommandManager } from '../../core/managers/CommandManager'
-import { NezukoClient } from '../../NezukoClient'
-import { Subprocess } from '../../core/Subprocess'
+import { NezukoClient } from '../../core/NezukoClient'
+import { Subprocess } from '../../core/base/Subprocess'
 import cors from 'cors'
 import { database } from '../../core/database/database'
 import { duration } from 'moment'

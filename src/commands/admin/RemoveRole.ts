@@ -4,8 +4,8 @@
  */
 
 import { NezukoMessage } from 'typings'
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 /**
  * Remove roles from users
@@ -63,14 +63,19 @@ export default class RemoveRole extends Command {
           `**You have been removed from the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
         )
       )
-      // tslint:disable-next-line:no-empty
-    } catch {}
-
-    // Notify that the role has been removed from the user
-    return warningMessage(
-      msg,
-      `<@${rMember.id}> They have been removed from the role ${gRole.name}
+      // Notify that the role has been removed from the user
+      return warningMessage(
+        msg,
+        `<@${rMember.id}> They have been removed from the role ${gRole.name}
         I tried to DM them but their DMs are locked`
-    )
+      )
+    } catch {
+      // Notify that the role has been removed from the user
+      return warningMessage(
+        msg,
+        `<@${rMember.id}> They have been removed from the role ${gRole.name}
+        I tried to DM them but their DMs are locked`
+      )
+    }
   }
 }

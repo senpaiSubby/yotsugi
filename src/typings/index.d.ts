@@ -36,6 +36,7 @@ interface ServerDBConfig {
 interface GeneralDBConfig {
   archivebox: { path: string | null }
   autorun: AutorunItem[]
+  priceTracking: any[]
   disabledCommands: any[]
   docker: { host: string | null }
   emby: { apiKey: string | null; host: string | null; userID: string | null }

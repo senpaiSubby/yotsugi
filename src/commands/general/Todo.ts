@@ -6,8 +6,8 @@
 import { MemberDBConfig, NezukoMessage } from 'typings'
 
 import { Message } from 'discord.js'
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Todo extends Command {
   constructor(client: NezukoClient) {

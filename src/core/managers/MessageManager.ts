@@ -9,7 +9,7 @@ import fetch from 'node-fetch'
 import { dirname } from 'path'
 import torrent2magnet from 'torrent2magnet'
 import { NezukoMessage } from 'typings'
-import { NezukoClient } from '../../NezukoClient'
+import { NezukoClient } from '../NezukoClient'
 
 export class MessageManager {
   public client: NezukoClient

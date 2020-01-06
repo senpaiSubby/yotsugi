@@ -3,7 +3,7 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { NezukoClient } from './NezukoClient'
+import { NezukoClient } from './core/NezukoClient'
 
 // Start Nezuko
 new NezukoClient().start()

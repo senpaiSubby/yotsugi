@@ -23,33 +23,34 @@ export class ConfigManager {
     const db = await database.models.GeneralConfig.findOne({ where: { id: ownerID } })
 
     if (!db) {
-      Log.info('Config MAnager', `Created new general config for [ ${ownerID} ]`)
+      Log.info('Config Manager', `Created new general config for [ ${ownerID} ]`)
       await database.models.GeneralConfig.create({
-        archivebox: { path: null },
-        autorun: [],
+        id: ownerID,
+        username: 'Nezuko',
         config: JSON.stringify({
-          id: ownerID,
-          username: 'Nezuko'
-        }),
-        disabledCommands: [],
-        docker: { host: null },
-        emby: { apiKey: null, host: null, userID: null },
-        google: { apiKey: null },
-        googleHome: { ip: null, language: null, name: null },
-        jackett: { apiKey: null, host: null },
-        lockedCommands: [],
-        meraki: { apiKey: null, serielNum: null },
-        ombi: { apiKey: null, host: null, username: null },
-        pihole: { apiKey: null, host: null },
-        pioneerAVR: { host: null },
-        routines: [],
-        sabnzbd: { apiKey: null, host: null },
-        sengled: { jsessionid: null, password: null, username: null },
-        shortcuts: [],
-        systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
-        transmission: { host: null, port: '9091', ssl: false },
-        tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
-        webUI: { apiKey: '111', commands: [] }
+          archivebox: { path: null },
+          priceTracking: [],
+          autorun: [],
+          disabledCommands: [],
+          docker: { host: null },
+          emby: { apiKey: null, host: null, userID: null },
+          google: { apiKey: null },
+          googleHome: { ip: null, language: null, name: null },
+          jackett: { apiKey: null, host: null },
+          lockedCommands: [],
+          meraki: { apiKey: null, serielNum: null },
+          ombi: { apiKey: null, host: null, username: null },
+          pihole: { apiKey: null, host: null },
+          pioneerAVR: { host: null },
+          routines: [],
+          sabnzbd: { apiKey: null, host: null },
+          sengled: { jsessionid: null, password: null, username: null },
+          shortcuts: [],
+          systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
+          transmission: { host: null, port: '9091', ssl: false },
+          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
+          webUI: { apiKey: '111', commands: [] }
+        })
       })
     }
   }
@@ -82,6 +83,7 @@ export class ConfigManager {
         config: JSON.stringify({
           announcementChannel: null,
           logChannel: null,
+          priceWatchChannel: null,
           prefix: config.prefix,
           rules: [],
           modMailChannel: null,

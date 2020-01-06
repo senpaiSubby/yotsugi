@@ -3,8 +3,8 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
 
 export default class Invite extends Command {

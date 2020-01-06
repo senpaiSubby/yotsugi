@@ -16,6 +16,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "incomplete", "config"],
+  "exclude": ["node_modules"],
   "include": ["src/**/*.ts"]
 }

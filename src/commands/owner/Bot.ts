@@ -7,8 +7,8 @@ import worker from 'core-worker'
 import { Message } from 'discord.js'
 import { duration } from 'moment'
 import { NezukoMessage } from 'typings'
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 import('moment-duration-format')
 
 export default class Reload extends Command {

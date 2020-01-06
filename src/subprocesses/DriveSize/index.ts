@@ -4,8 +4,8 @@
  */
 
 import { ExecAsync } from 'typings'
-import { NezukoClient } from '../../NezukoClient'
-import { Subprocess } from '../../core/Subprocess'
+import { NezukoClient } from '../../core/NezukoClient'
+import { Subprocess } from '../../core/base/Subprocess'
 import { TextChannel } from 'discord.js'
 import { performance } from 'perf_hooks'
 

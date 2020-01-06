@@ -5,8 +5,8 @@
 
 import { NezukoMessage, ServerDBConfig } from 'typings'
 
-import { Command } from '../../core/Command'
-import { NezukoClient } from '../../NezukoClient'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Rules extends Command {
   constructor(client: NezukoClient) {
