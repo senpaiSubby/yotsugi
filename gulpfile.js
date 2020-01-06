@@ -1,6 +1,6 @@
 const gulp = require('gulp')
-var ts = require('gulp-typescript')
-var tsProject = ts.createProject('tsconfig.json')
+const ts = require('gulp-typescript')
+const tsProject = ts.createProject('tsconfig.json')
 
 const copyFiles = () => {
   return gulp
