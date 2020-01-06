@@ -1,10 +1,10 @@
 version: '3'
 services:
-  vscode:
-    image: nezuko
+  nezukoBot:
+    image: nezuko_test
     container_name: nezuko
     volumes:
-      - ./config:/app/config
+      - ./config:/app/build/config
     ports:
       - 5700:5700
     network_mode: bridge

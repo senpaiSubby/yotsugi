@@ -2,7 +2,7 @@ FROM node:latest
 
 # Update system
 RUN apt update && apt install git -y
-RUN npm install -g pm2 tsc yarn
+RUN npm install -g pm2 typescript
 RUN curl https://rclone.org/install.sh | bash
 
 # Create the directory
@@ -11,7 +11,8 @@ WORKDIR /app
 
 # Copy and Install bot
 COPY . /app
-RUN yarn install
+RUN npm install
+RUN npm install --only=dev
 RUN tsc
 
 # Expose ports
@@ -21,4 +22,4 @@ EXPOSE 5700
 VOLUME /app/build/config
 
 # Start
-CMD ["pm2-runtime", "/build/index.js"]
+CMD ["pm2-runtime", "build/index.js"]
