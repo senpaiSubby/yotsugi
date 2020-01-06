@@ -1,3 +1,8 @@
+/*!
+* Coded by nwithan8 - https://github.com/nwithan8
+* TODO: Some witty tagline
+*/
+
 import { Message, Channel } from 'discord.js'
 import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
