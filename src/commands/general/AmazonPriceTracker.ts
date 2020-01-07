@@ -60,7 +60,6 @@ export default class AmazonPriceTracker extends Command {
         }
 
         const productInfo = await fetchProduct(link)
-        console.log(productInfo)
 
         if (productInfo) {
           const { title, price, image } = productInfo
@@ -92,7 +91,6 @@ export default class AmazonPriceTracker extends Command {
 
         for (const item of priceTracking) {
           const { title, originalPrice, newPrice, difference, image } = item
-          console.log(item)
 
           embedList.push(
             embed()

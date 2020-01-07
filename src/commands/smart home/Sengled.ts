@@ -18,7 +18,8 @@ export default class Sengled extends Command {
       usage: [`lights desk`, `lights list`],
       aliases: ['light', 'lamp', 'lamps', 'sengled'],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

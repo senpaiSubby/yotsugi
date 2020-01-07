@@ -3,9 +3,9 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
-import { NezukoMessage } from 'typings'
 
 export default class Evaluator extends Command {
   constructor(client: NezukoClient) {

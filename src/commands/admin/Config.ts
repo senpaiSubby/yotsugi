@@ -29,11 +29,10 @@ export default class Config extends Command {
     const { Utils, p } = client
     const { warningMessage, validOptions, standardMessage, embed } = Utils
     const { channel, guild } = msg
-    const { ServerConfig } = database.models
 
     // * ------------------ Config --------------------
 
-    const db = await ServerConfig.findOne({ where: { id: guild.id } })
+    const db = await database.models.ServerConfig.findOne({ where: { id: guild.id } })
 
     const server = JSON.parse(db.get('config') as string) as ServerDBConfig
 
@@ -72,7 +71,7 @@ export default class Config extends Command {
           // Change key to new one
           server[keyToChange] = newValue
           // Update the database
-          await db!.update({ config: JSON.stringify(server) })
+          await db.update({ config: JSON.stringify(server) })
           // Notify the user
           return standardMessage(msg, `[ ${keyToChange} ] changed to [ ${newValue} ]`)
         } // If the setting doesnt exist

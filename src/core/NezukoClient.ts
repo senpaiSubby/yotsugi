@@ -15,6 +15,7 @@ import { Utils } from './utils/Utils'
 
 import { guildMemberAdd } from '../events/guildMemberAdd'
 import { guildMemberRemove } from '../events/guildMemberRemove'
+import { messageReactionAdd } from '../events/messageReactionAdd'
 import { database } from './database/database'
 
 export class NezukoClient extends Client {
@@ -60,8 +61,8 @@ export class NezukoClient extends Client {
     })
 
     // Unhandled Promise Rejections
-    process.on('unhandledRejection', (reason) => {
-      this.Log.error('Unhandled Rejection', reason)
+    process.on('unhandledRejection', (reason: any) => {
+      this.Log.error('Unhandled Rejection', reason.stack)
     })
     // Unhandled Errors
     process.on('uncaughtException', (error) => {
@@ -72,10 +73,7 @@ export class NezukoClient extends Client {
   /**
    * Starts Nezuko
    */
-  public start() {
-    // Login
-    this.login(this.config.token)
-
+  public async start() {
     // Once bot connects to discord
     this.once('ready', async () => {
       Log.ok('Client Ready', `Connected as [ ${this.user.username} ]`)
@@ -100,8 +98,16 @@ export class NezukoClient extends Client {
       this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
       this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
 
+      this.on(
+        'messageReactionAdd',
+        async (reaction, user) => await messageReactionAdd(reaction, user)
+      )
+
       // * ---------- Load and start subprocessess ----------
       await new SubprocessManager(this).loadModules()
     })
+
+    // Login
+    await this.login(this.config.token)
   }
 }

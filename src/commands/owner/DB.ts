@@ -3,10 +3,10 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Command } from '../../core/base/Command'
 import { Message } from 'discord.js'
-import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class DB extends Command {
   constructor(client: NezukoClient) {

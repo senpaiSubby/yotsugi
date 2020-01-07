@@ -79,7 +79,7 @@ export default class RClone extends Command {
 
     switch (command) {
       case 'list': {
-        const e = embed('green', 'rclone.gif')
+        const e = embed('blue', 'rclone.gif')
           .setTitle('RClone Remotes')
           .setDescription(`**- ${remotes.join('\n- ')}**`)
         return channel.send(e)
@@ -122,7 +122,7 @@ export default class RClone extends Command {
           const size = bytesToSize(response.bytes)
 
           return msg.reply(
-            embed('green', 'rclone.gif')
+            embed('blue', 'rclone.gif')
               .setTitle(`[ ${remote}:${dirPath || '/'} ]`)
               .addField('Files', `:newspaper: ${count}`, true)
               .addField('Size', `:file_folder: ${size}`, true)
@@ -181,7 +181,7 @@ export default class RClone extends Command {
         const stopTime = performance.now()
 
         return msg.reply(
-          embed('green', 'rclone.gif')
+          embed('blue', 'rclone.gif')
             .setTitle('Rclone Batch Scan')
             .addField('Scanned Remotes', `${args.join(', ')}`)
             .addField('Files', `:newspaper: ${totalFiles}`, true)
@@ -258,7 +258,7 @@ export default class RClone extends Command {
           const embedList = []
           Object.keys(splitArray).forEach((key, index) => {
             embedList.push(
-              embed('green', 'rclone.gif')
+              embed('blue', 'rclone.gif')
                 .setTitle(`[ ${remote}:${dirPath || '/'} ]`)
                 .addField('Files', `${splitArray[index].join('\n')}`)
             )

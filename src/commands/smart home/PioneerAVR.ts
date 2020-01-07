@@ -17,7 +17,8 @@ export default class PioneerAVR extends Command {
       description: 'Pioneer AVR controller',
       usage: [`avr vol <1-100>`, `avr <off/on>`, `avr <mute>`],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

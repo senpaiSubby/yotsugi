@@ -12,7 +12,6 @@ import Meraki from './entries/Meraki'
 import Ombi from './entries/Ombi'
 import PiHole from './entries/PiHole'
 import PioneerAVR from './entries/PioneerAVR'
-import RClone from './entries/RClone'
 import SabNZBD from './entries/SabNZBD'
 import Sengled from './entries/Sengled'
 import Transmission from './entries/Transmission'
@@ -69,8 +68,6 @@ const Settings = () => {
             <PiHole />
             {line}
             <PioneerAVR />
-            {line}
-            <RClone />
             {line}
             <SabNZBD />
             {line}

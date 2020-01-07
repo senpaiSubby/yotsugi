@@ -16,7 +16,8 @@ export default class GoogleHome extends Command {
       description: 'Speak through Google Home',
       usage: [`say <msg>`],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

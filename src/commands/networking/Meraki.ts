@@ -16,7 +16,8 @@ export default class Meraki extends Command {
       description: 'Meraki network info',
       usage: [`meraki list`],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

@@ -31,7 +31,7 @@ export class Subprocess {
   /**
    * Runs subprocess
    */
-  public run() {
+  public async run() {
     throw new Error('Missing Run Method')
   }
 }

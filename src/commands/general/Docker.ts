@@ -3,6 +3,7 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { RichEmbed } from 'discord.js'
 import { NezukoMessage } from 'typings'
 import { get, post } from 'unirest'
 import urljoin from 'url-join'
@@ -13,11 +14,12 @@ export default class Docker extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'docker',
-      category: 'General',
+      category: 'Owner',
       description: 'Docker Management',
       usage: [`docker <state> <name>`, `docker list <state>`],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 
@@ -32,7 +34,10 @@ export default class Docker extends Command {
       validOptions,
       standardMessage,
       missingConfig,
-      embed
+      embed,
+      paginate,
+      sortByKey,
+      addSpace
     } = Utils
 
     const { channel } = msg
@@ -60,22 +65,25 @@ export default class Docker extends Command {
         const containerList: ContainerList[] = []
 
         containers.forEach((container) => {
-          const { Id, Names, Ports, State, Status } = container
+          const { Id, Names, Ports, State, Status, Image, Mounts } = container
           const exposedports: number[] = []
 
           Ports.forEach((port) => {
             // Filter out only exposed host ports
             if ('PublicPort' in port) exposedports.push(port.PublicPort)
           })
+
           containerList.push({
             name: Names[0].replace('/', ''),
-            id: Id,
+            id: Id.substring(0, 10),
             state: State,
+            image: Image,
             status: Status,
-            ports: exposedports
+            ports: exposedports,
+            mounts: Mounts
           })
         })
-        return containerList
+        return (sortByKey(containerList, '-name') as any) as ContainerList[]
       } catch (e) {
         Log.error('Docker', 'Failed to connect to Docker', e)
         await errorMessage(msg, `Failed to connect to Docker daemon`)
@@ -144,16 +152,37 @@ export default class Docker extends Command {
 
         const containers = await getContainers(filterState)
         if (containers) {
+          const embedList: RichEmbed[] = []
+
           if (containers.length) {
             if (api) return containers
-            const e = embed('green', 'docker.png').setDescription('Docker Containers')
 
             containers.forEach((container) => {
-              const { name, ports, state } = container
-              e.addField(`${name}`, `${state}\n${ports.length ? ports.join(', ') : '---'}`, true)
+              const { name, ports, state, status, id, image, mounts } = container
+              const e = embed('green', 'docker.png')
+                .setDescription('Docker Containers')
+                .addField('Name', name, true)
+                .addField('Image', image, true)
+                .addField('ID', id, true)
+                .addField('State', `${state}`, true)
+                .addField('Status', status, true)
+                .addField('Ports', `${ports.length ? ports.join(', ') : '---'}`, true)
+
+              if (mounts) {
+                let mountInfo = ''
+                for (const mount of mounts) {
+                  if (mount.Type === 'bind') {
+                    mountInfo += `**Source:** ${mount.Source}\n**Dest:** ${addSpace(4)}${
+                      mount.Destination
+                    }\n\n`
+                  }
+                }
+                e.addField('Mounts', mountInfo ? mountInfo : '--')
+              }
+              embedList.push(e)
             })
 
-            return channel.send(e)
+            return channel.send(paginate(msg, embedList))
           }
           if (api) return `No containers currently in state [ ${filterState} ]`
           return warningMessage(msg, `No containers currently in state [ ${filterState} ]`)

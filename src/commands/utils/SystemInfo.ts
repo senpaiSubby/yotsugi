@@ -6,11 +6,11 @@
 import { GuildMember, Message, MessageReaction } from 'discord.js'
 import { arch, hostname, release, type } from 'os'
 
-import { Command } from '../../core/base/Command'
 import { NezukoClient } from 'core/NezukoClient'
-import { NezukoMessage } from 'typings'
 import { cpu } from 'node-os-utils'
 import si from 'systeminformation'
+import { NezukoMessage } from 'typings'
+import { Command } from '../../core/base/Command'
 
 export default class SystemInfo extends Command {
   constructor(client: NezukoClient) {

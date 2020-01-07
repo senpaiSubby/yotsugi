@@ -153,6 +153,14 @@ export class CommandManager {
     const { ownerID } = client.config
     msg.context = this
 
+    if (msg.content === '!join') {
+      client.emit('guildMemberAdd', msg.member || (await msg.guild.fetchMember(msg.author)))
+    }
+
+    if (msg.content === '!leave') {
+      client.emit('guildMemberRemove', msg.member || (await msg.guild.fetchMember(msg.author)))
+    }
+
     // * -------------------- Assign Prefix --------------------
 
     const prefix = guild ? await ConfigManager.handleServerConfig(guild) : this.prefix
@@ -178,10 +186,8 @@ export class CommandManager {
     // * -------------------- Handle DB Configs --------------------
     await ConfigManager.handleMemberConfig(msg)
 
-    const { GeneralConfig, ServerConfig } = database.models
-
     // Assign general config to client for use in commands
-    const generalDB = await GeneralConfig.findOne({
+    const generalDB = await database.models.GeneralConfig.findOne({
       where: { id: ownerID }
     })
 
@@ -189,7 +195,7 @@ export class CommandManager {
 
     // Assign server config to client for use in commands
     if (guild) {
-      const serverDB = await ServerConfig.findOne({
+      const serverDB = await database.models.ServerConfig.findOne({
         where: { id: guild ? guild.id : null }
       })
 

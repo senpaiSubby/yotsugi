@@ -29,8 +29,8 @@ export default class Rules extends Command {
     // * ------------------ Check Config --------------------
 
     if (args[0]) {
-      if (!member.permissions.has(['ADMINISTRATOR'])) {
-        return warningMessage(msg, `You must have ['ADMINISTRATOR'] perms to ${args[0]} rules`)
+      if (!member.permissions.has(['MANAGE_GUILD'])) {
+        return warningMessage(msg, `You must have ['MANAGE_GUILD'] perms to ${args[0]} rules`)
       }
     }
 
@@ -40,17 +40,7 @@ export default class Rules extends Command {
 
     const db = await database.models.ServerConfig.findOne({ where: { id: guild.id } })
     const config = JSON.parse(db.get('config') as string) as ServerDBConfig
-    const { rules, logChannel, prefix } = config
-
-    const serverLoggersChannel = msg.guild.channels.get(logChannel)
-
-    if (!serverLoggersChannel) {
-      return warningMessage(
-        msg,
-        `It appears that you do not have a LogChannel.
-        Please set one with \`${prefix}server set logChannel <channelID>\``
-      )
-    }
+    const { rules, prefix } = config
 
     switch (args[0]) {
       case 'set': {

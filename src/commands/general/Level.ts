@@ -3,6 +3,7 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { RichEmbed } from 'discord.js'
 import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import database from '../../core/database'
@@ -28,7 +29,7 @@ export default class Level extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { warningMessage, standardMessage, embed } = client.Utils
+    const { warningMessage, standardMessage, paginate, embed } = client.Utils
     const { guild, mentions, author, channel } = msg
 
     // * ------------------ Config --------------------
@@ -161,6 +162,42 @@ export default class Level extends Command {
         }
 
         return standardMessage(msg, `There are no roles assigned to any levels right now`)
+      }
+      case 'leaderboard':
+      case 'leader': {
+        let levelList = []
+
+        for (const u in levels) {
+          const { level, exp, expTillNextLevel } = levels[u]
+          const { avatarURL, username } = guild.members.get(u).user
+          levelList.push({
+            level,
+            exp,
+            expTillNextLevel,
+            username,
+            avatar: avatarURL
+          })
+        }
+
+        levelList = levelList.sort((a, b) => b.level - a.level || b.exp - a.exp)
+
+        const embedList: RichEmbed[] = []
+
+        let count = 0
+        for (const u of levelList) {
+          count++
+          const e = embed('blue')
+            .setTitle('Level Leaderboard')
+            .setThumbnail(u.avatar)
+            .addField(`Rank [ ${count} ]`, u.username)
+            .addField('Level', u.level, true)
+            .addField('EXP', u.exp, true)
+            .addField('Next Level In', `${u.expTillNextLevel} XP`, true)
+
+          embedList.push(e)
+        }
+
+        return paginate(msg, embedList)
       }
       default: {
         const e = embed()

@@ -41,7 +41,8 @@ const CommandButtons = () => {
       })
     : 'No shortcut commands set. Please add one below.'
 
-  return <div className="CommandButtonContainer">{renderedButtons}</div>
+  return <div className="CommandButtonContainer">{renderedButtons.length ? renderedButtons:  'No shortcut commands set. Please add one below.'
+}</div>
 }
 
 export default CommandButtons

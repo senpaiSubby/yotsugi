@@ -17,7 +17,8 @@ export default class LinuxPower extends Command {
       description: 'Linux system power control',
       usage: [`system gaara off`, `pc thinkboi reboot`],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

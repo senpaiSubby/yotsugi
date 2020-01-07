@@ -106,10 +106,23 @@ interface Port {
   Type: string
 }
 
+interface mounts {
+  Type: string
+  Name: string
+  Source: string
+  Destination: string
+  Driver: string
+  Mode: string
+  RW: string
+  Propagation: string
+}
+
 interface ContainerList {
   name: string
   id: string
+  image: string
   state: string
   status: string
   ports: number[]
+  mounts?: (Mount | Mounts2)[]
 }

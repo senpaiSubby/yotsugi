@@ -17,7 +17,8 @@ export default class Tuya extends Command {
       usage: [`plug <name>`],
       aliases: ['tuya'],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

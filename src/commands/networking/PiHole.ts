@@ -17,7 +17,8 @@ export default class PiHole extends Command {
       description: 'PiHole stats and management',
       usage: [`pihole <enable/disable>`, `pihole stats`],
       webUI: true,
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

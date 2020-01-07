@@ -6,9 +6,9 @@
 import path, { join } from 'path'
 
 import Enmap from 'enmap'
-import { NezukoClient } from '../NezukoClient'
-import { Subprocess } from '../base/Subprocess'
 import fs from 'fs'
+import { Subprocess } from '../base/Subprocess'
+import { NezukoClient } from '../NezukoClient'
 
 // tslint:disable: completed-docs
 
@@ -40,19 +40,15 @@ export class SubprocessManager {
       if (!instance.disabled) {
         if (this.processes.has(instance.name)) {
           throw new Error('Subprocesses cannot have the same name')
-        }
-
-        this.processes.set(instance.name, instance)
+        } else this.processes.set(instance.name, instance)
       }
     }
-    for (const subprocess of this.processes.values()) {
-      this.startModule(subprocess)
-    }
+    for (const subprocess of this.processes.values()) await this.startModule(subprocess)
   }
 
-  public startModule(subprocess: Subprocess) {
+  public async startModule(subprocess: Subprocess) {
     try {
-      subprocess.run()
+      await subprocess.run()
       this.client.Log.ok('Subprocess Manager', `Loaded [ ${subprocess.name} ]`)
     } catch (err) {
       this.client.Log.warn('Subprocess', err)

@@ -3,10 +3,10 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
+import { Command } from '../../core/base/Command'
 import database from '../../core/database/'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Shortcut extends Command {
   constructor(client: NezukoClient) {
@@ -16,7 +16,8 @@ export default class Shortcut extends Command {
       category: 'Utils',
       usage: ['s list', 's add <name> <command>', 's remove <name>'],
       description: 'Shortcut to run specific commands',
-      args: true
+      args: true,
+      ownerOnly: true
     })
   }
 

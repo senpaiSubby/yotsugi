@@ -4,9 +4,7 @@
  */
 
 import Canvas from 'canvas'
-import { GuildMember, TextChannel } from 'discord.js'
-// tslint:disable-next-line:no-duplicate-imports
-import Discord from 'discord.js'
+import { Attachment, GuildMember, TextChannel } from 'discord.js'
 import path from 'path'
 import { database } from '../core/database/database'
 
@@ -57,7 +55,7 @@ export const guildMemberRemove = async (member: GuildMember) => {
   const avatar = await Canvas.loadImage(member.user.displayAvatarURL)
   ctx.drawImage(avatar, 20, 20, 200, 200)
 
-  const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png')
+  const attachment = new Attachment(canvas.toBuffer(), 'welcome-image.png')
 
   channel.send(`${member.user.tag} has left the server`, attachment)
 }

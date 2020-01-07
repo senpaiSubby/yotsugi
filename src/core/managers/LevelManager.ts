@@ -107,7 +107,7 @@ export class LevelManager {
     for (const levelInfo of levelRoles) {
       const { role, level } = levelInfo
 
-      if (this.level === Number(level)) {
+      if (this.level <= Number(level)) {
         const gRole = this.guild.roles.find((r) => r.name.toLowerCase() === role.toLowerCase())
 
         if (gRole) {

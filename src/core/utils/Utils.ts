@@ -297,7 +297,7 @@ export class Utils {
       // E.attachFile(join(`${__dirname}`, '../', `/core/images/icons/${image}`))
       // E.setThumbnail(`attachment://${image}`)
       e.setThumbnail(
-        `https://raw.githubusercontent.com/callmekory/nezuko/master/nezuko/core/images/icons/${image}`
+        `https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`
       )
     }
     return e

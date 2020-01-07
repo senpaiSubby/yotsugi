@@ -14,7 +14,8 @@ export default class SpeedTest extends Command {
     super(client, {
       name: 'speedtest',
       category: 'Networking',
-      description: 'Runs a network speedtest'
+      description: 'Runs a network speedtest',
+      ownerOnly: true
     })
   }
 
