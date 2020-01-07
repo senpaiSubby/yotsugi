@@ -35,7 +35,7 @@ export default class Config extends Command {
 
     const db = await ServerConfig.findOne({ where: { id: guild.id } })
 
-    const server = JSON.parse(db!.get('config') as string) as ServerDBConfig
+    const server = JSON.parse(db.get('config') as string) as ServerDBConfig
 
     // * ------------------ Usage Logic --------------------
 
@@ -55,7 +55,7 @@ export default class Config extends Command {
           .setDescription(`**[ ${p}server set <settings> <new value> ] to change**`)
 
         // Add a new field to the embed for every key in the settings
-        keys.forEach((i) => e.addField(`${i}`, `${server[i]}`, false))
+        keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'unset'}`, false))
 
         // Ship it off
         return channel.send(e)
