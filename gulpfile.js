@@ -3,9 +3,11 @@ const ts = require('gulp-typescript')
 const tsProject = ts.createProject('tsconfig.json')
 
 const copyFiles = () => {
-  return gulp
+  gulp
     .src(['./src/subprocesses/webServer/app/**/*'])
     .pipe(gulp.dest('./build/subprocesses/webServer/app'))
+
+  return gulp.src(['./src/core/images/**/*']).pipe(gulp.dest('./build/core/images'))
 }
 
 const buildProject = () => {
