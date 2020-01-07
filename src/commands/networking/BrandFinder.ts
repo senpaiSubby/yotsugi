@@ -1,85 +1,116 @@
 /*!
-* Coded by nwithan8 - https://github.com/nwithan8
-* TODO: Some witty tagline
-*/
+ * Coded by CallMeKory - https://github.com/callmekory
+ * 'It’s not a bug – it’s an undocumented feature.'
+ */
 
-import { Message, Channel } from 'discord.js'
-import { NezukoMessage } from 'typings'
-import { Command } from '../../core/base/Command'
-import { NeukoClient } from '../../core/NezukoClient'
-import whois from 'whois-2'
+/*!
+ * Coded by nwithan8 - https://github.com/nwithan8
+ * TODO: Some witty tagline
+ */
+
+import { NezukoClient } from 'core/NezukoClient'
 import twitter from 'twitter'
+import { NezukoMessage } from 'typings'
+import whois from 'whois-2'
+import { Command } from '../../core/base/Command'
+
+interface WhoisLookup {
+  domain_name: string
+  registry_domain_id: string
+  registrar_whois_server: 'whois.enom.com'
+  registrar_url: string
+  updated_date: string
+  creation_date: string
+  registry_expiry_date: string
+  registrar: string
+  registrar_iana_id: string
+  domain_status: string
+  name_server: string[]
+  dnssec: string
+  url_of_the_icann_whois_inaccuracy_complaint_form: string
+}
 
 export default class Whois extends Command {
-    constructor(client: NezukoClient) {
-        super(client, {
-            name: 'brandfinder',
-            category: 'Networking',
-            description: 'See if a website and Twitter account is available for a new brand',
-            usage: ['brandfinder <brand name>'],
-            args: true
-        })
-    }
+  constructor(client: NezukoClient) {
+    super(client, {
+      name: 'brandfinder',
+      category: 'Networking',
+      description: 'See if a website and Twitter account is available for a new brand',
+      usage: ['brandfinder <brand name>'],
+      args: true
+    })
+  }
 
-    public async domain_search(domain) {
-        return await whois(domain, {format: 'json'}) //not sure if needs to be awaited
-    }
+  public async domain_search(domain: string) {
+    return whois(domain, { format: 'json' })
+  }
 
-    public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
-        const { Utils, Log } = client
-        const { errorMessage, embed } = Utils
+  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
+    const { Utils } = client
+    const { embed } = Utils
+    const { channel } = msg
 
-        const { channel } = msg
+    const keyword = args.join(' ')
 
-        const keyword = args.join(' ')
+    let domainAvailable: boolean = false
+    let domainExpiration: string | null = null
+    const availableAltDomains: any[] = []
+    let availableAltDomainsList: string = null
+    let twitterAvailable: boolean = false
 
-        var domain_available = false
-        var domain_expiration = null
-        var available_alt_domains = []
-        var available_alt_domains_list = null
-        var twitter_available = false
-        
-        /** Check if domain of keyword exists */
+    /** Check if domain of keyword exists */
 
-        var results = await this.domain_search(keyword.concat('.com'))
-        console.log(results)
-        if (results.domain_name) {
-            domain_available = false
-            domain_expiration = results.registry_expiry_date
-            for (const alt of ['net', 'org', 'tech', 'io', 'biz', 'edu', 'co', 'app', 'me', 'dev', 'site', 'online', 'us']) {
-                results = await this.domain_search(keyword.concat('.',alt))
-                if (!results.domain_name) {
-                    //available_alt_domains.push(keyword.concat('.',alt))
-                    available_alt_domains_list.concat(keyword.concat('.',alt,', '))
-                }
-            }
-        } else {
-            domain_available = true
-        }
+    let results = (await this.domain_search(`${keyword}.com`)) as WhoisLookup
 
-        /** Check if Twitter handle is available */
+    if (results && results.domain_name) {
+      domainAvailable = false
+      domainExpiration = results.registry_expiry_date
+      for (const alt of [
+        'net',
+        'org',
+        'tech',
+        'io',
+        'biz',
+        'edu',
+        'co',
+        'app',
+        'me',
+        'dev',
+        'site',
+        'online',
+        'us'
+      ]) {
+        results = await this.domain_search(`${keyword}.${alt}`)
+        if (!results.domain_name) availableAltDomainsList = `${keyword}.${alt}`
+      }
+    } else domainAvailable = true
 
-        const tw = new twitter({
-            consumer_key: 'xxxx',
-            consumer_secret: 'xxxx',
-            access_token_key: 'xxxx',
-            access_token_secret: 'xxxx'
-          });
+    /** Check if Twitter handle is available */
 
-        tw.get('users/lookup', {screen_name: keyword}, function(error, data, response) {
-            if (!error) {
-                twitter_available = false
-            } else {
-                twitter_available = true
-            }
-        });
+    const tw = new twitter({
+      consumer_key: 'xxxx',
+      consumer_secret: 'xxxx',
+      access_token_key: 'xxxx',
+      access_token_secret: 'xxxx'
+    })
 
-        return channel.send(
-            embed()
-                .addTitle('Brand Availability')
-                .addField(keyword.concat('.com'), domain_available == true ? 'Available' : 'Unavailable (Expires '.concat(domain_expiration))
-                .addField(domain_available == false ? 'Alternate domains' : ' ', domain_available == false ? available_alt_domains_list : ' ')
-                .addField('@'.concat(keyword, ' on Twitter'), twitter_available == false ? 'Unavailable' : 'Available')
+    tw.get('users/lookup', { screen_name: keyword }, (error, data, response) => {
+      if (!error) twitterAvailable = false
+      else twitterAvailable = true
+    })
+
+    return channel.send(
+      embed()
+        .setTitle('Brand Availability')
+        .addField(
+          `${keyword}.com`,
+          domainAvailable ? 'Available' : `Unavailable (Expires ${domainExpiration})`
         )
-    }
+        .addField(
+          !domainAvailable ? 'Alternate domains' : ' ',
+          !domainAvailable ? availableAltDomainsList : ' '
+        )
+        .addField(`@${keyword} on Twitter`, !twitterAvailable ? 'Unavailable' : 'Available')
+    )
+  }
 }
