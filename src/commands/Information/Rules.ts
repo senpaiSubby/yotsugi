@@ -6,6 +6,7 @@
 import { NezukoMessage, ServerDBConfig } from 'typings'
 
 import { Command } from '../../core/base/Command'
+import { database } from '../../core/database/database'
 import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Rules extends Command {
@@ -13,14 +14,15 @@ export default class Rules extends Command {
     super(client, {
       name: 'rules',
       category: 'Information',
-      description: 'Behold the rule book'
+      description: 'Behold the rule book',
+      usage: ['rules set <your rule message>', 'rules remove', 'rules']
     })
   }
 
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils, serverConfig } = client
+    const { Utils } = client
     const { warningMessage, standardMessage, embed } = Utils
     const { member, guild } = msg
 
@@ -36,30 +38,29 @@ export default class Rules extends Command {
 
     const rule = args.slice(1).join(' ')
 
-    const db = await serverConfig.findOne({ where: { id: guild.id } })
-    const { rules, logChannel, prefix } = JSON.parse(db.dataValues.config) as ServerDBConfig
+    const db = await database.models.ServerConfig.findOne({ where: { id: guild.id } })
+    const config = JSON.parse(db.get('config') as string) as ServerDBConfig
+    const { rules, logChannel, prefix } = config
 
     const serverLoggersChannel = msg.guild.channels.get(logChannel)
 
     if (!serverLoggersChannel) {
       return warningMessage(
         msg,
-        `It appears that you do not have a Loggers channel.
+        `It appears that you do not have a LogChannel.
         Please set one with \`${prefix}server set logChannel <channelID>\``
       )
     }
 
     switch (args[0]) {
-      case 'add': {
-        rules.push(rule)
-        await db.update({ rules: JSON.stringify(rules) })
+      case 'set': {
+        config.rules = [rule]
+        await db.update({ config: JSON.stringify(config) })
         return standardMessage(msg, `[ ${rule} ] added to rules`)
       }
       case 'remove': {
-        const item = args[1] - 1
-        const name = rules[item]
-        rules.splice(item, 1)
-        await db.update({ rules: JSON.stringify(rules) })
+        config.rules = []
+        await db.update({ config: JSON.stringify(config) })
         if (name) return standardMessage(msg, `[ ${name} ] removed from rules`)
 
         return warningMessage(msg, `Rule [ ${name} ] doesn't exist`)
@@ -73,12 +74,12 @@ export default class Rules extends Command {
           )
         }
 
-        let ruleList = ''
-        rules.forEach((i, index) => (ruleList += `${index + 1} | ${i}\n`))
         return msg.reply(
           embed('green')
-            .setTitle('Rules')
-            .setDescription(ruleList)
+            .setTitle(
+              ':no_entry_sign::octagonal_sign::warning: Rules :warning::octagonal_sign::no_entry_sign:'
+            )
+            .setDescription(rules[0])
         )
       }
     }
