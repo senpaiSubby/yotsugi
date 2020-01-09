@@ -91,6 +91,7 @@ export class ConfigManager {
           welcomeChannel: null,
           levelUpMessage: 'Welcome to level {level}'
         }),
+        levelMultiplier: '2',
         memberLevels: JSON.stringify({
           levelRoles: [],
           levels: {}

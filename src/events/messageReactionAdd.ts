@@ -3,12 +3,12 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Message, TextChannel } from 'discord.js'
+import { Message, MessageReaction, TextChannel, User } from 'discord.js'
 import { ServerDBConfig } from 'typings'
 import { database } from '../core/database/database'
 import { Utils } from '../core/utils/Utils'
 
-export const messageReactionAdd = async (reaction, user) => {
+export const messageReactionAdd = async (reaction: MessageReaction, user: User) => {
   if (reaction.emoji.name !== '⭐') return
 
   const { message: msg } = reaction
@@ -27,6 +27,7 @@ export const messageReactionAdd = async (reaction, user) => {
   }
 
   if (msg.author.id === user.id) {
+    if (channel.id === starboardChannel) return
     const m = (await msg.reply(
       embed().setDescription(`**You cannot star your own messages**`)
     )) as Message
@@ -34,6 +35,7 @@ export const messageReactionAdd = async (reaction, user) => {
   }
 
   if (msg.author.bot) {
+    if (channel.id === starboardChannel) return
     const m = (await msg.reply(
       embed().setDescription(`**You cannot star bot messages**`)
     )) as Message

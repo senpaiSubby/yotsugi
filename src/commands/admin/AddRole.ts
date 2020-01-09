@@ -33,7 +33,6 @@ export default class AddRole extends Command {
 
     // Get user to add role to
     const rMember = guild.member(mentions.users.first() || guild.members.get(args[0]))
-
     // If no target user warn user
     if (!rMember) return errorMessage(msg, `No user given or Invalid user given`)
 

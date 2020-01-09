@@ -54,7 +54,7 @@ export default class Config extends Command {
           .setDescription(`**[ ${p}server set <settings> <new value> ] to change**`)
 
         // Add a new field to the embed for every key in the settings
-        keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'unset'}`, false))
+        keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'unset'}`, true))
 
         // Ship it off
         return channel.send(e)

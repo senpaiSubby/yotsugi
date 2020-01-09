@@ -15,7 +15,7 @@ export default class Roles extends Command {
       name: 'roles',
       category: 'Information',
       description: 'List the server roles',
-      usage: ['roles set <your rule message>', 'roles remove', 'rules']
+      usage: ['roles set <your rule message>', 'roles remove', 'roles']
     })
   }
 

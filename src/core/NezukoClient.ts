@@ -16,6 +16,7 @@ import { Utils } from './utils/Utils'
 import { guildMemberAdd } from '../events/guildMemberAdd'
 import { guildMemberRemove } from '../events/guildMemberRemove'
 import { messageReactionAdd } from '../events/messageReactionAdd'
+import { messageReactionRemove } from '../events/messageReactionRemove'
 import { database } from './database/database'
 
 export class NezukoClient extends Client {
@@ -102,6 +103,8 @@ export class NezukoClient extends Client {
         'messageReactionAdd',
         async (reaction, user) => await messageReactionAdd(reaction, user)
       )
+
+      this.on('messageReactionRemove', async (reaction) => await messageReactionRemove(reaction))
 
       // * ---------- Load and start subprocessess ----------
       await new SubprocessManager(this).loadModules()

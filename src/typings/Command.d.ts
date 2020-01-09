@@ -3,6 +3,8 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { PermissionResolvable } from 'discord.js'
+
 interface CommandData {
   name: string
   category: string
@@ -13,6 +15,6 @@ interface CommandData {
   usage?: string[]
   guildOnly?: boolean
   ownerOnly?: boolean
-  permsNeeded?: string[]
+  permsNeeded?: PermissionResolvable[]
   disabled?: boolean
 }

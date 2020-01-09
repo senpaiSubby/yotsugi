@@ -6,7 +6,7 @@
 import worker from 'core-worker'
 import { Message } from 'discord.js'
 import { duration } from 'moment'
-import { NezukoMessage } from 'typings'
+import { ExecAsync, NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 import('moment-duration-format')
@@ -31,7 +31,7 @@ export default class Reload extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { user } = client
-    const { warningMessage, standardMessage, embed } = client.Utils
+    const { warningMessage, standardMessage, embed, execAsync } = client.Utils
     const { context, channel } = msg
     const { round } = Math
     const { memoryUsage } = process
@@ -80,7 +80,7 @@ export default class Reload extends Command {
       }
       case 'status': {
         const gameName = args.join(' ')
-
+        // Bot info
         await client.user.setActivity(gameName)
         return standardMessage(msg, `[ ${client.user.username} ] status set to [ ${gameName} ]`)
       }
@@ -90,7 +90,13 @@ export default class Reload extends Command {
         return standardMessage(msg, `[ ${client.user.username} ] name changed to [ ${u.username} ]`)
       }
       case 'info': {
-        const npmv = await worker.process('npm -v').death()
+        const { code: c, stdout: npmVersion } = (await execAsync('npm -v', {
+          silent: true
+        })) as ExecAsync
+        const npmv = npmVersion.trim()
+
+        const { code, stdout: nv } = (await execAsync('node -v', { silent: true })) as ExecAsync
+        const nodeVersion = nv.trim()
 
         return channel.send(
           embed('green')
@@ -98,8 +104,8 @@ export default class Reload extends Command {
             .setThumbnail(user.avatarURL)
             .addField('Uptime', duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
             .addField('Memory Usage', `${round(memoryUsage().heapUsed / 1024 / 1024)} MB`, true)
-            .addField('Node Version', process.version.replace('v', ''), true)
-            .addField('NPM Version', npmv.data.replace('\n', ''), true)
+            .addField('Node Version', nodeVersion.replace('v', ''), true)
+            .addField('NPM Version', npmv.replace('\n', ''), true)
             .addField('Commands', context.commands.size, true)
             .setDescription(
               `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`

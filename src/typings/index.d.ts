@@ -27,10 +27,12 @@ interface ServerDBConfig {
   logChannel: string | null
   prefix: string
   rules: string[]
+  levelMultiplier: string
   modMailChannel: string | null
   starboardChannel: string | null
   welcomeChannel: string | null
   levelUpMessage: string | null
+  levelUpChannel: string | null
 }
 
 interface GeneralDBConfig {

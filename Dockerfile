@@ -21,6 +21,7 @@ EXPOSE 5700
 
 # Expose volume
 VOLUME /app/build/config
+VOLUME /app/logs
 
 # Start
 CMD ["pm2-runtime", "build/index.js"]

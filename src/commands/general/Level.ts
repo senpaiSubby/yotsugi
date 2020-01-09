@@ -61,7 +61,9 @@ export default class Level extends Command {
       case 'add': {
         if (await checkRole()) {
           const level = args[1]
-          const role = args[2]
+          args.shift()
+          args.shift()
+          const role = args.join(' ')
 
           // Check if user specified the role and level to add
           if (!guild.roles.find((r) => r.name.toLowerCase() === role.toLowerCase())) {
@@ -95,7 +97,9 @@ export default class Level extends Command {
       case 'remove': {
         if (await checkRole()) {
           const level = args[1]
-          const role = args[2]
+          args.shift()
+          args.shift()
+          const role = args.join(' ')
 
           // Check if user specified the role and level to add
           if (!role) return warningMessage(msg, `You must provide a role`)

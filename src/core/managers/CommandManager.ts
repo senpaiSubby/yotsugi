@@ -153,13 +153,10 @@ export class CommandManager {
     const { ownerID } = client.config
     msg.context = this
 
-    if (msg.content === '!join') {
-      client.emit('guildMemberAdd', msg.member || (await msg.guild.fetchMember(msg.author)))
-    }
+    // * -------------------- Parse & Log Messages --------------------
 
-    if (msg.content === '!leave') {
-      client.emit('guildMemberRemove', msg.member || (await msg.guild.fetchMember(msg.author)))
-    }
+    // Log and parse all messages in DM's and guilds
+    await MessageManager.log(client, msg)
 
     // * -------------------- Assign Prefix --------------------
 
@@ -169,7 +166,7 @@ export class CommandManager {
 
     // * -------------------- Handle Levels --------------------
     // Give exp per message sent in server
-    if (addLevel) await new LevelManager(msg).manage()
+    if (addLevel) await new LevelManager(client, msg).manage()
 
     // If message doesnt start with Nezuko's prefix then ignore
     if (!content.startsWith(prefix)) {
@@ -201,11 +198,6 @@ export class CommandManager {
 
       if (serverDB) client.db.server = JSON.parse(serverDB.get('config') as string)
     }
-
-    // * -------------------- Parse & Log Messages --------------------
-
-    // Log and parse all messages in DM's and guilds
-    await new MessageManager(client).log(msg)
 
     // * -------------------- Find Command & Parse Args --------------------
 

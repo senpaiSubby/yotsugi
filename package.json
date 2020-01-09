@@ -14,6 +14,8 @@
     "express-device": "^0.4.2",
     "gifencoder": "^2.0.1",
     "google-home-notify-client": "^0.3.1",
+    "google-spreadsheet": "^2.0.8",
+    "googleapis": "39",
     "gulp": "^4.0.2",
     "gulp-typescript": "^6.0.0-alpha.1",
     "later": "^1.2.0",

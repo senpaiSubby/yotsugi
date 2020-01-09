@@ -36,7 +36,8 @@ export default class RemoveRole extends Command {
     if (!rMember) return errorMessage(msg, `No user given or Invalid user given`)
 
     // Set target role
-    const role = args[1]
+    args.shift()
+    const role = args.join(' ')
 
     // If user doesnt specify role then notify
     if (!role) return msg.reply('Please specify a role')

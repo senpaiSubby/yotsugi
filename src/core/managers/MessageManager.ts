@@ -12,20 +12,14 @@ import { NezukoMessage } from 'typings'
 import { NezukoClient } from '../NezukoClient'
 
 export class MessageManager {
-  public client: NezukoClient
-
-  constructor(client: NezukoClient) {
-    this.client = client
-  }
-
   /**
    * Logs message and attachments if any
    * @param msg NezukoMessage
    */
-  public async log(msg: NezukoMessage) {
+  public static async log(client: NezukoClient, msg: NezukoMessage) {
     const { content, guild, author, channel, createdAt, context, attachments } = msg
     const { id, tag, username } = author
-    const { serverConfig, Log, config } = this.client
+    const { serverConfig, Log, config } = client
     const { ownerID } = config
 
     const runCommand = async (cmdString: string) => {
@@ -33,7 +27,7 @@ export class MessageManager {
 
       const cmd = context.findCommand(commandName)
       const args = cmdString.split(' ').slice(1)
-      if (cmd) return context.runCommand(this.client, cmd, msg, args)
+      if (cmd) return context.runCommand(client, cmd, msg, args)
     }
 
     const attachmentParser = async (url: string) => {
@@ -49,38 +43,33 @@ export class MessageManager {
       if (cmd) return runCommand(cmd)
     }
 
-    const attachmentHandler = async () => {
-      // Check if msg contains attachments
+    // Check if msg contains attachments
 
-      if (attachments) {
-        attachments.forEach(async (a) => {
-          const { url } = a
-          await attachmentParser(url)
+    if (attachments) {
+      attachments.forEach(async (a) => {
+        const { url } = a
+        await attachmentParser(url)
 
-          try {
-            const name = url.split('/').pop()
-            const dir = `${__dirname}/../../Loggers/attachments/${guild.id}/${name}`
+        try {
+          const name = url.split('/').pop()
+          const dir = `${__dirname}/../../../logs/attachments/${guild.id}/${name}`
 
-            // Check if dir exists and create if not
-            if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })
+          // Check if dir exists and create if not
+          if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })
 
-            const res = await fetch(url)
-            const fileStream = createWriteStream(dir)
+          const res = await fetch(url)
+          const fileStream = createWriteStream(dir)
 
-            await new Promise((resolve, reject) => {
-              res.body.pipe(fileStream)
-              res.body.on('error', (err) => reject(err))
-              fileStream.on('finish', () => resolve())
-            })
-          } catch (error) {
-            Log.warn('Attachment Handler', `Failed to handle attachment`)
-          }
-        })
-      }
+          await new Promise((resolve, reject) => {
+            res.body.pipe(fileStream)
+            res.body.on('error', (err) => reject(err))
+            fileStream.on('finish', () => resolve())
+          })
+        } catch (error) {
+          Log.warn('Attachment Handler', `Failed to handle attachment`)
+        }
+      })
     }
-
-    // Forward all messages to our attachment parser
-    await attachmentHandler()
 
     // Log every msg inside of guilds
     if (channel.type === 'text') {

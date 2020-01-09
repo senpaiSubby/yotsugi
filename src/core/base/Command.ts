@@ -3,6 +3,8 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { PermissionResolvable } from 'discord.js'
+import { CommandData } from 'typings/Command'
 import { NezukoClient } from '../NezukoClient'
 
 export class Command {
@@ -16,7 +18,7 @@ export class Command {
   public usage: string[]
   public guildOnly: boolean
   public ownerOnly: boolean
-  public permsNeeded: string[]
+  public permsNeeded: PermissionResolvable[]
   public disabled: boolean
 
   constructor(client: NezukoClient, data: CommandData) {

@@ -4,7 +4,8 @@ services:
     image: callmekory/nezuko
     container_name: nezuko
     volumes:
-      - ./config:/app/build/config
+      - ./nezukoDocker/config:/app/build/config
+      - ./nezukoDocker/logs:/app/logs
     ports:
       - 5700:5700
     network_mode: bridge

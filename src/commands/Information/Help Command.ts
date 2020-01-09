@@ -3,9 +3,9 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
-import { NezukoMessage } from 'typings'
 
 export default class Help extends Command {
   constructor(client: NezukoClient) {
@@ -22,8 +22,8 @@ export default class Help extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, serverConfig } = client
-    const { embed, groupBy, paginate, capitalize } = Utils
-    const { channel, context, guild } = msg
+    const { embed, groupBy, paginate, capitalize, checkPerms } = Utils
+    const { channel, context, guild, author } = msg
 
     // * ------------------ Config --------------------
 
@@ -36,42 +36,46 @@ export default class Help extends Command {
 
     // * ------------------ Logic --------------------
 
-    const checkPerms = (i) => {
+    const checkUserPerms = (i: Command) => {
       let disabled = false
       disabledCommands.forEach((c) => {
         if (i.name === c.command) disabled = true
       })
       if (disabled) return false
 
-      // If (i.permsNeeded.length) {
-      //  If (context.checkPerms(msg.member, i.permsNeeded)) return false
-      // }
-      // If (i.ownerOnly) {
-      //  If (author.id === client.config.ownerID) return true
-      //  Return false
-      // }
+      if (i.permsNeeded.length) {
+        if (checkPerms(msg.member, i.permsNeeded)) return false
+      }
+      if (i.ownerOnly) {
+        if (author.id === client.config.ownerID) return true
+        return false
+      }
       if (i.disabled) return false
       return true
     }
 
     // Filter commands based on author access
-    const commands = context.commands.filter((i) => checkPerms(i))
+    const commands = context.commands.filter((i) => checkUserPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
       const sorted = commands
         .array()
-        .sort((i, c) =>
+        .sort((i: Command, c: Command) =>
           i.category > c.category ? 1 : i.name > c.name && i.category === c.category ? 1 : -1
         )
 
       const newSorted = groupBy(sorted, 'category')
       const embedList = []
+
       Object.keys(newSorted).forEach((key) => {
         const e = Utils.embed('green')
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
-          .setDescription(`**\`${prefix}help [ command ]\` for command usage**`)
-        newSorted[key].forEach((i) => {
+          .setDescription(
+            `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
+          )
+
+        newSorted[key].forEach((i: Command) => {
           let aliases = ''
           if (i.aliases.length) {
             if (i.aliases.length > 1) {
@@ -82,6 +86,7 @@ export default class Help extends Command {
           }
           e.addField(`**${i.name} ${aliases}**`, `${i.description}`, true)
         })
+
         embedList.push(e)
       })
 
@@ -90,7 +95,7 @@ export default class Help extends Command {
     // Show individual command's help.
     const command = context.findCommand(args[0])
 
-    if (command && checkPerms(command)) {
+    if (command && checkUserPerms(command)) {
       return channel.send(
         embed('green')
           .setTitle(`Help - ${capitalize(command.name)}`)
