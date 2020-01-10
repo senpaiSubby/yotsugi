@@ -94,9 +94,7 @@ export default class Transmission extends Command {
             name,
             id,
             status: getStatus(status),
-            percentage: downloadedEver
-              ? Math.round((downloadedEver / sizeWhenDone) * 100).toString()
-              : '0',
+            percentage: downloadedEver ? Math.round((downloadedEver / sizeWhenDone) * 100).toString() : '0',
             rate: {
               up: rateUpload ? bytesToSize(rateUpload) : 0,
               down: rateDownload ? bytesToSize(rateDownload) : 0

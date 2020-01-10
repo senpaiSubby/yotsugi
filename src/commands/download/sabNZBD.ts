@@ -26,15 +26,7 @@ export default class SabNZBD extends Command {
 
     const { p, Utils, Log } = client
 
-    const {
-      errorMessage,
-      warningMessage,
-      validOptions,
-      missingConfig,
-      sortByKey,
-      embed,
-      paginate
-    } = Utils
+    const { errorMessage, warningMessage, validOptions, missingConfig, sortByKey, embed, paginate } = Utils
 
     // * ------------------ Config --------------------
 
@@ -43,10 +35,7 @@ export default class SabNZBD extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [
-        `${p}config set sabnzbd host <http://ip>`,
-        `${p}config set sabnzbd apiKey <APIKEY>`
-      ]
+      const settings = [`${p}config set sabnzbd host <http://ip>`, `${p}config set sabnzbd apiKey <APIKEY>`]
       return missingConfig(msg, 'sabnzbd', settings)
     }
 

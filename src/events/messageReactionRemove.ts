@@ -5,7 +5,7 @@
 
 import { MessageReaction, TextChannel } from 'discord.js'
 import { ServerDBConfig } from 'typings'
-import { database } from '../core/database/database'
+import { serverConfig } from '../core/database/database'
 import { Utils } from '../core/utils/Utils'
 
 export const messageReactionRemove = async (reaction: MessageReaction) => {
@@ -14,7 +14,7 @@ export const messageReactionRemove = async (reaction: MessageReaction) => {
   const { message: msg } = reaction
   const { embed, warningMessage } = Utils
 
-  const db = await database.models.ServerConfig.findOne({ where: { id: msg.guild.id } })
+  const db = await serverConfig(msg.guild.id)
   const { starboardChannel, prefix } = JSON.parse(db.get('config') as string) as ServerDBConfig
 
   const extension = async (attachment) => {
@@ -30,15 +30,14 @@ export const messageReactionRemove = async (reaction: MessageReaction) => {
   if (!starChannel) {
     return warningMessage(
       msg,
-      `It appears that you do not have a StarBoard channel. Please set one with \`${prefix}server set starBoard <channelID>\``
+      `It appears that you do not have a StarBoard channel.
+      Please set one with \`${prefix}server set starBoard <channelID>\``
     )
   }
 
   const fetchedMessages = await starChannel.fetchMessages({ limit: 100 })
   const stars = fetchedMessages.find(
-    (m) =>
-      m.embeds[0].footer.text.startsWith('⭐') &&
-      m.embeds[0].footer.text.endsWith(reaction.message.id)
+    (m) => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(reaction.message.id)
   )
   if (stars) {
     const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text)

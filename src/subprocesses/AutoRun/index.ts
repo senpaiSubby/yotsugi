@@ -4,9 +4,9 @@
  */
 
 import later from 'later'
-import database from '../../core/database'
-import { CommandManager } from '../../core/managers/CommandManager'
 import { Subprocess } from '../../core/base/Subprocess'
+import { generalConfig } from '../../core/database/database'
+import { CommandManager } from '../../core/managers/CommandManager'
 import { NezukoClient } from '../../core/NezukoClient'
 
 export default class AutoRun extends Subprocess {
@@ -25,9 +25,8 @@ export default class AutoRun extends Subprocess {
   public async run() {
     const { Log } = this.client
     const { ownerID } = this.client.config
-    const { GeneralConfig } = database.models
 
-    const db = await GeneralConfig.findOne({ where: { id: ownerID } })
+    const db = await generalConfig(ownerID)
 
     if (db) {
       const config = JSON.parse(db.get('config') as string)

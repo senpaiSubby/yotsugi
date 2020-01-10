@@ -37,8 +37,7 @@ export default class Executor extends Command {
     )
 
     const input = `📥 **Input:**\n\`\`\`sh\n${args.join(' ')}\n\`\`\``
-    const error = (err) =>
-      `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
+    const error = (err) => `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
     const { stdout, stderr } = (await execAsync(args.join(' '), { silent: false })) as ExecAsync
 

@@ -3,15 +3,14 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { CommandManager } from '../../core/managers/CommandManager'
-import { NezukoClient } from '../../core/NezukoClient'
-import { Subprocess } from '../../core/base/Subprocess'
 import cors from 'cors'
-import { database } from '../../core/database/database'
-import { duration } from 'moment'
 import express from 'express'
+import { duration } from 'moment'
 import serveIndex from 'serve-index'
 import shortid from 'shortid'
+import { Subprocess } from '../../core/base/Subprocess'
+import { CommandManager } from '../../core/managers/CommandManager'
+import { NezukoClient } from '../../core/NezukoClient'
 
 import('moment-duration-format')
 
@@ -173,8 +172,6 @@ export default class WebServer extends Subprocess {
     })
 
     // Start server
-    app.listen(webServerPort, '0.0.0.0', () =>
-      Log.ok(`Web Server`, `Active on port [ ${webServerPort} ]`)
-    )
+    app.listen(webServerPort, '0.0.0.0', () => Log.ok(`Web Server`, `Active on port [ ${webServerPort} ]`))
   }
 }

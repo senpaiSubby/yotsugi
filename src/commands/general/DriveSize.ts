@@ -72,12 +72,9 @@ export default class DriveSize extends Command {
       )
       scannedRemotes.push(remote)
 
-      const { code, stdout } = (await execAsync(
-        `rclone size --json "${remote}:/" --config="${configPath}"`,
-        {
-          silent: true
-        }
-      )) as ExecAsync
+      const { code, stdout } = (await execAsync(`rclone size --json "${remote}:/" --config="${configPath}"`, {
+        silent: true
+      })) as ExecAsync
 
       if (code === 0) totalSize += JSON.parse(stdout).bytes
     }

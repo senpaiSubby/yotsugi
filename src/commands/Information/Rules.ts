@@ -66,9 +66,7 @@ export default class Rules extends Command {
 
         return msg.reply(
           embed('green')
-            .setTitle(
-              ':no_entry_sign::octagonal_sign::warning: Rules :warning::octagonal_sign::no_entry_sign:'
-            )
+            .setTitle(':no_entry_sign::octagonal_sign::warning: Rules :warning::octagonal_sign::no_entry_sign:')
             .setDescription(rules[0])
         )
       }

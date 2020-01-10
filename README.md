@@ -1,3 +1,5 @@
+[![Feature Requests](https://feathub.com/callmekory/nezuko?format=svg)](https://feathub.com/callmekory/nezuko)
+
 <!------------------------- PROJECT LoggerO ------------------------->
 <br />
 <p align="center">

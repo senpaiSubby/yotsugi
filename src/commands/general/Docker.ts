@@ -90,11 +90,7 @@ export default class Docker extends Command {
       }
     }
 
-    const setContainerState = async (
-      containers: ContainerList[],
-      newState: string,
-      containerName: string
-    ) => {
+    const setContainerState = async (containers: ContainerList[], newState: string, containerName: string) => {
       const options = ['start', 'restart', 'stop']
       if (!options.includes(newState)) return validOptions(msg, options)
 
@@ -106,29 +102,20 @@ export default class Docker extends Command {
       }
 
       try {
-        const response = await post(
-          urljoin(host, `/containers/${containers[index].id}/${newState}`)
-        )
+        const response = await post(urljoin(host, `/containers/${containers[index].id}/${newState}`))
         const { status }: { status: number } = response
 
         if (status >= 200 && status < 300) {
           if (api) return `Container [ ${containerName}]  has been [ ${newState}ed ] successfully`
-          return standardMessage(
-            msg,
-            `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`
-          )
+          return standardMessage(msg, `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`)
         }
         if (newState !== 'restart' && status >= 300 && status < 400) {
           if (api) {
-            return `Container [ ${containerName} ] is already [ ${newState}${
-              newState === 'stop' ? 'ped' : 'ed'
-            } ]`
+            return `Container [ ${containerName} ] is already [ ${newState}${newState === 'stop' ? 'ped' : 'ed'} ]`
           }
           return warningMessage(
             msg,
-            `Container [ ${containerName} ] is already [ ${newState}${
-              newState === 'stop' ? 'ped' : 'ed'
-            } ]`
+            `Container [ ${containerName} ] is already [ ${newState}${newState === 'stop' ? 'ped' : 'ed'} ]`
           )
         }
       } catch (e) {
@@ -172,9 +159,7 @@ export default class Docker extends Command {
                 let mountInfo = ''
                 for (const mount of mounts) {
                   if (mount.Type === 'bind') {
-                    mountInfo += `**Source:** ${mount.Source}\n**Dest:** ${addSpace(4)}${
-                      mount.Destination
-                    }\n\n`
+                    mountInfo += `**Source:** ${mount.Source}\n**Dest:** ${addSpace(4)}${mount.Destination}\n\n`
                   }
                 }
                 e.addField('Mounts', mountInfo ? mountInfo : '--')

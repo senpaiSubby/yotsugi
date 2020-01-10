@@ -36,10 +36,7 @@ export default class LinuxPower extends Command {
 
     // * ------------------ Logic --------------------
 
-    const sendCommand = async (
-      device: { host: string; mac: string; name: string },
-      command: string
-    ) => {
+    const sendCommand = async (device: { host: string; mac: string; name: string }, command: string) => {
       const { host, mac, name } = device
 
       const options = ['reboot', 'off', 'on']

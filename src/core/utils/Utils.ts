@@ -39,16 +39,12 @@ export class Utils {
 
   public static execAsync(cmd: string, opts = {}) {
     return new promise((resolve) => {
-      shelljs.exec(cmd, opts, (code: number, stdout: string, stderr: string) =>
-        resolve({ code, stdout, stderr })
-      )
+      shelljs.exec(cmd, opts, (code: number, stdout: string, stderr: string) => resolve({ code, stdout, stderr }))
     })
   }
 
   public static async asyncForEach(array: any[], callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array)
-    }
+    for (let index = 0; index < array.length; index++) await callback(array[index], index, array)
   }
 
   // Make embed fields always fit within limits after spliiting
@@ -114,9 +110,7 @@ export class Utils {
 
       const collected = await paginated.awaitReactions(
         // tslint:disable-next-line: no-shadowed-variable
-        (reaction, user) =>
-          ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) &&
-          user.id === author.id,
+        (reaction, user) => ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) && user.id === author.id,
         { max: 1, time: 3600000 }
       )
 
@@ -141,9 +135,7 @@ export class Utils {
             return index
           case '🛑': {
             run = false
-            const m = (await msg.channel.send(
-              Utils.embed('green').setDescription('Canceling..')
-            )) as NezukoMessage
+            const m = (await msg.channel.send(Utils.embed('green').setDescription('Canceling..'))) as NezukoMessage
             await m.delete(2000)
             await paginated.clearReactions()
             break
@@ -264,11 +256,7 @@ export class Utils {
   }
 
   // Global Error Function
-  public static error(
-    name: string,
-    message: NezukoMessage,
-    channel: TextChannel | DMChannel | GroupDMChannel
-  ) {
+  public static error(name: string, message: NezukoMessage, channel: TextChannel | DMChannel | GroupDMChannel) {
     const embed = new RichEmbed()
       .setColor('#cc241d')
       .addField('Module', name, true)
@@ -299,9 +287,7 @@ export class Utils {
     if (image) {
       // E.attachFile(join(`${__dirname}`, '../', `/core/images/icons/${image}`))
       // E.setThumbnail(`attachment://${image}`)
-      e.setThumbnail(
-        `https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`
-      )
+      e.setThumbnail(`https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`)
     }
     return e
   }

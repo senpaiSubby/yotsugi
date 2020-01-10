@@ -6,10 +6,10 @@
 import Canvas from 'canvas'
 import { Attachment, GuildMember, TextChannel } from 'discord.js'
 import path from 'path'
-import { database } from '../core/database/database'
+import { serverConfig } from '../core/database/database'
 
 export const guildMemberRemove = async (member: GuildMember) => {
-  const db = await database.models.ServerConfig.findOne({ where: { id: member.guild.id } })
+  const db = await serverConfig(member.guild.id)
   const { welcomeChannel } = JSON.parse(db.get('config') as string)
 
   const channel = member.guild.channels.get(welcomeChannel) as TextChannel

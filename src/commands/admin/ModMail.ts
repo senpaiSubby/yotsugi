@@ -3,8 +3,8 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Message, TextChannel } from 'discord.js'
 import { NezukoClient } from 'core/NezukoClient'
+import { Message, TextChannel } from 'discord.js'
 import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 

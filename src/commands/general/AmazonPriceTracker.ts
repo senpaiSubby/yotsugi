@@ -8,7 +8,7 @@ import { GeneralDBConfig, NezukoMessage } from 'typings'
 import Scraper from '@jonstuebe/scraper'
 import { RichEmbed } from 'discord.js'
 import { Command } from '../../core/base/Command'
-import database from '../../core/database/index'
+import { generalConfig } from '../../core/database/database'
 import { NezukoClient } from '../../core/NezukoClient'
 
 export default class AmazonPriceTracker extends Command {
@@ -32,7 +32,7 @@ export default class AmazonPriceTracker extends Command {
 
     const { channel } = msg
 
-    const db = await database.models.GeneralConfig.findOne({ where: { id: client.config.ownerID } })
+    const db = await generalConfig(client.config.ownerID)
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { priceTracking } = config
 

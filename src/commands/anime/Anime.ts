@@ -44,25 +44,15 @@ export default class Anime extends Command {
           embedList.push(
             embed()
               .setTitle(
-                `Kitsu.io Anime - [ ${attributes.titles.en ||
-                  attributes.titles.en_jp ||
-                  attributes.titles.ja_jp} ]`
+                `Kitsu.io Anime - [ ${attributes.titles.en || attributes.titles.en_jp || attributes.titles.ja_jp} ]`
               )
               .setDescription(`${attributes.synopsis.substring(0, 1021)}...`)
               .addField('Type', attributes.subtype, true)
-              .addField(
-                'Age Rating',
-                attributes.ageRating ? attributes.ageRating : 'Not rated yet',
-                true
-              )
+              .addField('Age Rating', attributes.ageRating ? attributes.ageRating : 'Not rated yet', true)
               .addField('Episodes', attributes.episodeCount, true)
               .addField(
                 'Episode Length',
-                `${
-                  attributes.episodeLength
-                    ? `${attributes.episodeLength} minutes`
-                    : 'Not calculated yet'
-                }`,
+                `${attributes.episodeLength ? `${attributes.episodeLength} minutes` : 'Not calculated yet'}`,
                 true
               )
               .addField('Average Rating', attributes.averageRating, true)

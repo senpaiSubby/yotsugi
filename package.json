@@ -5,6 +5,7 @@
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
     "chalk": "^3.0.0",
+    "cleverbot.io": "^1.0.4",
     "core-worker": "^0.3.5",
     "cors": "^2.8.5",
     "dateformat": "^3.0.3",

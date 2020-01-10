@@ -24,15 +24,7 @@ export default class Jackett extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { Utils, Log, db, p } = client
-    const {
-      bytesToSize,
-      sortByKey,
-      embed,
-      paginate,
-      errorMessage,
-      warningMessage,
-      missingConfig
-    } = Utils
+    const { bytesToSize, sortByKey, embed, paginate, errorMessage, warningMessage, missingConfig } = Utils
 
     // * ------------------ Config --------------------
 
@@ -41,10 +33,7 @@ export default class Jackett extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [
-        `${p}config set jackett host <http://ip>`,
-        `${p}config set jackett apiKey <APIKEY>`
-      ]
+      const settings = [`${p}config set jackett host <http://ip>`, `${p}config set jackett apiKey <APIKEY>`]
       return missingConfig(msg, 'jackett', settings)
     }
 

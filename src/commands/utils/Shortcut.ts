@@ -5,7 +5,7 @@
 
 import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
-import database from '../../core/database/'
+import { generalConfig } from '../../core/database/database'
 import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Shortcut extends Command {
@@ -30,7 +30,7 @@ export default class Shortcut extends Command {
 
     // * ------------------ Config --------------------
 
-    const db = await database.models.GeneralConfig.findOne({ where: { id: author.id } })
+    const db = await generalConfig(author.id)
     const { config } = client.db
     const { shortcuts } = config
 

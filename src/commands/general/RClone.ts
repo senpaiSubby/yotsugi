@@ -131,10 +131,7 @@ export default class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(
-            msg,
-            `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`
-          )
+          return warningMessage(msg, `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`)
         }
 
         return errorMessage(msg, `A error occured with Rclone`)
@@ -160,12 +157,9 @@ export default class RClone extends Command {
         let totalFiles = 0
 
         for (const remote of args) {
-          const { code, stdout } = (await execAsync(
-            `rclone size --json "${remote}:/" --config="${configPath}"`,
-            {
-              silent: true
-            }
-          )) as ExecAsync
+          const { code, stdout } = (await execAsync(`rclone size --json "${remote}:/" --config="${configPath}"`, {
+            silent: true
+          })) as ExecAsync
 
           if (code === 0) {
             const response = JSON.parse(stdout)
@@ -208,12 +202,9 @@ export default class RClone extends Command {
           )
         )) as Message
 
-        const { code, stdout } = (await execAsync(
-          `rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`,
-          {
-            silent: true
-          }
-        )) as ExecAsync
+        const { code, stdout } = (await execAsync(`rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`, {
+          silent: true
+        })) as ExecAsync
 
         await waitMessage.delete()
         // 3 doesnt exist 0 good
@@ -268,10 +259,7 @@ export default class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(
-            msg,
-            `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`
-          )
+          return warningMessage(msg, `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`)
         }
 
         return errorMessage(msg, 'A error occured with RClone')

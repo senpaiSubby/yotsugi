@@ -4,8 +4,8 @@
  */
 
 import chalk from 'chalk'
-import { format } from 'util'
 import moment from 'moment'
+import { format } from 'util'
 
 export class Log {
   // Throw error if someone tries to create an instance
@@ -20,9 +20,9 @@ export class Log {
 
   // Logger
   public static logger(style, errorType, name, message, stacktrace?) {
-    const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(
-      name
-    )} ${chalk.yellow(message ? `${chalk.white('-')} ${message}` : '')}`
+    const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(name)} ${chalk.yellow(
+      message ? `${chalk.white('-')} ${message}` : ''
+    )}`
 
     // Logger Stacktrace
     if (stacktrace) {

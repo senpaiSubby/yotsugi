@@ -43,9 +43,8 @@ export default class Help extends Command {
       })
       if (disabled) return false
 
-      if (i.permsNeeded.length) {
-        if (checkPerms(msg.member, i.permsNeeded)) return false
-      }
+      if (i.permsNeeded.length && checkPerms(msg.member, i.permsNeeded)) return false
+
       if (i.ownerOnly) {
         if (author.id === client.config.ownerID) return true
         return false
@@ -101,9 +100,7 @@ export default class Help extends Command {
           .setTitle(`Help - ${capitalize(command.name)}`)
           .setDescription(
             `**${command.description}**\n\`\`\`css\n${command.usage.join('\n')}\n\`\`\`\n${
-              command.aliases.length
-                ? `Aliases\n\`\`\`css\n${command.aliases.join(', ')}\n\`\`\``
-                : ''
+              command.aliases.length ? `Aliases\n\`\`\`css\n${command.aliases.join(', ')}\n\`\`\`` : ''
             }`
           )
       )

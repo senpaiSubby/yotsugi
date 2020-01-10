@@ -27,14 +27,7 @@ export default class Sengled extends Command {
     // * ------------------ Setup --------------------
 
     const { Log, Utils, p, db } = client
-    const {
-      missingConfig,
-      warningMessage,
-      errorMessage,
-      standardMessage,
-      capitalize,
-      embed
-    } = Utils
+    const { missingConfig, warningMessage, errorMessage, standardMessage, capitalize, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -153,16 +146,10 @@ export default class Sengled extends Command {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
             if (api) return `[ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`
-            return standardMessage(
-              msg,
-              `${icon} [ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`
-            )
+            return standardMessage(msg, `${icon} [ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`)
           }
           if (api) return `[ ${deviceName} ] brightness set to [ ${newBrightness} ]`
-          return standardMessage(
-            msg,
-            `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness} ]`
-          )
+          return standardMessage(msg, `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness} ]`)
         }
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
@@ -190,9 +177,7 @@ export default class Sengled extends Command {
             devices.forEach((device) => {
               e.addField(
                 `${device.name}`,
-                `Status: ${capitalize(device.status)}\n Brightness: ${device.brightness}\nID: ${
-                  device.uuid
-                }`,
+                `Status: ${capitalize(device.status)}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
                 true
               )
             })

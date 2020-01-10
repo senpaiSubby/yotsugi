@@ -5,10 +5,10 @@
 
 import { get, post } from 'unirest'
 
-import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
 import urljoin from 'url-join'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 /*
 requires role "requestmovie"
@@ -64,11 +64,7 @@ export default class OmbiMovies extends Command {
 
     const outputMovie = (movie) => {
       const e = embed('green', 'ombi.png')
-        .setTitle(
-          `${movie.title} ${
-            movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''
-          }`
-        )
+        .setTitle(`${movie.title} ${movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''}`)
         .setDescription(`${movie.overview.substring(0, 255)}(...)`)
         .setThumbnail(`https://image.tmdb.org/t/p/w500${movie.posterPath}`)
         .setURL(`https://www.themoviedb.org/movie/${movie.theMovieDbId}`)
@@ -99,10 +95,7 @@ export default class OmbiMovies extends Command {
 
     const requestMovie = async (movie) => {
       if (!member.roles.some((r) => r.name === 'requestmovie')) {
-        return warningMessage(
-          msg,
-          'You must be part of the [ `requestmovie` ] role to request movies.'
-        )
+        return warningMessage(msg, 'You must be part of the [ `requestmovie` ] role to request movies.')
       }
 
       if (movie.available) {
@@ -150,9 +143,10 @@ export default class OmbiMovies extends Command {
       const embedList = []
       for (const movie of results) {
         try {
-          const response = await get(
-            urljoin(host, '/api/v1/Search/movie/info/', String(movie.id))
-          ).headers({ ApiKey: apiKey, accept: 'application/json' })
+          const response = await get(urljoin(host, '/api/v1/Search/movie/info/', String(movie.id))).headers({
+            ApiKey: apiKey,
+            accept: 'application/json'
+          })
           const data = response.body
           embedList.push(outputMovie(data))
         } catch (e) {

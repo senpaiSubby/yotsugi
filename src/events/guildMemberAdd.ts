@@ -6,10 +6,10 @@
 import Canvas from 'canvas'
 import { Attachment, GuildMember, TextChannel } from 'discord.js'
 import path from 'path'
-import { database } from '../core/database/database'
+import { serverConfig } from '../core/database/database'
 
 export const guildMemberAdd = async (member: GuildMember) => {
-  const db = await database.models.ServerConfig.findOne({ where: { id: member.guild.id } })
+  const db = await serverConfig(member.guild.id)
   const { welcomeChannel, prefix } = JSON.parse(db.get('config') as string)
 
   const channel = member.guild.channels.get(welcomeChannel) as TextChannel
@@ -41,19 +41,16 @@ export const guildMemberAdd = async (member: GuildMember) => {
   ctx.fillStyle = '#a2ba00'
   const textLength = member.user.username.length
   ctx.fillText(member.user.username.toUpperCase(), 280 - textLength, 380)
-  ctx.strokeText(member.user.username.toUpperCase(), 280 - textLength, 380)
 
   // Rules
   ctx.font = '30px GENUINE'
   ctx.fillStyle = '#dfdfdf'
   ctx.fillText(`View our rules with [ ${prefix}rules ]`, 20, 280)
-  ctx.strokeText(`View our rules with [ ${prefix}rules ]`, 20, 280)
 
   // Roles
   ctx.font = '30px GENUINE'
   ctx.fillStyle = '#dfdfdf'
   ctx.fillText(`View our roles with [ ${prefix}roles ]`, 20, 310)
-  ctx.strokeText(`View our roles with [ ${prefix}roles ]`, 20, 310)
 
   // Pick up the pen
   ctx.beginPath()

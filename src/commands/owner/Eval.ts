@@ -33,8 +33,7 @@ export default class Evaluator extends Command {
     )
 
     const input = `📥 **Input:**\n\`\`\`js\n${args.join(' ')}\n\`\`\``
-    const error = (err) =>
-      `🚫 **Error:**\n\`\`\`js\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
+    const error = (err) => `🚫 **Error:**\n\`\`\`js\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
 
     try {
       let output = await eval(args.join(' '))
@@ -42,13 +41,9 @@ export default class Evaluator extends Command {
       if (typeof output !== 'string') output = require('util').inspect(output, { depth: 1 })
       const response = `📤 **Output:**\n\`\`\`js\n${output.replace(regex, '[Token]')}\n\`\`\``
       if (input.length + response.length > 1900) throw new Error('Output too long!')
-      return channel
-        .send(`${input}\n${response}`)
-        .catch((err) => channel.send(`${input}\n${error(err)}`))
+      return channel.send(`${input}\n${response}`).catch((err) => channel.send(`${input}\n${error(err)}`))
     } catch (err) {
-      return channel
-        .send(`${input}\n${error(err)}`)
-        .catch((e) => channel.send(`${input}\n${error(e)}`))
+      return channel.send(`${input}\n${error(err)}`).catch((e) => channel.send(`${input}\n${error(e)}`))
     }
   }
 }

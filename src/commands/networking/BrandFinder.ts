@@ -65,21 +65,7 @@ export default class Whois extends Command {
     if (results && results.domain_name) {
       domainAvailable = false
       domainExpiration = results.registry_expiry_date
-      for (const alt of [
-        'net',
-        'org',
-        'tech',
-        'io',
-        'biz',
-        'edu',
-        'co',
-        'app',
-        'me',
-        'dev',
-        'site',
-        'online',
-        'us'
-      ]) {
+      for (const alt of ['net', 'org', 'tech', 'io', 'biz', 'edu', 'co', 'app', 'me', 'dev', 'site', 'online', 'us']) {
         results = await this.domain_search(`${keyword}.${alt}`)
         if (!results.domain_name) availableAltDomainsList = `${keyword}.${alt}`
       }
@@ -102,14 +88,8 @@ export default class Whois extends Command {
     return channel.send(
       embed()
         .setTitle('Brand Availability')
-        .addField(
-          `${keyword}.com`,
-          domainAvailable ? 'Available' : `Unavailable (Expires ${domainExpiration})`
-        )
-        .addField(
-          !domainAvailable ? 'Alternate domains' : ' ',
-          !domainAvailable ? availableAltDomainsList : ' '
-        )
+        .addField(`${keyword}.com`, domainAvailable ? 'Available' : `Unavailable (Expires ${domainExpiration})`)
+        .addField(!domainAvailable ? 'Alternate domains' : ' ', !domainAvailable ? availableAltDomainsList : ' ')
         .addField(`@${keyword} on Twitter`, !twitterAvailable ? 'Unavailable' : 'Available')
     )
   }

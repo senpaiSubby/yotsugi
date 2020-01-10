@@ -60,9 +60,7 @@ export default class Reload extends Command {
       case 'restart': {
         let count = 10
 
-        const m = (await channel.send(
-          embed('yellow').setDescription(`Restarting in ${count} seconds..`)
-        )) as Message
+        const m = (await channel.send(embed('yellow').setDescription(`Restarting in ${count} seconds..`))) as Message
         const interval = setInterval(async () => {
           if (count === 0) {
             await m.edit(embed('yellow').setDescription(`Restarting..`))
@@ -107,9 +105,7 @@ export default class Reload extends Command {
             .addField('Node Version', nodeVersion.replace('v', ''), true)
             .addField('NPM Version', npmv.replace('\n', ''), true)
             .addField('Commands', context.commands.size, true)
-            .setDescription(
-              `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`
-            )
+            .setDescription(`Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`)
         )
       }
     }

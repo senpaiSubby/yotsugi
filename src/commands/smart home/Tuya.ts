@@ -127,9 +127,7 @@ export default class Tuya extends Command {
           if (api) return deviceList
           const e = embed('green', 'plug.png').setTitle(':electric_plug: Tuya Smart Plugs')
           if (typeof deviceList !== 'string') {
-            deviceList.forEach((device) =>
-              e.addField(`${device.name}`, `Status: [ ${capitalize(device.status)} ]`)
-            )
+            deviceList.forEach((device) => e.addField(`${device.name}`, `Status: [ ${capitalize(device.status)} ]`))
           }
           return channel.send(e)
         }

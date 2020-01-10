@@ -85,11 +85,7 @@ export class NezukoClient extends Client {
       // * ---------- Events ----------
 
       // On message
-      this.on(
-        'message',
-        async (message: NezukoMessage) =>
-          await this.commandManager.handleMessage(message, this, true)
-      )
+      this.on('message', async (message: NezukoMessage) => await this.commandManager.handleMessage(message, this, true))
 
       // On message edits
       this.on('messageUpdate', async (old: Message, _new: NezukoMessage) => {
@@ -99,10 +95,7 @@ export class NezukoClient extends Client {
       this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
       this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
 
-      this.on(
-        'messageReactionAdd',
-        async (reaction, user) => await messageReactionAdd(reaction, user)
-      )
+      this.on('messageReactionAdd', async (reaction, user) => await messageReactionAdd(reaction, user))
 
       this.on('messageReactionRemove', async (reaction) => await messageReactionRemove(reaction))
 

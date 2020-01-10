@@ -60,9 +60,7 @@ export default class SystemInfo extends Command {
       }
     }
 
-    const ms = (await channel.send(
-      embed('green').setDescription('**:timer: Loading system stats..**')
-    )) as Message
+    const ms = (await channel.send(embed('green').setDescription('**:timer: Loading system stats..**'))) as Message
     await ms.react('🛑')
 
     const refreshEmbed = async () => {
@@ -88,8 +86,7 @@ export default class SystemInfo extends Command {
     const interval = setInterval(async () => refreshEmbed(), args[0] * 1000)
 
     const collected = await ms.awaitReactions(
-      (reaction: MessageReaction, user: GuildMember) =>
-        ['🛑'].includes(reaction.emoji.name) && user.id === author.id,
+      (reaction: MessageReaction, user: GuildMember) => ['🛑'].includes(reaction.emoji.name) && user.id === author.id,
       { max: 1 }
     )
 

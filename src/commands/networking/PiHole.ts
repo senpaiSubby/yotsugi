@@ -37,10 +37,7 @@ export default class PiHole extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [
-        `${p}config set pihole host <PIHOLEURL>`,
-        `${p}config set pihole apiKey <APIKEY>`
-      ]
+      const settings = [`${p}config set pihole host <PIHOLEURL>`, `${p}config set pihole apiKey <APIKEY>`]
       return missingConfig(msg, 'pihole', settings)
     }
 
@@ -48,9 +45,9 @@ export default class PiHole extends Command {
 
     const setState = async (newState) => {
       try {
-        const response = await get(
-          urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`)
-        ).headers({ accept: 'application/json' })
+        const response = await get(urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`)).headers({
+          accept: 'application/json'
+        })
         const data = await response.body
 
         if (data.status !== 'enabled' && data.status !== 'disabled') {

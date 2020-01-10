@@ -3,11 +3,11 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
-import { NezukoMessage } from 'typings'
 import dateFormat from 'dateformat'
 import { utc } from 'moment'
+import { NezukoMessage } from 'typings'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class UserInfo extends Command {
   constructor(client: NezukoClient) {
@@ -48,9 +48,7 @@ export default class UserInfo extends Command {
     if (inGuild) {
       const rMember = msg.guild.members.get(user.user.id)
 
-      const memSort = msg.guild.members
-        .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp)
-        .array()
+      const memSort = msg.guild.members.sort((a, b) => a.joinedTimestamp - b.joinedTimestamp).array()
       let position = 0
 
       for (const guildember of memSort) {
@@ -58,11 +56,7 @@ export default class UserInfo extends Command {
         if (guildember.id === user.id) break
       }
 
-      e.addField('Joined At', dateFormat(rMember.joinedAt), true).addField(
-        'Joined Position',
-        position,
-        true
-      )
+      e.addField('Joined At', dateFormat(rMember.joinedAt), true).addField('Joined Position', position, true)
     }
 
     return channel.send(e)

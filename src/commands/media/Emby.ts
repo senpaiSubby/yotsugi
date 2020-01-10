@@ -26,15 +26,7 @@ export default class Emby extends Command {
 
     const { p, Utils, Log } = client
     const { channel } = msg
-    const {
-      errorMessage,
-      warningMessage,
-      validOptions,
-      standardMessage,
-      missingConfig,
-      embed,
-      capitalize
-    } = Utils
+    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig, embed, capitalize } = Utils
 
     // * ------------------ Config --------------------
 
@@ -56,10 +48,7 @@ export default class Emby extends Command {
 
     const getLink = (item) => {
       const { Id, serverId } = item
-      return urljoin(
-        host,
-        `/web/index.html#!/itemdetails.html?id=${Id}&context=tvshows&serverId=${serverId}`
-      )
+      return urljoin(host, `/web/index.html#!/itemdetails.html?id=${Id}&context=tvshows&serverId=${serverId}`)
     }
 
     const fetchData = async (endPoint: string) => {
@@ -181,9 +170,7 @@ export default class Emby extends Command {
             case 'movies': {
               e.setTitle('Recently added movies')
               let text = ''
-              stats.forEach(
-                (key, index) => (text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`)
-              )
+              stats.forEach((key, index) => (text += `${index + 1}. [LINK](${getLink(key)}) - ${key.Name}\n`))
               e.setDescription(text)
               return channel.send(e)
             }

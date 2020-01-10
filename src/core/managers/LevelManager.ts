@@ -7,7 +7,7 @@ import { NezukoClient } from 'core/NezukoClient'
 import { TextChannel } from 'discord.js'
 import { GeneralDBConfig, NezukoMessage, ServerDBConfig } from 'typings'
 import * as config from '../../config/config.json'
-import database from '../database'
+import { generalConfig, serverConfig } from '../database/database'
 import { Utils } from '../utils/Utils'
 /**
  * Level manager
@@ -36,11 +36,11 @@ export class LevelManager {
     // Only handle XP and levels in Guild Text Channels
     if (this.msg.channel.type === 'text') {
       const serverDB = await this.getDB()
-      const serverConfig = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
-      const { levelUpChannel } = serverConfig
+      const sConfig = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
+      const { levelUpChannel } = sConfig
 
       if (!('levelUpChannel' in serverConfig)) {
-        serverConfig.levelUpChannel = null
+        sConfig.levelUpChannel = null
         await serverDB.update({ config: JSON.stringify(serverConfig) })
       }
 
@@ -48,9 +48,7 @@ export class LevelManager {
         this.levelUpChannel = this.client.channels.get(levelUpChannel) as TextChannel
       }
 
-      const db = await database.models.GeneralConfig.findOne({
-        where: { id: config.ownerID }
-      })
+      const db = await generalConfig(config.ownerID)
       const { disabledCommands } = JSON.parse(db.get('config') as string) as GeneralDBConfig
 
       let disabled = false
@@ -60,7 +58,6 @@ export class LevelManager {
           disabled = true
         }
       })
-
       if (!disabled) {
         await this.handleXP()
         await this.handleRole()
@@ -74,9 +71,7 @@ export class LevelManager {
    */
   private async getDB() {
     // Fetches and returns the Guilds server config
-    return await database.models.ServerConfig.findOne({
-      where: { id: this.guild.id }
-    })
+    return await serverConfig(this.guild.id)
   }
 
   /**
@@ -113,6 +108,7 @@ export class LevelManager {
     const member = await this.getMemberLevel()
 
     // Fetch the server config
+    // tslint:disable-next-line:no-shadowed-variable
     const serverConfig = JSON.parse(db!.get('config') as string) as ServerDBConfig
 
     // If server doesnt have a level multiplier then create and set to 2
@@ -131,9 +127,7 @@ export class LevelManager {
     const levelUpMessage = async (level: number) => {
       if (this.levelUpChannel) {
         await this.levelUpChannel.send(this.msg.member.toString())
-        await this.levelUpChannel.send(
-          Utils.embed().setTitle(`You are now level [ ${level} ] :confetti_ball:`)
-        )
+        await this.levelUpChannel.send(Utils.embed().setTitle(`You are now level [ ${level} ] :confetti_ball:`))
       }
     }
 

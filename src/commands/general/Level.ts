@@ -4,9 +4,9 @@
  */
 
 import { RichEmbed } from 'discord.js'
-import { NezukoMessage } from 'typings'
+import { NezukoMessage, ServerDBConfig } from 'typings'
 import { Command } from '../../core/base/Command'
-import database from '../../core/database'
+import { serverConfig } from '../../core/database/database'
 import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Level extends Command {
@@ -21,6 +21,7 @@ export default class Level extends Command {
         'level add <level> <role>',
         'level remove <level> <role>',
         'level change <level> <role>',
+        'level givexp <@user>',
         'level list'
       ]
     })
@@ -34,9 +35,7 @@ export default class Level extends Command {
 
     // * ------------------ Config --------------------
 
-    const db = await database.models.ServerConfig.findOne({
-      where: { id: guild.id }
-    })
+    const db = await serverConfig(guild.id)
 
     const memberLevels = JSON.parse(db.get('memberLevels') as string)
     const { levels, levelRoles } = memberLevels
@@ -203,6 +202,31 @@ export default class Level extends Command {
 
         return paginate(msg, embedList)
       }
+      case 'givexp': {
+        if (await checkRole()) {
+          const userToGive = msg.mentions.users.first() ? msg.mentions.users.first().id : null
+          if (!userToGive) return warningMessage(msg, 'Please specify a member to give EXP to')
+          const serverDB = await serverConfig(guild.id)
+          const { levelMultiplier } = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
+          args.splice(0, 2)
+          const xpToGive = Number(args[0])
+
+          if (xpToGive > 100) return warningMessage(msg, 'You cannot give more that 100 XP')
+          const totalXP = xpToGive + member.exp
+
+          if (totalXP > member.expTillNextLevel) {
+            if (member.expTillNextLevel - xpToGive <= 0) {
+              member.exp = Math.abs(member.expTillNextLevel - xpToGive)
+              member.level++
+            } else member.exp = totalXP
+          } else if (totalXP < member.expTillNextLevel) member.exp = totalXP
+
+          member.expTillNextLevel = 100 * member.level * Number(levelMultiplier) - member.exp
+
+          await db.update({ memberLevels: JSON.stringify(memberLevels) })
+        }
+      }
+
       default: {
         const e = embed()
           .setTitle(`${user.user.username}'s Guild Level`)

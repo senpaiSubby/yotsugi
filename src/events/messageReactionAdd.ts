@@ -5,7 +5,7 @@
 
 import { Message, MessageReaction, TextChannel, User } from 'discord.js'
 import { ServerDBConfig } from 'typings'
-import { database } from '../core/database/database'
+import { serverConfig } from '../core/database/database'
 import { Utils } from '../core/utils/Utils'
 
 export const messageReactionAdd = async (reaction: MessageReaction, user: User) => {
@@ -15,7 +15,7 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   const { channel } = msg
   const { embed } = Utils
 
-  const db = await database.models.ServerConfig.findOne({ where: { id: msg.guild.id } })
+  const db = await serverConfig(msg.guild.id)
   const { starboardChannel, prefix } = JSON.parse(db.get('config') as string) as ServerDBConfig
 
   const extension = async (attachment) => {
@@ -28,17 +28,13 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
 
   if (msg.author.id === user.id) {
     if (channel.id === starboardChannel) return
-    const m = (await msg.reply(
-      embed().setDescription(`**You cannot star your own messages**`)
-    )) as Message
+    const m = (await msg.reply(embed().setDescription(`**You cannot star your own messages**`))) as Message
     return m.delete(10000)
   }
 
   if (msg.author.bot) {
     if (channel.id === starboardChannel) return
-    const m = (await msg.reply(
-      embed().setDescription(`**You cannot star bot messages**`)
-    )) as Message
+    const m = (await msg.reply(embed().setDescription(`**You cannot star bot messages**`))) as Message
     return m.delete(10000)
   }
   const starChannel = msg.guild.channels.get(starboardChannel) as TextChannel
@@ -46,7 +42,8 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   if (!starChannel) {
     return this.Utils.warningMessage(
       msg,
-      `It appears that you do not have a StarBoard channel. Please set one with \`${prefix}server set starboardChannel <channelID>\``
+      `It appears that you do not have a StarBoard channel.
+      Please set one with \`${prefix}server set starboardChannel <channelID>\``
     )
   }
 
@@ -75,9 +72,7 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   if (!stars) {
     const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
     if (image === '' && msg.cleanContent.length < 1) {
-      const m = (await channel.send(
-        embed().setDescription(`**You cannot star an empty message**`)
-      )) as Message
+      const m = (await channel.send(embed().setDescription(`**You cannot star an empty message**`))) as Message
 
       return m.delete(10000)
     }

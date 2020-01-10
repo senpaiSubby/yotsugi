@@ -77,10 +77,7 @@ export default class DB extends Command {
         if (keyToChange in config && key1 in config[keyToChange]) {
           config[keyToChange][key1] = val1
           await db.update({ config: JSON.stringify(config) })
-          const m = (await standardMessage(
-            msg,
-            `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`
-          )) as Message
+          const m = (await standardMessage(msg, `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`)) as Message
           return m.delete(10000)
         }
         return warningMessage(msg, `Option [ ${key1} ] doesnt exist`)

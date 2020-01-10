@@ -5,10 +5,10 @@
 
 import { get, post } from 'unirest'
 
-import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
 import urljoin from 'url-join'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 /*
 requires role "requesttv"
@@ -98,10 +98,7 @@ export default class OmbiTV extends Command {
 
     const requestTVShow = async (show) => {
       if (!member.roles.some((r) => r.name === 'requesttv')) {
-        return warningMessage(
-          msg,
-          'You must be part of the [ `requesttv` ] role to request TV Shows.'
-        )
+        return warningMessage(msg, 'You must be part of the [ `requesttv` ] role to request TV Shows.')
       }
 
       if (show.available) {
@@ -144,9 +141,10 @@ export default class OmbiTV extends Command {
       const embedList = []
       for (const show of results) {
         try {
-          const response = await get(
-            urljoin(host, '/api/v1/Search/tv/info/', String(show.id))
-          ).headers({ ApiKey: apiKey, accept: 'application/json' })
+          const response = await get(urljoin(host, '/api/v1/Search/tv/info/', String(show.id))).headers({
+            ApiKey: apiKey,
+            accept: 'application/json'
+          })
           const data = await response.body
           embedList.push(outputTVShow(data))
         } catch (e) {

@@ -980,6 +980,13 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+cleverbot.io@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/cleverbot.io/-/cleverbot.io-1.0.4.tgz#8064862cb1f09bf7977d13b4b67b0b90e82f40af"
+  integrity sha1-gGSGLLHwm/eXfRO0tnsLkOgvQK8=
+  dependencies:
+    request "^2.53.0"
+
 cli-table@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/cli-table/-/cli-table-0.3.1.tgz#f53b05266a8b1a0b934b3d0821e6e2dc5914ae23"
@@ -4112,7 +4119,7 @@ replace-homedir@^1.0.0:
     is-absolute "^1.0.0"
     remove-trailing-separator "^1.1.0"
 
-request@^2.69.0, request@^2.72.0, request@^2.74.0, request@^2.87.0, request@^2.88.0:
+request@^2.53.0, request@^2.69.0, request@^2.72.0, request@^2.74.0, request@^2.87.0, request@^2.88.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==

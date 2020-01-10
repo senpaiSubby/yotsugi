@@ -3,9 +3,9 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
+import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
-import { NezukoMessage } from 'typings'
 
 export default class Invite extends Command {
   constructor(client: NezukoClient) {
@@ -38,9 +38,7 @@ export default class Invite extends Command {
     return channel.send(
       embed('green')
         .setTitle('Nezuko')
-        .setDescription(
-          'Thanks for showing interest in Nezuko! Click the link below to invite her to your server.'
-        )
+        .setDescription('Thanks for showing interest in Nezuko! Click the link below to invite her to your server.')
         .setThumbnail(client.user.avatarURL)
         .addField('\u200b', `[Click Here](${invite})`)
     )

@@ -3,10 +3,10 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
-import database from '../../core/database'
+import { Command } from '../../core/base/Command'
+import { generalConfig } from '../../core/database/database'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Routines extends Command {
   constructor(client: NezukoClient) {
@@ -35,19 +35,11 @@ export default class Routines extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const {
-      validOptions,
-      warningMessage,
-      errorMessage,
-      standardMessage,
-      embed,
-      paginate,
-      asyncForEach
-    } = Utils
+    const { validOptions, warningMessage, errorMessage, standardMessage, embed, paginate, asyncForEach } = Utils
 
     // * ------------------ Config --------------------
 
-    const db = await database.models.GeneralConfig.findOne({ where: { id: client.config.ownerID } })
+    const db = await generalConfig(client.config.ownerID)
     const { config } = client.db
     const { routines } = config
 
@@ -95,10 +87,7 @@ export default class Routines extends Command {
         // Check if user specified command
         if (!args[2]) {
           if (api) return `Please specify the command # in routine [ ${routineName} ] to enable`
-          return warningMessage(
-            msg,
-            `Please specify the command # in routine [ ${routineName} ] to enable`
-          )
+          return warningMessage(msg, `Please specify the command # in routine [ ${routineName} ] to enable`)
         }
 
         const command = args[2] - 1
@@ -109,10 +98,7 @@ export default class Routines extends Command {
         // Check if command exists
         if (!commandListIndex) {
           if (api) return `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
-          return warningMessage(
-            msg,
-            `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
-          )
+          return warningMessage(msg, `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`)
         }
 
         // Check current status
@@ -125,9 +111,7 @@ export default class Routines extends Command {
           }
           return warningMessage(
             msg,
-            `Command [ ${command + 1} ] [ ${
-              commandListIndex[1]
-            } ] in routine [ ${routineName} ] is already enabled`
+            `Command [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ] is already enabled`
           )
         }
         // Enable command in routine
@@ -136,15 +120,11 @@ export default class Routines extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) {
-          return `Enabled command  [ ${command + 1} ] [ ${
-            commandListIndex[1]
-          } ] in routine [ ${routineName} ]`
+          return `Enabled command  [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
         }
         return standardMessage(
           msg,
-          `Enabled command  [ ${command + 1} ] [ ${
-            commandListIndex[1]
-          } ] in routine [ ${routineName} ]`
+          `Enabled command  [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
         )
       }
 
@@ -161,10 +141,7 @@ export default class Routines extends Command {
         // Check if user specified command
         if (!args[2]) {
           if (api) return `Please specify the command # in routine [ ${routineName} ] to disable`
-          return warningMessage(
-            msg,
-            `Please specify the command # in routine [ ${routineName} ] to disable`
-          )
+          return warningMessage(msg, `Please specify the command # in routine [ ${routineName} ] to disable`)
         }
 
         const command = args[2] - 1
@@ -175,10 +152,7 @@ export default class Routines extends Command {
         // Check if command exists
         if (!commandListIndex) {
           if (api) return `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
-          return warningMessage(
-            msg,
-            `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
-          )
+          return warningMessage(msg, `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`)
         }
 
         // Check current status
@@ -191,9 +165,7 @@ export default class Routines extends Command {
           }
           return warningMessage(
             msg,
-            `Command [ ${command + 1} ] [ ${
-              commandListIndex[1]
-            } ] in routine [ ${routineName} ] is already disabled`
+            `Command [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ] is already disabled`
           )
         }
         // Disable command in routine
@@ -202,15 +174,11 @@ export default class Routines extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) {
-          return `Disabled command  [ ${command + 1} ][ ${
-            commandListIndex[1]
-          } ] in routine [ ${routineName} ]`
+          return `Disabled command  [ ${command + 1} ][ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
         }
         return standardMessage(
           msg,
-          `Disabled command  [ ${command + 1} ][ ${
-            commandListIndex[1]
-          } ] in routine [ ${routineName} ]`
+          `Disabled command  [ ${command + 1} ][ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
         )
       }
 
@@ -288,10 +256,7 @@ export default class Routines extends Command {
         // Check if command is already part of routine
         if (routines[index].commands.includes(command)) {
           if (api) return `Routine [ ${routineName} ] already has comamnd [ ${command} ]`
-          return warningMessage(
-            msg,
-            `Routine [ ${routineName} ] already has comamnd [ ${command} ]`
-          )
+          return warningMessage(msg, `Routine [ ${routineName} ] already has comamnd [ ${command} ]`)
         }
 
         // Save changes
@@ -316,16 +281,11 @@ export default class Routines extends Command {
           const command = args.join(' ')
 
           // Get index of individual command list
-          const commandListIndex = routines[routineIndex].commands.findIndex(
-            (i) => i[1] === command
-          )
+          const commandListIndex = routines[routineIndex].commands.findIndex((i) => i[1] === command)
           // Check if command exists
           if (!routines[routineIndex].commands[commandListIndex].includes(command)) {
             if (api) return `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`
-            return warningMessage(
-              msg,
-              `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`
-            )
+            return warningMessage(msg, `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`)
           }
           // Remove command from routine
           const commandIndex = routines[routineIndex].commands.findIndex((i) => i === command)
@@ -333,10 +293,7 @@ export default class Routines extends Command {
           routines[routineIndex].commands.splice(commandIndex, 1)
           await db.update({ config: JSON.stringify(config) })
           if (api) return `Removed command [ ${command} ] from routine [ ${routineName} ]`
-          return standardMessage(
-            msg,
-            `Removed command [ ${command} ] from routine [ ${routineName} ]`
-          )
+          return standardMessage(msg, `Removed command [ ${command} ] from routine [ ${routineName} ]`)
         }
 
         // Save changes

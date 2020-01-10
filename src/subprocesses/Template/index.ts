@@ -3,8 +3,8 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { NezukoClient } from '../../core/NezukoClient'
 import { Subprocess } from '../../core/base/Subprocess'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Template extends Subprocess {
   constructor(client: NezukoClient) {

@@ -15,11 +15,7 @@ export default class RemindMe extends Command {
       name: 'remindme',
       category: 'General',
       description: 'Set some reminders',
-      usage: [
-        'remindme 10s do the dishes',
-        'remindme 1h make memes',
-        'remindme 1m get funky with it'
-      ],
+      usage: ['remindme 10s do the dishes', 'remindme 1h make memes', 'remindme 1m get funky with it'],
       aliases: ['remind']
     })
   }

@@ -3,10 +3,10 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
 import { NezukoMessage } from 'typings'
 import { YoutubeDataAPI } from 'youtube-v3-api'
+import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class YoutubeSearch extends Command {
   constructor(client: NezukoClient) {

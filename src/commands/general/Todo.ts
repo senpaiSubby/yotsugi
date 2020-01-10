@@ -107,10 +107,7 @@ export default class Todo extends Command {
           const name = todos[index]
           todos.splice(index, 1)
           await db.update({ config: JSON.stringify(config) })
-          const removeMessage = (await standardMessage(
-            msg,
-            `[ ${name} ] removed from todo list`
-          )) as Message
+          const removeMessage = (await standardMessage(msg, `[ ${name} ] removed from todo list`)) as Message
           removeMessage.delete(2000)
 
           // Edit original embed with updated content

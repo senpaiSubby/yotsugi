@@ -59,9 +59,7 @@ export default class AddRole extends Command {
     // Then notify in chat
     try {
       return rMember.send(
-        embed('green').setDescription(
-          `**You have been given the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`
-        )
+        embed('green').setDescription(`**You have been given the role [ ${gRole.name} ] in [ ${msg.guild.name} ]**`)
       )
     } catch (e) {
       return warningMessage(

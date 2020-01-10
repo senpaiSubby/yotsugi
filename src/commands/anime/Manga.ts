@@ -42,17 +42,11 @@ export default class Manga extends Command {
           embedList.push(
             embed()
               .setTitle(
-                `Kitsu.io Manga - [ ${attributes.titles.en ||
-                  attributes.titles.en_jp ||
-                  attributes.titles.ja_jp} ]`
+                `Kitsu.io Manga - [ ${attributes.titles.en || attributes.titles.en_jp || attributes.titles.ja_jp} ]`
               )
               .setDescription(attributes.synopsis)
               .addField('Type', attributes.subtype, true)
-              .addField(
-                'Age Rating',
-                attributes.ageRating ? attributes.ageRating : 'Not Rated',
-                true
-              )
+              .addField('Age Rating', attributes.ageRating ? attributes.ageRating : 'Not Rated', true)
               .addField('Average Rating', attributes.averageRating, true)
               .addField('Popularity Rank', attributes.popularityRank, true)
               .addField(
