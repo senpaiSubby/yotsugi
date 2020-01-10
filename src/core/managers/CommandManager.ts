@@ -55,6 +55,7 @@ export class CommandManager {
   public startModule(location: string) {
     const cmd = require(location).default
     const instance = new cmd(this.client)
+
     const commandName = instance.name.toLowerCase()
     instance.location = location
 
