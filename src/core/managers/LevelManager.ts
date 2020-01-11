@@ -2,13 +2,14 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { NezukoClient } from 'core/NezukoClient'
 import { TextChannel } from 'discord.js'
 import { GeneralDBConfig, NezukoMessage, ServerDBConfig } from 'typings'
+
 import * as config from '../../config/config.json'
 import { generalConfig, serverConfig } from '../database/database'
 import { Utils } from '../utils/Utils'
+
 /**
  * Level manager
  * Handles keeping track of user levelign and assigning roles based on levels

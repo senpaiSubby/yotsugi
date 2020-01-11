@@ -2,13 +2,13 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import worker from 'core-worker'
 import { Message } from 'discord.js'
 import { duration } from 'moment'
 import { ExecAsync, NezukoMessage } from 'typings'
+
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
+
 import('moment-duration-format')
 
 export default class Reload extends Command {

@@ -2,7 +2,6 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import chalk from 'chalk'
 import moment from 'moment'
 import { format } from 'util'

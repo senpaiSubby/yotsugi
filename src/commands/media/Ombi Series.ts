@@ -2,11 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import { get, post } from 'unirest'
-
 import { NezukoMessage } from 'typings'
+import { get, post } from 'unirest'
 import urljoin from 'url-join'
+
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 

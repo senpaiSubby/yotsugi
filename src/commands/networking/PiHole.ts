@@ -2,10 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
+
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 
@@ -108,7 +108,7 @@ export default class PiHole extends Command {
             embed(statusColor, 'pi.png')
               .setTitle('PiHole Stats')
               .addField('Status', capitalize(status.status), true)
-              .addField('URL\'s Being Blocked', status.domainsBeingBlocked, true)
+              .addField("URL's Being Blocked", status.domainsBeingBlocked, true)
               .addField('Total Queries', status.totalQueries, true)
               .addField('Queries Today', status.queriesToday, true)
               .addField('Blocked Today', status.adsBlockedToday, true)

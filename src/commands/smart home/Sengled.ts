@@ -2,11 +2,11 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import fs from 'fs'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { post } from 'unirest'
+
 import { Command } from '../../core/base/Command'
+import { generalConfig } from '../../core/database/database'
 import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Sengled extends Command {
@@ -32,16 +32,13 @@ export default class Sengled extends Command {
 
     // * ------------------ Config --------------------
 
-    const { jsessionid, username, password } = db.config.sengled
+    const { username, password } = db.config.sengled
+    let { jsessionid } = db.config.sengled
 
     // * ------------------ Check Config --------------------
 
-    if (!jsessionid || !username || !password) {
-      const settings = [
-        `${p}config set sengled jsessionid <id>`,
-        `${p}config set sengled username <user>`,
-        `${p}config set sengled password <pass>`
-      ]
+    if (!username || !password) {
+      const settings = [`${p}config set sengled username <user>`, `${p}config set sengled password <pass>`]
       return missingConfig(msg, 'sengled', settings)
     }
 
@@ -67,12 +64,21 @@ export default class Sengled extends Command {
           })
 
         const data = response.body
-        return data
+        return data.jsessionid
       } catch (e) {
-        if (api) return `Failed to connect to Sengled`
         Log.warn('Sengled', 'Failed to connect to Sengled')
-        await errorMessage(msg, `Failed to connect to Sengled`)
       }
+    }
+
+    if (!jsessionid) {
+      const session = await login()
+      const configDB = await generalConfig(this.client.config.ownerID)
+      const config = JSON.parse((await configDB.get('config')) as string) as GeneralDBConfig
+
+      config.sengled.jsessionid = session
+      jsessionid = session
+
+      await configDB.update({ config: JSON.stringify(config) })
     }
 
     const getDevices = async () => {

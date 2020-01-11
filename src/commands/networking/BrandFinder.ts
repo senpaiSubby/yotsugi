@@ -12,6 +12,7 @@ import { NezukoClient } from 'core/NezukoClient'
 import twitter from 'twitter'
 import { NezukoMessage } from 'typings'
 import whois from 'whois-2'
+
 import { Command } from '../../core/base/Command'
 
 interface WhoisLookup {

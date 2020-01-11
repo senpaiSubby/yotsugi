@@ -2,10 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { Message } from 'discord.js'
 import speedTest from 'speedtest-net'
 import { NezukoMessage } from 'typings'
+
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 

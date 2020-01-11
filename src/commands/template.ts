@@ -2,9 +2,9 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { NezukoClient } from 'core/NezukoClient'
 import { NezukoMessage } from 'typings'
+
 import { Command } from '../core/base/Command'
 
 export default class Template extends Command {

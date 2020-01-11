@@ -2,10 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import { Channel, GuildChannel, Message } from 'discord.js'
+import { GuildChannel, Message } from 'discord.js'
 import { performance } from 'perf_hooks'
 import { ExecAsync, NezukoMessage } from 'typings'
+
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 

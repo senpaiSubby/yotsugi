@@ -2,8 +2,8 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { NezukoMessage, ServerDBConfig } from 'typings'
+
 import { Command } from '../../core/base/Command'
 import { database } from '../../core/database/database'
 import { NezukoClient } from '../../core/NezukoClient'

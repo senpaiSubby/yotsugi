@@ -2,9 +2,9 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { PermissionResolvable } from 'discord.js'
 import { CommandData } from 'typings/Command'
+
 import { NezukoClient } from '../NezukoClient'
 
 export class Command {

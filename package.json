@@ -1,5 +1,22 @@
 {
+  "name": "nezuko",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callmekory/nezuko.git"
+  },
+  "license": "GNU GPLv3",
   "author": "callmekory",
+  "main": "build/nezuko.js",
+  "scripts": {
+    "build": "gulp",
+    "dev": "nodemon build/index.js",
+    "lint": "tslint -p tsconfig.json \"src/**/*.ts\"",
+    "start": "pm2 start",
+    "stop": "pm2 stop nezuko",
+    "watch": "tsc -w"
+  },
   "dependencies": {
     "@jonstuebe/scraper": "^0.2.0",
     "bluebird": "^3.7.2",
@@ -48,7 +65,6 @@
     "wol": "^1.0.7",
     "youtube-v3-api": "^1.1.1"
   },
-  "description": "",
   "devDependencies": {
     "@types/bluebird": "^3.5.29",
     "@types/cors": "^2.8.6",
@@ -76,21 +92,5 @@
     "tslint-plugin-prettier": "^2.1.0",
     "typescript": "^3.7.4",
     "typescript-memoize": "^1.0.0-alpha.3"
-  },
-  "license": "GNU GPLv3",
-  "main": "build/nezuko.js",
-  "name": "nezuko",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/callmekory/nezuko.git"
-  },
-  "scripts": {
-    "build": "gulp",
-    "dev": "nodemon build/index.js",
-    "lint": "tslint -p tsconfig.json \"src/**/*.ts\"",
-    "start": "pm2 start",
-    "stop": "pm2 stop nezuko",
-    "watch": "tsc -w"
-  },
-  "version": "1.0.0"
+  }
 }

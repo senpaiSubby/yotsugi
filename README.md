@@ -31,7 +31,7 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 
 |  Category   |   Command   | API | Description                                                       |
 | :---------: | :---------: | :-: | ----------------------------------------------------------------- |
-|    Admin    |   addrole   |  N  | Add roles to members                                              |
+|    Admin    |  giverole   |  N  | Add roles to members                                              |
 |    Admin    |  announce   |  N  | Send a message to your announcement channel                       |
 |    Admin    |     ban     |  N  | The ban hammer                                                    |
 |    Admin    | channelname |  N  | Rename channels                                                   |

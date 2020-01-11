@@ -2,12 +2,12 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import cors from 'cors'
 import express from 'express'
 import { duration } from 'moment'
 import serveIndex from 'serve-index'
 import shortid from 'shortid'
+
 import { Subprocess } from '../../core/base/Subprocess'
 import { CommandManager } from '../../core/managers/CommandManager'
 import { NezukoClient } from '../../core/NezukoClient'
@@ -50,7 +50,7 @@ export default class WebServer extends Subprocess {
           'Web Server',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
         )
-        return res.status(401).json({ response: 'Missing params \'apiKey\'' })
+        return res.status(401).json({ response: "Missing params 'apiKey'" })
       }
       if (req.body.apiKey !== apiKey) {
         Log.info(
@@ -149,7 +149,7 @@ export default class WebServer extends Subprocess {
         Log.info('Web Server', `Running command [ ${req.ip} ]`)
 
         // Check if all required params are met
-        if (!req.body.command) res.status(406).json({ response: 'Missing params \'command\'' })
+        if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
 
         const args = req.body.command.split(' ')
         const cmdName = args.shift().toLowerCase()

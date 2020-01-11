@@ -2,10 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import Scraper from '@jonstuebe/scraper'
 import { TextChannel } from 'discord.js'
 import { GeneralDBConfig } from 'typings'
+
 import { Subprocess } from '../../core/base/Subprocess'
 import { generalConfig } from '../../core/database/database'
 import { CommandManager } from '../../core/managers/CommandManager'

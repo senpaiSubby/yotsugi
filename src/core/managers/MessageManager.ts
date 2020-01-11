@@ -2,14 +2,13 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import { createWriteStream, existsSync, mkdirSync } from 'fs'
-
 import { Collection, Guild, MessageAttachment } from 'discord.js'
+import { createWriteStream, existsSync, mkdirSync } from 'fs'
 import fetch from 'node-fetch'
 import { dirname } from 'path'
 import torrent2magnet from 'torrent2magnet'
 import { NezukoMessage } from 'typings'
+
 import { NezukoClient } from '../NezukoClient'
 
 export class MessageManager {

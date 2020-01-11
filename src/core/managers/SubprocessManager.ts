@@ -2,11 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import path, { join } from 'path'
-
 import Enmap from 'enmap'
 import fs from 'fs'
+import path, { join } from 'path'
+
 import { Subprocess } from '../base/Subprocess'
 import { NezukoClient } from '../NezukoClient'
 

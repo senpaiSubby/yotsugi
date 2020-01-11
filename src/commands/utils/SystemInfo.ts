@@ -2,15 +2,14 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { GuildMember, Message, MessageReaction } from 'discord.js'
-import { arch, hostname, release, type } from 'os'
-
-import { NezukoClient } from 'core/NezukoClient'
 import { cpu } from 'node-os-utils'
+import { arch, hostname, release, type } from 'os'
 import si from 'systeminformation'
 import { NezukoMessage } from 'typings'
+
 import { Command } from '../../core/base/Command'
+import { NezukoClient } from '../../core/NezukoClient'
 
 export default class SystemInfo extends Command {
   constructor(client: NezukoClient) {

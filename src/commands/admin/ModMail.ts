@@ -2,10 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { NezukoClient } from 'core/NezukoClient'
 import { Message, TextChannel } from 'discord.js'
 import { NezukoMessage } from 'typings'
+
 import { Command } from '../../core/base/Command'
 
 export default class ModMail extends Command {

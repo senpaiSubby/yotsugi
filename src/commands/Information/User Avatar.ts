@@ -2,8 +2,8 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { NezukoMessage } from 'typings'
+
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 
@@ -28,7 +28,7 @@ export default class UserAvatar extends Command {
 
     const member = msg.mentions.members.first() || msg.guild.member(author)
 
-    if (!member.user.avatar) return warningMessage(msg, 'This user doesn\'t have an avatar!')
+    if (!member.user.avatar) return warningMessage(msg, "This user doesn't have an avatar!")
     const avatar = member.user.avatarURL
 
     return channel.send(

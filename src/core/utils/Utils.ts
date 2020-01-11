@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
+import { Promise as promise } from 'bluebird'
 import {
   DMChannel,
   GroupDMChannel,
@@ -12,13 +12,12 @@ import {
   RichEmbed,
   TextChannel
 } from 'discord.js'
-
-import { Promise as promise } from 'bluebird'
 import fs from 'fs'
 import moment from 'moment'
 import path from 'path'
 import shelljs from 'shelljs'
 import { NezukoMessage } from 'typings'
+
 import { Log } from './Logger'
 
 export class Utils {

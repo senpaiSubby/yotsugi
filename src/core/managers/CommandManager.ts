@@ -2,11 +2,11 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { Message } from 'discord.js'
 import Enmap from 'enmap'
 import { join } from 'path'
 import { NezukoMessage } from 'typings'
+
 import { Command } from '../base/Command'
 import { generalConfig, serverConfig } from '../database/database'
 import { NezukoClient } from '../NezukoClient'

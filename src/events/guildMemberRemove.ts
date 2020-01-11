@@ -2,10 +2,10 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import Canvas from 'canvas'
 import { Attachment, GuildMember, TextChannel } from 'discord.js'
 import path from 'path'
+
 import { serverConfig } from '../core/database/database'
 
 export const guildMemberRemove = async (member: GuildMember) => {

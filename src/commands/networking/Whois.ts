@@ -2,16 +2,16 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
+import { NezukoClient } from 'core/NezukoClient'
+import { NezukoMessage } from 'typings'
+import whois from 'whois-2'
+
+import { Command } from '../../core/base/Command'
 
 /*!
  * Coded by nwithan8 - https://github.com/nwithan8
  * TODO: Some witty tagline
  */
-
-import { NezukoClient } from 'core/NezukoClient'
-import { NezukoMessage } from 'typings'
-import whois from 'whois-2'
-import { Command } from '../../core/base/Command'
 
 export default class Whois extends Command {
   constructor(client: NezukoClient) {
@@ -43,6 +43,6 @@ export default class Whois extends Command {
           .addField('Expires', results.registry_expiry_date)
       )
     }
-    return errorMessage(msg, 'Sorry, not sorry bro. That domain doesn\'t exist.')
+    return errorMessage(msg, "Sorry, not sorry bro. That domain doesn't exist.")
   }
 }

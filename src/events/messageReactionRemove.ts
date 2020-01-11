@@ -2,9 +2,9 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
 import { MessageReaction, TextChannel } from 'discord.js'
 import { ServerDBConfig } from 'typings'
+
 import { serverConfig } from '../core/database/database'
 import { Utils } from '../core/utils/Utils'
 

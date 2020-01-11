@@ -2,22 +2,20 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-
-import * as config from '../config/config.json'
-
 import { Client, GuildMember, Message } from 'discord.js'
 import { ClientDB, NezukoMessage } from 'typings'
-import { CommandManager } from './managers/CommandManager'
-import { ConfigManager } from './managers/ConfigManager'
-import { SubprocessManager } from './managers/SubprocessManager'
-import { Log } from './utils/Logger'
-import { Utils } from './utils/Utils'
 
+import * as config from '../config/config.json'
 import { guildMemberAdd } from '../events/guildMemberAdd'
 import { guildMemberRemove } from '../events/guildMemberRemove'
 import { messageReactionAdd } from '../events/messageReactionAdd'
 import { messageReactionRemove } from '../events/messageReactionRemove'
 import { database } from './database/database'
+import { CommandManager } from './managers/CommandManager'
+import { ConfigManager } from './managers/ConfigManager'
+import { SubprocessManager } from './managers/SubprocessManager'
+import { Log } from './utils/Logger'
+import { Utils } from './utils/Utils'
 
 export class NezukoClient extends Client {
   public config: {
@@ -94,9 +92,7 @@ export class NezukoClient extends Client {
 
       this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
       this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
-
       this.on('messageReactionAdd', async (reaction, user) => await messageReactionAdd(reaction, user))
-
       this.on('messageReactionRemove', async (reaction) => await messageReactionRemove(reaction))
 
       // * ---------- Load and start subprocessess ----------
