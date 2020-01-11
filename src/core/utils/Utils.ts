@@ -134,7 +134,7 @@ export class Utils {
             return index
           case '🛑': {
             run = false
-            const m = (await msg.channel.send(Utils.embed('green').setDescription('Canceling..'))) as NezukoMessage
+            const m = (await msg.channel.send(Utils.embed(msg, 'green').setDescription('Canceling..'))) as NezukoMessage
             await m.delete(2000)
             await paginated.clearReactions()
             break
@@ -270,7 +270,7 @@ export class Utils {
   }
 
   // Global embed template
-  public static embed(color = 'green', image?: string) {
+  public static embed(msg: NezukoMessage | Message | boolean = false, color = 'green', image?: string) {
     const colors = {
       red: '#fb4934',
       green: '#8ec07c',
@@ -283,6 +283,8 @@ export class Utils {
     }
     const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
 
+    if (msg && typeof msg !== 'boolean') e.setFooter(`Requested by: ${msg.author.tag}`, msg.author.avatarURL || '')
+
     if (image) {
       // E.attachFile(join(`${__dirname}`, '../', `/core/images/icons/${image}`))
       // E.setThumbnail(`attachment://${image}`)
@@ -293,7 +295,7 @@ export class Utils {
 
   public static missingConfig(msg: NezukoMessage, name: string, params: string[]) {
     return msg.channel.send(
-      Utils.embed('red', 'settings.png')
+      Utils.embed(msg, 'red', 'settings.png')
         .setTitle(`Missing [ ${name} ] config!`)
         .setDescription(
           `\`${msg.p}config get ${name}\` for current config.
@@ -306,21 +308,21 @@ export class Utils {
   }
 
   public static errorMessage(msg: NezukoMessage | Message, text: string) {
-    return msg.channel.send(Utils.embed('red').setDescription(`:rotating_light: **${text}**`))
+    return msg.channel.send(Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`))
   }
 
   public static warningMessage(msg: NezukoMessage | Message, text: string) {
-    return msg.channel.send(Utils.embed('yellow').setDescription(`:warning: **${text}**`))
+    return msg.channel.send(Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`))
   }
 
   public static standardMessage(msg: NezukoMessage | Message, text: string) {
-    return msg.channel.send(Utils.embed('green').setDescription(`**${text}**`))
+    return msg.channel.send(Utils.embed(msg, 'green').setDescription(`**${text}**`))
   }
 
   // Standard valid options return
   public static async validOptions(msg: NezukoMessage | Message, options: string[]) {
     const m = (await msg.channel.send(
-      Utils.embed('yellow', 'question.png').setDescription(
+      Utils.embed(msg, 'yellow', 'question.png').setDescription(
         `:grey_question: **Valid options are:\n\n- ${options.join('\n- ')}**`
       )
     )) as NezukoMessage

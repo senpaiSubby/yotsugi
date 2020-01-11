@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:slim
 
 # Update system
 RUN apt update && apt install git -y

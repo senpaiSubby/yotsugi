@@ -36,7 +36,7 @@ export default class Invite extends Command {
     ])
 
     return channel.send(
-      embed('green')
+      embed(msg, 'green')
         .setTitle('Nezuko')
         .setDescription('Thanks for showing interest in Nezuko! Click the link below to invite her to your server.')
         .setThumbnail(client.user.avatarURL)

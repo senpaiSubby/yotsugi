@@ -28,13 +28,13 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
 
   if (msg.author.id === user.id) {
     if (channel.id === starboardChannel) return
-    const m = (await msg.reply(embed().setDescription(`**You cannot star your own messages**`))) as Message
+    const m = (await msg.reply(embed(msg).setDescription(`**You cannot star your own messages**`))) as Message
     return m.delete(10000)
   }
 
   if (msg.author.bot) {
     if (channel.id === starboardChannel) return
-    const m = (await msg.reply(embed().setDescription(`**You cannot star bot messages**`))) as Message
+    const m = (await msg.reply(embed(msg).setDescription(`**You cannot star bot messages**`))) as Message
     return m.delete(10000)
   }
   const starChannel = msg.guild.channels.get(starboardChannel) as TextChannel
@@ -57,7 +57,7 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
     const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text)
     const foundStar = stars.embeds[0]
     const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
-    const e = embed()
+    const e = embed(msg)
       .setColor('RANDOM')
       .setColor(foundStar.color)
       .setDescription(foundStar.description)
@@ -72,12 +72,12 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   if (!stars) {
     const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
     if (image === '' && msg.cleanContent.length < 1) {
-      const m = (await channel.send(embed().setDescription(`**You cannot star an empty message**`))) as Message
+      const m = (await channel.send(embed(msg).setDescription(`**You cannot star an empty message**`))) as Message
 
       return m.delete(10000)
     }
 
-    const e = embed()
+    const e = embed(msg)
       .setColor('RANDOM')
       .setColor(15844367)
       .setDescription(msg.cleanContent)

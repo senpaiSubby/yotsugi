@@ -8,23 +8,28 @@ import path, { join } from 'path'
 
 import { Subprocess } from '../base/Subprocess'
 import { NezukoClient } from '../NezukoClient'
+import { Log } from '../utils/Logger'
 
 // tslint:disable: completed-docs
 
 export class SubprocessManager {
   public client: NezukoClient
   public processes: any
+  public loadedModules: string[]
 
   constructor(client: NezukoClient) {
     this.client = client
-    this.processes = new Enmap()
 
     if (!this.client || !(this.client instanceof NezukoClient)) {
       throw new Error('Discord Client is required')
     }
+
+    this.processes = new Enmap()
+    this.loadedModules = []
+    this.loadModules()
   }
 
-  public async loadModules(dir = join(__dirname, '..', '..', 'subprocesses')) {
+  public loadModules(dir = join(__dirname, '..', '..', 'subprocesses')) {
     const subprocesses = fs.readdirSync(dir)
 
     for (const item of subprocesses) {
@@ -42,13 +47,14 @@ export class SubprocessManager {
         } else this.processes.set(instance.name, instance)
       }
     }
-    for (const subprocess of this.processes.values()) await this.startModule(subprocess)
+    for (const subprocess of this.processes.values()) this.startModule(subprocess)
+    Log.ok('Subprocess Manager', `Loaded [ ${this.loadedModules.join(' | ')} ]`)
   }
 
   public async startModule(subprocess: Subprocess) {
     try {
-      await subprocess.run()
-      this.client.Log.ok('Subprocess Manager', `Loaded [ ${subprocess.name} ]`)
+      subprocess.run()
+      this.loadedModules.push(subprocess.name)
     } catch (err) {
       this.client.Log.warn('Subprocess', err)
     }

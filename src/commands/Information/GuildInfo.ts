@@ -26,7 +26,7 @@ export default class GuildInfo extends Command {
 
     // * ------------------ Logic --------------------
 
-    const e = embed()
+    const e = embed(msg)
       .setTitle(`${guild.name}`)
       .addField('👑 Owner', guild.owner.user.tag, true)
       .addField('🗺️ Region', guild.region.toUpperCase(), true)

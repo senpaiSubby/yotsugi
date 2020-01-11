@@ -57,14 +57,14 @@ export default class Rules extends Command {
       default: {
         if (!rules.length) {
           return msg.reply(
-            embed('yellow')
+            embed(msg, 'yellow')
               .setTitle(`There are no rules!`)
               .setDescription(`\`${prefix}rules add <rule to add>\`\nTo add some!`)
           )
         }
 
         return msg.reply(
-          embed('green')
+          embed(msg, 'green')
             .setTitle(':no_entry_sign::octagonal_sign::warning: Rules :warning::octagonal_sign::no_entry_sign:')
             .setDescription(rules[0])
         )

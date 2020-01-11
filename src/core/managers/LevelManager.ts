@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoClient } from 'core/NezukoClient'
+import { NezukoClient } from '../../core/NezukoClient'
 import { TextChannel } from 'discord.js'
 import { GeneralDBConfig, NezukoMessage, ServerDBConfig } from 'typings'
 
@@ -128,7 +128,7 @@ export class LevelManager {
     const levelUpMessage = async (level: number) => {
       if (this.levelUpChannel) {
         await this.levelUpChannel.send(this.msg.member.toString())
-        await this.levelUpChannel.send(Utils.embed().setTitle(`You are now level [ ${level} ] :confetti_ball:`))
+        await this.levelUpChannel.send(Utils.embed(this.msg).setTitle(`You are now level [ ${level} ] :confetti_ball:`))
       }
     }
 
@@ -189,7 +189,7 @@ export class LevelManager {
             if (this.levelUpChannel) {
               await this.levelUpChannel.send(this.msg.member.toString())
               return this.levelUpChannel.send(
-                Utils.embed().setTitle(`You've leveled up to the role [ ${role} ] :confetti_ball:`)
+                Utils.embed(this.msg).setTitle(`You've leveled up to the role [ ${role} ] :confetti_ball:`)
               )
             }
           }

@@ -60,14 +60,14 @@ export default class Roles extends Command {
       default: {
         if (!rules.length) {
           return msg.reply(
-            embed('yellow')
+            embed(msg, 'yellow')
               .setTitle(`There is no role info set!`)
               .setDescription(`\`${prefix}roles add <role message>\`\nTo add some!`)
           )
         }
 
         return msg.reply(
-          embed('green')
+          embed(msg, 'green')
             .setTitle(':no_entry_sign::octagonal_sign::warning: Roles :warning::octagonal_sign::no_entry_sign:')
             .setDescription(rules[0])
         )

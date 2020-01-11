@@ -21,8 +21,7 @@ export default class Level extends Command {
         'level add <level> <role>',
         'level remove <level> <role>',
         'level change <level> <role>',
-        'level givexp <@user>',
-        'level list'
+        'level roles'
       ]
     })
   }
@@ -50,7 +49,7 @@ export default class Level extends Command {
 
     switch (args[0]) {
       case 'add': {
-        if (checkPerms(msg.member, ['MANAGE_ROLES'])) {
+        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS'])) {
           const level = args[1]
           args.shift()
           args.shift()
@@ -86,7 +85,7 @@ export default class Level extends Command {
         return
       }
       case 'remove': {
-        if (checkPerms(msg.member, ['MANAGE_ROLES'])) {
+        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS'])) {
           const level = args[1]
           args.shift()
           args.shift()
@@ -115,7 +114,7 @@ export default class Level extends Command {
         return
       }
       case 'change': {
-        if (checkPerms(msg.member, ['MANAGE_ROLES'])) {
+        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS'])) {
           const level = args[1]
           const role = args[2]
 
@@ -140,9 +139,10 @@ export default class Level extends Command {
         }
         return
       }
+      case 'roles':
       case 'list': {
         if (levelRoles.length) {
-          const e = embed('green', 'question.png')
+          const e = embed(msg, 'green', 'question.png')
             .setTitle('Level Roles')
             .setDescription(
               'Here are the roles you will be assigned according to your level. Chat often if you want to level up!'
@@ -181,7 +181,7 @@ export default class Level extends Command {
         let count = 0
         for (const u of levelList) {
           count++
-          const e = embed('blue')
+          const e = embed(msg, 'blue')
             .setTitle('Level Leaderboard')
             .setThumbnail(u.avatar)
             .addField(`Rank [ ${count} ]`, u.username)
@@ -220,7 +220,7 @@ export default class Level extends Command {
       }
 
       default: {
-        const e = embed()
+        const e = embed(msg)
           .setTitle(`${user.user.username}'s Guild Level`)
           .addField('🎚️ Level', member.level, true)
           .addField('⚔️ EXP', member.exp, true)

@@ -23,20 +23,23 @@ export class CommandManager {
   public aliases: Enmap<string | number, any>
   public prefix: string
   public ownerID: string
+  public loadedCommands: number
 
   constructor(client: NezukoClient) {
     this.client = client
+
+    if (!this.client || !(this.client instanceof NezukoClient)) {
+      throw new Error('Nezuko Client is required')
+    }
+
     this.Log = client.Log
     this.commands = new Enmap()
     this.aliases = new Enmap()
     this.prefix = client.config.prefix
     this.ownerID = client.config.ownerID
 
+    this.loadedCommands = 0
     this.loadCommands()
-
-    if (!this.client || !(this.client instanceof NezukoClient)) {
-      throw new Error('Nezuko Client is required')
-    }
   }
 
   /**
@@ -46,6 +49,7 @@ export class CommandManager {
   public loadCommands(directory = join(__dirname, '..', '..', 'commands')) {
     const cmdFiles = this.client.Utils.findNested(directory, '.js')
     for (const file of cmdFiles) this.startModule(file)
+    this.Log.ok('Command Manager', `Loaded [ ${this.loadedCommands} ] commands`)
   }
 
   /**
@@ -67,7 +71,7 @@ export class CommandManager {
     }
 
     this.commands.set(commandName, instance)
-    this.Log.ok('Command Manager', `Loaded [ ${commandName} ]`)
+    this.loadedCommands++
 
     instance.aliases.forEach((alias: string) => {
       if (this.aliases.has(alias)) {
@@ -159,6 +163,10 @@ export class CommandManager {
     const prefix = guild ? await ConfigManager.handleServerConfig(guild) : this.prefix
     client.p = prefix
     msg.p = prefix
+
+    if (client.user.presence.game.name !== prefix) {
+      await client.user.setActivity(`${prefix}`, { type: 'LISTENING' })
+    }
 
     // * -------------------- Pre Checks --------------------
 
@@ -284,7 +292,7 @@ export class CommandManager {
           )
 
           const m = (await msg.reply(
-            embed('red')
+            embed(msg, 'red')
               .setTitle('You lack the perms')
               .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
               .setFooter('Message will self destruct in 30 seconds')
@@ -299,7 +307,7 @@ export class CommandManager {
           )
 
           const m = (await channel.send(
-            embed('red')
+            embed(msg, 'red')
               .setTitle('I lack the perms needed to perform that action')
               .setFooter('Message will self destruct in 30 seconds')
               .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
@@ -314,7 +322,7 @@ export class CommandManager {
       Log.info('Command Manager', `[ ${author.tag} ] tried to run [ ${command.name} ] without parameters`)
 
       const m = (await msg.reply(
-        embed('yellow')
+        embed(msg, 'yellow')
           .setTitle('Command requires parameters')
           .setFooter('Message will self destruct in 30 seconds')
           .setDescription(
@@ -328,7 +336,7 @@ export class CommandManager {
     }
 
     // * -------------------- Run Command --------------------
-    Log.info('Command Manager', `[ ${author.tag} ] ran command [ ${msg.content.slice(prefix.length)} ]`)
+    Log.info('Command Manager', `[ ${author.tag} ] => [ ${msg.content.slice(prefix.length)} ]`)
 
     return this.runCommand(client, command, msg, args)
   }

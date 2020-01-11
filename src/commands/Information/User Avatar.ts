@@ -32,7 +32,7 @@ export default class UserAvatar extends Command {
     const avatar = member.user.avatarURL
 
     return channel.send(
-      embed('green')
+      embed(msg, 'green')
         .setAuthor(`${member.user.tag}`, avatar)
         .setDescription(`[Avatar URL](${avatar})`)
         .setImage(avatar)

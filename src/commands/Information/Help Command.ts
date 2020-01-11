@@ -67,7 +67,7 @@ export default class Help extends Command {
       const embedList = []
 
       Object.keys(newSorted).forEach((key) => {
-        const e = Utils.embed('green')
+        const e = Utils.embed(msg, 'green')
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
           .setDescription(
@@ -96,7 +96,7 @@ export default class Help extends Command {
 
     if (command && checkUserPerms(command)) {
       return channel.send(
-        embed('green')
+        embed(msg, 'green')
           .setTitle(`Help - ${capitalize(command.name)}`)
           .setDescription(
             `**${command.description}**\n\`\`\`css\n${command.usage.join('\n')}\n\`\`\`\n${

@@ -36,7 +36,7 @@ export class NezukoClient extends Client {
   public serverConfig: any
   public memberConfig: any
   public commandManager: CommandManager
-  public subprocessManager: SubprocessManager | undefined
+  public subprocessManager: SubprocessManager
 
   constructor() {
     super()
@@ -44,8 +44,6 @@ export class NezukoClient extends Client {
     this.config = config
     this.Log = Log
     this.Utils = Utils
-
-    this.commandManager = new CommandManager(this)
 
     this.db = {}
     this.generalConfig = database.models.GeneralConfig
@@ -73,33 +71,33 @@ export class NezukoClient extends Client {
    * Starts Nezuko
    */
   public async start() {
-    // Once bot connects to discord
-    this.once('ready', async () => {
-      Log.ok('Client Ready', `Connected as [ ${this.user.username} ]`)
-
-      // Handle general config
-      ConfigManager.handleGeneralConfig()
-
-      // * ---------- Events ----------
-
-      // On message
-      this.on('message', async (message: NezukoMessage) => await this.commandManager.handleMessage(message, this, true))
-
-      // On message edits
-      this.on('messageUpdate', async (old: Message, _new: NezukoMessage) => {
-        if (old.content !== _new.content) await this.commandManager.handleMessage(_new, this)
-      })
-
-      this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
-      this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
-      this.on('messageReactionAdd', async (reaction, user) => await messageReactionAdd(reaction, user))
-      this.on('messageReactionRemove', async (reaction) => await messageReactionRemove(reaction))
-
-      // * ---------- Load and start subprocessess ----------
-      await new SubprocessManager(this).loadModules()
-    })
-
     // Login
     await this.login(this.config.token)
+    Log.ok('Nezuko Ready', `Username is [ ${this.user.tag} ]`)
+    await this.user.setActivity(`${config.prefix}`, { type: 'LISTENING' })
+
+    // * ----------  start subprocess and command managers ----------
+
+    this.subprocessManager = new SubprocessManager(this)
+    this.commandManager = new CommandManager(this)
+
+    // Handle general config
+
+    ConfigManager.handleGeneralConfig()
+
+    // * ---------- Events ----------
+
+    // On message
+    this.on('message', async (message: NezukoMessage) => await this.commandManager.handleMessage(message, this, true))
+
+    // On message edits
+    this.on('messageUpdate', async (old: Message, _new: NezukoMessage) => {
+      if (old.content !== _new.content) await this.commandManager.handleMessage(_new, this)
+    })
+
+    this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
+    this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
+    this.on('messageReactionAdd', async (reaction, user) => await messageReactionAdd(reaction, user))
+    this.on('messageReactionRemove', async (reaction) => await messageReactionRemove(reaction))
   }
 }

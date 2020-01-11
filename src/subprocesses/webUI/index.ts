@@ -20,8 +20,8 @@ export default class WebServer extends Subprocess {
 
   constructor(client: NezukoClient) {
     super(client, {
-      name: 'Web Server',
-      description: 'Web Server',
+      name: 'WebUI',
+      description: 'WebUI',
       disabled: false
     })
 
@@ -47,14 +47,14 @@ export default class WebServer extends Subprocess {
 
       if (!req.body.apiKey) {
         Log.info(
-          'Web Server',
+          'WebUI',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
         )
-        return res.status(401).json({ response: "Missing params 'apiKey'" })
+        return res.status(401).json({ response: 'Missing params \'apiKey\'' })
       }
       if (req.body.apiKey !== apiKey) {
         Log.info(
-          'Web Server',
+          'WebUI',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ] sent BAD APIKEY for command [ ${req.body.command} ]`
         )
         return res.status(401).json({ response: 'API key is incorrect' })
@@ -84,7 +84,7 @@ export default class WebServer extends Subprocess {
 
     // Set DB info
     app.post('/api/db/app', async (req, res) => {
-      Log.info('Web Server', `DB update from [ ${req.ip} ]`)
+      Log.info('WebUI', `DB update from [ ${req.ip} ]`)
       const db = await generalConfig.findOne({ where: { id: ownerID } })
       if (req.body.config) {
         await db.update({ config: JSON.stringify(req.body.config) })
@@ -94,7 +94,7 @@ export default class WebServer extends Subprocess {
 
     // Get DB info
     app.get('/api/db/ui', async (req, res) => {
-      Log.info('Web Server', `New connection from [ ${req.ip} ]`)
+      Log.info('WebUI', `New connection from [ ${req.ip} ]`)
 
       const db = await generalConfig.findOne({ where: { id: ownerID } })
       const { webUI } = JSON.parse(db.dataValues.config)
@@ -146,10 +146,10 @@ export default class WebServer extends Subprocess {
       const verified = await checkApiKey(req, res)
 
       if (typeof verified === 'boolean') {
-        Log.info('Web Server', `Running command [ ${req.ip} ]`)
+        Log.info('WebUI', `Running command [ ${req.ip} ]`)
 
         // Check if all required params are met
-        if (!req.body.command) res.status(406).json({ response: "Missing params 'command'" })
+        if (!req.body.command) res.status(406).json({ response: 'Missing params \'command\'' })
 
         const args = req.body.command.split(' ')
         const cmdName = args.shift().toLowerCase()
@@ -172,6 +172,6 @@ export default class WebServer extends Subprocess {
     })
 
     // Start server
-    app.listen(webServerPort, '0.0.0.0', () => Log.ok(`Web Server`, `Active on port [ ${webServerPort} ]`))
+    app.listen(webServerPort, '0.0.0.0', () => Log.ok(`WebUI`, `Active on port [ ${webServerPort} ]`))
   }
 }

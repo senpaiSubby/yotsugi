@@ -4,7 +4,7 @@
  */
 import Scraper from '@jonstuebe/scraper'
 import { TextChannel } from 'discord.js'
-import { GeneralDBConfig } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Subprocess } from '../../core/base/Subprocess'
 import { generalConfig } from '../../core/database/database'
@@ -74,7 +74,7 @@ export default class PriceTracker extends Subprocess {
       }
     }
 
-    await checkPrices()
+    setTimeout(checkPrices, 5000)
     setInterval(checkPrices, 60 * 10000)
   }
 }
