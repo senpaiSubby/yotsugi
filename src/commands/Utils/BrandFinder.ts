@@ -35,7 +35,7 @@ export default class Whois extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'brandfinder',
-      category: 'Networking',
+      category: 'Utils',
       description: 'See if a website and Twitter account is available for a new brand',
       usage: ['brandfinder <brand name>'],
       args: true

@@ -12,7 +12,7 @@ export default class Roles extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'roles',
-      category: 'Information',
+      category: 'General',
       description: 'List the server roles',
       usage: ['roles set <your rule message>', 'roles remove', 'roles']
     })

@@ -13,7 +13,7 @@ export default class SpeedTest extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'speedtest',
-      category: 'Networking',
+      category: 'Utils',
       description: 'Runs a network speedtest',
       ownerOnly: true
     })

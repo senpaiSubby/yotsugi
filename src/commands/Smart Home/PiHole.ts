@@ -13,7 +13,7 @@ export default class PiHole extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'pihole',
-      category: 'Networking',
+      category: 'Smart Home',
       description: 'PiHole stats and management',
       usage: [`pihole <enable/disable>`, `pihole stats`],
       webUI: true,
@@ -108,7 +108,7 @@ export default class PiHole extends Command {
             embed(msg, statusColor, 'pi.png')
               .setTitle('PiHole Stats')
               .addField('Status', capitalize(status.status), true)
-              .addField("URL's Being Blocked", status.domainsBeingBlocked, true)
+              .addField('URL\'s Being Blocked', status.domainsBeingBlocked, true)
               .addField('Total Queries', status.totalQueries, true)
               .addField('Queries Today', status.queriesToday, true)
               .addField('Blocked Today', status.adsBlockedToday, true)

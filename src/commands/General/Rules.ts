@@ -12,7 +12,7 @@ export default class Rules extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'rules',
-      category: 'Information',
+      category: 'General',
       description: 'Behold the rule book',
       usage: ['rules set <your rule message>', 'rules remove', 'rules']
     })

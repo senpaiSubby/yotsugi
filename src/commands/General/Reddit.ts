@@ -12,7 +12,7 @@ export default class Reddit extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'reddit',
-      category: 'Information',
+      category: 'General',
       description: 'Search reddit',
       usage: ['reddit <subreddit>'],
       args: true

@@ -12,7 +12,7 @@ export default class GuildInfo extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'guild',
-      category: 'Information',
+      category: 'General',
       description: 'Show guild info',
       guildOnly: true
     })

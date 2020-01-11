@@ -11,7 +11,7 @@ export default class Invite extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'invite',
-      category: 'Information',
+      category: 'General',
       description: 'Invite Nezuko to your own server'
     })
   }

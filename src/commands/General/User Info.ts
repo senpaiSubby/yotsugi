@@ -13,7 +13,7 @@ export default class UserInfo extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'user',
-      category: 'Information',
+      category: 'General',
       description: 'Get info on yourself and others',
       usage: [`userinfo`, `userinfo @user`],
       guildOnly: true

@@ -11,7 +11,7 @@ export default class Help extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'help',
-      category: 'Information',
+      category: 'General',
       description: 'Get command help',
       guildOnly: true,
       usage: ['help', 'help <some command>']

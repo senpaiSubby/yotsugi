@@ -17,7 +17,7 @@ export default class Whois extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'whois',
-      category: 'Networking',
+      category: 'Utils',
       description: 'Get WHOIS information on a domain',
       usage: ['whois <domain to search for>'],
       args: true
@@ -43,6 +43,6 @@ export default class Whois extends Command {
           .addField('Expires', results.registry_expiry_date)
       )
     }
-    return errorMessage(msg, "Sorry, not sorry bro. That domain doesn't exist.")
+    return errorMessage(msg, 'Sorry, not sorry bro. That domain doesn\'t exist.')
   }
 }

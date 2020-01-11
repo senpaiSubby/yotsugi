@@ -11,7 +11,7 @@ export default class Ping extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'ping',
-      category: 'Networking',
+      category: 'Utils',
       description: 'Check discord latency',
       ownerOnly: true
     })

@@ -11,7 +11,7 @@ export default class UserAvatar extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'avatar',
-      category: 'Information',
+      category: 'General',
       description: 'Show the avatar of users',
       usage: [`avatar`, `avatar @user`],
       guildOnly: true

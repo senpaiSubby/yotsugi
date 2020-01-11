@@ -12,7 +12,7 @@ export default class SystemIP extends Command {
   constructor(client: NezukoClient) {
     super(client, {
       name: 'ip',
-      category: 'Networking',
+      category: 'Utils',
       description: 'Get the server IP',
       usage: [`ip <external/local>`],
       ownerOnly: true,
