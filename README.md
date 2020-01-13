@@ -29,63 +29,65 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 
 <h2 align="center"><b>Commands</b></h2>
 
-|  Category   |   Command   | API | Description                                                       |
-| :---------: | :---------: | :-: | ----------------------------------------------------------------- |
-|    Admin    |  giverole   |  N  | Add roles to members                                              |
-|    Admin    |  announce   |  N  | Send a message to your announcement channel                       |
-|    Admin    |     ban     |  N  | The ban hammer                                                    |
-|    Admin    | channelname |  N  | Rename channels                                                   |
-|    Admin    |    clear    |  N  | Removes messages                                                  |
-|    Admin    |    kick     |  N  | Kick em out                                                       |
-|    Admin    |    poll     |  N  | Poll your members                                                 |
-|    Admin    | removerole  |  N  | Remove roles from members                                         |
-|    Admin    |   server    |  N  | Set/Get server config for bot                                     |
-|    Admin    |    unban    |  N  | Unban users                                                       |
-|    Anime    |    anime    |  N  | Search for anime                                                  |
-|    Anime    |    manga    |  N  | Search for manga                                                  |
-|  Download   |   archive   |  N  | Archive web pages via ArchiveBox                                  |
-|  Download   |   jackett   |  N  | Search for torrents via Jackett                                   |
-|  Download   |     sab     |  N  | sabNZBD Management                                                |
-|  Download   |     tor     |  N  | Transmission Management                                           |
-|   General   |    level    |  N  | Check yourself and others guild levels                            |
-|   General   |   modmail   |  N  | Send a message to the mods                                        |
-|   General   |    price    |  Y  | Amazon price tracker                                              |
-|   General   |   rclone    |  N  | Get info on RClone remotes                                        |
-|   General   |  remindme   |  N  | Set some reminders                                                |
-|   General   |    todo     |  Y  | A personal todo list                                              |
-| Information |   avatar    |  N  | Show the avatar of users                                          |
-| Information |    help     |  N  | Get command help                                                  |
-| Information |   invite    |  N  | Invite Nezuko to your own server                                  |
-| Information |    roles    |  N  | List the server roles                                             |
-| Information |    rules    |  N  | Behold the rule book                                              |
-| Information |    user     |  N  | Get info on yourself and others                                   |
-|    Media    |    emby     |  Y  | Emby media info                                                   |
-|    Media    |    movie    |  N  | Search and request movies via Ombi                                |
-|    Media    |     tv      |  N  | Search and request TV Shows via Ombi                              |
-|    Media    |     yt      |  N  | Search Youtube videos                                             |
-| Networking  | brandfinder |  N  | See if a website and Twitter account is available for a new brand |
-| Networking  |     ip      |  Y  | Get the server IP                                                 |
-| Networking  |   meraki    |  Y  | Meraki network info                                               |
-| Networking  |   pihole    |  Y  | PiHole stats and management                                       |
-| Networking  |    ping     |  N  | Check discord latency                                             |
-| Networking  |  speedtest  |  N  | Runs a network speedtest                                          |
-| Networking  |    whois    |  N  | Get WHOIS information on a domain                                 |
-|    Owner    |     bot     |  N  | Bot Commands                                                      |
-|    Owner    |   command   |  N  | Lock, Unlock, Disable and Enable commands                         |
-|    Owner    |     db      |  N  | Get/Set database configs                                          |
-|    Owner    |   docker    |  Y  | Docker Management                                                 |
-|    Owner    |  drivesize  |  N  | Updates the file and size counts on channel names for Rclone      |
-|    Owner    |    eval     |  N  | Eval javascript code                                              |
-|    Owner    |    exec     |  N  | Run shell commands                                                |
-| Smart Home  |     avr     |  Y  | Pioneer AVR controller                                            |
-| Smart Home  |   lights    |  Y  | Sengled light control                                             |
-| Smart Home  |     pc      |  Y  | Linux system power control                                        |
-| Smart Home  |    plug     |  Y  | Tuya plug control                                                 |
-| Smart Home  |     say     |  Y  | Speak through Google Home                                         |
-|    Utils    |   autorun   |  Y  | Schedule tasks to run at specified times                          |
-|    Utils    |   routine   |  Y  | Routines to run multiple commands at once                         |
-|    Utils    |  shortcut   |  N  | Shortcut to run specific commands                                 |
-|    Utils    |   system    |  N  | Live system stats                                                 |
+|  Category  |   Command   |  API  | Description                                                       |
+| :--------: | :---------: | :---: | ----------------------------------------------------------------- |
+|   Admin    |  announce   | false | Send a message to your announcement channel                       |
+|   Admin    |     ban     | false | The ban hammer                                                    |
+|   Admin    | channelname | false | Rename channels                                                   |
+|   Admin    |    clear    | false | Removes messages                                                  |
+|   Admin    |   server    | false | Set/Get server config for bot                                     |
+|   Admin    |  giverole   | false | Give roles to members                                             |
+|   Admin    |   givexp    | false | Give XP to members                                                |
+|   Admin    |    kick     | false | Kick em out                                                       |
+|  General   |   modmail   | false | Send a message to the mods                                        |
+|   Admin    |    poll     | false | Poll your members                                                 |
+|   Admin    | removerole  | false | Remove roles from members                                         |
+|   Admin    | resetlevel  | false | Reset a members level                                             |
+|   Admin    |    unban    | false | Unban users                                                       |
+|  Download  |   archive   | false | Archive web pages via ArchiveBox                                  |
+|  Download  |   jackett   | false | Search for torrents via Jackett                                   |
+|  Download  |     tor     | false | Transmission Management                                           |
+|  Download  |     sab     | false | sabNZBD Management                                                |
+|  Econmoy   |    level    | false | Check yourself and others guild levels                            |
+|    Fun     |    space    | false | Spaces text out for dramatic effect                               |
+|    Fun     |    tiny     | false | Makes text tiny for dramatic effect                               |
+|  General   |    guild    | false | Show guild info                                                   |
+|  General   |    help     | false | Get command help                                                  |
+|  General   |   invite    | false | Invite Nezuko to your own server                                  |
+|  General   |   reddit    | false | Search reddit                                                     |
+|  General   |    roles    | false | List the server roles                                             |
+|  General   |    rules    | false | Behold the rule book                                              |
+|  General   |   avatar    | false | Show the avatar of users                                          |
+|  General   |    user     | false | Get info on yourself and others                                   |
+|   Media    |    anime    | false | Search for anime                                                  |
+|   Media    |    emby     | true  | Emby media info                                                   |
+|   Media    |    manga    | false | Search for manga                                                  |
+|   Media    |    movie    | false | Search and request movies via Ombi                                |
+|   Media    |     tv      | false | Search and request TV Shows via Ombi                              |
+|   Media    |     yt      | false | Search Youtube videos                                             |
+|   Owner    |     bot     | false | Bot Commands                                                      |
+|   Owner    |     cmd     | false | Lock, Unlock, Disable, Enable commands                            |
+|   Owner    |     db      | false | Get/Set database configs                                          |
+|   Owner    |    exec     | false | Run shell commands                                                |
+| Smart Home |     say     | true  | Speak through Google Home                                         |
+| Smart Home |     pc      | true  | Linux system power control                                        |
+| Smart Home |   pihole    | true  | PiHole stats and management                                       |
+| Smart Home |     avr     | true  | Pioneer AVR controller                                            |
+| Smart Home |   sengled   | true  | Sengled light control                                             |
+| Smart Home |    tuya     | true  | Tuya device control                                               |
+|   Utils    |    price    | true  | Amazon price tracker                                              |
+|   Utils    |   autorun   | true  | Schedule tasks to run at specified times                          |
+|   Utils    | brandfinder | false | See if a website and Twitter account is available for a new brand |
+|   Utils    |    ping     | false | Check discord latency                                             |
+|   Utils    |   rclone    | false | Get info on RClone remotes                                        |
+|   Utils    |  remindme   | false | Set some reminders                                                |
+|   Utils    |   routine   | true  | Routines to run multiple commands at once                         |
+|   Utils    |  shortcut   | false | Shortcut to run specific commands                                 |
+|   Utils    |  speedtest  | false | Runs a network speedtest                                          |
+|   Utils    |     ip      | true  | Get the server IP                                                 |
+|   Utils    |     si      | false | Live system stats                                                 |
+|   Utils    |    todo     | true  | A personal todo list                                              |
+|   Utils    |    whois    | false | Get WHOIS information on a domain                                 |
 
 <!------------------------- Web UI ------------------------->
 
