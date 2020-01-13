@@ -2,6 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
+import { Memoize } from 'typescript-memoize'
 import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
@@ -18,6 +19,7 @@ export default class Help extends Command {
     })
   }
 
+  @Memoize()
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
@@ -43,7 +45,7 @@ export default class Help extends Command {
       })
       if (disabled) return false
 
-      if (i.permsNeeded.length && checkPerms(msg.member, i.permsNeeded)) return false
+      if (i.permsNeeded.length && checkPerms(msg.member, i.permsNeeded).length) return false
 
       if (i.ownerOnly) {
         if (author.id === client.config.ownerID) return true
@@ -77,11 +79,8 @@ export default class Help extends Command {
         newSorted[key].forEach((i: Command) => {
           let aliases = ''
           if (i.aliases.length) {
-            if (i.aliases.length > 1) {
-              aliases += `| ${i.aliases.join(' | ')}`
-            } else {
-              aliases += `| ${i.aliases}`
-            }
+            if (i.aliases.length > 1) aliases += `| ${i.aliases.join(' | ')}`
+            else aliases += `| ${i.aliases}`
           }
           e.addField(`**${i.name} ${aliases}**`, `${i.description}`, true)
         })
@@ -91,6 +90,7 @@ export default class Help extends Command {
 
       return paginate(msg, embedList)
     }
+
     // Show individual command's help.
     const command = context.findCommand(args[0])
 

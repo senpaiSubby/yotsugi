@@ -18,7 +18,7 @@ export default class Clear extends Command {
       category: 'Admin',
       description: 'Removes messages',
       usage: [`clear <0-100>`, 'clear <@user> <0-100>'],
-      aliases: ['rm', 'delete'],
+      aliases: ['rm'],
       guildOnly: true,
       args: true,
       permsNeeded: ['MANAGE_MESSAGES']

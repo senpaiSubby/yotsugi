@@ -20,7 +20,6 @@ export default class OmbiMovies extends Command {
       category: 'Media',
       description: 'Search and request movies via Ombi',
       usage: [`movie <Movie Name>`, `movie tmdb:603`],
-      aliases: ['film'],
       args: true
     })
   }

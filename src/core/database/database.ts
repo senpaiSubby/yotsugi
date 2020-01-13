@@ -13,16 +13,16 @@ export const database = new Sequelize({
 })
 
 export const generalConfig = async (id: string) =>
-  await database.models.GeneralConfig.findOne({
+  database.models.GeneralConfig.findOne({
     where: { id }
   })
 
 export const serverConfig = async (id: string) =>
-  await database.models.ServerConfig.findOne({
+  database.models.ServerConfig.findOne({
     where: { id }
   })
 
 export const memberConfig = async (id: string) =>
-  await database.models.MemberConfig.findOne({
+  database.models.MemberConfig.findOne({
     where: { id }
   })

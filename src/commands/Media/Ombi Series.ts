@@ -20,7 +20,6 @@ export default class OmbiTV extends Command {
       category: 'Media',
       description: 'Search and request TV Shows via Ombi',
       usage: [`tv <Series Name>`],
-      aliases: ['series'],
       args: true
     })
   }

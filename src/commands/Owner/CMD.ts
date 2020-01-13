@@ -11,7 +11,7 @@ import { NezukoClient } from '../../core/NezukoClient'
 export default class CMD extends Command {
   constructor(client: NezukoClient) {
     super(client, {
-      name: 'command',
+      name: 'cmd',
       category: 'Owner',
       description: 'Lock | Unlock | Disable | Enable commands',
       usage: [
@@ -22,7 +22,6 @@ export default class CMD extends Command {
         'cmd enable <command>',
         'cmd disabled <show disabled commands>'
       ],
-      aliases: ['cmd'],
       args: true,
       ownerOnly: true
     })

@@ -33,7 +33,7 @@ export class Utils {
         if (!user.permissions.has(perm)) missingPerms.push(perm)
       })
     }
-    if (missingPerms.length) return missingPerms
+    return missingPerms
   }
 
   public static execAsync(cmd: string, opts = {}) {

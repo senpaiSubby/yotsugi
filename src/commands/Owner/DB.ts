@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { Message, Attachment } from 'discord.js'
+import { Attachment, Message } from 'discord.js'
 import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'

@@ -16,7 +16,6 @@ export default class SabNZBD extends Command {
       category: 'Download',
       description: 'sabNZBD Management',
       usage: [`sab list`],
-      aliases: ['nzb'],
       args: true
     })
   }

@@ -18,9 +18,8 @@ export default class PriceTracker extends Subprocess {
     super(client, {
       name: 'PriceTracker',
       description: 'Checks prices',
-      disabled: false
+      disabled: true
     })
-    this.client = client
   }
 
   public async run() {

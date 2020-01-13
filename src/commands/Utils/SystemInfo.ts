@@ -14,12 +14,11 @@ import { NezukoClient } from '../../core/NezukoClient'
 export default class SystemInfo extends Command {
   constructor(client: NezukoClient) {
     super(client, {
-      name: 'system',
+      name: 'si',
       category: 'Utils',
       description: 'Live system stats',
       usage: ['si <interval in seconds>'],
-      args: true,
-      aliases: ['si']
+      ownerOnly: true
     })
   }
 
@@ -29,7 +28,7 @@ export default class SystemInfo extends Command {
     const { channel, author } = msg
     const { round } = Math
     // * ------------------ Config --------------------
-    // * ------------------ Check Config --------------------
+    if (!args[0]) args[0] = 1
 
     // * ------------------ Logic --------------------
 

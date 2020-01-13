@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { Message } from 'discord.js'
+import { GuildChannel, Message } from 'discord.js'
 import { existsSync } from 'fs'
 import { performance } from 'perf_hooks'
 import { ExecAsync, NezukoMessage } from 'typings'
@@ -31,7 +31,7 @@ export default class RClone extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { channel } = msg
+    const { channel, guild } = msg
 
     const {
       errorMessage,
@@ -136,50 +136,60 @@ export default class RClone extends Command {
         return errorMessage(msg, `A error occured with Rclone`)
       }
       case 'sizeof': {
-        for (const remote of args) {
-          if (!remotes.includes(remote)) {
-            return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
-          }
+        const driveSizeChannel = guild.channels.get('664102340621500416') as GuildChannel
+
+        const toScan = args
+
+        for (const r of toScan) {
+          if (!remotes.includes(r)) return warningMessage(msg, `Remote [ ${r} ] isn't in your provided Rclone config`)
         }
 
-        const waitMessage = (await channel.send(
-          embed(msg, 'yellow', 'rclone.gif').setDescription(`**Calculating size of
-
-          [ ${args.join(', ')} ]
-
-          :hourglass: This is going to take a while...**`)
-        )) as Message
+        let totalSize = 0
 
         const startTime = performance.now()
 
-        let totalSize = 0
-        let totalFiles = 0
+        const waitMessage = (await msg.channel.send(
+          embed(msg, 'blue', 'rclone.gif')
+            .setTitle('Scanning configured remotes')
+            .addField('Currently Scanning', toScan[0])
+        )) as Message
 
-        for (const remote of args) {
+        const scannedRemotes: string[] = []
+
+        for (const remote of toScan) {
+          delete toScan[remote]
+
+          await waitMessage.edit(
+            embed(msg, 'blue', 'rclone.gif')
+              .setTitle('Scanning configured remotes')
+              .addField('Currently Scanning', remote)
+              .addField('Remaining', `${toScan.length ? toScan.join(', ') : '--'}`)
+              .addField('Scanned', `${scannedRemotes.length ? scannedRemotes.join(', ') : '--'}`)
+              .addField('Total Size So Far', bytesToSize(totalSize))
+          )
+          scannedRemotes.push(remote)
+
           const { code, stdout } = (await execAsync(`rclone size --json "${remote}:/" --config="${configPath}"`, {
             silent: true
           })) as ExecAsync
 
-          if (code === 0) {
-            const response = JSON.parse(stdout)
-            const { count, bytes } = response
-
-            totalSize += bytes
-            totalFiles += count
-          }
+          if (code === 0) totalSize += JSON.parse(stdout).bytes
         }
 
-        await waitMessage.delete()
+        if (driveSizeChannel) {
+          await driveSizeChannel.setName(
+            `📁size ${bytesToSize(totalSize)
+              .replace('.', '_')
+              .replace(' ', '\u2009\u2009\u2009')}`
+          )
+        }
 
         const stopTime = performance.now()
-
-        return msg.reply(
+        return waitMessage.edit(
           embed(msg, 'blue', 'rclone.gif')
-            .setTitle('Rclone Batch Scan')
-            .addField('Scanned Remotes', `${args.join(', ')}`)
-            .addField('Files', `:newspaper: ${totalFiles}`, true)
-            .addField('Size', `:file_folder: ${bytesToSize(totalSize)}`, true)
-            .addField('Scan Time', millisecondsToTime(stopTime - startTime), true)
+            .setTitle('Rclone Size Scan Complete')
+            .addField('Total Size', bytesToSize(totalSize))
+            .addField('Completed In', millisecondsToTime(stopTime - startTime))
         )
       }
       case 'ls': {

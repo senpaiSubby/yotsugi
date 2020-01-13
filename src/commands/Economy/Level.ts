@@ -15,7 +15,6 @@ export default class Level extends Command {
       name: 'level',
       category: 'Econmoy',
       description: 'Check yourself and others guild levels',
-      aliases: ['levels'],
       usage: [
         'level <user>',
         'level add <level> <role>',
@@ -49,7 +48,7 @@ export default class Level extends Command {
 
     switch (args[0]) {
       case 'add': {
-        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS'])) {
+        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS']).length) {
           const level = args[1]
           args.shift()
           args.shift()
@@ -85,7 +84,7 @@ export default class Level extends Command {
         return
       }
       case 'remove': {
-        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS'])) {
+        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS']).length) {
           const level = args[1]
           args.shift()
           args.shift()
@@ -114,7 +113,7 @@ export default class Level extends Command {
         return
       }
       case 'change': {
-        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS'])) {
+        if (!checkPerms(msg.member, ['MANAGE_ROLES_OR_PERMISSIONS']).length) {
           const level = args[1]
           const role = args[2]
 
@@ -193,30 +192,6 @@ export default class Level extends Command {
         }
 
         return paginate(msg, embedList)
-      }
-      case 'givexp': {
-        if (checkPerms(msg.member, ['MANAGE_ROLES'])) {
-          const userToGive = msg.mentions.users.first() ? msg.mentions.users.first().id : null
-          if (!userToGive) return warningMessage(msg, 'Please specify a member to give EXP to')
-          const serverDB = await serverConfig(guild.id)
-          const { levelMultiplier } = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
-          args.splice(0, 2)
-          const xpToGive = Number(args[0])
-
-          if (xpToGive > 100) return warningMessage(msg, 'You cannot give more that 100 XP')
-          const totalXP = xpToGive + member.exp
-
-          if (totalXP > member.expTillNextLevel) {
-            if (member.expTillNextLevel - xpToGive <= 0) {
-              member.exp = Math.abs(member.expTillNextLevel - xpToGive)
-              member.level++
-            } else member.exp = totalXP
-          } else if (totalXP < member.expTillNextLevel) member.exp = totalXP
-
-          member.expTillNextLevel = 100 * member.level * Number(levelMultiplier) - member.exp
-
-          await db.update({ memberLevels: JSON.stringify(memberLevels) })
-        }
       }
 
       default: {

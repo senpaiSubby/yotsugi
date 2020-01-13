@@ -12,11 +12,10 @@ import { NezukoClient } from '../../core/NezukoClient'
 export default class Sengled extends Command {
   constructor(client: NezukoClient) {
     super(client, {
-      name: 'lights',
+      name: 'sengled',
       category: 'Smart Home',
       description: 'Sengled light control',
-      usage: [`lights desk`, `lights list`],
-      aliases: ['light', 'lamp', 'lamps', 'sengled'],
+      usage: [`sengled desk`, `sengled list`],
       webUI: true,
       args: true,
       ownerOnly: true

@@ -11,11 +11,10 @@ import { NezukoClient } from '../../core/NezukoClient'
 export default class Tuya extends Command {
   constructor(client: NezukoClient) {
     super(client, {
-      name: 'plug',
+      name: 'tuya',
       category: 'Smart Home',
-      description: 'Tuya plug control',
+      description: 'Tuya device control',
       usage: [`plug <name>`],
-      aliases: ['tuya'],
       webUI: true,
       args: true,
       ownerOnly: true

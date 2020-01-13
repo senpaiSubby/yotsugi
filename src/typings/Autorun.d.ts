@@ -5,5 +5,10 @@
 
 interface AutorunItem {
   time: string
-  commands: [boolean, string]
+  commands: CommandData[]
+}
+
+interface CommandData {
+  enabled: boolean
+  command: string
 }

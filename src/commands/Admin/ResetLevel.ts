@@ -23,7 +23,7 @@ export default class Level extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { standardMessage, checkPerms, warningMessage } = client.Utils
+    const { standardMessage, warningMessage } = client.Utils
     const { guild, mentions } = msg
 
     // * ------------------ Config --------------------

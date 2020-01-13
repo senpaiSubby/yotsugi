@@ -25,7 +25,6 @@ export default class WebServer extends Subprocess {
       disabled: false
     })
 
-    this.client = client
     this.commandManager = client.commandManager
   }
 

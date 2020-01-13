@@ -78,8 +78,8 @@ export class NezukoClient extends Client {
 
     // * ----------  start subprocess and command managers ----------
 
-    this.subprocessManager = new SubprocessManager(this)
     this.commandManager = new CommandManager(this)
+    this.subprocessManager = new SubprocessManager(this)
 
     // Handle general config
 

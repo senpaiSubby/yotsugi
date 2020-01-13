@@ -143,8 +143,6 @@ export class CommandManager {
    * @param client NezukoClient
    */
   public async handleMessage(msg: NezukoMessage, client: NezukoClient, addLevel = false) {
-    if (msg.author.bot) return
-
     // * -------------------- Setup --------------------
 
     const { Utils } = client
@@ -153,6 +151,9 @@ export class CommandManager {
     const { ownerID } = client.config
     msg.context = this
 
+    if (content.startsWith('oof')) await channel.send('BIG OOF')
+
+    if (msg.author.bot) return
     // * -------------------- Parse & Log Messages --------------------
 
     // Log and parse all messages in DM's and guilds
@@ -283,7 +284,7 @@ export class CommandManager {
         const userMissingPerms = Utils.checkPerms(msg.member, command.permsNeeded)
         const botMissingPerms = Utils.checkPerms(msg.guild.me, command.permsNeeded)
 
-        if (userMissingPerms) {
+        if (userMissingPerms.length) {
           Log.info(
             'Command Manager',
             `[ ${author.tag} ] tried to run [ ${msg.content.slice(
@@ -300,7 +301,7 @@ export class CommandManager {
           return m.delete(10000)
         }
 
-        if (botMissingPerms) {
+        if (botMissingPerms.length) {
           Log.info(
             'Command Manager',
             `I lack the perms  [ ${msg.content.slice(prefix.length)} ] for command [ ${userMissingPerms.join(', ')} ]`
