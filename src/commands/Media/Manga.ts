@@ -9,13 +9,13 @@ import { get } from 'unirest'
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 
-export default class Anime extends Command {
+export default class Manga extends Command {
   constructor(client: NezukoClient) {
     super(client, {
-      name: 'anime',
-      category: 'Anime',
-      description: 'Search for anime',
-      usage: ['anime <anime to look for>'],
+      name: 'manga',
+      category: 'Media',
+      description: 'Search for manga',
+      usage: ['manga <manga to look for>'],
       args: true
     })
   }
@@ -28,33 +28,25 @@ export default class Anime extends Command {
     const waitMessage = (await standardMessage(msg, 'Fetching data from the Kitsu API')) as Message
 
     const response = await get(
-      `https://kitsu.io/api/edge/anime?${encodeURIComponent(`filter[text]=${args.join(' ')}`)}`
+      `https://kitsu.io/api/edge/manga?${encodeURIComponent(`filter[text]=${args.join(' ')}`)}`
     )
 
-    // Fs.writeFile('data.json', JSON.stringify(response.body), () => null)
-
     if (response.body) {
-      const { data } = response.body as AnimeSearch
+      const data = response.body.data as MangaSearch[]
       if (data.length) {
         const embedList: RichEmbed[] = []
 
-        data.forEach((show) => {
-          const { id, attributes } = show
+        data.forEach((manga) => {
+          const { id, attributes } = manga
 
           embedList.push(
             embed()
               .setTitle(
-                `Kitsu.io Anime - [ ${attributes.titles.en || attributes.titles.en_jp || attributes.titles.ja_jp} ]`
+                `Kitsu.io Manga - [ ${attributes.titles.en || attributes.titles.en_jp || attributes.titles.ja_jp} ]`
               )
-              .setDescription(`${attributes.synopsis.substring(0, 1021)}...`)
+              .setDescription(attributes.synopsis)
               .addField('Type', attributes.subtype, true)
-              .addField('Age Rating', attributes.ageRating ? attributes.ageRating : 'Not rated yet', true)
-              .addField('Episodes', attributes.episodeCount, true)
-              .addField(
-                'Episode Length',
-                `${attributes.episodeLength ? `${attributes.episodeLength} minutes` : 'Not calculated yet'}`,
-                true
-              )
+              .addField('Age Rating', attributes.ageRating ? attributes.ageRating : 'Not Rated', true)
               .addField('Average Rating', attributes.averageRating, true)
               .addField('Popularity Rank', attributes.popularityRank, true)
               .addField(

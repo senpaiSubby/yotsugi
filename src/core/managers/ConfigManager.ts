@@ -4,7 +4,6 @@
  */
 import { Guild } from 'discord.js'
 import { NezukoMessage } from 'typings'
-
 import * as config from '../../config/config.json'
 import { database, generalConfig } from '../database/database'
 import { Log } from '../utils/Logger'
