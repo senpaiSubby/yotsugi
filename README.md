@@ -31,34 +31,34 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 
 |  Category  |   Command   | WebUI | Description                                                       |
 | :--------: | :---------: | :---: | ----------------------------------------------------------------- |
-|   Admin    |  announce   |       | Send a message to your announcement channel                       |
 |   Admin    |     ban     |       | The ban hammer                                                    |
-|   Admin    | channelname |       | Rename channels                                                   |
 |   Admin    |    clear    |       | Removes messages                                                  |
-|   Admin    |   server    |       | Set/Get server config for bot                                     |
-|   Admin    |  giverole   |       | Give roles to members                                             |
-|   Admin    |   givexp    |       | Give XP to members                                                |
 |   Admin    |    kick     |       | Kick em out                                                       |
-|  General   |   modmail   |       | Send a message to the mods                                        |
 |   Admin    |    poll     |       | Poll your members                                                 |
+|   Admin    |    unban    |       | Unban users                                                       |
+|   Admin    |   givexp    |       | Give XP to members                                                |
+|   Admin    |   server    |       | Set/Get server config for bot                                     |
+|   Admin    |  announce   |       | Send a message to your announcement channel                       |
+|   Admin    |  giverole   |       | Give roles to members                                             |
+|   Admin    | channelname |       | Rename channels                                                   |
 |   Admin    | removerole  |       | Remove roles from members                                         |
 |   Admin    | resetlevel  |       | Reset a members level                                             |
-|   Admin    |    unban    |       | Unban users                                                       |
+|  Download  |     sab     |       | sabNZBD Management                                                |
+|  Download  |     tor     |       | Transmission Management                                           |
 |  Download  |   archive   |       | Archive web pages via ArchiveBox                                  |
 |  Download  |   jackett   |       | Search for torrents via Jackett                                   |
-|  Download  |     tor     |       | Transmission Management                                           |
-|  Download  |     sab     |       | sabNZBD Management                                                |
 |  Econmoy   |    level    |       | Check yourself and others guild levels                            |
 |    Fun     |    space    |       | Spaces text out for dramatic effect                               |
 |    Fun     |    tiny     |       | Makes text tiny for dramatic effect                               |
 |  General   |    guild    |       | Show guild info                                                   |
 |  General   |    help     |       | Get command help                                                  |
-|  General   |   invite    |       | Invite Nezuko to your own server                                  |
-|  General   |   reddit    |       | Search reddit                                                     |
 |  General   |    roles    |       | List the server roles                                             |
 |  General   |    rules    |       | Behold the rule book                                              |
-|  General   |   avatar    |       | Show the avatar of users                                          |
 |  General   |    user     |       | Get info on yourself and others                                   |
+|  General   |   avatar    |       | Show the avatar of users                                          |
+|  General   |   invite    |       | Invite Nezuko to your own server                                  |
+|  General   |   modmail   |       | Send a message to the mods                                        |
+|  General   |   reddit    |       | Search reddit                                                     |
 |   Media    |    anime    |       | Search for anime                                                  |
 |   Media    |    emby     |   Y   | Emby media info                                                   |
 |   Media    |    manga    |       | Search for manga                                                  |
@@ -69,23 +69,23 @@ I made Nezuko to automate and simplify my life. From controlling lights and smar
 |   Owner    |     cmd     |       | Lock, Unlock, Disable, Enable commands                            |
 |   Owner    |     db      |       | Get/Set database configs                                          |
 |   Owner    |    exec     |       | Run shell commands                                                |
-| Smart Home |     say     |   Y   | Speak through Google Home                                         |
+| Smart Home |     avr     |   Y   | Pioneer AVR controller                                            |
 | Smart Home |     pc      |   Y   | Linux system power control                                        |
 | Smart Home |   pihole    |   Y   | PiHole stats and management                                       |
-| Smart Home |     avr     |   Y   | Pioneer AVR controller                                            |
+| Smart Home |     say     |   Y   | Speak through Google Home                                         |
 | Smart Home |   sengled   |   Y   | Sengled light control                                             |
 | Smart Home |    tuya     |   Y   | Tuya device control                                               |
-|   Utils    |    price    |   Y   | Amazon price tracker                                              |
 |   Utils    |   autorun   |   Y   | Schedule tasks to run at specified times                          |
 |   Utils    | brandfinder |       | See if a website and Twitter account is available for a new brand |
+|   Utils    |     ip      |   Y   | Get the server IP                                                 |
 |   Utils    |    ping     |       | Check discord latency                                             |
+|   Utils    |    price    |   Y   | Amazon price tracker                                              |
 |   Utils    |   rclone    |       | Get info on RClone remotes                                        |
 |   Utils    |  remindme   |       | Set some reminders                                                |
 |   Utils    |   routine   |   Y   | Routines to run multiple commands at once                         |
 |   Utils    |  shortcut   |       | Shortcut to run specific commands                                 |
-|   Utils    |  speedtest  |       | Runs a network speedtest                                          |
-|   Utils    |     ip      |   Y   | Get the server IP                                                 |
 |   Utils    |     si      |       | Live system stats                                                 |
+|   Utils    |  speedtest  |       | Runs a network speedtest                                          |
 |   Utils    |    todo     |   Y   | A personal todo list                                              |
 |   Utils    |    whois    |       | Get WHOIS information on a domain                                 |
 
