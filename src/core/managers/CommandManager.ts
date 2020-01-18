@@ -4,7 +4,7 @@
  */
 import { Message } from 'discord.js'
 import Enmap from 'enmap'
-import { join } from 'path'
+import path, { join } from 'path'
 import { NezukoMessage } from 'typings'
 
 import { Command } from '../base/Command'
@@ -47,8 +47,13 @@ export class CommandManager {
    * @param directory Directory of command files
    */
   public loadCommands(directory = join(__dirname, '..', '..', 'commands')) {
+    const { categories } = this.client.config
     const cmdFiles = this.client.Utils.findNested(directory, '.js')
-    for (const file of cmdFiles) this.startModule(file)
+    for (const file of cmdFiles) {
+      const dirName = path.basename(path.dirname(file))
+
+      if (categories[dirName]) this.startModule(file)
+    }
     this.Log.ok('Command Manager', `Loaded [ ${this.loadedCommands} ] commands`)
   }
 
@@ -70,14 +75,14 @@ export class CommandManager {
       throw new Error('Commands cannot have the same name')
     }
 
+    instance.aliases.forEach((alias: string) => {
+      if (this.aliases.has(alias)) throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
+
+      this.aliases.set(alias, instance)
+    })
+
     this.commands.set(commandName, instance)
     this.loadedCommands++
-
-    instance.aliases.forEach((alias: string) => {
-      if (this.aliases.has(alias)) {
-        throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
-      } else this.aliases.set(alias, instance)
-    })
   }
 
   /**
@@ -122,11 +127,9 @@ export class CommandManager {
       return command.run(client, msg, args, api)
     }
 
-    if (msg) {
-      msg.channel.startTyping()
-      command.run(client, msg, args, api)
-      return msg.channel.stopTyping(true)
-    }
+    msg.channel.startTyping()
+    await command.run(client, msg, args, api)
+    return msg.channel.stopTyping(true)
   }
 
   /**
@@ -180,7 +183,11 @@ export class CommandManager {
         // If bot is mentioned then reply with prefix
         const memberMentioned = msg.mentions.members.first()
         if (memberMentioned && memberMentioned.user.id === client.user.id) {
-          const m = (await standardMessage(msg, `Heya! My prefix is [ ${prefix} ] if you'd like to chat ;)`)) as Message
+          const m = (await standardMessage(
+            msg,
+            'green',
+            `Heya! My prefix is [ ${prefix} ] if you'd like to chat ;)`
+          )) as Message
           return m.delete(5000)
         }
       }
@@ -227,6 +234,8 @@ export class CommandManager {
       if (serverDB) client.db.server = JSON.parse(serverDB.get('config') as string)
     }
 
+    const { lockedCommands, disabledCommands } = client.db.config!
+
     // * -------------------- Command Option Checks --------------------
 
     // Checks for non owner user
@@ -238,14 +247,13 @@ export class CommandManager {
           `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
         )
 
-        return errorMessage(msg, `This command is owner only nerd`)
+        return errorMessage(msg, `This command is reserved for my Senpai`)
       }
 
       // Check if command is locked
       let locked = false
       let lockedMessage = ''
 
-      const { lockedCommands } = client.db.config!
       lockedCommands.forEach((c) => {
         if (commandName === c.command || command.aliases.includes(c.command)) {
           lockedMessage = commandName
@@ -258,24 +266,21 @@ export class CommandManager {
 
       if (locked) {
         Log.info('Command Manager', `[ ${author.tag} ] tried to run locked command [ ${lockedMessage} ]`)
-        const m = (await warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)) as Message
-        return m.delete(10000)
+        return warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
       }
     }
 
     // Check if command is disabled
-    const { disabledCommands } = client.db.config!
     disabledCommands.forEach(async (c) => {
       if (command.name === c.command || c.aliases.includes(commandName)) {
-        const m = (await warningMessage(msg, `Command [ ${commandName} ] is disabled`)) as Message
-        return m.delete(5000)
+        return warningMessage(msg, `Command [ ${commandName} ] is disabled`)
       }
     })
 
     // If guildOnly and not ran in a guild channel
     if (command.guildOnly && channel.type !== 'text') {
       Log.info('Command Manager', `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] in a DM`)
-      return standardMessage(msg, `This command cannot be slid into my DM`)
+      return standardMessage(msg, 'green', `This command cannot be slid into my DM`)
     }
 
     // Check if user and bot has all required perms in permsNeeded
@@ -338,7 +343,6 @@ export class CommandManager {
 
     // * -------------------- Run Command --------------------
     Log.info('Command Manager', `[ ${author.tag} ] => [ ${msg.content.slice(prefix.length)} ]`)
-
     return this.runCommand(client, command, msg, args)
   }
 }

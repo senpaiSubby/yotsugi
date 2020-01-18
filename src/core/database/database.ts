@@ -13,16 +13,18 @@ export const database = new Sequelize({
 })
 
 export const generalConfig = async (id: string) =>
-  database.models.GeneralConfig.findOne({
+  database.models.Configs.findOne({
     where: { id }
   })
 
 export const serverConfig = async (id: string) =>
-  database.models.ServerConfig.findOne({
+  database.models.Servers.findOne({
     where: { id }
   })
 
 export const memberConfig = async (id: string) =>
-  database.models.MemberConfig.findOne({
+  database.models.Members.findOne({
     where: { id }
   })
+
+export const jellyfinUsers = async (id: string) => database.models.JellyfinUsers.findOne({ where: { id } })

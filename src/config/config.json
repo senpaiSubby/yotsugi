@@ -2,5 +2,17 @@
   "ownerID": "",
   "prefix": "//",
   "token": "",
-  "webServerPort": 5700
+  "webServerPort": 5700,
+  "exemptUsers": [],
+  "categories": {
+    "Admin Tools": true,
+    "Nezuko Management": true,
+    "Download Managers": true,
+    "General Application Managers": true,
+    "General Commands": true,
+    "Information": true,
+    "Media Seach & Management": true,
+    "Smart Device Control": true,
+    "Utils": true
+  }
 }

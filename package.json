@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@jonstuebe/scraper": "^0.2.0",
+    "@types/shelljs": "^0.8.6",
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
     "chalk": "^3.0.0",
@@ -28,6 +29,7 @@
     "discord.js": "^11.5.1",
     "enmap": "^5.2.4",
     "express": "^4.17.1",
+    "generate-password": "^1.4.2",
     "google-home-notify-client": "^0.3.1",
     "gulp": "^4.0.2",
     "gulp-typescript": "^6.0.0-alpha.1",

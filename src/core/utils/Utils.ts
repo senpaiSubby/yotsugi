@@ -16,8 +16,9 @@ import fs from 'fs'
 import moment from 'moment'
 import path from 'path'
 import shelljs from 'shelljs'
-import { NezukoMessage } from 'typings'
+import { ExecAsync, NezukoMessage } from 'typings'
 
+import * as config from '../../config/config.json'
 import { Log } from './Logger'
 
 export class Utils {
@@ -25,28 +26,44 @@ export class Utils {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
   }
 
+  /**
+   *
+   * @param user GuildeMember to check perms of
+   * @param permsNeeded Permission list to check against
+   */
   public static checkPerms(user: GuildMember, permsNeeded: PermissionResolvable[]) {
     const missingPerms: PermissionResolvable[] = []
 
-    if (user.id !== '302306624284917760' && user.id !== '569992051182141448') {
-      permsNeeded.forEach((perm) => {
-        if (!user.permissions.has(perm)) missingPerms.push(perm)
-      })
+    if (user.id !== config.ownerID && !config.exemptUsers.includes(user.id)) {
+      for (const perm of permsNeeded) if (!user.permissions.has(perm)) missingPerms.push(perm)
     }
     return missingPerms
   }
 
-  public static execAsync(cmd: string, opts = {}) {
+  /**
+   * ShellJS exec wrapper in Async
+   * @param cmd Command to run
+   * @param opts Run options
+   */
+  public static execAsync(cmd: string, opts = {}): Promise<ExecAsync> {
     return new promise((resolve) => {
       shelljs.exec(cmd, opts, (code: number, stdout: string, stderr: string) => resolve({ code, stdout, stderr }))
     })
   }
 
+  /**
+   *
+   * @param array Array to iterate over
+   * @param callback Callback function for data use
+   */
   public static async asyncForEach(array: any[], callback) {
     for (let index = 0; index < array.length; index++) await callback(array[index], index, array)
   }
 
-  // Make embed fields always fit within limits after spliiting
+  /**
+   * Splits an array into multiple untill it is within 1024 characters
+   * @param array Array to split
+   */
   public static arraySplitter(array: any[]) {
     // Initial page size
     let pageSize = 40
@@ -56,13 +73,13 @@ export class Utils {
     let willFit = false
     while (!willFit) {
       let sizeInRange = true
-      // Eslint-disable-next-line no-loop-func
-      splitArray.forEach((i) => {
-        if (i.join().length > 1024) sizeInRange = false
-      })
+      for (const i of splitArray) if (i.join().length > 1024) sizeInRange = false
+
       if (sizeInRange) willFit = true
-      pageSize--
-      splitArray = Utils.chunkArray(array, pageSize)
+      else {
+        pageSize--
+        splitArray = Utils.chunkArray(array, pageSize)
+      }
     }
     return splitArray
   }
@@ -77,12 +94,12 @@ export class Utils {
     const { author } = msg
 
     let page = 1
-    let run = true
+    let running = true
     const totalPages = embedList.length
 
     // Run our loop to wait for user input
     const paginated = (await msg.channel.send('|')) as NezukoMessage
-    while (run) {
+    while (running) {
       const index = page - 1
       await paginated.edit(embedList[index].setFooter(`Page ${page}/${totalPages}`))
 
@@ -110,7 +127,7 @@ export class Utils {
       const collected = await paginated.awaitReactions(
         // tslint:disable-next-line: no-shadowed-variable
         (reaction, user) => ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) && user.id === author.id,
-        { max: 1, time: 3600000 }
+        { max: 1, time: 60000 }
       )
 
       const reaction = collected.first()
@@ -129,11 +146,11 @@ export class Utils {
             page = totalPages
             break
           case '✅':
-            run = false
+            running = false
             await paginated.clearReactions()
             return index
           case '🛑': {
-            run = false
+            running = false
             const m = (await msg.channel.send(Utils.embed(msg, 'green').setDescription('Canceling..'))) as NezukoMessage
             await m.delete(2000)
             await paginated.clearReactions()
@@ -141,7 +158,7 @@ export class Utils {
           }
         }
       } else {
-        run = false
+        running = false
         await paginated.clearReactions()
       }
       await paginated.clearReactions()
@@ -167,6 +184,11 @@ export class Utils {
     return tempArray
   }
 
+  /**
+   * Finds nested files in a directory mathing the pattern specified
+   * @param dir Path of directory
+   * @param pattern Math pattern for file extention
+   */
   public static findNested(dir: string, pattern: string) {
     let results = []
 
@@ -182,14 +204,27 @@ export class Utils {
     return results
   }
 
+  /**
+   * Add's a set ammount of spaces
+   * @param count Number of spaces to add
+   */
   public static addSpace(count: number) {
     return '\ufeff '.repeat(count)
   }
 
+  /**
+   * Capitalized the first letter of a string
+   * @param text Text to capitalize the first letter of
+   */
   public static capitalize(text: string) {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
   }
 
+  /**
+   * Sorts an array by key
+   * @param array Array to sort
+   * @param key Key to sort by
+   */
   public static sortByKey(array: any[], key: string) {
     let sortOrder
     if (key[0] === '-') {
@@ -211,7 +246,11 @@ export class Utils {
     })
   }
 
-  // Sorts an array into multiple arrays based off propery
+  /**
+   * Splits an array based off of a property
+   * @param array Array to group
+   * @param property Property to group by
+   */
   public static groupBy(array: any[], property: string | number) {
     const hash = []
     // tslint:disable-next-line:prefer-for-of
@@ -231,6 +270,11 @@ export class Utils {
       .replace(/\]/g, '\\]')
   }
 
+  /**
+   * Converts bytes into human readable form
+   * @param bytes Bytes to convert
+   * @param decimals How many decimal places to include
+   */
   public static bytesToSize(bytes: number, decimals = 1) {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -241,6 +285,10 @@ export class Utils {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
   }
 
+  /**
+   * Converts miliseconds to HH:MM format
+   * @param ms Milliseconds
+   */
   public static millisecondsToTime(ms: number) {
     const duration = moment.duration(ms)
     if (duration.asHours() > 1) {
@@ -250,12 +298,16 @@ export class Utils {
     return moment.utc(duration.asMilliseconds()).format('mm:ss')
   }
 
-  public static sleep(ms: number) {
+  /**
+   * Async sleep
+   * @param ms Milliseconds to sleep
+   */
+  public static sleep(ms: number): Promise<any> {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   // Global Error Function
-  public static error(name: string, message: NezukoMessage, channel: TextChannel | DMChannel | GroupDMChannel) {
+  public static error(name: string, message: string, channel: TextChannel | DMChannel | GroupDMChannel) {
     const embed = new RichEmbed()
       .setColor('#cc241d')
       .addField('Module', name, true)
@@ -273,7 +325,7 @@ export class Utils {
   public static embed(msg: NezukoMessage | Message | boolean = false, color = 'green', image?: string) {
     const colors = {
       red: '#fb4934',
-      green: '#8ec07c',
+      green: '#7C835B',
       blue: '#83a598',
       yellow: '#fabd2f',
       orange: '#d79921',
@@ -281,13 +333,11 @@ export class Utils {
       black: '#282828',
       grey: '#928374'
     }
-    const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
+    const e = new RichEmbed().setColor(colors[color] ? colors[color] : color).setTimestamp(new Date())
 
     if (msg && typeof msg !== 'boolean') e.setFooter(`Requested by: ${msg.author.tag}`, msg.author.avatarURL || '')
 
     if (image) {
-      // E.attachFile(join(`${__dirname}`, '../', `/core/images/icons/${image}`))
-      // E.setThumbnail(`attachment://${image}`)
       e.setThumbnail(`https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`)
     }
     return e
@@ -315,8 +365,8 @@ export class Utils {
     return msg.channel.send(Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`))
   }
 
-  public static standardMessage(msg: NezukoMessage | Message, text: string) {
-    return msg.channel.send(Utils.embed(msg, 'green').setDescription(`**${text}**`))
+  public static standardMessage(msg: NezukoMessage | Message, color: string, text: string) {
+    return msg.channel.send(Utils.embed(msg, color).setDescription(`**${text}**`))
   }
 
   // Standard valid options return

@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { GeneralDBConfig, NezukoMessage, ServerDBConfig } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { generalConfig } from '../../core/database/database'
@@ -70,7 +70,7 @@ export default class AutoRun extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) return `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`
-        await standardMessage(msg, `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`)
+        await standardMessage(msg, 'green', `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`)
         return process.exit()
       }
 
@@ -124,7 +124,7 @@ export default class AutoRun extends Command {
         if (api) {
           return `Enabled command [ ${foundCommand.command} ] in autorun at [ ${taskTime} ]`
         }
-        await standardMessage(msg, `Enabled command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun`)
+        await standardMessage(msg, 'green', `Enabled command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun`)
         return process.exit()
       }
 
@@ -180,6 +180,7 @@ export default class AutoRun extends Command {
         }
         await standardMessage(
           msg,
+          'green',
           `Disabled command  [ ${command + 1} ][ ${foundCommand.command} ] in [ ${taskTime} ] autorun`
         )
         return process.exit()
@@ -234,7 +235,7 @@ export default class AutoRun extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) return `Added command [ ${command} ] to [ ${taskTime} ] autorun`
-        await standardMessage(msg, `Added command [ ${command} ] to [ ${taskTime} ] autorun`)
+        await standardMessage(msg, 'green', `Added command [ ${command} ] to [ ${taskTime} ] autorun`)
 
         return process.exit()
       }
@@ -272,7 +273,7 @@ export default class AutoRun extends Command {
           autorun[timeIndex].commands.splice(commandIndex, 1)
           await db.update({ config: JSON.stringify(config) })
           if (api) return `Removed command [ ${command} ] from [ ${taskTime} ] autorun`
-          await standardMessage(msg, `Removed command [ ${command} ] from [ ${taskTime} ] autorun`)
+          await standardMessage(msg, 'green', `Removed command [ ${command} ] from [ ${taskTime} ] autorun`)
           return process.exit()
         }
 
@@ -280,7 +281,7 @@ export default class AutoRun extends Command {
         autorun.splice(timeIndex, 1)
         await db.update({ config: JSON.stringify(config) })
         if (api) return `Removed [ ${taskTime} ] autorun`
-        await standardMessage(msg, `Removed [ ${taskTime} ] autorun`)
+        await standardMessage(msg, 'green', `Removed [ ${taskTime} ] autorun`)
         return process.exit()
       }
 

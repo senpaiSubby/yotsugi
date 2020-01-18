@@ -45,6 +45,7 @@ interface GeneralDBConfig {
   googleHome: { ip: string | null; language: string | null; name: string | null }
   google: { apiKey: string | null }
   jackett: { apiKey: string | null; host: string | null }
+  jellyfin: { apiKey: string | null; host: string | null; userID: string | null; username: string; password: string }
   lockedCommands: any[]
   meraki: { apiKey: string | null; serielNum: string | null }
   ombi: { apiKey: string | null; host: string | null; username: string | null }

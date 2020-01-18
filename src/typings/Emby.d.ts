@@ -1,3 +1,8 @@
+/*!
+ * Coded by CallMeKory - https://github.com/callmekory
+ * 'It’s not a bug – it’s an undocumented feature.'
+ */
+
 // Stats command
 interface EmbyStats {
   MovieCount: number
@@ -14,7 +19,7 @@ interface EmbyStats {
   ItemCount: number
 }
 
-// streams command
+// Streams command
 interface NowPlaying {
   PlayState: PlayState
   AdditionalUsers: any[]
@@ -271,4 +276,4 @@ interface PlayState {
   PlayMethod?: string
 }
 
-// recent command
+// Recent command

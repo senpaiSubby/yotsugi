@@ -18,7 +18,13 @@ export class Log {
   }
 
   // Logger
-  public static logger(style, errorType, name, message, stacktrace?) {
+  private static logger(
+    style: chalk.Chalk,
+    errorType: string | boolean,
+    name: string,
+    message: string | Error,
+    stacktrace?: any
+  ) {
     const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(name)} ${chalk.yellow(
       message ? `${chalk.white('-')} ${message}` : ''
     )}`
@@ -34,27 +40,23 @@ export class Log {
     return console.log(msg)
   }
 
-  public static ok(name, message) {
+  public static ok(name: string, message: string | Error) {
     return Log.logger(chalk.green.bold, 'OK', name, message)
   }
 
-  public static error(name, message, stacktrace = null) {
+  public static error(name: string, message: string | Error, stacktrace = null) {
     return Log.logger(chalk.red.bold, 'ERROR', name, message, stacktrace)
   }
 
-  public static warn(name, message) {
+  public static warn(name: string, message: string | Error) {
     return Log.logger(chalk.yellow.bold, 'WARN', name, message)
   }
 
-  public static info(name, message) {
+  public static info(name: string, message: string | Error) {
     return Log.logger(chalk.blue.bold, 'INFO', name, message)
   }
 
-  public static debug(name, message) {
+  public static debug(name: string, message: string | Error) {
     return Log.logger(chalk.magenta.bold, 'DEBUG', name, message)
-  }
-
-  public static fatal(message, stacktrace) {
-    throw Log.logger(chalk.bgRed.white.bold, false, message, stacktrace)
   }
 }

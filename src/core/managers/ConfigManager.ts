@@ -4,6 +4,7 @@
  */
 import { Guild } from 'discord.js'
 import { NezukoMessage } from 'typings'
+
 import * as config from '../../config/config.json'
 import { database, generalConfig } from '../database/database'
 import { Log } from '../utils/Logger'
@@ -22,9 +23,8 @@ export class ConfigManager {
 
     if (!db) {
       Log.info('Config Manager', `Created new general config for [ ${ownerID} ]`)
-      await database.models.GeneralConfig.create({
+      await database.models.Configs.create({
         id: ownerID,
-        username: 'Nezuko',
         config: JSON.stringify({
           archivebox: { path: null },
           priceTracking: [],
@@ -35,6 +35,7 @@ export class ConfigManager {
           google: { apiKey: null },
           googleHome: { ip: null, language: null, name: null },
           jackett: { apiKey: null, host: null },
+          jyllfin: { apiKey: null, host: null, userID: null },
           lockedCommands: [],
           meraki: { apiKey: null, serielNum: null },
           ombi: { apiKey: null, host: null, username: null },
@@ -66,13 +67,13 @@ export class ConfigManager {
     // Per server config
     if (!guild) return config.prefix
 
-    let db = await database.models.ServerConfig.findOne({
+    let db = await database.models.Servers.findOne({
       where: { id }
     })
 
     if (!db) {
       Log.info('Config Manager', `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`)
-      db = await database.models.ServerConfig.create({
+      db = await database.models.Servers.create({
         id,
         ownerID,
         config: JSON.stringify({
@@ -123,11 +124,11 @@ export class ConfigManager {
 
     // * -------------------- Setup --------------------
 
-    const db = await database.models.MemberConfig.findOne({ where: { id } })
+    const db = await database.models.Members.findOne({ where: { id } })
 
     if (!db) {
       Log.info('Config Manager', `Created new member config for user [ ${id} ] [ ${username} ]`)
-      await database.models.MemberConfig.create({
+      await database.models.Members.create({
         username,
         id,
         config: JSON.stringify({

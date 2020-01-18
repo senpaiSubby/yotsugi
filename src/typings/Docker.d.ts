@@ -1,3 +1,8 @@
+/*!
+ * Coded by CallMeKory - https://github.com/callmekory
+ * 'It’s not a bug – it’s an undocumented feature.'
+ */
+
 interface DockerContainer {
   Id: string
   Names: string[]
@@ -5,13 +10,13 @@ interface DockerContainer {
   ImageID: string
   Command: string
   Created: number
-  Ports: (Port | Ports2)[]
+  Ports: Array<Port | Ports2>
   Labels: Labels
   State: string
   Status: string
   HostConfig: HostConfig
   NetworkSettings: NetworkSettings
-  Mounts: (Mount | Mounts2)[]
+  Mounts: Array<Mount | Mounts2>
 }
 
 interface Mounts2 {
@@ -124,5 +129,5 @@ interface ContainerList {
   state: string
   status: string
   ports: number[]
-  mounts?: (Mount | Mounts2)[]
+  mounts?: Array<Mount | Mounts2>
 }
