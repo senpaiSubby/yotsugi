@@ -20,6 +20,7 @@ export class Command {
   public ownerOnly: boolean
   public permsNeeded: PermissionResolvable[]
   public disabled: boolean
+  public cooldown: number
 
   constructor(client: NezukoClient, data: CommandData) {
     this.client = client
@@ -33,6 +34,7 @@ export class Command {
     this.guildOnly = data.guildOnly || false
     this.ownerOnly = data.ownerOnly || false
     this.permsNeeded = data.permsNeeded || []
+    this.cooldown = data.cooldown || 5
     this.disabled = data.disabled || false
   }
 }
