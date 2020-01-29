@@ -15,7 +15,8 @@ export default class Level extends Command {
       category: 'Admin Tools',
       description: 'Give XP to members',
       usage: ['givexp <user> <amount>'],
-      permsNeeded: ['MANAGE_ROLES_OR_PERMISSIONS']
+      permsNeeded: ['MANAGE_ROLES_OR_PERMISSIONS'],
+      cooldown: 10
     })
   }
 

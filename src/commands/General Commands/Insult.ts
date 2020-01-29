@@ -15,7 +15,8 @@ export default class SpaceText extends Command {
       category: 'General Commands',
       description: 'Insult that mean bully',
       usage: ['insult @user'],
-      args: true
+      args: true,
+      cooldown: 10
     })
   }
 

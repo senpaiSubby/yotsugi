@@ -20,7 +20,8 @@ export default class Jackett extends Command {
       description: 'Search for torrents via Jackett',
       usage: ['find <torrent to look for>'],
       aliases: ['find'],
-      args: true
+      args: true,
+      cooldown: 10
     })
     this.color = '#282828'
   }

@@ -15,7 +15,8 @@ export default class Help extends Command {
       category: 'Information',
       description: 'Get command help',
       guildOnly: true,
-      usage: ['help', 'help <some command>']
+      usage: ['help', 'help <some command>'],
+      cooldown: 10
     })
   }
 

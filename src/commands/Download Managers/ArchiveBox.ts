@@ -16,7 +16,8 @@ export default class ArchiveBox extends Command {
       usage: ['a <url to archive>'],
       aliases: ['a'],
       args: true,
-      webUI: false
+      webUI: false,
+      cooldown: 15
     })
   }
 

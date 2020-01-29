@@ -17,7 +17,8 @@ export default class Transmission extends Command {
       category: 'Download Managers',
       description: 'Transmission Management',
       usage: [`tor list`, 'tor add <magnet link>'],
-      args: true
+      args: true,
+      cooldown: 10
     })
     this.color = '#AE0701'
   }

@@ -18,7 +18,8 @@ export default class SabNZBD extends Command {
       category: 'Download Managers',
       description: 'sabNZBD Management',
       usage: [`sab list`],
-      args: true
+      args: true,
+      cooldown: 10
     })
     this.color = '#FFCA28'
   }

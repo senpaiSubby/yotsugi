@@ -260,7 +260,10 @@ export class CommandManager {
       if (now < expirationTime) {
         const timeLeft = (expirationTime - now) / 1000
         return msg.reply(
-          `Please wait [ ${timeLeft.toFixed(1)} ] more second(s) before reusing the [ \`${command.name}\` ] command`
+          warningMessage(
+            msg,
+            `Please wait [ ${timeLeft.toFixed(1)} ] more second(s) before reusing the [ \`${command.name}\` ] command`
+          )
         )
       }
     }

@@ -23,7 +23,8 @@ export default class RClone extends Command {
         'rclone ls <remote>:/<dir>',
         'rclone sizeof <remote1> <remote2> <remote3> <remote4>'
       ],
-      args: true
+      args: true,
+      cooldown: 30
     })
   }
 
@@ -239,8 +240,9 @@ export default class RClone extends Command {
           let response = JSON.parse(stdout)
 
           // Handle folder being empty
-          if (!response.length)
+          if (!response.length) {
             return standardMessage(msg, 'green', `:file_cabinet: [ ${remote}:${dirPath || '/'} ] is empty`)
+          }
 
           const sorted = []
           // Remake array with nice emojis based on file extensions

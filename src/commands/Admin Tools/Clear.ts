@@ -21,7 +21,8 @@ export default class Clear extends Command {
       aliases: ['rm'],
       guildOnly: true,
       args: true,
-      permsNeeded: ['MANAGE_MESSAGES']
+      permsNeeded: ['MANAGE_MESSAGES'],
+      cooldown: 5
     })
   }
 
@@ -68,6 +69,12 @@ export default class Clear extends Command {
     }
 
     // Delete messages
-    return channel.bulkDelete(foundMessages)
+    try {
+      // Try to delete messages if they are under 2 weeks old
+      await channel.bulkDelete(foundMessages)
+    } catch {
+      // If older then delete one by one
+      await asyncForEach(foundMessages.array(), async (message: Message) => await message.delete())
+    }
   }
 }

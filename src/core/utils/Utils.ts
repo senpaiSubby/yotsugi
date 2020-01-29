@@ -335,7 +335,7 @@ export class Utils {
     }
     const e = new RichEmbed().setColor(colors[color] ? colors[color] : color).setTimestamp(new Date())
 
-    if (msg && typeof msg !== 'boolean') e.setFooter(`Requested by: ${msg.author.tag}`, msg.author.avatarURL || '')
+    // If (msg && typeof msg !== 'boolean') e.setFooter(`Requested by: ${msg.author.tag}`, msg.author.avatarURL || '')
 
     if (image) {
       e.setThumbnail(`https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`)

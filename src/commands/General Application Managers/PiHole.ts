@@ -20,7 +20,8 @@ export default class PiHole extends Command {
       usage: [`pihole <enable/disable>`, `pihole stats`],
       webUI: true,
       args: true,
-      ownerOnly: true
+      ownerOnly: true,
+      cooldown: 10
     })
     this.color = 'green'
   }
