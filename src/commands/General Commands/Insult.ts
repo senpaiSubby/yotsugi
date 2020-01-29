@@ -31,6 +31,7 @@ export default class SpaceText extends Command {
       const insult = JSON.parse(response.body)
       return standardMessage(msg, 'green', `Yo <@${user.id}>, ${insult.insult}`)
     } catch {
+      // tslint:disable-next-line:quotemark
       return standardMessage(msg, 'green', "Try later I couldn't think of anything right now")
     }
   }

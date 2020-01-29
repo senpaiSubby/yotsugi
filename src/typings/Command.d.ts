@@ -17,4 +17,5 @@ interface CommandData {
   ownerOnly?: boolean
   permsNeeded?: PermissionResolvable[]
   disabled?: boolean
+  cooldown?: number
 }
