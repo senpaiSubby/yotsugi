@@ -41,12 +41,31 @@ export default class Config extends Command {
     switch (args[0]) {
       // Get the current server settings
       case 'get': {
+        args.shift()
         // Remove the server rules key to remove bloat from
         // The info embed
         delete server.rules
 
         // Sort keys
-        const keys = Object.keys(server).sort()
+        let keys = Object.keys(server).sort()
+
+        if (args.length) {
+          // Info embed
+          const e = embed(msg, 'green', 'settings.png')
+            .setTitle(`Server Config [ ${args[0]} ]`)
+            .setDescription(`**[ ${p}server set <${args[0]}> <setting> <new value> ] to change**`)
+
+          // Add a new field to the embed for every key in the settings
+          const values = server[args[0]]
+          // Sort keys
+          keys = Object.keys(values).sort()
+
+          // Add a new field to the embed for every key in the settings
+          keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'unset'}`, true))
+
+          // Ship it off
+          return channel.send(e)
+        }
 
         // Info embed
         const e = embed(msg, 'green', 'settings.png')

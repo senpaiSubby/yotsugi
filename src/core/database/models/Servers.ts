@@ -23,4 +23,7 @@ export default class Servers extends Model<Servers> {
 
   @Column
   public memberLevels: string | undefined
+
+  @Column
+  public statChannels: string | undefined
 }

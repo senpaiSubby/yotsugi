@@ -96,6 +96,12 @@ export class ConfigManager {
           channels: {},
           dm: {}
         }),
+        statChannels: JSON.stringify({
+          categoryID: null,
+          total: null,
+          bots: null,
+          members: null
+        }),
         serverName: name
       })
     }

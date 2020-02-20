@@ -7,8 +7,12 @@ import { Attachment, GuildMember, TextChannel } from 'discord.js'
 import path from 'path'
 
 import { serverConfig } from '../core/database/database'
+import { StatsManager } from '../core/managers/StatsManager'
 
 export const guildMemberRemove = async (member: GuildMember) => {
+  // * Handle Server Stat Channels
+  await StatsManager.updateStats(member.guild)
+
   const db = await serverConfig(member.guild.id)
   const { welcomeChannel } = JSON.parse(db.get('config') as string)
 

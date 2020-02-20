@@ -10,6 +10,10 @@ import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import { NezukoClient } from '../../core/NezukoClient'
 
+/**
+ * TODO make rclone update stats on the server stats category
+ * Manage Rclone
+ */
 export default class RClone extends Command {
   constructor(client: NezukoClient) {
     super(client, {

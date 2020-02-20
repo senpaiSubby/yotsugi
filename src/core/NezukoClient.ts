@@ -19,6 +19,7 @@ import { ConfigManager } from './managers/ConfigManager'
 import { SubprocessManager } from './managers/SubprocessManager'
 import { Log } from './utils/Logger'
 import { Utils } from './utils/Utils'
+import { StatsManager } from './managers/StatsManager'
 
 interface Categories {
   [index: string]: boolean
@@ -79,14 +80,24 @@ export class NezukoClient extends Client {
     Log.ok('Nezuko Ready', `Username is [ ${this.user.tag} ]`)
     await this.user.setActivity(`${config.prefix}`, { type: 'LISTENING' })
 
-    // * ----------  start subprocess and command managers ----------
+    // Handle general config
+
+    await ConfigManager.handleGeneralConfig()
+
+    const guilds = this.guilds.map((guild) => guild.id)
+
+    for (const guildID of guilds) {
+      const guild = this.guilds.get(guildID)
+      await ConfigManager.handleServerConfig(guild)
+    }
+
+    // * ---------- start subprocess and command managers ----------
 
     this.commandManager = new CommandManager(this)
     this.subprocessManager = new SubprocessManager(this)
 
-    // Handle general config
-
-    ConfigManager.handleGeneralConfig()
+    // * Handle Server Stat Channels
+    this.guilds.forEach(async (guild) => await StatsManager.updateStats(guild))
 
     // * ---------- Events ----------
 
