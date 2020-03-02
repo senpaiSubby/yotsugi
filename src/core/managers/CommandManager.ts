@@ -11,6 +11,7 @@ import { Command } from '../base/Command'
 import { generalConfig, serverConfig } from '../database/database'
 import { NezukoClient } from '../NezukoClient'
 import { Log } from '../utils/Logger'
+import { ActivityLogger } from './activity logger/ActivityLogger'
 import { ConfigManager } from './ConfigManager'
 import { LevelManager } from './LevelManager'
 import { MessageManager } from './MessageManager'
@@ -25,6 +26,8 @@ export class CommandManager {
   public ownerID: string
   public loadedCommands: number
   public cooldowns: any
+  // tslint:disable-next-line: variable-name
+  public ActivityLogger: ActivityLogger
 
   constructor(client: NezukoClient) {
     this.client = client
@@ -38,7 +41,7 @@ export class CommandManager {
     this.aliases = new Enmap()
     this.prefix = client.config.prefix
     this.ownerID = client.config.ownerID
-
+    this.ActivityLogger = new ActivityLogger()
     this.loadedCommands = 0
     this.loadCommands()
 
@@ -161,6 +164,9 @@ export class CommandManager {
     if (content.startsWith('oof')) await channel.send('BIG OOF')
 
     if (msg.author.bot) return
+
+    await this.ActivityLogger.log(msg)
+
     // * -------------------- Parse & Log Messages --------------------
 
     // Log and parse all messages in DM's and guilds

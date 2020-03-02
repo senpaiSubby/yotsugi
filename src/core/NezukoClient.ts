@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { Client, GuildMember, Message } from 'discord.js'
+import { Client, GuildMember, Message, TextChannel, GuildChannel } from 'discord.js'
 import { ClientDB, NezukoMessage } from 'typings'
 
 import * as config from '../config/config.json'
@@ -79,6 +79,7 @@ export class NezukoClient extends Client {
     await this.login(this.config.token)
     Log.ok('Nezuko Ready', `Username is [ ${this.user.tag} ]`)
     await this.user.setActivity(`${config.prefix}`, { type: 'LISTENING' })
+    await this.user.setUsername('Nezuko - Testing')
 
     // Handle general config
 

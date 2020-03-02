@@ -184,10 +184,10 @@ be learn, inspire, and create. Any contributions you make are **greatly
 appreciated**.
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. `yarn install` to get all dependencies
+3. Edit config in /src/config/config.json with your bot token and user ID
+4. Run `tsc -w` to watch and build the project as you edit source
+5. Run the bot with `nodemon build/index.js` make sure you have `nodemon` install globally with NPM
 
 <!------------------------- LICENSE ------------------------->
 

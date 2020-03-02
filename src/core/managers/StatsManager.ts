@@ -1,8 +1,13 @@
-import { database } from '../../core/database/database'
+/*!
+ * Coded by CallMeKory - https://github.com/callmekory
+ * 'It’s not a bug – it’s an undocumented feature.'
+ */
+
 import { Guild, GuildChannel } from 'discord.js'
+import { database } from '../../core/database/database'
 
 export class StatsManager {
-  static async updateStats(guild: Guild) {
+  public static async updateStats(guild: Guild) {
     // * Update Server Channel Stats
     // 📈
 
@@ -11,9 +16,9 @@ export class StatsManager {
     })
 
     if (db) {
-      const statChannels = JSON.parse(db.get('statChannels') as string)
-      let { total, bots, members, categoryID } = statChannels as any
-
+      const statChannels = JSON.parse(db.get('statChannels') as string) as StatSettings
+      const { total, bots, members, enabled } = statChannels
+      let { categoryID } = statChannels
       let categoryChannel: GuildChannel
 
       const createCategory = async () => {
@@ -24,52 +29,62 @@ export class StatsManager {
         await db.update({ statChannels: JSON.stringify(statChannels) })
       }
 
-      // Create Stats Category
-      if (!categoryID || !categoryChannel) await createCategory()
-      // Create Channels Under Category
-      categoryChannel = guild.channels.get(categoryID)
+      // If stats are enabled
 
-      const createVoiceChannel = async (type: string) => {
-        const newChannel = await guild.createChannel(type, { type: 'voice' })
-        await newChannel.setParent(categoryChannel)
+      if (enabled) {
+        // Create Stats Category
+        if (!categoryID || !categoryChannel) await createCategory()
+        // Create Channels Under Category
+        categoryChannel = guild.channels.get(categoryID)
 
-        switch (type) {
-          case 'total': {
-            total = newChannel.id
-            statChannels.total = newChannel.id
-            return db.update({ statChannels: JSON.stringify(statChannels) })
-          }
-          case 'members': {
-            members = newChannel.id
-            statChannels.members = newChannel.id
-            return db.update({ statChannels: JSON.stringify(statChannels) })
-          }
-          case 'bots': {
-            bots = newChannel.id
-            statChannels.bots = newChannel.id
-            return db.update({ statChannels: JSON.stringify(statChannels) })
+        const createVoiceChannel = async (type: 'total' | 'members' | 'bots') => {
+          const newChannel = await guild.createChannel(type, { type: 'voice' })
+          await newChannel.setParent(categoryChannel)
+
+          switch (type) {
+            case 'total': {
+              total.channelID = newChannel.id
+              statChannels.total.channelID = newChannel.id
+              return db.update({ statChannels: JSON.stringify(statChannels) })
+            }
+
+            case 'members': {
+              members.channelID = newChannel.id
+              statChannels.members.channelID = newChannel.id
+              return db.update({ statChannels: JSON.stringify(statChannels) })
+            }
+
+            case 'bots': {
+              bots.channelID = newChannel.id
+              statChannels.bots.channelID = newChannel.id
+              return db.update({ statChannels: JSON.stringify(statChannels) })
+            }
           }
         }
-      }
 
-      // Create channels if they dont exist
-      if (!total) await createVoiceChannel('total')
-      if (!members) await createVoiceChannel('members')
-      if (!bots) await createVoiceChannel('bots')
+        // Create channels if they dont exist and are enabled
+        if (!total.channelID && total.enabled) await createVoiceChannel('total')
+        if (!members.channelID && members.enabled) await createVoiceChannel('members')
+        if (!bots.channelID && bots.enabled) await createVoiceChannel('bots')
 
-      // Update stats
-      const updateStats = async (type: string, channel: string, name: string) => {
-        try {
-          guild.channels.get(channel).setName(name)
-        } catch {
-          statChannels[type] = null
-          await db.update({ statChannels: JSON.stringify(statChannels) })
+        // Update stats if they are enabled
+        const updateStats = async (type: string, channel: string, name: string) => {
+          const channelToChange = guild.channels.get(channel)
+          if (channelToChange) channelToChange.setName(name)
+          else {
+            statChannels[type] = null
+            await db.update({ statChannels: JSON.stringify(statChannels) })
+          }
+        }
+
+        if (total.enabled) await updateStats('total', total.channelID, `ᴛᴏᴛᴀʟ ᴍᴇᴍʙᴇʀs: ${guild.members.size}`)
+        if (members.enabled) {
+          await updateStats('members', members.channelID, `ᴜsᴇʀs: ${guild.members.filter((m) => !m.user.bot).size}`)
+        }
+        if (bots.enabled) {
+          await updateStats('bots', bots.channelID, `ʙᴏᴛs: ${guild.members.filter((m) => m.user.bot).size}`)
         }
       }
-
-      await updateStats('total', total, `ᴛᴏᴛᴀʟ   ᴍᴇᴍʙᴇʀs:   ${guild.members.size}`)
-      await updateStats('members', members, `ᴜsᴇʀs:   ${guild.members.filter((m) => !m.user.bot).size}`)
-      await updateStats('bots', bots, `ʙᴏᴛs:   ${guild.members.filter((m) => m.user.bot).size}`)
     }
   }
 }

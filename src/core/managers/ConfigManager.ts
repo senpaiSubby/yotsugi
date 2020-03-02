@@ -79,13 +79,14 @@ export class ConfigManager {
         config: JSON.stringify({
           announcementChannel: null,
           logChannel: null,
-          priceWatchChannel: null,
           prefix: config.prefix,
           rules: [],
           modMailChannel: null,
           starboardChannel: null,
           welcomeChannel: null,
-          levelUpMessage: 'Welcome to level {level}'
+          verifyUsers: 'disabled',
+          verifyChannel: null,
+          verifiedRole: null
         }),
         levelMultiplier: '2',
         memberLevels: JSON.stringify({
@@ -97,17 +98,20 @@ export class ConfigManager {
           dm: {}
         }),
         statChannels: JSON.stringify({
+          enabled: false,
           categoryID: null,
-          total: null,
-          bots: null,
-          members: null
+          total: { enabled: true, channelID: null },
+          bots: { enabled: true, channelID: null },
+          members: { enabled: true, channelID: null }
         }),
+        userActivity: JSON.stringify({}),
         serverName: name
       })
     }
 
     // * just to handle db updates when adding commands
     const conf = JSON.parse(db.get('config') as string)
+
     if (!conf.announcementChannel) {
       conf.announcementChannel = null
       await db.update({
@@ -115,8 +119,7 @@ export class ConfigManager {
       })
     }
 
-    const prefix = (db.get('prefix') as string) || config.prefix
-    return prefix
+    return conf.prefix || config.prefix
   }
 
   /**

@@ -17,8 +17,8 @@ export default class Stats extends Command {
     super(client, {
       name: 'stats',
       category: 'Admin Tools',
-      description: 'Set/Get server stats config for server info',
-      usage: ['stats config', 'server set <key> <channel Id>'],
+      description: 'Enable / disabled the server stats sidebar',
+      usage: ['stats enable', 'stats disable'],
       args: true
     })
   }
@@ -34,54 +34,80 @@ export default class Stats extends Command {
 
     const db = await database.models.Servers.findOne({ where: { id: guild.id } })
 
-    const statChannels = JSON.parse(db.get('statChannels') as string)
+    const statChannels = JSON.parse(db.get('statChannels') as string) as StatSettings
     console.log(statChannels)
 
     // * ------------------ Usage Logic --------------------
 
+    // TODO let user enable / disable specific stats
     switch (args[0]) {
-      // Get the current server settings
-      case 'config': {
-        args.shift()
-        // Remove the server rules key to remove bloat from
-        // The info embed
-
-        // Sort keys
-        let keys = Object.keys(statChannels).sort()
-
-        // Info embed
-        const e = embed(msg, 'green', 'settings.png')
-          .setTitle('Server Stats Config')
-          .setDescription(`**[ ${p}stats set <setting> <channel ID> ] to change**`)
-
-        // Add a new field to the embed for every key in the settings
-        keys.forEach((i) => e.addField(`${i}`, `${statChannels[i] ? statChannels[i] : 'unset'}`, true))
-
-        // Ship it off
-        return channel.send(e)
+      case 'enable': {
+        statChannels.enabled = true
+        await db.update({
+          statChannels: JSON.stringify(statChannels)
+        })
+        return standardMessage(msg, 'green', 'Server stat sidebar has been enabled')
       }
-      // Set server settings
-      case 'set': {
-        // Setting to change
-        const keyToChange = args[1] as string
-        // New value
-        const newValue = args[2] as string
+      case 'disable': {
+        statChannels.enabled = false
+        await db.update({
+          statChannels: JSON.stringify(statChannels)
+        })
 
-        // If the setting exists
-        if (keyToChange in statChannels) {
-          // Change key to new one
-          statChannels[keyToChange] = newValue
-          // Update the database
-          await db.update({ statChannels: JSON.stringify(statChannels) })
-          // Notify the user
-          return standardMessage(msg, 'green', `[ ${keyToChange} ] changed to channel ID [ ${newValue} ]`)
-        } // If the setting doesnt exist
-        return warningMessage(msg, `[${keyToChange}] doesnt exist`)
+        // TODO make this delete all channels and category for server stats
+        const { total, bots, members, categoryID } = statChannels
+
+        // * delete all stat channels and category
+
+        if (categoryID) {
+          const categoryToDelete = guild.channels.get(categoryID)
+          if (categoryToDelete) {
+            await categoryToDelete.delete()
+            statChannels.categoryID = null
+            await db.update({
+              statChannels: JSON.stringify(statChannels)
+            })
+          }
+        }
+
+        if (total.channelID) {
+          const channelToDelete = guild.channels.get(total.channelID)
+          if (channelToDelete) {
+            await channelToDelete.delete()
+            statChannels.total.channelID = null
+            await db.update({
+              statChannels: JSON.stringify(statChannels)
+            })
+          }
+        }
+
+        if (members.channelID) {
+          const channelToDelete = guild.channels.get(members.channelID)
+          if (channelToDelete) {
+            await channelToDelete.delete()
+            statChannels.members.channelID = null
+            await db.update({
+              statChannels: JSON.stringify(statChannels)
+            })
+          }
+        }
+
+        if (bots.channelID) {
+          const channelToDelete = guild.channels.get(bots.channelID)
+          if (channelToDelete) {
+            await channelToDelete.delete()
+            statChannels.bots.channelID = null
+            await db.update({
+              statChannels: JSON.stringify(statChannels)
+            })
+          }
+        }
+
+        return standardMessage(msg, 'green', 'Server stat sidebar has been disabled and deleted all stat channels')
       }
-      // If neither 'set' or 'get' where specified as options inform the user
-      // Of the correct options
+
       default:
-        return validOptions(msg, ['config', 'set'])
+        return validOptions(msg, ['enable', 'disable'])
     }
   }
 }

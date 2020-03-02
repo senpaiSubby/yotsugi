@@ -28,7 +28,7 @@ export default class RClone extends Command {
         'rclone sizeof <remote1> <remote2> <remote3> <remote4>'
       ],
       args: true,
-      cooldown: 30
+      cooldown: 5
     })
   }
 
@@ -66,7 +66,7 @@ export default class RClone extends Command {
     }
 
     // * get remotes from config
-    const { code: c, stdout: o } = await execAsync(`rclone listremotes --config=${configPath}`, {
+    const { code: c, stdout: o } = await execAsync(`rclone listremotes --config='${configPath}'`, {
       silent: true
     })
 
@@ -79,11 +79,16 @@ export default class RClone extends Command {
 
     // * ------------------ Logic --------------------
 
-    const handleChannelNames = async (remote: string, size: string) => {
+    /**
+     * TODO make this customizable via the rclone command
+     * @param remote Rclone remote
+     * @param size Size to be displayed in channel name
+     */
+    const handleChannelStats = async (remote: string, size: string) => {
       switch (remote) {
         case 'AnimeDrive': {
           const channelToName = client.channels.get('666705180250865678') as GuildChannel
-          if (channelToName) await channelToName.setName(`TD Size ${size}`)
+          if (channelToName) await channelToName.setName(`ᴛᴅ sɪᴢᴇ: ${size}`)
         }
       }
     }
@@ -135,7 +140,7 @@ export default class RClone extends Command {
           const size = bytesToSize(response.bytes)
 
           // Handle setting channel names to size of remote
-          await handleChannelNames(remote, size)
+          await handleChannelStats(remote, size)
 
           return msg.reply(
             embed(msg, 'blue', 'rclone.gif')
@@ -194,7 +199,7 @@ export default class RClone extends Command {
           if (code === 0) {
             totalSize += JSON.parse(stdout).bytes
             // Handle setting channel names to size of remote
-            await handleChannelNames(remote, bytesToSize(JSON.parse(stdout).bytes))
+            await handleChannelStats(remote, bytesToSize(JSON.parse(stdout).bytes))
           }
         }
 

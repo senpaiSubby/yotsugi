@@ -26,4 +26,7 @@ export default class Servers extends Model<Servers> {
 
   @Column
   public statChannels: string | undefined
+
+  @Column
+  public userActivity: string | undefined
 }

@@ -32,7 +32,9 @@ interface ServerDBConfig {
   starboardChannel: string | null
   welcomeChannel: string | null
   levelUpMessage: string | null
-  levelUpChannel: string | null
+  verifyUsers: boolean
+  verfiedRole: string | null
+  verifiedChannel: string | null
 }
 
 interface GeneralDBConfig {

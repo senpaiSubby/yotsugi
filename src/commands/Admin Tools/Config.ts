@@ -53,7 +53,9 @@ export default class Config extends Command {
           // Info embed
           const e = embed(msg, 'green', 'settings.png')
             .setTitle(`Server Config [ ${args[0]} ]`)
-            .setDescription(`**[ ${p}server set <${args[0]}> <setting> <new value> ] to change**`)
+            .setDescription(
+              `**[ ${p}server set <${args[0]}> <setting> <new value> ] to change\nChannel and roles are set via ID**`
+            )
 
           // Add a new field to the embed for every key in the settings
           const values = server[args[0]]
