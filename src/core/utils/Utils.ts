@@ -90,7 +90,7 @@ export class Utils {
    * @param embedList RichEmbed list
    * @param [acceptButton] Show accept button?
    */
-  public static async paginate(msg: NezukoMessage, embedList: RichEmbed[], acceptButton?: boolean) {
+  public static async paginate(msg: NezukoMessage, embedList: any[], acceptButton?: boolean) {
     const { author } = msg
 
     let page = 1
@@ -101,8 +101,13 @@ export class Utils {
     const paginated = (await msg.channel.send('|')) as NezukoMessage
     while (running) {
       const index = page - 1
-      await paginated.edit(embedList[index].setFooter(`Page ${page}/${totalPages}`))
-
+      try {
+        // For embeds
+        await paginated.edit(embedList[index].setFooter(`Page ${page}/${totalPages}`))
+      } catch {
+        // For non embeds
+        await paginated.edit(`${embedList[index]} \`Page ${page}/${totalPages}\``)
+      }
       if (totalPages !== 1) {
         if (page === 1) {
           await paginated.react('⏭️')
@@ -209,7 +214,7 @@ export class Utils {
    * @param count Number of spaces to add
    */
   public static addSpace(count: number) {
-    return '\ufeff '.repeat(count)
+    return ' '.repeat(count)
   }
 
   /**

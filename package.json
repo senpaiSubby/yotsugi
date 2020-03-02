@@ -58,7 +58,8 @@
     "useragent": "^2.3.0",
     "whois-2": "^0.0.8",
     "wol": "^1.0.7",
-    "youtube-v3-api": "^1.1.1"
+    "youtube-v3-api": "^1.1.1",
+    "zipcodes": "^8.0.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.29",

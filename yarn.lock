@@ -4900,3 +4900,8 @@ youtube-v3-api@^1.1.1:
   integrity sha512-8/Cl2bVLIFpHSoFLLX134IbrSZH2djrSKr7J5rLjcjvRM/PIvcfAK/FwXQroOZm/mBlqCr33aKzlKMWAyScXDQ==
   dependencies:
     axios "^0.18.0"
+
+zipcodes@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/zipcodes/-/zipcodes-8.0.0.tgz#4d124cdeedfc693f1b0ef8060323f206aeb98a9b"
+  integrity sha512-V8NolFaJhsPamGeCv5lJdk60Q7JBiXI6e+8JDksPC1NJWZ0t7g1OFfqVLZb2Nc2F5jmf9JTdYdWJBnIhGBvtbA==

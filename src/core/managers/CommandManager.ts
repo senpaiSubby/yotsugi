@@ -15,7 +15,7 @@ import { ActivityLogger } from './activity logger/ActivityLogger'
 import { ConfigManager } from './ConfigManager'
 import { LevelManager } from './LevelManager'
 import { MessageManager } from './MessageManager'
-
+import config from '../../config/config.json'
 export class CommandManager {
   public client: NezukoClient
   // tslint:disable-next-line:variable-name
@@ -277,7 +277,7 @@ export class CommandManager {
     timestamps.set(author.id, now)
 
     // Checks for non owner user
-    if (author.id !== ownerID) {
+    if (author.id !== ownerID || !config.exemptUsers.includes(author.id)) {
       // If command is marked 'ownerOnly: true' then don't excecute
       if (command.ownerOnly) {
         Log.info(

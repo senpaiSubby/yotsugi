@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { Client, GuildMember, Message, TextChannel, GuildChannel } from 'discord.js'
+import { Client, GuildMember, Message } from 'discord.js'
 import { ClientDB, NezukoMessage } from 'typings'
 
 import * as config from '../config/config.json'
@@ -16,10 +16,10 @@ import { messageUpdate } from '../events/messageUpdate'
 import { database } from './database/database'
 import { CommandManager } from './managers/CommandManager'
 import { ConfigManager } from './managers/ConfigManager'
+import { StatsManager } from './managers/StatsManager'
 import { SubprocessManager } from './managers/SubprocessManager'
 import { Log } from './utils/Logger'
 import { Utils } from './utils/Utils'
-import { StatsManager } from './managers/StatsManager'
 
 interface Categories {
   [index: string]: boolean

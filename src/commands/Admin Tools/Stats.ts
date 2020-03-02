@@ -2,10 +2,11 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage, ServerDBConfig } from 'typings'
+import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { database } from '../../core/database/database'
+import { StatsManager } from '../../core/managers/StatsManager'
 import { NezukoClient } from '../../core/NezukoClient'
 
 /**
@@ -19,7 +20,8 @@ export default class Stats extends Command {
       category: 'Admin Tools',
       description: 'Enable / disabled the server stats sidebar',
       usage: ['stats enable', 'stats disable'],
-      args: true
+      args: true,
+      permsNeeded: ['MANAGE_GUILD']
     })
   }
 
@@ -35,7 +37,6 @@ export default class Stats extends Command {
     const db = await database.models.Servers.findOne({ where: { id: guild.id } })
 
     const statChannels = JSON.parse(db.get('statChannels') as string) as StatSettings
-    console.log(statChannels)
 
     // * ------------------ Usage Logic --------------------
 
@@ -46,6 +47,7 @@ export default class Stats extends Command {
         await db.update({
           statChannels: JSON.stringify(statChannels)
         })
+        await StatsManager.updateStats(guild)
         return standardMessage(msg, 'green', 'Server stat sidebar has been enabled')
       }
       case 'disable': {

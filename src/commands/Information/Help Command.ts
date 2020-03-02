@@ -25,7 +25,7 @@ export default class Help extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, serverConfig } = client
-    const { embed, groupBy, paginate, capitalize, checkPerms } = Utils
+    const { embed, groupBy, paginate, capitalize, checkPerms, addSpace } = Utils
     const { channel, context, guild, author } = msg
 
     // * ------------------ Config --------------------
@@ -57,7 +57,7 @@ export default class Help extends Command {
     }
 
     // Filter commands based on author access
-    const commands = context.commands.filter((i) => checkUserPerms(i))
+    const commands = context.commands.filter((i: Command) => checkUserPerms(i))
     // If no specific command is called, show all filtered commands.
     if (!args[0]) {
       const sorted = commands
@@ -73,20 +73,26 @@ export default class Help extends Command {
         const e = Utils.embed(msg, 'green')
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
+        /**
           .setDescription(
             `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
           )
+          */
 
-        newSorted[key].forEach((i: Command) => {
-          let aliases = ''
-          if (i.aliases.length) {
-            if (i.aliases.length > 1) aliases += `| ${i.aliases.join(' | ')}`
-            else aliases += `| ${i.aliases}`
-          }
-          e.addField(`**${i.name} ${aliases}**`, `${i.description}`, true)
+        let desc = `-\n** Help [ ${key} ]**\n\`Showing commands you have access to\`\n**\`${prefix}help [ command ]\` for command usage**\n\`\`\`css\n`
+        let longestString = 0
+
+        newSorted[key].forEach((s) => {
+          if (s.name.length > longestString) longestString = s.name.length
         })
 
-        embedList.push(e)
+        newSorted[key].forEach((i: Command) => {
+          if (i.name.length === longestString) desc += `${i.name} - ${i.description}\n`
+          else desc += `${i.name}${addSpace(longestString - i.name.length)} - ${i.description}\n`
+        })
+
+        desc = `${desc}\n\`\`\``
+        embedList.push(desc)
       })
 
       return paginate(msg, embedList)
