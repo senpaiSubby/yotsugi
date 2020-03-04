@@ -20,8 +20,7 @@ export default class Announce extends Command {
       usage: ['announce <hey guys GIVEAWAY!>'],
       guildOnly: true,
       args: true,
-      permsNeeded: ['MANAGE_GUILD'],
-      cooldown: 20
+      permsNeeded: ['MANAGE_GUILD']
     })
   }
 

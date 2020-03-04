@@ -48,12 +48,12 @@ export default class GoogleHome extends Command {
 
     // * ------------------ Logic --------------------
 
-    const googleSpeak = async (speach: string) => {
+    const googleSpeak = async (speech: string) => {
       try {
         const device = new Device(ip, name, language)
-        device.notify(speach)
-        if (api) return `Told Google Home to say [ ${speach} ]`
-        return standardMessage(msg, 'green', `Told Google Home to say [ ${speach} ]`)
+        device.notify(speech)
+        if (api) return `Told Google Home to say [ ${speech} ]`
+        return standardMessage(msg, 'green', `Told Google Home to say [ ${speech} ]`)
       } catch (e) {
         if (api) return `Failed to connect to Google Home`
         Log.error('Google Home', 'Failed to connect to Google Home', e)

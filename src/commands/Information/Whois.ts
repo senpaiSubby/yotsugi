@@ -43,6 +43,6 @@ export default class Whois extends Command {
           .addField('Expires', results.registry_expiry_date)
       )
     }
-    return errorMessage(msg, "Sorry, not sorry bro. That domain doesn't exist.")
+    return errorMessage(msg, 'Sorry, not sorry bro. That domain doesn\'t exist.')
   }
 }

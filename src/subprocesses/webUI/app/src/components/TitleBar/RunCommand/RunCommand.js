@@ -1,4 +1,4 @@
-import React, { useState } from 'reactn'
+import { useState } from 'reactn'
 import { sendCommand } from '../../Utils/Utils'
 import Popup from 'reactjs-popup'
 

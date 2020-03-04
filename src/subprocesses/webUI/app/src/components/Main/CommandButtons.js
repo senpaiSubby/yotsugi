@@ -1,5 +1,5 @@
-import React, { useEffect, useGlobal } from 'reactn'
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
+import { useEffect, useGlobal } from 'reactn'
+import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
 import { sendCommand } from '../Utils/Utils'
 
 import './CommandButtons.css'
@@ -23,26 +23,50 @@ const CommandButtons = () => {
 
   const renderedButtons = commandList
     ? commandList.map((item, index) => {
-        const { id, name, command } = item
-        return (
-          <div key={index}>
-            <ContextMenuTrigger id={id}>
-              <button className="CommandButton" onClick={async () => await sendCommand(command)}>
-                {name}
-              </button>
-            </ContextMenuTrigger>
-            <ContextMenu id={id}>
-              <MenuItem data={{ foo: 'bar' }} onClick={async () => await removeButton(id)}>
-                Delete
-              </MenuItem>
-            </ContextMenu>
-          </div>
-        )
-      })
+      const { id, name, command } = item
+      return (
+        < div
+      key = { index } >
+        < ContextMenuTrigger
+      id = { id } >
+        < button
+      className = 'CommandButton'
+      onClick = { async()
+    =>
+      await sendCommand(command)
+    }>
+      {
+        name
+      }
+    <
+      /button>
+      < /ContextMenuTrigger>
+      < ContextMenu
+      id = { id } >
+        < MenuItem
+      data = {
+      {
+        foo: 'bar'
+      }
+    }
+      onClick = { async()
+    =>
+      await removeButton(id)
+    }>
+      Delete
+      < /MenuItem>
+      < /ContextMenu>
+      < /div>
+    )
+    })
     : 'No shortcut commands set. Please add one below.'
 
-  return <div className="CommandButtonContainer">{renderedButtons.length ? renderedButtons:  'No shortcut commands set. Please add one below.'
-}</div>
+  return (
+    < div
+  className = 'CommandButtonContainer' >
+    { renderedButtons.length ? renderedButtons : 'No shortcut commands set. Please add one below.' }
+    < /div>
+)
 }
 
 export default CommandButtons

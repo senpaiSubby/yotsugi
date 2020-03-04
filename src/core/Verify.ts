@@ -5,15 +5,15 @@
 
 import { Message } from 'discord.js'
 import { NezukoMessage, ServerDBConfig } from 'typings'
-import { database } from '../database/database'
-import { Utils } from '../utils/Utils'
+import { database } from './database/database'
+import { Utils } from './Utils'
 
 /**
- * TODO add into on message eventß
+ * TODO add into on message events
  */
 export class Verify {
   public static async member(msg: NezukoMessage) {
-    // If mssage not sent from guild then ignore
+    // If message not sent from guild then ignore
     if (!msg.guild) return
     // If message is sent by bot then ignore
     if (msg.author.bot) return
@@ -58,12 +58,12 @@ export class Verify {
 
         if (msg.guild.me.highestRole.comparePositionTo(messageRole) < 1) {
           const m = (await msg.channel.send(
-            'The position of this role is higher than the bot\'s highest role, it cannot be assigned by the bot.'
+            'The position of this role is higher than the bots highest role, it cannot be assigned by the bot.'
           )) as Message
           return m.delete(20000)
         }
 
-        if (messageRole.managed === true) {
+        if (messageRole.managed) {
           const m = (await msg.channel.send('This is an auto managed role, it cannot be assigned.')) as Message
           return m.delete(20000)
         }

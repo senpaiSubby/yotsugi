@@ -1,5 +1,3 @@
-import React from 'reactn'
-
 import CommandButtons from './CommandButtons'
 
 const Main = () => {

@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from 'reactn'
+import { useGlobal, useState } from 'reactn'
 import { updateDB } from '../../../Utils/Utils'
 
 const ArchiveBox = () => {
@@ -12,23 +12,35 @@ const ArchiveBox = () => {
   }
 
   return (
-    <div className="SettingsEntry">
-      <span className="SettingsEntryTitle">Archive Box</span>
-      <form className="SettingsEntryForm" autoComplete="off" onSubmit={handleSubmit}>
-        <input
-          className="SettingsEntryInput"
-          type="text"
-          placeholder="path"
-          name="path"
-          value={path}
-          required={true}
-          onChange={(e) => setPath(e.target.value)}
-        />
+    < div
+  className = 'SettingsEntry' >
+    < span
+  className = 'SettingsEntryTitle' > Archive
+  Box < /span>
+  < form
+  className = 'SettingsEntryForm'
+  autoComplete = 'off'
+  onSubmit = { handleSubmit } >
+    < input
+  className = 'SettingsEntryInput'
+  type = 'text'
+  placeholder = 'path'
+  name = 'path'
+  value = { path }
+  required = { true }
+  onChange = {(e)
+=>
+  setPath(e.target.value)
+}
+  />
 
-        <input className="SettingsEntryInput save" type="submit" value="SAVE" />
-      </form>
-    </div>
-  )
+  < input
+  className = 'SettingsEntryInput save'
+  type = 'submit'
+  value = 'SAVE' / >
+    < /form>
+    < /div>
+)
 }
 
 export default ArchiveBox

@@ -11,8 +11,6 @@ export default class Members extends Model<Members> {
 
   @Column
   public config: string | undefined
-  @Column
-  public levels: string | undefined
 
   @Column({ primaryKey: true })
   public id: string | undefined

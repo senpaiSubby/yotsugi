@@ -18,7 +18,7 @@ import path from 'path'
 import shelljs from 'shelljs'
 import { ExecAsync, NezukoMessage } from 'typings'
 
-import * as config from '../../config/config.json'
+import * as config from '../config/config.json'
 import { Log } from './Logger'
 
 export class Utils {
@@ -75,8 +75,9 @@ export class Utils {
       let sizeInRange = true
       for (const i of splitArray) if (i.join().length > 1024) sizeInRange = false
 
-      if (sizeInRange) willFit = true
-      else {
+      if (sizeInRange) {
+        willFit = true
+      } else {
         pageSize--
         splitArray = Utils.chunkArray(array, pageSize)
       }
@@ -124,7 +125,7 @@ export class Utils {
           await paginated.react('⬅️')
           await paginated.react('➡️')
           await paginated.react('⏭️')
-          if (acceptButton) paginated.react('✅')
+          if (acceptButton) await paginated.react('✅')
           // Await paginated.react('🛑')
         }
       }
@@ -171,13 +172,13 @@ export class Utils {
   }
 
   /**
-   * Split array into equal chuncks
+   * Split array into equal chunks
    * @param myArray Array to split
    * @param chunkSize size of each split
    * @returns
    */
   public static chunkArray(myArray: any[], chunkSize: number) {
-    let index = 0
+    let index
     const arrayLength = myArray.length
     const tempArray = []
     let myChunk: any[]
@@ -190,9 +191,9 @@ export class Utils {
   }
 
   /**
-   * Finds nested files in a directory mathing the pattern specified
+   * Finds nested files in a directory matching the pattern specified
    * @param dir Path of directory
-   * @param pattern Math pattern for file extention
+   * @param pattern Math pattern for file extension
    */
   public static findNested(dir: string, pattern: string) {
     let results = []
@@ -266,15 +267,6 @@ export class Utils {
     return hash
   }
 
-  public static makeShellSafe(text: string) {
-    return text
-      .replace(/ /g, '\\ ')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')
-      .replace(/\[/g, '\\[')
-      .replace(/\]/g, '\\]')
-  }
-
   /**
    * Converts bytes into human readable form
    * @param bytes Bytes to convert
@@ -312,7 +304,7 @@ export class Utils {
   }
 
   // Global Error Function
-  public static error(name: string, message: string, channel: TextChannel | DMChannel | GroupDMChannel) {
+  public static async error(name: string, message: string, channel: TextChannel | DMChannel | GroupDMChannel) {
     const embed = new RichEmbed()
       .setColor('#cc241d')
       .addField('Module', name, true)
@@ -322,7 +314,7 @@ export class Utils {
     channel = channel || null
     Log.warn(name, message)
 
-    if (channel) channel.send({ embed })
+    if (channel) await channel.send({ embed })
     return false
   }
 

@@ -18,8 +18,7 @@ export default class SabNZBD extends Command {
       category: 'Server Management',
       description: 'sabNZBD Management',
       usage: [`sab list`],
-      args: true,
-      cooldown: 10
+      args: true
     })
     this.color = '#FFCA28'
   }

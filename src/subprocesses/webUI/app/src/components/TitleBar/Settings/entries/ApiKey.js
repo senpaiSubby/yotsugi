@@ -1,4 +1,4 @@
-import React, { useState } from 'reactn'
+import { useState } from 'reactn'
 import { notify } from '../../../Utils/Utils'
 
 const ApiKey = () => {
@@ -12,22 +12,34 @@ const ApiKey = () => {
   }
 
   return (
-    <div className="SettingsEntry">
-      <span className="SettingsEntryTitle">WebUI ApiKey</span>
-      <form className="SettingsEntryForm" autoComplete="off" onSubmit={handleSubmit}>
-        <input
-          className="SettingsEntryInput"
-          type="text"
-          placeholder="API KEY"
-          name="apiKey"
-          value={apiKey}
-          required={true}
-          onChange={(e) => setApiKey(e.target.value)}
-        />
-        <input className="SettingsEntryInput save" type="submit" value="SAVE" />
-      </form>
-    </div>
-  )
+    < div
+  className = 'SettingsEntry' >
+    < span
+  className = 'SettingsEntryTitle' > WebUI
+  ApiKey < /span>
+  < form
+  className = 'SettingsEntryForm'
+  autoComplete = 'off'
+  onSubmit = { handleSubmit } >
+    < input
+  className = 'SettingsEntryInput'
+  type = 'text'
+  placeholder = 'API KEY'
+  name = 'apiKey'
+  value = { apiKey }
+  required = { true }
+  onChange = {(e)
+=>
+  setApiKey(e.target.value)
+}
+  />
+  < input
+  className = 'SettingsEntryInput save'
+  type = 'submit'
+  value = 'SAVE' / >
+    < /form>
+    < /div>
+)
 }
 
 export default ApiKey

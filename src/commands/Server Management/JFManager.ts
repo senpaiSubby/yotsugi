@@ -93,6 +93,7 @@ export default class JFManager extends Command {
           username: string
           userID: string
         }
+
         const userList = response.body.map((u) => ({ username: u.Name, userID: u.Id }))
         return userList.sort() as ParsedUserList[]
       }

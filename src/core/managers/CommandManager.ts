@@ -5,17 +5,18 @@
 import { Collection, Message } from 'discord.js'
 import Enmap from 'enmap'
 import path, { join } from 'path'
-import { NezukoMessage } from 'typings'
+import { NezukoMessage, ServerDBConfig } from 'typings'
 
+import config from '../../config/config.json'
 import { Command } from '../base/Command'
-import { generalConfig, serverConfig } from '../database/database'
+import { database, generalConfig, serverConfig } from '../database/database'
+import { Log } from '../Logger'
 import { NezukoClient } from '../NezukoClient'
-import { Log } from '../utils/Logger'
-import { ActivityLogger } from './activity logger/ActivityLogger'
+import { ActivityLogger } from './ActivityLogger'
 import { ConfigManager } from './ConfigManager'
 import { LevelManager } from './LevelManager'
 import { MessageManager } from './MessageManager'
-import config from '../../config/config.json'
+
 export class CommandManager {
   public client: NezukoClient
   // tslint:disable-next-line:variable-name
@@ -54,12 +55,11 @@ export class CommandManager {
    * @param directory Directory of command files
    */
   public loadCommands(directory = join(__dirname, '..', '..', 'commands')) {
-    const { categories } = this.client.config
     const cmdFiles = this.client.Utils.findNested(directory, '.js')
     for (const file of cmdFiles) {
       const dirName = path.basename(path.dirname(file))
 
-      if (categories[dirName]) this.startModule(file)
+      this.startModule(file)
     }
     this.Log.ok('Command Manager', `Loaded [ ${this.loadedCommands} ] commands`)
   }
@@ -174,6 +174,9 @@ export class CommandManager {
 
     // * -------------------- Assign Prefix --------------------
 
+    const SDB = await database.models.Servers.findOne({ where: { id: guild.id } })
+    const { leveling } = JSON.parse(SDB.get('config') as string) as ServerDBConfig
+
     const prefix = guild ? await ConfigManager.handleServerConfig(guild) : this.prefix
     client.p = prefix
     msg.p = prefix
@@ -188,7 +191,7 @@ export class CommandManager {
     if (!content.startsWith(prefix)) {
       if ((channel.type !== 'dm' && !content.startsWith(prefix)) || content.length < prefix.length) {
         // Give user exp
-        if (addLevel) await new LevelManager(client, msg).manage()
+        if (addLevel && leveling) await new LevelManager(client, msg).manage()
 
         // If bot is mentioned then reply with prefix
         const memberMentioned = msg.mentions.members.first()
@@ -218,7 +221,9 @@ export class CommandManager {
       commandName = 'help'
       args = [args[0]]
     } // Else continue with requested command
-    else commandName = args.shift()!.toLowerCase()
+    else {
+      commandName = args.shift()!.toLowerCase()
+    }
 
     // Find the requested command
     const command = this.findCommand(commandName) as Command
@@ -249,7 +254,7 @@ export class CommandManager {
     // * -------------------- Command Option Checks --------------------
 
     // * -------------------- Command Cooldowns --------------------
-    // If command isnt in cooldown then set it
+    // If command isn't in cooldown then set it
     if (!this.cooldowns.has(command.name)) this.cooldowns.set(command.name, new Collection())
 
     // Get current date
@@ -258,11 +263,12 @@ export class CommandManager {
     const timestamps = this.cooldowns.get(command.name)
     // Get cooldown time from command
     const cooldownAmount = command.cooldown * 1000
+
     // If command is in cooldown
     if (timestamps.has(author.id)) {
       // Get time left till command can be ran again
       const expirationTime = timestamps.get(author.id) + cooldownAmount
-      // If cooldown time hasnt passed then notify user
+      // If cooldown time hasn't passed then notify user
       if (now < expirationTime) {
         const timeLeft = (expirationTime - now) / 1000
         return msg.reply(
@@ -278,8 +284,8 @@ export class CommandManager {
 
     // Checks for non owner user
     if (author.id !== ownerID || !config.exemptUsers.includes(author.id)) {
-      // If command is marked 'ownerOnly: true' then don't excecute
-      if (command.ownerOnly) {
+      // If command is marked 'ownerOnly: true' then don't execute
+      if (command.ownerOnly && !config.exemptUsers.includes(author.id)) {
         Log.info(
           'Command Manager',
           `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
@@ -309,11 +315,11 @@ export class CommandManager {
     }
 
     // Check if command is disabled
-    disabledCommands.forEach(async (c) => {
+    for (const c of disabledCommands) {
       if (command.name === c.command || c.aliases.includes(commandName)) {
         return warningMessage(msg, `Command [ ${commandName} ] is disabled`)
       }
-    })
+    }
 
     // If guildOnly and not ran in a guild channel
     if (command.guildOnly && channel.type !== 'text') {

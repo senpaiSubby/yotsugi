@@ -1,4 +1,3 @@
-import React from 'reactn'
 import Settings from './Settings/Settings'
 import RunCommand from './RunCommand/RunCommand'
 import BotInfo from './BotInfo'

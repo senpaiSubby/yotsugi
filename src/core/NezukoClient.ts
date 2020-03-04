@@ -14,16 +14,12 @@ import { messageReactionAdd } from '../events/messageReactionAdd'
 import { messageReactionRemove } from '../events/messageReactionRemove'
 import { messageUpdate } from '../events/messageUpdate'
 import { database } from './database/database'
+import { Log } from './Logger'
 import { CommandManager } from './managers/CommandManager'
 import { ConfigManager } from './managers/ConfigManager'
 import { StatsManager } from './managers/StatsManager'
 import { SubprocessManager } from './managers/SubprocessManager'
-import { Log } from './utils/Logger'
-import { Utils } from './utils/Utils'
-
-interface Categories {
-  [index: string]: boolean
-}
+import { Utils } from './Utils'
 
 export class NezukoClient extends Client {
   public config: {
@@ -32,7 +28,6 @@ export class NezukoClient extends Client {
     token: string
     webServerPort: number
     exemptUsers: string[]
-    categories: Categories
   }
 
   // tslint:disable-next-line:variable-name
@@ -63,7 +58,7 @@ export class NezukoClient extends Client {
     // Log discord warnings
     this.on('warn', (info) => console.log(`warn: ${info}`))
     this.on('reconnecting', () => this.Log.warn('Nezuko', 'Reconnecting to Discord'))
-    this.on('resume', (replayed) => this.Log.warn('Nezuko', 'Reconnected to Discord'))
+    this.on('resume', () => this.Log.warn('Nezuko', 'Reconnected to Discord'))
 
     // Unhandled Promise Rejections
     process.on('unhandledRejection', (reason: any) => this.Log.error('Unhandled Rejection', reason.stack))
@@ -89,16 +84,18 @@ export class NezukoClient extends Client {
 
     for (const guildID of guilds) {
       const guild = this.guilds.get(guildID)
+
+      // Handle server configs
       await ConfigManager.handleServerConfig(guild)
+
+      // Update server sidebar stats
+      await StatsManager.updateStats(guild)
     }
 
     // * ---------- start subprocess and command managers ----------
 
     this.commandManager = new CommandManager(this)
     this.subprocessManager = new SubprocessManager(this)
-
-    // * Handle Server Stat Channels
-    this.guilds.forEach(async (guild) => await StatsManager.updateStats(guild))
 
     // * ---------- Events ----------
 

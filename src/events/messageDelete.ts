@@ -6,7 +6,7 @@ import { Message, TextChannel } from 'discord.js'
 
 import { serverConfig } from '../core/database/database'
 import { NezukoClient } from '../core/NezukoClient'
-import { Utils } from '../core/utils/Utils'
+import { Utils } from '../core/Utils'
 
 export const messageDelete = async (message: Message, client: NezukoClient) => {
   const { content, channel, member } = message

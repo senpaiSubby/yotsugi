@@ -15,12 +15,11 @@ export default class SpaceText extends Command {
       category: 'General',
       description: 'Insult that mean bully',
       usage: ['insult @user'],
-      args: true,
-      cooldown: 10
+      args: true
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { mentions, guild, author } = msg
     const { standardMessage } = client.Utils
@@ -33,7 +32,7 @@ export default class SpaceText extends Command {
       return standardMessage(msg, 'green', `Yo <@${user.id}>, ${insult.insult}`)
     } catch {
       // tslint:disable-next-line:quotemark
-      return standardMessage(msg, 'green', "Try later I couldn't think of anything right now")
+      return standardMessage(msg, 'green', 'Try later I couldn\'t think of anything right now')
     }
   }
 }

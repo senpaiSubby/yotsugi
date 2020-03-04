@@ -6,7 +6,7 @@ import { Message, MessageReaction, TextChannel, User } from 'discord.js'
 import { ServerDBConfig } from 'typings'
 
 import { serverConfig } from '../core/database/database'
-import { Utils } from '../core/utils/Utils'
+import { Utils } from '../core/Utils'
 
 export const messageReactionAdd = async (reaction: MessageReaction, user: User) => {
   if (reaction.emoji.name !== '⭐') return

@@ -12,7 +12,7 @@ export class Log {
     throw new Error(`${this.constructor.name} class cannot be instantiated`)
   }
 
-  // Loggerging Time Format
+  // Logging Time Format
   public static time() {
     return moment().format('MM-DD h:mm A')
   }
@@ -36,7 +36,6 @@ export class Log {
     }
 
     // Logger Normally
-    message = typeof message === 'string' ? message.replace(/\r?\n|\r/g, ' ') : message
     return console.log(msg)
   }
 

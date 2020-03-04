@@ -4,7 +4,7 @@
  */
 
 import { Collection, Message } from 'discord.js'
-import { database } from '../../../core/database/database'
+import { database } from '../database/database'
 
 export class ActivityLogger {
   public cooldowns: any
@@ -35,7 +35,7 @@ export class ActivityLogger {
 
     // ------------
 
-    // If command isnt in cooldown then set it
+    // If command isn't in cooldown then set it
     if (!this.cooldowns.has(author.id)) this.cooldowns.set(author.id, new Collection())
 
     // Get current date

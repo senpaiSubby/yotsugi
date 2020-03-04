@@ -18,8 +18,7 @@ export default class Docker extends Command {
       usage: [`docker <state> <name>`, `docker list <state>`],
       webUI: true,
       args: true,
-      ownerOnly: true,
-      cooldown: 10
+      ownerOnly: true
     })
   }
 

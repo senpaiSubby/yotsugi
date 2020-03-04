@@ -26,7 +26,6 @@ export class MessageManager {
 
   /**
    * Logs message and attachments if any
-   * @param msg NezukoMessage
    */
   public async log() {
     const { content, guild, author, channel, createdAt, attachments } = this.msg

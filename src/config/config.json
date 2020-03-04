@@ -3,14 +3,5 @@
   "prefix": "//",
   "token": "",
   "webServerPort": 5700,
-  "exemptUsers": [],
-  "categories": {
-    "Admin Tools": true,
-    "General": true,
-    "Information": true,
-    "Media": true,
-    "Nezuko Management": true,
-    "Server Management": true,
-    "Smart Home": true
-  }
+  "exemptUsers": []
 }

@@ -17,8 +17,7 @@ export default class ModMail extends Command {
       usage: ['mm <message>'],
       aliases: ['mm'],
       guildOnly: true,
-      args: true,
-      cooldown: 60
+      args: true
     })
   }
 

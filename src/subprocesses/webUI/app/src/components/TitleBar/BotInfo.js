@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'reactn'
+import { useEffect, useState } from 'reactn'
 
 const BotInfo = () => {
   const [data, setData] = useState('')

@@ -17,8 +17,7 @@ export default class Reddit extends Command {
       category: 'General',
       description: 'Search reddit',
       usage: ['reddit <subreddit>'],
-      args: true,
-      cooldown: 10
+      args: true
     })
     this.color = '#FF3F18'
   }

@@ -4,7 +4,7 @@
  */
 
 import { Guild, GuildChannel } from 'discord.js'
-import { database } from '../../core/database/database'
+import { database } from '../database/database'
 
 export class StatsManager {
   public static async updateStats(guild: Guild) {
@@ -70,8 +70,9 @@ export class StatsManager {
         // Update stats if they are enabled
         const updateStats = async (type: string, channel: string, name: string) => {
           const channelToChange = guild.channels.get(channel)
-          if (channelToChange) channelToChange.setName(name)
-          else {
+          if (channelToChange) {
+            channelToChange.setName(name)
+          } else {
             statChannels[type] = null
             await db.update({ statChannels: JSON.stringify(statChannels) })
           }

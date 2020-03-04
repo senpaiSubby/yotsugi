@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from 'reactn'
+import { useGlobal, useState } from 'reactn'
 import { notify } from '../../../Utils/Utils'
 
 const AddCommand = () => {
@@ -21,31 +21,46 @@ const AddCommand = () => {
   }
 
   return (
-    <div className="SettingsEntry">
-      <span className="SettingsEntryTitle">Add Command</span>
-      <form className="SettingsEntryForm" autoComplete="off" onSubmit={handleSubmit}>
-        <input
-          className="SettingsEntryInput"
-          type="text"
-          placeholder="Name"
-          name="commandName"
-          value={commandName}
-          required={true}
-          onChange={(e) => setCommandName(e.target.value)}
-        />
-        <input
-          className="SettingsEntryInput "
-          type="text"
-          placeholder="Command"
-          name="command"
-          value={command}
-          required={true}
-          onChange={(e) => setCommand(e.target.value)}
-        />
-        <input className="SettingsEntryInput save" type="submit" value="ADD" />
-      </form>
-    </div>
-  )
+    < div
+  className = 'SettingsEntry' >
+    < span
+  className = 'SettingsEntryTitle' > Add
+  Command < /span>
+  < form
+  className = 'SettingsEntryForm'
+  autoComplete = 'off'
+  onSubmit = { handleSubmit } >
+    < input
+  className = 'SettingsEntryInput'
+  type = 'text'
+  placeholder = 'Name'
+  name = 'commandName'
+  value = { commandName }
+  required = { true }
+  onChange = {(e)
+=>
+  setCommandName(e.target.value)
+}
+  />
+  < input
+  className = 'SettingsEntryInput '
+  type = 'text'
+  placeholder = 'Command'
+  name = 'command'
+  value = { command }
+  required = { true }
+  onChange = {(e)
+=>
+  setCommand(e.target.value)
+}
+  />
+  < input
+  className = 'SettingsEntryInput save'
+  type = 'submit'
+  value = 'ADD' / >
+    < /form>
+    < /div>
+)
 }
 
 export default AddCommand

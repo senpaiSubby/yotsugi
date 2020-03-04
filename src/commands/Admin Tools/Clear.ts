@@ -21,8 +21,7 @@ export default class Clear extends Command {
       aliases: ['rm'],
       guildOnly: true,
       args: true,
-      permsNeeded: ['MANAGE_MESSAGES'],
-      cooldown: 5
+      permsNeeded: ['MANAGE_MESSAGES']
     })
   }
 

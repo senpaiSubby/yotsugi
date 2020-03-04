@@ -17,8 +17,7 @@ export default class Config extends Command {
       name: 'server',
       category: 'Admin Tools',
       description: 'Set/Get server config for bot',
-      usage: ['server get', 'server set <key> <value'],
-      args: true,
+      usage: ['server', 'server set <key> <value'],
       permsNeeded: ['MANAGE_GUILD']
     })
   }
@@ -39,8 +38,26 @@ export default class Config extends Command {
     // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
+      // Set server settings
+      case 'set': {
+        // Setting to change
+        const keyToChange = args[1] as string
+        // New value
+        const newValue = args[2] as string
+
+        // If the setting exists
+        if (keyToChange in server) {
+          // Change key to new one
+          server[keyToChange] = newValue
+          // Update the database
+          await db.update({ config: JSON.stringify(server) })
+          // Notify the user
+          return standardMessage(msg, 'green', `[ ${keyToChange} ] changed to [ ${newValue} ]`)
+        } // If the setting doesn't exist
+        return warningMessage(msg, `[${keyToChange}] doesn't exist`)
+      }
       // Get the current server settings
-      case 'get': {
+      default: {
         args.shift()
         // Remove the server rules key to remove bloat from
         // The info embed
@@ -63,7 +80,7 @@ export default class Config extends Command {
           keys = Object.keys(values).sort()
 
           // Add a new field to the embed for every key in the settings
-          keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'unset'}`, true))
+          keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'false'}`, true))
 
           // Ship it off
           return channel.send(e)
@@ -75,33 +92,13 @@ export default class Config extends Command {
           .setDescription(`**[ ${p}server set <settings> <new value> ] to change**`)
 
         // Add a new field to the embed for every key in the settings
-        keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'unset'}`, true))
+        keys.forEach((i) => {
+          e.addField(`${i}`, `${server[i] ? server[i] : server[i] === false ? 'false' : 'unset'}`, true)
+        })
 
         // Ship it off
         return channel.send(e)
       }
-      // Set server settings
-      case 'set': {
-        // Setting to change
-        const keyToChange = args[1] as string
-        // New value
-        const newValue = args[2] as string
-
-        // If the setting exists
-        if (keyToChange in server) {
-          // Change key to new one
-          server[keyToChange] = newValue
-          // Update the database
-          await db.update({ config: JSON.stringify(server) })
-          // Notify the user
-          return standardMessage(msg, 'green', `[ ${keyToChange} ] changed to [ ${newValue} ]`)
-        } // If the setting doesnt exist
-        return warningMessage(msg, `[${keyToChange}] doesnt exist`)
-      }
-      // If neither 'set' or 'get' where specified as options inform the user
-      // Of the correct options
-      default:
-        return validOptions(msg, ['get', 'set'])
     }
   }
 }

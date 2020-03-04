@@ -7,7 +7,7 @@ import { NezukoMessage } from 'typings'
 
 import * as config from '../../config/config.json'
 import { database, generalConfig } from '../database/database'
-import { Log } from '../utils/Logger'
+import { Log } from '../Logger'
 
 /**
  * Handles setting up User, General and Server config for Nezuko
@@ -35,7 +35,7 @@ export class ConfigManager {
           google: { apiKey: null },
           googleHome: { ip: null, language: null, name: null },
           jackett: { apiKey: null, host: null },
-          jyllfin: { apiKey: null, host: null, userID: null },
+          jellyfin: { apiKey: null, host: null, userID: null },
           lockedCommands: [],
           meraki: { apiKey: null, serielNum: null },
           ombi: { apiKey: null, host: null, username: null },
@@ -82,9 +82,11 @@ export class ConfigManager {
           prefix: config.prefix,
           rules: [],
           modMailChannel: null,
+          leveling: false,
+          levelMultiplier: 2,
           starboardChannel: null,
           welcomeChannel: null,
-          verifyUsers: 'disabled',
+          verifyUsers: false,
           verifyChannel: null,
           verifiedRole: null
         }),
@@ -114,9 +116,7 @@ export class ConfigManager {
 
     if (!conf.announcementChannel) {
       conf.announcementChannel = null
-      await db.update({
-        config: JSON.stringify(conf)
-      })
+      await db.update({ config: JSON.stringify(conf) })
     }
 
     return conf.prefix || config.prefix
@@ -124,7 +124,7 @@ export class ConfigManager {
 
   /**
    * Handles member config
-   * @param msg Origninal message
+   * @param msg Original message
    */
   public static async handleMemberConfig(msg: NezukoMessage) {
     // * -------------------- Setup --------------------
@@ -140,9 +140,7 @@ export class ConfigManager {
       await database.models.Members.create({
         username,
         id,
-        config: JSON.stringify({
-          todos: []
-        })
+        config: JSON.stringify({ todos: [] })
       })
     }
   }

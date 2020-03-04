@@ -19,7 +19,7 @@ export default class Level extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
+  public async run(client: NezukoClient, msg: NezukoMessage) {
     // * ------------------ Setup --------------------
 
     const { standardMessage, warningMessage } = client.Utils

@@ -27,8 +27,7 @@ export default class RClone extends Command {
         'rclone ls <remote>:/<dir>',
         'rclone sizeof <remote1> <remote2> <remote3> <remote4>'
       ],
-      args: true,
-      cooldown: 5
+      args: true
     })
   }
 
@@ -91,6 +90,7 @@ export default class RClone extends Command {
           if (channelToName) await channelToName.setName(`ᴛᴅ sɪᴢᴇ: ${size}`)
         }
       }
+
     }
 
     const command = args.shift()
@@ -256,8 +256,9 @@ export default class RClone extends Command {
           const sorted = []
           // Remake array with nice emojis based on file extensions
           response.forEach((i) => {
-            if (i.IsDir) sorted.push(`:file_folder: ${i.Name}`)
-            else {
+            if (i.IsDir) {
+              sorted.push(`:file_folder: ${i.Name}`)
+            } else {
               switch (i.Name.split('.').pop()) {
                 case 'png':
                 case 'jpg':

@@ -15,8 +15,7 @@ export default class Level extends Command {
       category: 'Admin Tools',
       description: 'Give XP to members',
       usage: ['givexp <user> <amount>'],
-      permsNeeded: ['MANAGE_ROLES_OR_PERMISSIONS'],
-      cooldown: 10
+      permsNeeded: ['MANAGE_ROLES_OR_PERMISSIONS']
     })
   }
 
@@ -54,7 +53,9 @@ export default class Level extends Command {
       if (member.expTillNextLevel - xpToGive <= 0) {
         member.exp = Math.abs(member.expTillNextLevel - xpToGive)
         member.level++
-      } else member.exp = totalXP
+      } else {
+        member.exp = totalXP
+      }
     } else if (totalXP < member.expTillNextLevel) member.exp = totalXP
 
     member.expTillNextLevel = 100 * member.level * Number(levelMultiplier) - member.exp

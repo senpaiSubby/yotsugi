@@ -2,13 +2,12 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { TextChannel } from 'discord.js'
 import { GeneralDBConfig, NezukoMessage, ServerDBConfig } from 'typings'
 
 import * as config from '../../config/config.json'
-import { NezukoClient } from '../../core/NezukoClient'
 import { generalConfig, serverConfig } from '../database/database'
-import { Utils } from '../utils/Utils'
+import { NezukoClient } from '../NezukoClient'
+import { Utils } from '../Utils'
 
 /**
  * Level manager
@@ -21,7 +20,6 @@ export class LevelManager {
   public memberLevels: any
   public level: number | undefined
   public client: NezukoClient
-  public levelUpChannel: TextChannel
 
   constructor(client: NezukoClient, msg: NezukoMessage) {
     this.msg = msg
@@ -36,18 +34,6 @@ export class LevelManager {
   public async manage(): Promise<void> {
     // Only handle XP and levels in Guild Text Channels
     if (this.msg.channel.type === 'text') {
-      const serverDB = await this.getDB()
-      const sConfig = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
-      const { levelUpChannel } = sConfig
-
-      if (!('levelUpChannel' in serverConfig)) {
-        sConfig.levelUpChannel = null
-        await serverDB.update({ config: JSON.stringify(serverConfig) })
-      }
-
-      if (levelUpChannel) {
-        this.levelUpChannel = this.client.channels.get(levelUpChannel) as TextChannel
-      }
 
       const db = await generalConfig(config.ownerID)
       const { disabledCommands } = JSON.parse(db.get('config') as string) as GeneralDBConfig
@@ -72,7 +58,7 @@ export class LevelManager {
    */
   private async getDB() {
     // Fetches and returns the Guilds server config
-    return await serverConfig(this.guild.id)
+    return serverConfig(this.guild.id)
   }
 
   /**
@@ -112,12 +98,6 @@ export class LevelManager {
     // tslint:disable-next-line:no-shadowed-variable
     const serverConfig = JSON.parse(db!.get('config') as string) as ServerDBConfig
 
-    // If server doesnt have a level multiplier then create and set to 2
-    if (!serverConfig.levelMultiplier) {
-      serverConfig.levelMultiplier = '2'
-      await db.update({ config: JSON.stringify(serverConfig) })
-    }
-
     // Get server's level multiplier
     const { levelMultiplier } = serverConfig
 
@@ -126,10 +106,11 @@ export class LevelManager {
 
     // Standard level up message
     const levelUpMessage = async (level: number) => {
-      if (this.levelUpChannel) {
-        await this.levelUpChannel.send(this.msg.member.toString())
-        await this.levelUpChannel.send(Utils.embed(this.msg).setTitle(`You are now level [ ${level} ] :confetti_ball:`))
-      }
+      await this.author.send(
+        Utils.embed(this.msg)
+          .setTitle(`**You are now level [ ${level} ] in server [ ${this.guild.name} ] :confetti_ball:**`)
+          .setThumbnail(this.guild.iconURL)
+      )
     }
 
     // If member is level 1 and xp is greater than 100 level them up
@@ -144,7 +125,9 @@ export class LevelManager {
       member.exp = 0
       await levelUpMessage(member.level)
     } // Else give EXP point
-    else member.exp++
+    else {
+      member.exp++
+    }
 
     // Set EXP till next level according to exp and leveling formula
     member.expTillNextLevel = levelingFormula - member.exp
@@ -170,30 +153,32 @@ export class LevelManager {
     // Assign member
     const gMember = this.guild.member(this.author)
 
+    const highestRole = levelRoles
+      .map((l) => l.level)
+      .reduce((prev, curr) => (Math.abs(curr - this.level) < Math.abs(prev - this.level) ? curr : prev))
+
     // Iterate through all level roles
     for (const levelInfo of levelRoles) {
       const { role, level } = levelInfo
 
-      // If current level is greater than or equal to
-      // A role level then give use the role
-      if (this.level >= Number(level)) {
-        // Check if role exists in guild
-        const gRole = this.guild.roles.find((r) => r.name.toLowerCase() === role.toLowerCase())
+      const gRole = this.guild.roles.find((r) => r.name.toLowerCase() === role.toLowerCase())
 
-        // If it does
-        if (gRole) {
+      if (gRole) {
+        // Assign role
+        if (level === highestRole) {
+          //
           // If user doesnt have the role then assign it to them
           if (!gMember.roles.find((r) => r.name === role)) {
             await gMember.addRole(gRole.id)
-
-            if (this.levelUpChannel) {
-              await this.levelUpChannel.send(this.msg.member.toString())
-              return this.levelUpChannel.send(
-                Utils.embed(this.msg).setTitle(`You've leveled up to the role [ ${role} ] :confetti_ball:`)
-              )
-            }
+            return this.author.send(
+              Utils.embed(this.msg)
+                .setTitle(
+                  `**You've leveled up to the role [ ${role} ] in server [ ${this.guild.name} ] :confetti_ball:**`
+                )
+                .setThumbnail(this.guild.iconURL)
+            )
           }
-        }
+        } else if (gMember.roles.find((r) => r.name === role)) await gMember.removeRole(gRole.id)
       }
     }
   }

@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from 'reactn'
+import { useGlobal, useState } from 'reactn'
 import { updateDB } from '../../../Utils/Utils'
 
 const Google = () => {
@@ -12,23 +12,34 @@ const Google = () => {
   }
 
   return (
-    <div className="SettingsEntry">
-      <span className="SettingsEntryTitle">Google</span>
-      <form className="SettingsEntryForm" autoComplete="off" onSubmit={handleSubmit}>
-        <input
-          className="SettingsEntryInput"
-          type="text"
-          placeholder="ApiKey"
-          name="apikey"
-          value={apikey}
-          required={true}
-          onChange={(e) => setApikey(e.target.value)}
-        />
+    < div
+  className = 'SettingsEntry' >
+    < span
+  className = 'SettingsEntryTitle' > Google < /span>
+    < form
+  className = 'SettingsEntryForm'
+  autoComplete = 'off'
+  onSubmit = { handleSubmit } >
+    < input
+  className = 'SettingsEntryInput'
+  type = 'text'
+  placeholder = 'ApiKey'
+  name = 'apikey'
+  value = { apikey }
+  required = { true }
+  onChange = {(e)
+=>
+  setApikey(e.target.value)
+}
+  />
 
-        <input className="SettingsEntryInput save" type="submit" value="SAVE" />
-      </form>
-    </div>
-  )
+  < input
+  className = 'SettingsEntryInput save'
+  type = 'submit'
+  value = 'SAVE' / >
+    < /form>
+    < /div>
+)
 }
 
 export default Google

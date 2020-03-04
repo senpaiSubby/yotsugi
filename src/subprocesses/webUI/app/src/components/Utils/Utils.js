@@ -1,4 +1,4 @@
-import { toast, Flip } from 'react-toastify'
+import { Flip, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './Utils.css'
 

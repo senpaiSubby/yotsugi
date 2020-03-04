@@ -31,7 +31,7 @@ interface ServerDBConfig {
   modMailChannel: string | null
   starboardChannel: string | null
   welcomeChannel: string | null
-  levelUpMessage: string | null
+  leveling: boolean
   verifyUsers: boolean
   verfiedRole: string | null
   verifiedChannel: string | null

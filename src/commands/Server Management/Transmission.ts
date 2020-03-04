@@ -17,8 +17,7 @@ export default class Transmission extends Command {
       category: 'Server Management',
       description: 'Transmission Management',
       usage: [`tor list`, 'tor add <magnet link>'],
-      args: true,
-      cooldown: 10
+      args: true
     })
     this.color = '#AE0701'
   }

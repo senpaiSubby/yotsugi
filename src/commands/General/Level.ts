@@ -21,8 +21,7 @@ export default class Level extends Command {
         'level remove <level> <role>',
         'level change <level> <role>',
         'level roles'
-      ],
-      cooldown: 10
+      ]
     })
   }
 

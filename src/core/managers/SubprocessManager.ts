@@ -7,8 +7,8 @@ import fs from 'fs'
 import path, { join } from 'path'
 
 import { Subprocess } from '../base/Subprocess'
+import { Log } from '../Logger'
 import { NezukoClient } from '../NezukoClient'
-import { Log } from '../utils/Logger'
 
 // tslint:disable: completed-docs
 
@@ -44,7 +44,9 @@ export class SubprocessManager {
       if (!instance.disabled) {
         if (this.processes.has(instance.name)) {
           throw new Error('Subprocesses cannot have the same name')
-        } else this.processes.set(instance.name, instance)
+        } else {
+          this.processes.set(instance.name, instance)
+        }
       }
     }
     for (const subprocess of this.processes.values()) this.startModule(subprocess)
@@ -53,7 +55,7 @@ export class SubprocessManager {
 
   public async startModule(subprocess: Subprocess) {
     try {
-      subprocess.run()
+      await subprocess.run()
       this.loadedModules.push(subprocess.name)
     } catch (err) {
       this.client.Log.warn('Subprocess', err)

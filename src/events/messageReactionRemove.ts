@@ -6,7 +6,7 @@ import { MessageReaction, TextChannel } from 'discord.js'
 import { ServerDBConfig } from 'typings'
 
 import { serverConfig } from '../core/database/database'
-import { Utils } from '../core/utils/Utils'
+import { Utils } from '../core/Utils'
 
 export const messageReactionRemove = async (reaction: MessageReaction) => {
   if (reaction.emoji.name !== '⭐') return

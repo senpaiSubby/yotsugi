@@ -64,6 +64,7 @@ export default class LinuxPower extends Command {
               Log.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
               await errorMessage(msg, `Failed to connect to [ ${capitalize(name)} ]`)
             }
+            return
           }
           case 'on': {
             await wol.wake(mac)

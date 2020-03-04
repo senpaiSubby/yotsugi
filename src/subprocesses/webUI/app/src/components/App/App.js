@@ -1,4 +1,3 @@
-import React from 'reactn'
 import './App.css'
 
 import TitleBar from '../TitleBar/TitleBar'

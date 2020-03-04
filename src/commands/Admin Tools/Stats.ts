@@ -10,7 +10,6 @@ import { StatsManager } from '../../core/managers/StatsManager'
 import { NezukoClient } from '../../core/NezukoClient'
 
 /**
- * TODO make stats togglable
  * Get and set server config
  */
 export default class Stats extends Command {
@@ -28,9 +27,9 @@ export default class Stats extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils, p } = client
-    const { warningMessage, validOptions, standardMessage, embed } = Utils
-    const { channel, guild } = msg
+    const { Utils } = client
+    const { validOptions, standardMessage } = Utils
+    const { guild } = msg
 
     // * ------------------ Config --------------------
 
@@ -56,7 +55,6 @@ export default class Stats extends Command {
           statChannels: JSON.stringify(statChannels)
         })
 
-        // TODO make this delete all channels and category for server stats
         const { total, bots, members, categoryID } = statChannels
 
         // * delete all stat channels and category

@@ -15,8 +15,7 @@ export default class Help extends Command {
       category: 'Information',
       description: 'Get command help',
       guildOnly: true,
-      usage: ['help', 'help <some command>'],
-      cooldown: 10
+      usage: ['help', 'help <some command>']
     })
   }
 
@@ -74,10 +73,10 @@ export default class Help extends Command {
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
         /**
-          .setDescription(
-            `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
-          )
-          */
+         .setDescription(
+         `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
+         )
+         */
 
         let desc = `-\n** Help [ ${key} ]**\n\`Showing commands you have access to\`\n**\`${prefix}help [ command ]\` for command usage**\n\`\`\`css\n`
         let longestString = 0
@@ -87,8 +86,11 @@ export default class Help extends Command {
         })
 
         newSorted[key].forEach((i: Command) => {
-          if (i.name.length === longestString) desc += `${i.name} - ${i.description}\n`
-          else desc += `${i.name}${addSpace(longestString - i.name.length)} - ${i.description}\n`
+          if (i.name.length === longestString) {
+            desc += `${i.name} - ${i.description}\n`
+          } else {
+            desc += `${i.name}${addSpace(longestString - i.name.length)} - ${i.description}\n`
+          }
         })
 
         desc = `${desc}\n\`\`\``
