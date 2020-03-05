@@ -24,7 +24,13 @@ export default class ArchiveBox extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, db } = client
-    const { standardMessage, errorMessage, execAsync, embed, missingConfig } = Utils
+    const {
+      standardMessage,
+      errorMessage,
+      execAsync,
+      embed,
+      missingConfig
+    } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -33,14 +39,17 @@ export default class ArchiveBox extends Command {
 
     // If archivebox path is not set
     if (!path) {
-      return missingConfig(msg, 'ArchiveBox', ['config set archivebox path <path to archivebox>'])
+      return missingConfig(msg, 'ArchiveBox', [
+        'config set archivebox path <path to archivebox>'
+      ])
     }
 
     // * ------------------ Logic --------------------
 
     // Let the user know the archiving is beginning
     await channel.send(
-      embed(msg, 'green', 'archivebox.png').setDescription(`**:printer: Archiving the url
+      embed(msg, 'green', 'archivebox.png')
+        .setDescription(`**:printer: Archiving the url
 
     - ${args[0]}
 
@@ -48,9 +57,12 @@ export default class ArchiveBox extends Command {
     )
 
     // Attempt to archive the url
-    const { code } = await execAsync(`cd ${path} && echo "${args[0]}" | ./archive`, {
-      silent: true
-    })
+    const { code } = await execAsync(
+      `cd ${path} && echo "${args[0]}" | ./archive`,
+      {
+        silent: true
+      }
+    )
 
     // If exit code isnt 0 then the archive failed
     if (code !== 0) return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)

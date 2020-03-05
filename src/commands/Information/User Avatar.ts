@@ -28,7 +28,8 @@ export default class UserAvatar extends Command {
 
     const member = msg.mentions.members.first() || msg.guild.member(author)
 
-    if (!member.user.avatar) return warningMessage(msg, 'This user doesn\'t have an avatar!')
+    if (!member.user.avatar)
+      return warningMessage(msg, "This user doesn't have an avatar!")
     const avatar = member.user.avatarURL
 
     return channel.send(

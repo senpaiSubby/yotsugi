@@ -21,15 +21,20 @@ export const guildMemberAdd = async (member: GuildMember) => {
   /////////////////////////////////////////////////////////////////////
   if (!channel) return
 
-  Canvas.registerFont(path.join(__dirname, '..', 'core', 'images', 'GENUINE.ttf'), {
-    family: 'GENUINE'
-  })
+  Canvas.registerFont(
+    path.join(__dirname, '..', 'core', 'images', 'GENUINE.ttf'),
+    {
+      family: 'GENUINE'
+    }
+  )
 
   const canvas = Canvas.createCanvas(800, 400)
 
   const ctx = canvas.getContext('2d')
 
-  const background = await Canvas.loadImage(`${__dirname}/../core/images/welcome.png`)
+  const background = await Canvas.loadImage(
+    `${__dirname}/../core/images/welcome.png`
+  )
   ctx.drawImage(background, 0, 0, canvas.width + 2, canvas.height + 2)
 
   ctx.strokeStyle = 'black'

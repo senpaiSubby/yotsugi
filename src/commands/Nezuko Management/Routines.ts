@@ -31,11 +31,24 @@ export default class Routines extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const { validOptions, warningMessage, errorMessage, standardMessage, embed, paginate, asyncForEach } = Utils
+    const {
+      validOptions,
+      warningMessage,
+      errorMessage,
+      standardMessage,
+      embed,
+      paginate,
+      asyncForEach
+    } = Utils
 
     // * ------------------ Config --------------------
 
@@ -62,7 +75,10 @@ export default class Routines extends Command {
         // Check for new name
         if (!newName) {
           if (api) return `Please specify the name for routine [ ${newName} ]`
-          return warningMessage(msg, `Please specify the name for routine [ ${newName} ]`)
+          return warningMessage(
+            msg,
+            `Please specify the name for routine [ ${newName} ]`
+          )
         }
 
         // Rename routine
@@ -71,7 +87,11 @@ export default class Routines extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) return `Renamed routine [ ${routineName} ] to [ ${newName} ]`
-        return standardMessage(msg, 'green', `Renamed routine [ ${routineName} ] to [ ${newName} ]`)
+        return standardMessage(
+          msg,
+          'green',
+          `Renamed routine [ ${routineName} ] to [ ${newName} ]`
+        )
       }
 
       case 'enable': {
@@ -86,8 +106,12 @@ export default class Routines extends Command {
 
         // Check if user specified command
         if (!args[2]) {
-          if (api) return `Please specify the command # in routine [ ${routineName} ] to enable`
-          return warningMessage(msg, `Please specify the command # in routine [ ${routineName} ] to enable`)
+          if (api)
+            return `Please specify the command # in routine [ ${routineName} ] to enable`
+          return warningMessage(
+            msg,
+            `Please specify the command # in routine [ ${routineName} ] to enable`
+          )
         }
 
         const command = args[2] - 1
@@ -97,8 +121,12 @@ export default class Routines extends Command {
 
         // Check if command exists
         if (!commandListIndex) {
-          if (api) return `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
-          return warningMessage(msg, `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`)
+          if (api)
+            return `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
+          return warningMessage(
+            msg,
+            `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
+          )
         }
 
         // Check current status
@@ -111,7 +139,9 @@ export default class Routines extends Command {
           }
           return warningMessage(
             msg,
-            `Command [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ] is already enabled`
+            `Command [ ${command + 1} ] [ ${
+              commandListIndex[1]
+            } ] in routine [ ${routineName} ] is already enabled`
           )
         }
         // Enable command in routine
@@ -120,12 +150,16 @@ export default class Routines extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) {
-          return `Enabled command  [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
+          return `Enabled command  [ ${command + 1} ] [ ${
+            commandListIndex[1]
+          } ] in routine [ ${routineName} ]`
         }
         return standardMessage(
           msg,
           'green',
-          `Enabled command  [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
+          `Enabled command  [ ${command + 1} ] [ ${
+            commandListIndex[1]
+          } ] in routine [ ${routineName} ]`
         )
       }
 
@@ -141,8 +175,12 @@ export default class Routines extends Command {
 
         // Check if user specified command
         if (!args[2]) {
-          if (api) return `Please specify the command # in routine [ ${routineName} ] to disable`
-          return warningMessage(msg, `Please specify the command # in routine [ ${routineName} ] to disable`)
+          if (api)
+            return `Please specify the command # in routine [ ${routineName} ] to disable`
+          return warningMessage(
+            msg,
+            `Please specify the command # in routine [ ${routineName} ] to disable`
+          )
         }
 
         const command = args[2] - 1
@@ -152,8 +190,12 @@ export default class Routines extends Command {
 
         // Check if command exists
         if (!commandListIndex) {
-          if (api) return `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
-          return warningMessage(msg, `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`)
+          if (api)
+            return `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
+          return warningMessage(
+            msg,
+            `Routine [ ${routineName} ] doesnt contain comamnd # [ ${command} ]`
+          )
         }
 
         // Check current status
@@ -166,7 +208,9 @@ export default class Routines extends Command {
           }
           return warningMessage(
             msg,
-            `Command [ ${command + 1} ] [ ${commandListIndex[1]} ] in routine [ ${routineName} ] is already disabled`
+            `Command [ ${command + 1} ] [ ${
+              commandListIndex[1]
+            } ] in routine [ ${routineName} ] is already disabled`
           )
         }
         // Disable command in routine
@@ -175,12 +219,16 @@ export default class Routines extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) {
-          return `Disabled command  [ ${command + 1} ][ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
+          return `Disabled command  [ ${command + 1} ][ ${
+            commandListIndex[1]
+          } ] in routine [ ${routineName} ]`
         }
         return standardMessage(
           msg,
           'green',
-          `Disabled command  [ ${command + 1} ][ ${commandListIndex[1]} ] in routine [ ${routineName} ]`
+          `Disabled command  [ ${command + 1} ][ ${
+            commandListIndex[1]
+          } ] in routine [ ${routineName} ]`
         )
       }
 
@@ -193,7 +241,12 @@ export default class Routines extends Command {
           return warningMessage(msg, `Routine [ ${routineName} ] doesn't exist`)
         }
 
-        if (!api) await standardMessage(msg, 'green', `Running routine [ ${routineName} ]`)
+        if (!api)
+          await standardMessage(
+            msg,
+            'green',
+            `Running routine [ ${routineName} ]`
+          )
 
         const failedCommands = []
         await asyncForEach(routines[index].commands, async (i) => {
@@ -204,7 +257,8 @@ export default class Routines extends Command {
             const commandName = params.shift().toLowerCase()
             const cmd = msg.context.findCommand(commandName)
             if (cmd) {
-              if (api) await msg.context.runCommand(client, cmd, null, params, true)
+              if (api)
+                await msg.context.runCommand(client, cmd, null, params, true)
               else await msg.context.runCommand(client, cmd, msg, params)
             } else failedCommands.push(commandName)
           }
@@ -212,7 +266,10 @@ export default class Routines extends Command {
 
         if (failedCommands.length) {
           if (api) return `Commands [ ${failedCommands.join(', ')} ] dont exist`
-          return errorMessage(msg, `Commands [ ${failedCommands.join(', ')} ] dont exist`)
+          return errorMessage(
+            msg,
+            `Commands [ ${failedCommands.join(', ')} ] dont exist`
+          )
         }
         if (api) return `Running routine [ ${routineName} ]`
         break
@@ -226,7 +283,9 @@ export default class Routines extends Command {
 
         const embedList = []
         routines.forEach((i) => {
-          const e = embed(msg, 'green', 'routine.png').setTitle(`Routines - [ ${i.name} ]`)
+          const e = embed(msg, 'green', 'routine.png').setTitle(
+            `Routines - [ ${i.name} ]`
+          )
           i.commands.forEach((c, index) => {
             const status = c[0] ? ':green_square:' : ':red_square:'
             e.addField(`[ ${index + 1} ]`, `**${status} ${c[1]}**`, true)
@@ -252,20 +311,32 @@ export default class Routines extends Command {
 
         if (!command) {
           if (api) return `Please specify the command to add to the routine`
-          return warningMessage(msg, `Please specify the command to add to the routine`)
+          return warningMessage(
+            msg,
+            `Please specify the command to add to the routine`
+          )
         }
 
         // Check if command is already part of routine
         if (routines[index].commands.includes(command)) {
-          if (api) return `Routine [ ${routineName} ] already has comamnd [ ${command} ]`
-          return warningMessage(msg, `Routine [ ${routineName} ] already has comamnd [ ${command} ]`)
+          if (api)
+            return `Routine [ ${routineName} ] already has comamnd [ ${command} ]`
+          return warningMessage(
+            msg,
+            `Routine [ ${routineName} ] already has comamnd [ ${command} ]`
+          )
         }
 
         // Save changes
         routines[index].commands.push([true, command])
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Added command [ ${command} ] to routine [ ${routineName} ]`
-        return standardMessage(msg, 'green', `Added command [ ${command} ] to routine [ ${routineName} ]`)
+        if (api)
+          return `Added command [ ${command} ] to routine [ ${routineName} ]`
+        return standardMessage(
+          msg,
+          'green',
+          `Added command [ ${command} ] to routine [ ${routineName} ]`
+        )
       }
 
       case 'remove': {
@@ -283,30 +354,56 @@ export default class Routines extends Command {
           const command = args.join(' ')
 
           // Get index of individual command list
-          const commandListIndex = routines[routineIndex].commands.findIndex((i) => i[1] === command)
+          const commandListIndex = routines[routineIndex].commands.findIndex(
+            (i) => i[1] === command
+          )
           // Check if command exists
-          if (!routines[routineIndex].commands[commandListIndex].includes(command)) {
-            if (api) return `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`
-            return warningMessage(msg, `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`)
+          if (
+            !routines[routineIndex].commands[commandListIndex].includes(command)
+          ) {
+            if (api)
+              return `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`
+            return warningMessage(
+              msg,
+              `Routine [ ${routineName} ] doesnt contain comamnd [ ${command} ]`
+            )
           }
           // Remove command from routine
-          const commandIndex = routines[routineIndex].commands.findIndex((i) => i === command)
+          const commandIndex = routines[routineIndex].commands.findIndex(
+            (i) => i === command
+          )
           // Save changes
           routines[routineIndex].commands.splice(commandIndex, 1)
           await db.update({ config: JSON.stringify(config) })
-          if (api) return `Removed command [ ${command} ] from routine [ ${routineName} ]`
-          return standardMessage(msg, 'green', `Removed command [ ${command} ] from routine [ ${routineName} ]`)
+          if (api)
+            return `Removed command [ ${command} ] from routine [ ${routineName} ]`
+          return standardMessage(
+            msg,
+            'green',
+            `Removed command [ ${command} ] from routine [ ${routineName} ]`
+          )
         }
 
         // Save changes
         routines.splice(routineIndex, 1)
         await db.update({ config: JSON.stringify(config) })
         if (api) return `Removed routine [ ${routineName} ]`
-        return standardMessage(msg, 'green', `Removed routine [ ${routineName} ]`)
+        return standardMessage(
+          msg,
+          'green',
+          `Removed routine [ ${routineName} ]`
+        )
       }
 
       default:
-        return validOptions(msg, ['add', 'remove', 'run', 'rename', 'disable', 'enable'])
+        return validOptions(msg, [
+          'add',
+          'remove',
+          'run',
+          'rename',
+          'disable',
+          'enable'
+        ])
     }
   }
 }

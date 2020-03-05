@@ -22,7 +22,12 @@ export default class Reddit extends Command {
     this.color = '#FF3F18'
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
     const { Utils } = client
     const { embed, warningMessage, errorMessage } = Utils
@@ -30,17 +35,32 @@ export default class Reddit extends Command {
 
     // * ------------------ Usage Logic --------------------
 
-    if (!args[0]) return errorMessage(msg, 'Please specify the sub reddit to grab from')
+    if (!args[0]) {
+      return errorMessage(msg, 'Please specify the sub reddit to grab from')
+    }
 
-    const response = await get(`https://www.reddit.com/r/${args[0]}.json?sort=top=week`)
+    const response = await get(
+      `https://www.reddit.com/r/${args[0]}.json?sort=top=week`
+    )
     const post = response.body.data.children
 
-    if (!post) return warningMessage(msg, 'It seems no posts were found!, Try again later.')
+    if (!post) {
+      return warningMessage(
+        msg,
+        'It seems no posts were found!, Try again later.'
+      )
+    }
 
     const randomnumber = Math.floor(Math.random() * post.length)
     const selectedPost = post[randomnumber].data
 
-    const { url, subreddit_name_prefixed, author, title, selftext } = selectedPost
+    const {
+      url,
+      subreddit_name_prefixed,
+      author,
+      title,
+      selftext
+    } = selectedPost
 
     let isImage = false
 

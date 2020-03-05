@@ -48,7 +48,9 @@ export default class Announce extends Command {
       )
     }
 
-    const serverAnnouncementChannel = guild.channels.get(announcementChannel) as TextChannel
+    const serverAnnouncementChannel = guild.channels.get(
+      announcementChannel
+    ) as TextChannel
 
     // Grab everyone from the guidls default role
     const everyone = msg.guild.defaultRole

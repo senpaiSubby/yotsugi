@@ -25,9 +25,9 @@ export class Log {
     message: string | Error,
     stacktrace?: any
   ) {
-    const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(name)} ${chalk.yellow(
-      message ? `${chalk.white('-')} ${message}` : ''
-    )}`
+    const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(
+      name
+    )} ${chalk.yellow(message ? `${chalk.white('-')} ${message}` : '')}`
 
     // Logger Stacktrace
     if (stacktrace) {
@@ -43,7 +43,11 @@ export class Log {
     return Log.logger(chalk.green.bold, 'OK', name, message)
   }
 
-  public static error(name: string, message: string | Error, stacktrace = null) {
+  public static error(
+    name: string,
+    message: string | Error,
+    stacktrace = null
+  ) {
     return Log.logger(chalk.red.bold, 'ERROR', name, message, stacktrace)
   }
 

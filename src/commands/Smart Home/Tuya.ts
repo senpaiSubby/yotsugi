@@ -21,10 +21,22 @@ export default class Tuya extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
     const { Utils, Log } = client
-    const { errorMessage, warningMessage, standardMessage, asyncForEach, capitalize, embed } = Utils
+    const {
+      errorMessage,
+      warningMessage,
+      standardMessage,
+      asyncForEach,
+      capitalize,
+      embed
+    } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -78,7 +90,11 @@ export default class Tuya extends Command {
 
         const status = currentStatus ? 'Off' : 'On'
         if (api) return `[ ${name} ] turned [ ${status} ]`
-        return standardMessage(msg, 'green', `:electric_plug: [ ${name} ] turned [ ${status} ]`)
+        return standardMessage(
+          msg,
+          'green',
+          `:electric_plug: [ ${name} ] turned [ ${status} ]`
+        )
       } catch (e) {
         const text = `Failed to connect to [ ${name} ]`
         if (api) return text
@@ -103,12 +119,20 @@ export default class Tuya extends Command {
         if (currentState === newState) {
           await device.disconnect()
           if (api) return `[ ${name} ] is already [ ${state} ]`
-          return standardMessage(msg, 'green', `:electric_plug: [ ${name} ] is already [ ${state} ]`)
+          return standardMessage(
+            msg,
+            'green',
+            `:electric_plug: [ ${name} ] is already [ ${state} ]`
+          )
         }
         await device.set({ set: !currentState })
         await device.disconnect()
         if (api) return `[ ${name} ] turned [ ${state} ]`
-        return standardMessage(msg, 'green', `:electric_plug: [ ${name} ] turned [ ${state} ]`)
+        return standardMessage(
+          msg,
+          'green',
+          `:electric_plug: [ ${name} ] turned [ ${state} ]`
+        )
       } catch (e) {
         const text = `Failed to connect to [ ${name} ]`
         if (api) return text
@@ -124,9 +148,16 @@ export default class Tuya extends Command {
         const deviceList = await listPlugs()
         if (deviceList) {
           if (api) return deviceList
-          const e = embed(msg, 'green', 'plug.png').setTitle(':electric_plug: Tuya Smart Plugs')
+          const e = embed(msg, 'green', 'plug.png').setTitle(
+            ':electric_plug: Tuya Smart Plugs'
+          )
           if (typeof deviceList !== 'string') {
-            deviceList.forEach((device) => e.addField(`${device.name}`, `Status: [ ${capitalize(device.status)} ]`))
+            deviceList.forEach((device) =>
+              e.addField(
+                `${device.name}`,
+                `Status: [ ${capitalize(device.status)} ]`
+              )
+            )
           }
           return channel.send(e)
         }
@@ -134,11 +165,14 @@ export default class Tuya extends Command {
       }
       default: {
         const deviceName = args[0].toLowerCase()
-        const index = tuyaDevices.findIndex((d) => d.name.toLowerCase() === deviceName)
+        const index = tuyaDevices.findIndex(
+          (d) => d.name.toLowerCase() === deviceName
+        )
         const device = tuyaDevices[index]
         const name = capitalize(args[0])
         // If plug name not found
-        if (index === -1) return warningMessage(msg, `No plug named [ ${name} ]`)
+        if (index === -1)
+          return warningMessage(msg, `No plug named [ ${name} ]`)
 
         // If on/off specified
         if (args[1]) return setPlug(device, args[1])

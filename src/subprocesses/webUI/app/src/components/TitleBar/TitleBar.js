@@ -8,7 +8,13 @@ const TitleBar = () => {
   return (
     <div className="TitleBar">
       <BotInfo />
-      <div style={{ display: 'grid', gridGap: '5px', gridTemplateColumns: 'auto auto' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridGap: '5px',
+          gridTemplateColumns: 'auto auto'
+        }}
+      >
         <RunCommand />
         <Settings />
       </div>

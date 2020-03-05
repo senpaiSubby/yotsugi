@@ -26,11 +26,22 @@ export default class PiHole extends Command {
   }
 
   // TODO add pihole typings
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
 
     const { p, Log, Utils } = client
-    const { errorMessage, validOptions, missingConfig, embed, capitalize } = Utils
+    const {
+      errorMessage,
+      validOptions,
+      missingConfig,
+      embed,
+      capitalize
+    } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -40,7 +51,10 @@ export default class PiHole extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [`${p}config set pihole host <PIHOLEURL>`, `${p}config set pihole apiKey <APIKEY>`]
+      const settings = [
+        `${p}config set pihole host <PIHOLEURL>`,
+        `${p}config set pihole apiKey <APIKEY>`
+      ]
       return missingConfig(msg, 'pihole', settings)
     }
 
@@ -48,7 +62,9 @@ export default class PiHole extends Command {
 
     const setState = async (newState) => {
       try {
-        const response = await get(urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`)).headers({
+        const response = await get(
+          urljoin(host, `admin/api.php?${newState}&auth=${apiKey}`)
+        ).headers({
           accept: 'application/json'
         })
         const data = await response.body
@@ -62,7 +78,9 @@ export default class PiHole extends Command {
         const color = newState === 'enable' ? 'green' : 'yellow'
 
         if (api) return `PiHole [ ${text} ]`
-        return channel.send(embed(msg, color).setDescription(`**PiHole [ ${text} ]**`))
+        return channel.send(
+          embed(msg, color).setDescription(`**PiHole [ ${text} ]**`)
+        )
       } catch (e) {
         if (api) return `Failed to connect to PiHole`
         Log.error('PiHole', 'Failed to connect to PiHole', e)
@@ -110,14 +128,18 @@ export default class PiHole extends Command {
             embed(msg, this.color, 'pi.png')
               .setTitle('PiHole Stats')
               .addField('Status', capitalize(status.status), true)
-              .addField('URL\'s Being Blocked', status.domainsBeingBlocked, true)
+              .addField("URL's Being Blocked", status.domainsBeingBlocked, true)
               .addField('Total Queries', status.totalQueries, true)
               .addField('Queries Today', status.queriesToday, true)
               .addField('Blocked Today', status.adsBlockedToday, true)
               .addField('Queries Today', status.queriesToday, true)
               .addField('Forwarded', status.forwarded, true)
               .addField('Cached', status.cached, true)
-              .addField('Percentage', Math.round(status.blockedPercentage), true)
+              .addField(
+                'Percentage',
+                Math.round(status.blockedPercentage),
+                true
+              )
           )
         }
         return

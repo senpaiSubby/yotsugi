@@ -18,13 +18,20 @@ export default class Activity extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
     const { Utils } = client
     const { embed, paginate, sortByKey } = Utils
     const { author, channel, guild } = msg
     // * ------------------ Config --------------------
-    const db = await database.models.Servers.findOne({ where: { id: guild.id } })
+    const db = await database.models.Servers.findOne({
+      where: { id: guild.id }
+    })
     const config = JSON.parse(db.get('userActivity') as string) as any[]
     const sorted = Object.keys(config)
       .sort((a, b) => config[b].score - config[a].score)

@@ -21,7 +21,12 @@ export default class SystemIP extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
 
     const { warningMessage } = client.Utils

@@ -44,10 +44,20 @@ interface GeneralDBConfig {
   disabledCommands: any[]
   docker: { host: string | null }
   emby: { apiKey: string | null; host: string | null; userID: string | null }
-  googleHome: { ip: string | null; language: string | null; name: string | null }
+  googleHome: {
+    ip: string | null
+    language: string | null
+    name: string | null
+  }
   google: { apiKey: string | null }
   jackett: { apiKey: string | null; host: string | null }
-  jellyfin: { apiKey: string | null; host: string | null; userID: string | null; username: string; password: string }
+  jellyfin: {
+    apiKey: string | null
+    host: string | null
+    userID: string | null
+    username: string
+    password: string
+  }
   lockedCommands: any[]
   meraki: { apiKey: string | null; serielNum: string | null }
   ombi: { apiKey: string | null; host: string | null; username: string | null }
@@ -55,7 +65,11 @@ interface GeneralDBConfig {
   pioneerAVR: { host: string | null }
   routines: any[]
   sabnzbd: { apiKey: string | null; host: string | null }
-  sengled: { jsessionid: string | null; password: string | null; username: string | null }
+  sengled: {
+    jsessionid: string | null
+    password: string | null
+    username: string | null
+  }
   shortcuts: any[]
   systemPowerControl: [{ host: 'xxx'; mac: 'xxx'; name: 'xxx' }]
   transmission: { host: string | null; port: string | null; ssl: boolean }

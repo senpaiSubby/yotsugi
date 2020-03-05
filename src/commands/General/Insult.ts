@@ -24,15 +24,24 @@ export default class SpaceText extends Command {
     const { mentions, guild, author } = msg
     const { standardMessage } = client.Utils
 
-    const user = mentions.members.first() || guild.members.get(args[0]) || guild.members.get(author.id)
+    const user =
+      mentions.members.first() ||
+      guild.members.get(args[0]) ||
+      guild.members.get(author.id)
 
     try {
-      const response = await get('https://evilinsult.com/generate_insult.php?lang=en&type=json')
+      const response = await get(
+        'https://evilinsult.com/generate_insult.php?lang=en&type=json'
+      )
       const insult = JSON.parse(response.body)
       return standardMessage(msg, 'green', `Yo <@${user.id}>, ${insult.insult}`)
     } catch {
       // tslint:disable-next-line:quotemark
-      return standardMessage(msg, 'green', 'Try later I couldn\'t think of anything right now')
+      return standardMessage(
+        msg,
+        'green',
+        'Try later I couldn\'t think of anything right now'
+      )
     }
   }
 }

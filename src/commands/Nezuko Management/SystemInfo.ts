@@ -37,7 +37,11 @@ export default class SystemInfo extends Command {
       const cpuPercent = round(await cpu.usage())
       let loadAverage = ''
       cpu.loadavg().forEach((i) => (loadAverage += `${round(i)}% `))
-      return { cores: coreCount, percentage: cpuPercent, load: loadAverage.trim() }
+      return {
+        cores: coreCount,
+        percentage: cpuPercent,
+        load: loadAverage.trim()
+      }
     }
 
     const ramInfo = async () => {
@@ -58,7 +62,9 @@ export default class SystemInfo extends Command {
       }
     }
 
-    const ms = (await channel.send(embed(msg, 'green').setDescription('**:timer: Loading system stats..**'))) as Message
+    const ms = (await channel.send(
+      embed(msg, 'green').setDescription('**:timer: Loading system stats..**')
+    )) as Message
     await ms.react('🛑')
 
     const refreshEmbed = async () => {
@@ -70,7 +76,10 @@ export default class SystemInfo extends Command {
       await ms.edit(
         embed(msg, 'green')
           .setTitle(':computer: Live System Stats')
-          .addField('Host', `**[${hostname()}] ${type()} ${arch()} ${release()}**`)
+          .addField(
+            'Host',
+            `**[${hostname()}] ${type()} ${arch()} ${release()}**`
+          )
           .addField('CPU Cores', cores, true)
           .addField('CPU Usage', percentage, true)
           .addField('CPU Load', load, true)
@@ -81,10 +90,14 @@ export default class SystemInfo extends Command {
     }
 
     await refreshEmbed()
-    const interval = setInterval(async () => await refreshEmbed(), args[0] * 1000)
+    const interval = setInterval(
+      async () => await refreshEmbed(),
+      args[0] * 1000
+    )
 
     const collected = await ms.awaitReactions(
-      (reaction: MessageReaction, user: GuildMember) => ['🛑'].includes(reaction.emoji.name) && user.id === author.id,
+      (reaction: MessageReaction, user: GuildMember) =>
+        ['🛑'].includes(reaction.emoji.name) && user.id === author.id,
       { max: 1 }
     )
 

@@ -91,12 +91,22 @@ export default class Transmission extends Command {
         const downloadQueue: any[] = []
 
         torrents.forEach((item: any) => {
-          const { name, id, rateUpload, rateDownload, downloadedEver, status, sizeWhenDone } = item
+          const {
+            name,
+            id,
+            rateUpload,
+            rateDownload,
+            downloadedEver,
+            status,
+            sizeWhenDone
+          } = item
           downloadQueue.push({
             name,
             id,
             status: getStatus(status),
-            percentage: downloadedEver ? Math.round((downloadedEver / sizeWhenDone) * 100).toString() : '0',
+            percentage: downloadedEver
+              ? Math.round((downloadedEver / sizeWhenDone) * 100).toString()
+              : '0',
             rate: {
               up: rateUpload ? bytesToSize(rateUpload) : 0,
               down: rateDownload ? bytesToSize(rateDownload) : 0
@@ -118,7 +128,11 @@ export default class Transmission extends Command {
     const addTorrent = async (magnet: string) => {
       try {
         const response = await trans.addUrl(magnet)
-        return standardMessage(msg, 'green', `[ ${response.name} ] Added to Transmission`)
+        return standardMessage(
+          msg,
+          'green',
+          `[ ${response.name} ] Added to Transmission`
+        )
       } catch (e) {
         const text = 'Failed to connect to Transmission'
         Log.error('Transmission', text, e)
@@ -133,7 +147,8 @@ export default class Transmission extends Command {
         const data = await getQueue()
 
         if (data) {
-          if (!data.length) return warningMessage(msg, `Nothing in download Queue`)
+          if (!data.length)
+            return warningMessage(msg, `Nothing in download Queue`)
 
           const embedList: any[] = []
           data.forEach((item) => {

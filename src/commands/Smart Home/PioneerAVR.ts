@@ -22,12 +22,23 @@ export default class PioneerAVR extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
 
     const { sleep } = client.Utils
     const { p, Utils } = client
-    const { missingConfig, warningMessage, validOptions, standardMessage, capitalize } = Utils
+    const {
+      missingConfig,
+      warningMessage,
+      validOptions,
+      standardMessage,
+      capitalize
+    } = Utils
 
     // * ------------------ Config --------------------
 
@@ -63,7 +74,9 @@ export default class PioneerAVR extends Command {
         // Setting the volume higher
         const raiseVal = (newVol - currentVol) * 2
         for (let i = 0; i < raiseVal; i++) {
-          await get(urljoin(host, '/EventHandler.asp?WebToHostItem=VU')).headers({
+          await get(
+            urljoin(host, '/EventHandler.asp?WebToHostItem=VU')
+          ).headers({
             accept: 'application/json'
           })
         }
@@ -72,7 +85,9 @@ export default class PioneerAVR extends Command {
         const lowerVal = Math.abs((newVol - currentVol) * 2)
 
         for (let i = 0; i < lowerVal; i++) {
-          await get(urljoin(host, '/EventHandler.asp?WebToHostItem=VD')).headers({
+          await get(
+            urljoin(host, '/EventHandler.asp?WebToHostItem=VD')
+          ).headers({
             accept: 'application/json'
           })
         }
@@ -81,22 +96,34 @@ export default class PioneerAVR extends Command {
 
     const setPower = async (onoff) => {
       const state = onoff === 'on' ? 'PO' : 'PF'
-      await get(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)).headers({
+      await get(
+        urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)
+      ).headers({
         accept: 'application/json'
       })
       if (api) return `AVR turned [ ${capitalize(onoff)} ]`
-      return standardMessage(msg, 'green', `:radio: AVR turned [ ${capitalize(onoff)} ]`)
+      return standardMessage(
+        msg,
+        'green',
+        `:radio: AVR turned [ ${capitalize(onoff)} ]`
+      )
     }
 
     const toggleMute = async () => {
       const status = await getStatus()
       const state = status.Z[0].M === 0 ? 'MO' : 'MF'
-      await get(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)).headers({
+      await get(
+        urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)
+      ).headers({
         accept: 'application/json'
       })
       const muteStatus = status.Z[0].M === 0 ? ':mute:' : ':speaker:'
       if (api) return `AVR [ ${muteStatus} ]`
-      return standardMessage(msg, 'green', `${muteStatus} AVR [ ${muteStatus} ]`)
+      return standardMessage(
+        msg,
+        'green',
+        `${muteStatus} AVR [ ${muteStatus} ]`
+      )
     }
 
     // * ------------------ Usage Logic --------------------
@@ -118,7 +145,11 @@ export default class PioneerAVR extends Command {
         if (!level) {
           const currentVol = await getVolume()
           if (api) return `Current volume is [ ${currentVol} / 100 ]`
-          return standardMessage(msg, 'green', `:speaker: Current volume is [ ${currentVol} / 100 ]`)
+          return standardMessage(
+            msg,
+            'green',
+            `:speaker: Current volume is [ ${currentVol} / 100 ]`
+          )
         }
         if (isNaN(level)) {
           if (api) return `Volume should be a number between 1-100`
@@ -130,7 +161,11 @@ export default class PioneerAVR extends Command {
         }
 
         if (api) return `Volume set to ${level}`
-        return standardMessage(msg, 'green', `:speaker: Volume set to [ ${level} ]`)
+        return standardMessage(
+          msg,
+          'green',
+          `:speaker: Volume set to [ ${level} ]`
+        )
 
       default:
         return validOptions(msg, ['on', 'off', 'vol', 'mute'])

@@ -38,7 +38,11 @@ export default class UserInfo extends Command {
       .setTitle(`${user.user.tag}'s User Info`)
       .setThumbnail(user.user.avatarURL)
       .addField('ID:', `${user.id}`, true)
-      .addField('Nickname:', `${user.nickname !== null ? `${user.nickname}` : 'None'}`, true)
+      .addField(
+        'Nickname:',
+        `${user.nickname !== null ? `${user.nickname}` : 'None'}`,
+        true
+      )
       .addField('Status:', `${user.presence.status}`, true)
       .addField('In Server', user.guild.name, true)
       .addField('Bot:', `${user.user.bot ? 'True' : 'False'}`, true)
@@ -48,7 +52,9 @@ export default class UserInfo extends Command {
     if (inGuild) {
       const rMember = msg.guild.members.get(user.user.id)
 
-      const memSort = msg.guild.members.sort((a, b) => a.joinedTimestamp - b.joinedTimestamp).array()
+      const memSort = msg.guild.members
+        .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp)
+        .array()
       let position = 0
 
       for (const guildember of memSort) {
@@ -56,7 +62,11 @@ export default class UserInfo extends Command {
         if (guildember.id === user.id) break
       }
 
-      e.addField('Joined At', dateFormat(rMember.joinedAt), true).addField('Joined Position', position, true)
+      e.addField('Joined At', dateFormat(rMember.joinedAt), true).addField(
+        'Joined Position',
+        position,
+        true
+      )
     }
 
     return channel.send(e)

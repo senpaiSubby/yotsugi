@@ -31,11 +31,15 @@ export class Utils {
    * @param user GuildeMember to check perms of
    * @param permsNeeded Permission list to check against
    */
-  public static checkPerms(user: GuildMember, permsNeeded: PermissionResolvable[]) {
+  public static checkPerms(
+    user: GuildMember,
+    permsNeeded: PermissionResolvable[]
+  ) {
     const missingPerms: PermissionResolvable[] = []
 
     if (user.id !== config.ownerID && !config.exemptUsers.includes(user.id)) {
-      for (const perm of permsNeeded) if (!user.permissions.has(perm)) missingPerms.push(perm)
+      for (const perm of permsNeeded)
+        if (!user.permissions.has(perm)) missingPerms.push(perm)
     }
     return missingPerms
   }
@@ -47,7 +51,9 @@ export class Utils {
    */
   public static execAsync(cmd: string, opts = {}): Promise<ExecAsync> {
     return new promise((resolve) => {
-      shelljs.exec(cmd, opts, (code: number, stdout: string, stderr: string) => resolve({ code, stdout, stderr }))
+      shelljs.exec(cmd, opts, (code: number, stdout: string, stderr: string) =>
+        resolve({ code, stdout, stderr })
+      )
     })
   }
 
@@ -57,7 +63,8 @@ export class Utils {
    * @param callback Callback function for data use
    */
   public static async asyncForEach(array: any[], callback) {
-    for (let index = 0; index < array.length; index++) await callback(array[index], index, array)
+    for (let index = 0; index < array.length; index++)
+      await callback(array[index], index, array)
   }
 
   /**
@@ -73,7 +80,8 @@ export class Utils {
     let willFit = false
     while (!willFit) {
       let sizeInRange = true
-      for (const i of splitArray) if (i.join().length > 1024) sizeInRange = false
+      for (const i of splitArray)
+        if (i.join().length > 1024) sizeInRange = false
 
       if (sizeInRange) {
         willFit = true
@@ -91,7 +99,11 @@ export class Utils {
    * @param embedList RichEmbed list
    * @param [acceptButton] Show accept button?
    */
-  public static async paginate(msg: NezukoMessage, embedList: any[], acceptButton?: boolean) {
+  public static async paginate(
+    msg: NezukoMessage,
+    embedList: any[],
+    acceptButton?: boolean
+  ) {
     const { author } = msg
 
     let page = 1
@@ -104,10 +116,14 @@ export class Utils {
       const index = page - 1
       try {
         // For embeds
-        await paginated.edit(embedList[index].setFooter(`Page ${page}/${totalPages}`))
+        await paginated.edit(
+          embedList[index].setFooter(`Page ${page}/${totalPages}`)
+        )
       } catch {
         // For non embeds
-        await paginated.edit(`${embedList[index]} \`Page ${page}/${totalPages}\``)
+        await paginated.edit(
+          `${embedList[index]} \`Page ${page}/${totalPages}\``
+        )
       }
       if (totalPages !== 1) {
         if (page === 1) {
@@ -132,7 +148,9 @@ export class Utils {
 
       const collected = await paginated.awaitReactions(
         // tslint:disable-next-line: no-shadowed-variable
-        (reaction, user) => ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) && user.id === author.id,
+        (reaction, user) =>
+          ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) &&
+          user.id === author.id,
         { max: 1, time: 60000 }
       )
 
@@ -157,7 +175,9 @@ export class Utils {
             return index
           case '🛑': {
             running = false
-            const m = (await msg.channel.send(Utils.embed(msg, 'green').setDescription('Canceling..'))) as NezukoMessage
+            const m = (await msg.channel.send(
+              Utils.embed(msg, 'green').setDescription('Canceling..')
+            )) as NezukoMessage
             await m.delete(2000)
             await paginated.clearReactions()
             break
@@ -203,7 +223,8 @@ export class Utils {
 
       const stat = fs.statSync(innerDir)
 
-      if (stat.isDirectory()) results = results.concat(this.findNested(innerDir, pattern))
+      if (stat.isDirectory())
+        results = results.concat(this.findNested(innerDir, pattern))
 
       if (stat.isFile() && innerDir.endsWith(pattern)) results.push(innerDir)
     })
@@ -289,7 +310,10 @@ export class Utils {
   public static millisecondsToTime(ms: number) {
     const duration = moment.duration(ms)
     if (duration.asHours() > 1) {
-      return Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss')
+      return (
+        Math.floor(duration.asHours()) +
+        moment.utc(duration.asMilliseconds()).format(':mm:ss')
+      )
     }
 
     return moment.utc(duration.asMilliseconds()).format('mm:ss')
@@ -304,7 +328,11 @@ export class Utils {
   }
 
   // Global Error Function
-  public static async error(name: string, message: string, channel: TextChannel | DMChannel | GroupDMChannel) {
+  public static async error(
+    name: string,
+    message: string,
+    channel: TextChannel | DMChannel | GroupDMChannel
+  ) {
     const embed = new RichEmbed()
       .setColor('#cc241d')
       .addField('Module', name, true)
@@ -319,7 +347,11 @@ export class Utils {
   }
 
   // Global embed template
-  public static embed(msg: NezukoMessage | Message | boolean = false, color = 'green', image?: string) {
+  public static embed(
+    msg: NezukoMessage | Message | boolean = false,
+    color = 'green',
+    image?: string
+  ) {
     const colors = {
       red: '#fb4934',
       green: '#7C835B',
@@ -330,17 +362,25 @@ export class Utils {
       black: '#282828',
       grey: '#928374'
     }
-    const e = new RichEmbed().setColor(colors[color] ? colors[color] : color).setTimestamp(new Date())
+    const e = new RichEmbed()
+      .setColor(colors[color] ? colors[color] : color)
+      .setTimestamp(new Date())
 
     // If (msg && typeof msg !== 'boolean') e.setFooter(`Requested by: ${msg.author.tag}`, msg.author.avatarURL || '')
 
     if (image) {
-      e.setThumbnail(`https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`)
+      e.setThumbnail(
+        `https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`
+      )
     }
     return e
   }
 
-  public static missingConfig(msg: NezukoMessage, name: string, params: string[]) {
+  public static missingConfig(
+    msg: NezukoMessage,
+    name: string,
+    params: string[]
+  ) {
     return msg.channel.send(
       Utils.embed(msg, 'red', 'settings.png')
         .setTitle(`Missing [ ${name} ] config!`)
@@ -355,19 +395,32 @@ export class Utils {
   }
 
   public static errorMessage(msg: NezukoMessage | Message, text: string) {
-    return msg.channel.send(Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`))
+    return msg.channel.send(
+      Utils.embed(msg, 'red').setDescription(`:rotating_light: **${text}**`)
+    )
   }
 
   public static warningMessage(msg: NezukoMessage | Message, text: string) {
-    return msg.channel.send(Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`))
+    return msg.channel.send(
+      Utils.embed(msg, 'yellow').setDescription(`:warning: **${text}**`)
+    )
   }
 
-  public static standardMessage(msg: NezukoMessage | Message, color: string, text: string) {
-    return msg.channel.send(Utils.embed(msg, color).setDescription(`**${text}**`))
+  public static standardMessage(
+    msg: NezukoMessage | Message,
+    color: string,
+    text: string
+  ) {
+    return msg.channel.send(
+      Utils.embed(msg, color).setDescription(`**${text}**`)
+    )
   }
 
   // Standard valid options return
-  public static async validOptions(msg: NezukoMessage | Message, options: string[]) {
+  public static async validOptions(
+    msg: NezukoMessage | Message,
+    options: string[]
+  ) {
     const m = (await msg.channel.send(
       Utils.embed(msg, 'yellow', 'question.png').setDescription(
         `:grey_question: **Valid options are:\n\n- ${options.join('\n- ')}**`

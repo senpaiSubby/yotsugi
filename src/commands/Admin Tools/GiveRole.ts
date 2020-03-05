@@ -31,9 +31,12 @@ export default class GiveRole extends Command {
     // * ------------------ Logic --------------------
 
     // Get user to add role to
-    const rMember = guild.member(mentions.users.first() || guild.members.get(args[0]))
+    const rMember = guild.member(
+      mentions.users.first() || guild.members.get(args[0])
+    )
     // If no target user warn user
-    if (!rMember) return errorMessage(msg, `No user given or Invalid user given`)
+    if (!rMember)
+      return errorMessage(msg, `No user given or Invalid user given`)
 
     // Drop mentioned user from args
     args.shift()
@@ -43,7 +46,9 @@ export default class GiveRole extends Command {
     if (!role) return msg.reply('Please specify a role')
 
     // Find the specified role
-    const gRole = guild.roles.find((a) => a.name.toLowerCase() === role.toLowerCase())
+    const gRole = guild.roles.find(
+      (a) => a.name.toLowerCase() === role.toLowerCase()
+    )
     if (!gRole) return errorMessage(msg, `Role doesn't exist`)
 
     // Check if member already has the target role and

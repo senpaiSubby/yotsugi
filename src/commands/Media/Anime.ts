@@ -28,10 +28,16 @@ export default class Anime extends Command {
     const { Utils } = client
     const { standardMessage, embed, paginate, warningMessage } = Utils
 
-    const waitMessage = (await standardMessage(msg, this.color, 'Fetching data from the Kitsu API')) as Message
+    const waitMessage = (await standardMessage(
+      msg,
+      this.color,
+      'Fetching data from the Kitsu API'
+    )) as Message
 
     const response = await get(
-      `https://kitsu.io/api/edge/anime?${encodeURIComponent(`filter[text]=${args.join(' ')}`)}`
+      `https://kitsu.io/api/edge/anime?${encodeURIComponent(
+        `filter[text]=${args.join(' ')}`
+      )}`
     )
 
     // Fs.writeFile('data.json', JSON.stringify(response.body), () => null)
@@ -47,22 +53,33 @@ export default class Anime extends Command {
           embedList.push(
             embed(msg, this.color)
               .setTitle(
-                `Kitsu.io Anime - [ ${attributes.titles.en || attributes.titles.en_jp || attributes.titles.ja_jp} ]`
+                `Kitsu.io Anime - [ ${attributes.titles.en ||
+                  attributes.titles.en_jp ||
+                  attributes.titles.ja_jp} ]`
               )
               .setDescription(`${attributes.synopsis.substring(0, 1021)}...`)
               .addField('Type', attributes.subtype, true)
-              .addField('Age Rating', attributes.ageRating ? attributes.ageRating : 'Not rated yet', true)
+              .addField(
+                'Age Rating',
+                attributes.ageRating ? attributes.ageRating : 'Not rated yet',
+                true
+              )
               .addField('Episodes', attributes.episodeCount, true)
               .addField(
                 'Episode Length',
-                `${attributes.episodeLength ? `${attributes.episodeLength} minutes` : 'Not calculated yet'}`,
+                `${
+                  attributes.episodeLength
+                    ? `${attributes.episodeLength} minutes`
+                    : 'Not calculated yet'
+                }`,
                 true
               )
               .addField('Average Rating', attributes.averageRating, true)
               .addField('Popularity Rank', attributes.popularityRank, true)
               .addField(
                 'Airing Date',
-                `${attributes.startDate || 'Not Aired'} - ${attributes.endDate || 'Not Finished'}`,
+                `${attributes.startDate ||
+                  'Not Aired'} - ${attributes.endDate || 'Not Finished'}`,
                 true
               )
               .addField('Status', attributes.status, true)

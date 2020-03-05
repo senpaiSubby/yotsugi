@@ -33,20 +33,25 @@ export default class Level extends Command {
     const { levels } = memberLevels
 
     const user = mentions.members.first()
-    if (!user) return warningMessage(msg, 'Please specify a member to give EXP to')
+    if (!user)
+      return warningMessage(msg, 'Please specify a member to give EXP to')
 
-    if (!levels[user.user.id]) levels[user.user.id] = { level: 0, exp: 0, expTillNextLevel: 0 }
+    if (!levels[user.user.id])
+      levels[user.user.id] = { level: 0, exp: 0, expTillNextLevel: 0 }
 
     const member = levels[user.user.id]
 
     // * ------------------ Logic --------------------
 
     const serverDB = await serverConfig(guild.id)
-    const { levelMultiplier } = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
+    const { levelMultiplier } = JSON.parse(
+      serverDB.get('config') as string
+    ) as ServerDBConfig
     args.shift()
     const xpToGive = Number(args[0])
 
-    if (xpToGive > 100) return warningMessage(msg, 'You cannot give more that 100 XP')
+    if (xpToGive > 100)
+      return warningMessage(msg, 'You cannot give more that 100 XP')
     const totalXP = xpToGive + member.exp
 
     if (totalXP > member.expTillNextLevel) {
@@ -58,7 +63,8 @@ export default class Level extends Command {
       }
     } else if (totalXP < member.expTillNextLevel) member.exp = totalXP
 
-    member.expTillNextLevel = 100 * member.level * Number(levelMultiplier) - member.exp
+    member.expTillNextLevel =
+      100 * member.level * Number(levelMultiplier) - member.exp
 
     await db.update({ memberLevels: JSON.stringify(memberLevels) })
     return standardMessage(msg, 'green', `Gave [ ${xpToGive} xp ]`)

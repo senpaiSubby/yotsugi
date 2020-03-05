@@ -33,9 +33,13 @@ export default class Stats extends Command {
 
     // * ------------------ Config --------------------
 
-    const db = await database.models.Servers.findOne({ where: { id: guild.id } })
+    const db = await database.models.Servers.findOne({
+      where: { id: guild.id }
+    })
 
-    const statChannels = JSON.parse(db.get('statChannels') as string) as StatSettings
+    const statChannels = JSON.parse(
+      db.get('statChannels') as string
+    ) as StatSettings
 
     // * ------------------ Usage Logic --------------------
 
@@ -47,7 +51,11 @@ export default class Stats extends Command {
           statChannels: JSON.stringify(statChannels)
         })
         await StatsManager.updateStats(guild)
-        return standardMessage(msg, 'green', 'Server stat sidebar has been enabled')
+        return standardMessage(
+          msg,
+          'green',
+          'Server stat sidebar has been enabled'
+        )
       }
       case 'disable': {
         statChannels.enabled = false
@@ -103,7 +111,11 @@ export default class Stats extends Command {
           }
         }
 
-        return standardMessage(msg, 'green', 'Server stat sidebar has been disabled and deleted all stat channels')
+        return standardMessage(
+          msg,
+          'green',
+          'Server stat sidebar has been disabled and deleted all stat channels'
+        )
       }
 
       default:

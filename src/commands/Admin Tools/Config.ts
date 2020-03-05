@@ -31,7 +31,9 @@ export default class Config extends Command {
 
     // * ------------------ Config --------------------
 
-    const db = await database.models.Servers.findOne({ where: { id: guild.id } })
+    const db = await database.models.Servers.findOne({
+      where: { id: guild.id }
+    })
 
     const server = JSON.parse(db.get('config') as string) as ServerDBConfig
 
@@ -52,7 +54,11 @@ export default class Config extends Command {
           // Update the database
           await db.update({ config: JSON.stringify(server) })
           // Notify the user
-          return standardMessage(msg, 'green', `[ ${keyToChange} ] changed to [ ${newValue} ]`)
+          return standardMessage(
+            msg,
+            'green',
+            `[ ${keyToChange} ] changed to [ ${newValue} ]`
+          )
         } // If the setting doesn't exist
         return warningMessage(msg, `[${keyToChange}] doesn't exist`)
       }
@@ -80,7 +86,9 @@ export default class Config extends Command {
           keys = Object.keys(values).sort()
 
           // Add a new field to the embed for every key in the settings
-          keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'false'}`, true))
+          keys.forEach((i) =>
+            e.addField(`${i}`, `${server[i] ? server[i] : 'false'}`, true)
+          )
 
           // Ship it off
           return channel.send(e)
@@ -89,11 +97,19 @@ export default class Config extends Command {
         // Info embed
         const e = embed(msg, 'green', 'settings.png')
           .setTitle('Server Config')
-          .setDescription(`**[ ${p}server set <settings> <new value> ] to change**`)
+          .setDescription(
+            `**[ ${p}server set <settings> <new value> ] to change**`
+          )
 
         // Add a new field to the embed for every key in the settings
         keys.forEach((i) => {
-          e.addField(`${i}`, `${server[i] ? server[i] : server[i] === false ? 'false' : 'unset'}`, true)
+          e.addField(
+            `${i}`,
+            `${
+              server[i] ? server[i] : server[i] === false ? 'false' : 'unset'
+            }`,
+            true
+          )
         })
 
         // Ship it off

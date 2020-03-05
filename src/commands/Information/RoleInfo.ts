@@ -31,7 +31,9 @@ export default class RoleInfo extends Command {
 
     // * ------------------ Logic --------------------
 
-    const role = guild.roles.find((r) => r.name.toLowerCase() === args.join(' ').toLowerCase())
+    const role = guild.roles.find(
+      (r) => r.name.toLowerCase() === args.join(' ').toLowerCase()
+    )
 
     if (role) {
       const memberNames = role.members.map((r) => r.user.username).sort()

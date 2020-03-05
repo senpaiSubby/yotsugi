@@ -52,17 +52,23 @@ export default class Ban extends Command {
     // * ------------------ Logic --------------------
 
     // Check if the user mentioned a user to be banned and the reason
-    const target = guild.member(mentions.users.first() || guild.members.get(args[0]))
+    const target = guild.member(
+      mentions.users.first() || guild.members.get(args[0])
+    )
     const reason = args.slice(1).join(' ')
 
     // If no target user or warning message, notify
     if (!target) return warningMessage(msg, `Please specify a member to ban!`)
-    if (!reason) return warningMessage(msg, `Please specify a reason for this ban!`)
+    if (!reason)
+      return warningMessage(msg, `Please specify a reason for this ban!`)
 
     // Setup embed with info on ban
     const e = embed(msg, 'red')
       .setThumbnail(target.user.avatarURL)
-      .addField('Banned Member', `**${target.user.username}** with an ID: ${target.user.id}`)
+      .addField(
+        'Banned Member',
+        `**${target.user.username}** with an ID: ${target.user.id}`
+      )
       .addField('Banned By', `**${author.username}** with an ID: ${author.id}`)
       .addField('Banned Time', createdAt)
       .addField('Banned At', channel)
@@ -73,7 +79,11 @@ export default class Ban extends Command {
     await target.ban(reason)
 
     // Notify that the user was banned
-    await standardMessage(msg, 'green', `${target.user.username} was banned by ${author} for ${reason}`)
+    await standardMessage(
+      msg,
+      'green',
+      `${target.user.username} was banned by ${author} for ${reason}`
+    )
 
     // Post the ban embed to the servers log channel
     return serverLogChannel.send(e)

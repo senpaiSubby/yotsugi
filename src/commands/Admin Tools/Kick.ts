@@ -51,7 +51,8 @@ export default class Kick extends Command {
     // * ------------------ Logic --------------------
 
     // If no user to kick is specifed, notify
-    if (msg.mentions.members.size === 0) return warningMessage(msg, `Please mention a user to kick`)
+    if (msg.mentions.members.size === 0)
+      return warningMessage(msg, `Please mention a user to kick`)
 
     // User the first member mentioned as the member to kick
     const kickMember = mentions.members.first()
@@ -68,8 +69,14 @@ export default class Kick extends Command {
     return serverLogChannel.send(
       embed(msg, 'yellow')
         .setThumbnail(target.user.avatarURL)
-        .addField('Kicked Member', `**${target.user.username}** with an ID: ${target.user.id}`)
-        .addField('Kicked By', `**${author.username}** with an ID: ${author.id}`)
+        .addField(
+          'Kicked Member',
+          `**${target.user.username}** with an ID: ${target.user.id}`
+        )
+        .addField(
+          'Kicked By',
+          `**${author.username}** with an ID: ${author.id}`
+        )
         .addField('Kicked Time', createdAt)
         .addField('Kicked At', channel)
         .addField('Kicked Reason', reason)

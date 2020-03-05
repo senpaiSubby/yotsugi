@@ -65,9 +65,12 @@ export default class RClone extends Command {
     }
 
     // * get remotes from config
-    const { code: c, stdout: o } = await execAsync(`rclone listremotes --config='${configPath}'`, {
-      silent: true
-    })
+    const { code: c, stdout: o } = await execAsync(
+      `rclone listremotes --config='${configPath}'`,
+      {
+        silent: true
+      }
+    )
 
     if (c !== 0) return errorMessage(msg, `A error occured with Rclone`)
 
@@ -86,11 +89,12 @@ export default class RClone extends Command {
     const handleChannelStats = async (remote: string, size: string) => {
       switch (remote) {
         case 'AnimeDrive': {
-          const channelToName = client.channels.get('666705180250865678') as GuildChannel
+          const channelToName = client.channels.get(
+            '666705180250865678'
+          ) as GuildChannel
           if (channelToName) await channelToName.setName(`ᴛᴅ sɪᴢᴇ: ${size}`)
         }
       }
-
     }
 
     const command = args.shift()
@@ -108,11 +112,15 @@ export default class RClone extends Command {
         const dirPath = resp.length >= 2 ? resp[1] : '/'
 
         if (!remotes.includes(remote)) {
-          return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
+          return errorMessage(
+            msg,
+            `Remote [ ${remote} ] doesn't exist in RClone config`
+          )
         }
 
         const waitMessage = (await channel.send(
-          embed(msg, 'yellow', 'rclone.gif').setDescription(`**Calculating size of
+          embed(msg, 'yellow', 'rclone.gif')
+            .setDescription(`**Calculating size of
 
           [ ${remote}:${dirPath || '/'} ]
 
@@ -148,23 +156,36 @@ export default class RClone extends Command {
               .addField('Path', `${dirPath || '/'}`)
               .addField('Files', `:newspaper: ${count}`, true)
               .addField('Size', `:file_folder: ${size}`, true)
-              .addField('Scan Time', millisecondsToTime(stopTime - startTime), true)
+              .addField(
+                'Scan Time',
+                millisecondsToTime(stopTime - startTime),
+                true
+              )
           )
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`)
+          return warningMessage(
+            msg,
+            `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`
+          )
         }
 
         return errorMessage(msg, `A error occured with Rclone`)
       }
       case 'sizeof': {
-        const driveSizeChannel = guild.channels.get('664102340621500416') as GuildChannel
+        const driveSizeChannel = guild.channels.get(
+          '664102340621500416'
+        ) as GuildChannel
 
         const toScan = args
 
         for (const r of toScan) {
-          if (!remotes.includes(r)) return warningMessage(msg, `Remote [ ${r} ] isn't in your provided Rclone config`)
+          if (!remotes.includes(r))
+            return warningMessage(
+              msg,
+              `Remote [ ${r} ] isn't in your provided Rclone config`
+            )
         }
 
         let totalSize = 0
@@ -186,20 +207,32 @@ export default class RClone extends Command {
             embed(msg, 'blue', 'rclone.gif')
               .setTitle('Scanning configured remotes')
               .addField('Currently Scanning', remote)
-              .addField('Remaining', `${toScan.length ? toScan.join(', ') : '--'}`)
-              .addField('Scanned', `${scannedRemotes.length ? scannedRemotes.join(', ') : '--'}`)
+              .addField(
+                'Remaining',
+                `${toScan.length ? toScan.join(', ') : '--'}`
+              )
+              .addField(
+                'Scanned',
+                `${scannedRemotes.length ? scannedRemotes.join(', ') : '--'}`
+              )
               .addField('Total Size So Far', bytesToSize(totalSize))
           )
           scannedRemotes.push(remote)
 
-          const { code, stdout } = await execAsync(`rclone size --json "${remote}:/" --config="${configPath}"`, {
-            silent: true
-          })
+          const { code, stdout } = await execAsync(
+            `rclone size --json "${remote}:/" --config="${configPath}"`,
+            {
+              silent: true
+            }
+          )
 
           if (code === 0) {
             totalSize += JSON.parse(stdout).bytes
             // Handle setting channel names to size of remote
-            await handleChannelStats(remote, bytesToSize(JSON.parse(stdout).bytes))
+            await handleChannelStats(
+              remote,
+              bytesToSize(JSON.parse(stdout).bytes)
+            )
           }
         }
 
@@ -225,7 +258,10 @@ export default class RClone extends Command {
         const dirPath = resp.length >= 2 ? resp[1] : '/'
 
         if (!remotes.includes(remote)) {
-          return errorMessage(msg, `Remote [ ${remote} ] doesn't exist in RClone config`)
+          return errorMessage(
+            msg,
+            `Remote [ ${remote} ] doesn't exist in RClone config`
+          )
         }
 
         const waitMessage = (await channel.send(
@@ -238,9 +274,12 @@ export default class RClone extends Command {
           )
         )) as Message
 
-        const { code, stdout } = await execAsync(`rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`, {
-          silent: true
-        })
+        const { code, stdout } = await execAsync(
+          `rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`,
+          {
+            silent: true
+          }
+        )
 
         await waitMessage.delete()
         // 3 doesnt exist 0 good
@@ -250,7 +289,11 @@ export default class RClone extends Command {
 
           // Handle folder being empty
           if (!response.length) {
-            return standardMessage(msg, 'green', `:file_cabinet: [ ${remote}:${dirPath || '/'} ] is empty`)
+            return standardMessage(
+              msg,
+              'green',
+              `:file_cabinet: [ ${remote}:${dirPath || '/'} ] is empty`
+            )
           }
 
           const sorted = []
@@ -297,7 +340,10 @@ export default class RClone extends Command {
         }
 
         if (code === 3) {
-          return warningMessage(msg, `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`)
+          return warningMessage(
+            msg,
+            `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`
+          )
         }
 
         return errorMessage(msg, 'A error occured with RClone')

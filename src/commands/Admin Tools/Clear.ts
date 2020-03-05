@@ -45,17 +45,26 @@ export default class Clear extends Command {
     const amount = user ? args[1] : args[0]
 
     // Check if the number of messages specified is a number
-    if (user && isNaN(args[1])) return warningMessage(msg, 'The amount parameter isn`t a number!')
-    if (!user && isNaN(args[0])) return warningMessage(msg, 'The amount parameter isn`t a number!')
+    if (user && isNaN(args[1]))
+      return warningMessage(msg, 'The amount parameter isn`t a number!')
+    if (!user && isNaN(args[0]))
+      return warningMessage(msg, 'The amount parameter isn`t a number!')
 
     // We cant delete more than 100 messages at once so notify user
-    if (amount > 100) return warningMessage(msg, 'You can`t delete more than 100 messages at once!')
+    if (amount > 100)
+      return warningMessage(
+        msg,
+        'You can`t delete more than 100 messages at once!'
+      )
 
     // Check if the user specified atleast 1 message to be deleted
-    if (amount < 1) return warningMessage(msg, 'You have to delete at least 1 msg!')
+    if (amount < 1)
+      return warningMessage(msg, 'You have to delete at least 1 msg!')
 
     // Search channel for messages from user if specified or target number of messages
-    const foundMessages = await channel.fetchMessages({ limit: user ? 100 : amount })
+    const foundMessages = await channel.fetchMessages({
+      limit: user ? 100 : amount
+    })
 
     // If a user was specified filter messages by their user
     if (user) {
@@ -64,7 +73,10 @@ export default class Clear extends Command {
         .filter((m: Message) => m.author.id === filterBy)
         .array()
         .slice(0, amount)
-      return asyncForEach(messagesToDelete, async (message: Message) => await message.delete())
+      return asyncForEach(
+        messagesToDelete,
+        async (message: Message) => await message.delete()
+      )
     }
 
     // Delete messages
@@ -73,7 +85,10 @@ export default class Clear extends Command {
       await channel.bulkDelete(foundMessages)
     } catch {
       // If older then delete one by one
-      await asyncForEach(foundMessages.array(), async (message: Message) => await message.delete())
+      await asyncForEach(
+        foundMessages.array(),
+        async (message: Message) => await message.delete()
+      )
     }
   }
 }

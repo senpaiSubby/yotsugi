@@ -32,13 +32,22 @@ export default class Weather extends Command {
 
     if (geo) {
       try {
-        const response = await fetch(`https://api.darksky.net/forecast/${apiKey}/${geo.latitude},${geo.longitude}`)
+        const response = await fetch(
+          `https://api.darksky.net/forecast/${apiKey}/${geo.latitude},${geo.longitude}`
+        )
         const data = await response.json()
 
         if (data) {
           const { city, state, country } = geo
           const { currently, daily, alerts } = data
-          const { summary, icon, temperature, humidity, windSpeed, visibility } = currently
+          const {
+            summary,
+            icon,
+            temperature,
+            humidity,
+            windSpeed,
+            visibility
+          } = currently
           const weatherIcon = `https://darksky.net/images/weather-icons/${icon}.png`
 
           const e = embed(msg)
@@ -66,7 +75,10 @@ export default class Weather extends Command {
         return errorMessage(msg, 'Error fetching weather')
       }
     } else {
-      return errorMessage(msg, `Could not find any area in the US matching zip [ ${zip} ]`)
+      return errorMessage(
+        msg,
+        `Could not find any area in the US matching zip [ ${zip} ]`
+      )
     }
   }
 }

@@ -34,7 +34,9 @@ export default class ModMail extends Command {
 
     // * ------------------ Check Config --------------------
 
-    const serverModMailChannel = guild.channels.get(modMailChannel) as TextChannel
+    const serverModMailChannel = guild.channels.get(
+      modMailChannel
+    ) as TextChannel
 
     // * ------------------ Logic --------------------
 

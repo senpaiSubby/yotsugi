@@ -39,10 +39,14 @@ export default class Shortcut extends Command {
 
     switch (args[0]) {
       case 'list': {
-        if (!shortcuts.length) return warningMessage(msg, `There are no shortcuts!`)
+        if (!shortcuts.length)
+          return warningMessage(msg, `There are no shortcuts!`)
 
         const e = embed(msg, 'green', 'shortcut.png').setTitle('Shortcuts')
-        shortcuts.forEach((i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`), true)
+        shortcuts.forEach(
+          (i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`),
+          true
+        )
         return channel.send(e)
       }
       case 'add': {
@@ -50,22 +54,33 @@ export default class Shortcut extends Command {
         const command = args[2]
         const index = shortcuts.findIndex((i) => i.name === name)
 
-        if (index > -1) return warningMessage(msg, `Shortcut [ ${name} ] already exists`)
+        if (index > -1)
+          return warningMessage(msg, `Shortcut [ ${name} ] already exists`)
 
         args.splice(0, 3)
         const arg = args.join(' ')
         shortcuts.push({ name, command, arg: arg.split(' ') })
         await db.update({ config: JSON.stringify(config) })
-        return standardMessage(msg, 'green', `[ ${name} ] added to shortcut list`)
+        return standardMessage(
+          msg,
+          'green',
+          `[ ${name} ] added to shortcut list`
+        )
       }
       case 'remove': {
         const name = args[1]
         const index = shortcuts.findIndex((d) => d.name === name)
-        if (index === -1) return warningMessage(msg, `Shortcut [ ${name} ] doesn't exist`)
+        if (index === -1)
+          return warningMessage(msg, `Shortcut [ ${name} ] doesn't exist`)
 
         shortcuts.splice(index, 1)
         await db.update({ config: JSON.stringify(config) })
-        if (name) return standardMessage(msg, 'green', `[ ${name} ] removed from shortcut list`)
+        if (name)
+          return standardMessage(
+            msg,
+            'green',
+            `[ ${name} ] removed from shortcut list`
+          )
 
         break
       }

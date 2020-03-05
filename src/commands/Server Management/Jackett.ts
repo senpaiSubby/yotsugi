@@ -46,18 +46,28 @@ export default class Jackett extends Command {
     // * ------------------ Check Config --------------------
 
     if (!host || !apiKey) {
-      const settings = [`${p}config set jackett host <http://ip>`, `${p}config set jackett apiKey <APIKEY>`]
+      const settings = [
+        `${p}config set jackett host <http://ip>`,
+        `${p}config set jackett apiKey <APIKEY>`
+      ]
       return missingConfig(msg, 'jackett', settings)
     }
 
     // * ------------------ Logic --------------------
 
-    const waitMessage = (await standardMessage(msg, this.color, 'Searching..')) as Message
+    const waitMessage = (await standardMessage(
+      msg,
+      this.color,
+      'Searching..'
+    )) as Message
 
     const fetchResults = async (term: string) => {
       try {
         const response = await get(
-          urljoin(host, `/api/v2.0/indexers/all/results?apikey=${apiKey}&Query=${term}`)
+          urljoin(
+            host,
+            `/api/v2.0/indexers/all/results?apikey=${apiKey}&Query=${term}`
+          )
         ).headers({ accept: 'application/json' })
 
         const { Results } = response.body as JackettAPISearch

@@ -58,7 +58,8 @@ export default class Unban extends Command {
 
     // If no user or reason specified
     if (!target) return warningMessage(msg, `Please specify a member to unban!`)
-    if (!reason) return warningMessage(msg, `Please specify a reason for this unban!`)
+    if (!reason)
+      return warningMessage(msg, `Please specify a reason for this unban!`)
 
     // Fetch the guild bans
     const bans = await msg.guild.fetchBans()
@@ -76,8 +77,14 @@ export default class Unban extends Command {
 
       return serverLogChannel.send(
         embed(msg, 'green')
-          .addField('Unbanned Member', `**${target.user.username}** with an ID: ${target.id}`)
-          .addField('Unbanned By', `**${author.username}** with an ID: ${author.id}`)
+          .addField(
+            'Unbanned Member',
+            `**${target.user.username}** with an ID: ${target.id}`
+          )
+          .addField(
+            'Unbanned By',
+            `**${author.username}** with an ID: ${author.id}`
+          )
           .addField('Unbanned Time', msg.createdAt)
           .addField('Unbanned At', channel)
           .addField('Unbanned Reason', reason)

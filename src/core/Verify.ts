@@ -19,7 +19,9 @@ export class Verify {
     if (msg.author.bot) return
 
     // Load server database configs
-    const db = await database.models.Servers.findOne({ where: { id: msg.guild.id } })
+    const db = await database.models.Servers.findOne({
+      where: { id: msg.guild.id }
+    })
     const { verifyUsers, verifiedRole, verifyChannel, prefix } = JSON.parse(
       db.get('config') as string
     ) as ServerDBConfig
@@ -45,13 +47,15 @@ export class Verify {
 
       //
       if (msg.content === 'agree' && msg.channel.id === verifyChannel) {
-        const messageRole = msg.guild.roles.find((role) => role.id === verifiedRole)
+        const messageRole = msg.guild.roles.find(
+          (role) => role.id === verifiedRole
+        )
 
         if (messageRole === null) return
 
         if (!msg.guild.me.hasPermission('MANAGE_ROLES')) {
           const m = (await msg.channel.send(
-            'The bot doesn\'t have the permission required to assign roles.\nRequired permission: `MANAGE_ROLES`'
+            "The bot doesn't have the permission required to assign roles.\nRequired permission: `MANAGE_ROLES`"
           )) as Message
           return m.delete(20000)
         }
@@ -64,7 +68,9 @@ export class Verify {
         }
 
         if (messageRole.managed) {
-          const m = (await msg.channel.send('This is an auto managed role, it cannot be assigned.')) as Message
+          const m = (await msg.channel.send(
+            'This is an auto managed role, it cannot be assigned.'
+          )) as Message
           return m.delete(20000)
         }
 
@@ -74,7 +80,9 @@ export class Verify {
 
         try {
           await msg.member.addRole(messageRole)
-          const m = (await msg.reply(`You have been verified. Welcome to ${msg.guild.name}!`)) as Message
+          const m = (await msg.reply(
+            `You have been verified. Welcome to ${msg.guild.name}!`
+          )) as Message
           m.delete(10000)
           return msg.delete(10000)
         } catch (e) {

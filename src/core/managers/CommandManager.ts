@@ -12,10 +12,7 @@ import { Command } from '../base/Command'
 import { database, generalConfig, serverConfig } from '../database/database'
 import { Log } from '../Logger'
 import { NezukoClient } from '../NezukoClient'
-import { ActivityLogger } from './ActivityLogger'
 import { ConfigManager } from './ConfigManager'
-import { LevelManager } from './LevelManager'
-import { MessageManager } from './MessageManager'
 
 export class CommandManager {
   public client: NezukoClient
@@ -27,8 +24,6 @@ export class CommandManager {
   public ownerID: string
   public loadedCommands: number
   public cooldowns: any
-  // tslint:disable-next-line: variable-name
-  public ActivityLogger: ActivityLogger
 
   constructor(client: NezukoClient) {
     this.client = client
@@ -42,7 +37,6 @@ export class CommandManager {
     this.aliases = new Enmap()
     this.prefix = client.config.prefix
     this.ownerID = client.config.ownerID
-    this.ActivityLogger = new ActivityLogger()
     this.loadedCommands = 0
     this.loadCommands()
 
@@ -83,7 +77,11 @@ export class CommandManager {
     }
 
     instance.aliases.forEach((alias: string) => {
-      if (this.aliases.has(alias)) throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
+      if (this.aliases.has(alias)) {
+        throw new Error(
+          `Commands cannot share aliases: ${instance.name} has ${alias}`
+        )
+      }
 
       this.aliases.set(alias, instance)
     })
@@ -110,7 +108,8 @@ export class CommandManager {
    * @param commandName Command to reload
    */
   public reloadCommand(commandName: string) {
-    const existingCommand = this.commands.get(commandName) || this.aliases.get(commandName)
+    const existingCommand =
+      this.commands.get(commandName) || this.aliases.get(commandName)
     if (!existingCommand) return false
     for (const alias of existingCommand.aliases) this.aliases.delete(alias)
     this.commands.delete(commandName)
@@ -128,9 +127,19 @@ export class CommandManager {
    * @param [api]
    * @returns
    */
-  public async runCommand(client: NezukoClient, command: any, msg: NezukoMessage | null, args?: any[], api?: boolean) {
+  public async runCommand(
+    client: NezukoClient,
+    command: any,
+    msg: NezukoMessage | null,
+    args?: any[],
+    api?: boolean
+  ) {
     if (api) {
-      msg = ({ channel: null, author: null, context: this } as unknown) as NezukoMessage
+      msg = ({
+        channel: null,
+        author: null,
+        context: this
+      } as unknown) as NezukoMessage
       return command.run(client, msg, args, api)
     }
 
@@ -152,7 +161,11 @@ export class CommandManager {
    * @param msg NezukoMessage
    * @param client NezukoClient
    */
-  public async handleMessage(msg: NezukoMessage, client: NezukoClient, addLevel = false) {
+  public async handleMessage(
+    msg: NezukoMessage,
+    client: NezukoClient,
+    addLevel = false
+  ) {
     // * -------------------- Setup --------------------
 
     const { Utils } = client
@@ -165,19 +178,18 @@ export class CommandManager {
 
     if (msg.author.bot) return
 
-    await this.ActivityLogger.log(msg)
-
-    // * -------------------- Parse & Log Messages --------------------
-
-    // Log and parse all messages in DM's and guilds
-    await new MessageManager(client, msg).log()
-
     // * -------------------- Assign Prefix --------------------
 
-    const SDB = await database.models.Servers.findOne({ where: { id: guild.id } })
-    const { leveling } = JSON.parse(SDB.get('config') as string) as ServerDBConfig
+    const SDB = await database.models.Servers.findOne({
+      where: { id: guild.id }
+    })
+    const { leveling } = JSON.parse(
+      SDB.get('config') as string
+    ) as ServerDBConfig
 
-    const prefix = guild ? await ConfigManager.handleServerConfig(guild) : this.prefix
+    const prefix = guild
+      ? await ConfigManager.handleServerConfig(guild)
+      : this.prefix
     client.p = prefix
     msg.p = prefix
 
@@ -189,10 +201,10 @@ export class CommandManager {
 
     // If message doesnt start with assigned prefix
     if (!content.startsWith(prefix)) {
-      if ((channel.type !== 'dm' && !content.startsWith(prefix)) || content.length < prefix.length) {
-        // Give user exp
-        if (addLevel && leveling) await new LevelManager(client, msg).manage()
-
+      if (
+        (channel.type !== 'dm' && !content.startsWith(prefix)) ||
+        content.length < prefix.length
+      ) {
         // If bot is mentioned then reply with prefix
         const memberMentioned = msg.mentions.members.first()
         if (content.startsWith(`<@${client.user.id}>`)) {
@@ -230,7 +242,10 @@ export class CommandManager {
 
     // If command doesnt exist then notify user and do nothing
     if (!command) {
-      const m = (await errorMessage(msg, `No command: [ ${commandName} ]`)) as Message
+      const m = (await errorMessage(
+        msg,
+        `No command: [ ${commandName} ]`
+      )) as Message
       return m.delete(5000)
     }
 
@@ -240,13 +255,17 @@ export class CommandManager {
     // Assign general config to client for use in commands
     const generalDB = await generalConfig(ownerID)
 
-    if (generalDB) client.db.config = JSON.parse(generalDB.get('config') as string)
+    if (generalDB) {
+      client.db.config = JSON.parse(generalDB.get('config') as string)
+    }
 
     // Assign server config to client for use in commands
     if (guild) {
       const serverDB = await serverConfig(guild ? guild.id : null)
 
-      if (serverDB) client.db.server = JSON.parse(serverDB.get('config') as string)
+      if (serverDB) {
+        client.db.server = JSON.parse(serverDB.get('config') as string)
+      }
     }
 
     const { lockedCommands, disabledCommands } = client.db.config!
@@ -255,7 +274,9 @@ export class CommandManager {
 
     // * -------------------- Command Cooldowns --------------------
     // If command isn't in cooldown then set it
-    if (!this.cooldowns.has(command.name)) this.cooldowns.set(command.name, new Collection())
+    if (!this.cooldowns.has(command.name)) {
+      this.cooldowns.set(command.name, new Collection())
+    }
 
     // Get current date
     const now = Date.now()
@@ -274,7 +295,11 @@ export class CommandManager {
         return msg.reply(
           warningMessage(
             msg,
-            `Please wait [ ${timeLeft.toFixed(1)} ] more second(s) before reusing the [ \`${command.name}\` ] command`
+            `Please wait [ ${timeLeft.toFixed(
+              1
+            )} ] more second(s) before reusing the [ \`${
+              command.name
+            }\` ] command`
           )
         )
       }
@@ -288,7 +313,11 @@ export class CommandManager {
       if (command.ownerOnly && !config.exemptUsers.includes(author.id)) {
         Log.info(
           'Command Manager',
-          `[ ${author.tag} ] tried to run owner only command [ ${msg.content.slice(prefix.length)} ]`
+          `[ ${
+            author.tag
+          } ] tried to run owner only command [ ${msg.content.slice(
+            prefix.length
+          )} ]`
         )
 
         return errorMessage(msg, `This command is reserved for my Senpai`)
@@ -309,7 +338,10 @@ export class CommandManager {
       })
 
       if (locked) {
-        Log.info('Command Manager', `[ ${author.tag} ] tried to run locked command [ ${lockedMessage} ]`)
+        Log.info(
+          'Command Manager',
+          `[ ${author.tag} ] tried to run locked command [ ${lockedMessage} ]`
+        )
         return warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
       }
     }
@@ -323,15 +355,30 @@ export class CommandManager {
 
     // If guildOnly and not ran in a guild channel
     if (command.guildOnly && channel.type !== 'text') {
-      Log.info('Command Manager', `[ ${author.tag} ] tried to run [ ${msg.content.slice(prefix.length)} ] in a DM`)
-      return standardMessage(msg, 'green', `This command cannot be slid into my DM`)
+      Log.info(
+        'Command Manager',
+        `[ ${author.tag} ] tried to run [ ${msg.content.slice(
+          prefix.length
+        )} ] in a DM`
+      )
+      return standardMessage(
+        msg,
+        'green',
+        `This command cannot be slid into my DM`
+      )
     }
 
     // Check if user and bot has all required perms in permsNeeded
     if (channel.type !== 'dm') {
       if (command.permsNeeded) {
-        const userMissingPerms = Utils.checkPerms(msg.member, command.permsNeeded)
-        const botMissingPerms = Utils.checkPerms(msg.guild.me, command.permsNeeded)
+        const userMissingPerms = Utils.checkPerms(
+          msg.member,
+          command.permsNeeded
+        )
+        const botMissingPerms = Utils.checkPerms(
+          msg.guild.me,
+          command.permsNeeded
+        )
 
         if (userMissingPerms.length) {
           Log.info(
@@ -353,7 +400,9 @@ export class CommandManager {
         if (botMissingPerms.length) {
           Log.info(
             'Command Manager',
-            `I lack the perms  [ ${msg.content.slice(prefix.length)} ] for command [ ${userMissingPerms.join(', ')} ]`
+            `I lack the perms  [ ${msg.content.slice(
+              prefix.length
+            )} ] for command [ ${userMissingPerms.join(', ')} ]`
           )
 
           const m = (await channel.send(
@@ -369,16 +418,21 @@ export class CommandManager {
 
     // If command requires args but none specified
     if (command.args && !args.length) {
-      Log.info('Command Manager', `[ ${author.tag} ] tried to run [ ${command.name} ] without parameters`)
+      Log.info(
+        'Command Manager',
+        `[ ${author.tag} ] tried to run [ ${command.name} ] without parameters`
+      )
 
       const m = (await msg.reply(
         embed(msg, 'yellow')
           .setTitle('Command requires parameters')
           .setFooter('Message will self destruct in 30 seconds')
           .setDescription(
-            `**__You can edit your last message instead of sending a new one!__**\n\n**Example Usage**\n\`\`\`css\n${command.usage.join(
-              '\n'
-            )}\`\`\``
+            `**__You can edit your last message instead of sending a new one!__**
+
+            *Example Usage**
+
+            \`\`\`css\n${command.usage.join('\n')}\`\`\``
           )
       )) as Message
 
@@ -386,7 +440,10 @@ export class CommandManager {
     }
 
     // * -------------------- Run Command --------------------
-    Log.info('Command Manager', `[ ${author.tag} ] => [ ${msg.content.slice(prefix.length)} ]`)
+    Log.info(
+      'Command Manager',
+      `[ ${author.tag} ] => [ ${msg.content.slice(prefix.length)} ]`
+    )
     return this.runCommand(client, command, msg, args)
   }
 }

@@ -36,9 +36,14 @@ export default class Executor extends Command {
     )
 
     const input = `📥 **Input:**\n\`\`\`sh\n${args.join(' ')}\n\`\`\``
-    const error = (err) => `🚫 **Error:**\n\`\`\`sh\n${err.toString().replace(regex, '[Token]')}\n\`\`\``
+    const error = (err) =>
+      `🚫 **Error:**\n\`\`\`sh\n${err
+        .toString()
+        .replace(regex, '[Token]')}\n\`\`\``
 
-    const { stdout, stderr } = await execAsync(args.join(' '), { silent: false })
+    const { stdout, stderr } = await execAsync(args.join(' '), {
+      silent: false
+    })
 
     if (stderr) {
       try {
@@ -48,7 +53,8 @@ export default class Executor extends Command {
       }
     }
 
-    const response = `📤 **Output:**\n\`\`\`sh\n${stdout.replace(regex, '[Token]')}\n\`\`\``
+    const response = `📤 **Output:**
+    \`\`\`sh\n${stdout.replace(regex, '[Token]')}\n\`\`\``
     try {
       return channel.send(`${input}\n${response}`, { split: true })
     } catch (err) {

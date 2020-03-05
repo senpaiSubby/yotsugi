@@ -29,7 +29,9 @@ export default class WebServer extends Subprocess {
   }
 
   public async run() {
-    shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-@')
+    shortid.characters(
+      '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-@'
+    )
     /**
      * example API usage
      *  {
@@ -49,7 +51,7 @@ export default class WebServer extends Subprocess {
           'WebUI',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
         )
-        return res.status(401).json({ response: 'Missing params \'apiKey\'' })
+        return res.status(401).json({ response: "Missing params 'apiKey'" })
       }
       if (req.body.apiKey !== apiKey) {
         Log.info(
@@ -107,7 +109,11 @@ export default class WebServer extends Subprocess {
       const { commands } = config.webUI
 
       if (req.body[0] && req.body[1]) {
-        commands.push({ id: shortid.generate(), name: req.body[0], command: req.body[1] })
+        commands.push({
+          id: shortid.generate(),
+          name: req.body[0],
+          command: req.body[1]
+        })
         await db.update({ config: JSON.stringify(config) })
         return res.status(200)
       }
@@ -148,7 +154,8 @@ export default class WebServer extends Subprocess {
         Log.info('WebUI', `Running command [ ${req.ip} ]`)
 
         // Check if all required params are met
-        if (!req.body.command) res.status(406).json({ response: 'Missing params \'command\'' })
+        if (!req.body.command)
+          res.status(406).json({ response: "Missing params 'command'" })
 
         const args = req.body.command.split(' ')
         const cmdName = args.shift().toLowerCase()
@@ -156,21 +163,35 @@ export default class WebServer extends Subprocess {
 
         if (cmd) {
           if (cmd.disabled) {
-            return res.status(403).json({ response: 'Command is disabled bot wide.' })
+            return res
+              .status(403)
+              .json({ response: 'Command is disabled bot wide.' })
           }
 
           if (!cmd.webUI) {
-            return res.status(403).json({ response: 'Command is disabled for use in the API.' })
+            return res
+              .status(403)
+              .json({ response: 'Command is disabled for use in the API.' })
           }
 
-          const response = await this.commandManager.runCommand(this.client, cmd, null, args, true)
+          const response = await this.commandManager.runCommand(
+            this.client,
+            cmd,
+            null,
+            args,
+            true
+          )
           return res.status(200).json({ response })
         }
-        return res.status(406).json({ response: `Command [ ${req.body.command} ] not found.` })
+        return res
+          .status(406)
+          .json({ response: `Command [ ${req.body.command} ] not found.` })
       }
     })
 
     // Start server
-    app.listen(webServerPort, '0.0.0.0', () => Log.ok(`WebUI`, `Active on port [ ${webServerPort} ]`))
+    app.listen(webServerPort, '0.0.0.0', () =>
+      Log.ok(`WebUI`, `Active on port [ ${webServerPort} ]`)
+    )
   }
 }

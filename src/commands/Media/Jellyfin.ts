@@ -25,7 +25,12 @@ export default class Emby extends Command {
     this.color = '#9B62C5'
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client
@@ -61,7 +66,10 @@ export default class Emby extends Command {
 
     const getLink = (item) => {
       const { Id, serverId } = item
-      return urljoin(host, `/web/index.html#!/itemdetails.html?id=${Id}&context=tvshows&serverId=${serverId}`)
+      return urljoin(
+        host,
+        `/web/index.html#!/itemdetails.html?id=${Id}&context=tvshows&serverId=${serverId}`
+      )
     }
 
     const getImage = (item) => {
@@ -79,7 +87,9 @@ export default class Emby extends Command {
     const getOverview = async (item) => {
       const ID = item.Id
 
-      const response = await get(`${urljoin(host, 'jellyfin', `Users/${userID}/Items/${ID}`)}`).headers(headers)
+      const response = await get(
+        `${urljoin(host, 'jellyfin', `Users/${userID}/Items/${ID}`)}`
+      ).headers(headers)
 
       const data = response.body
 
@@ -88,7 +98,9 @@ export default class Emby extends Command {
 
     const fetchData = async (endPoint: string) => {
       try {
-        const response = await get(`${urljoin(host, 'jellyfin', endPoint)}`).headers(headers)
+        const response = await get(
+          `${urljoin(host, 'jellyfin', endPoint)}`
+        ).headers(headers)
 
         switch (response.status) {
           case 200: {
@@ -119,7 +131,10 @@ export default class Emby extends Command {
     // * ------------------ Usage Logic --------------------
 
     let e: RichEmbed
-    if (!api) e = embed(msg, this.color).setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
+    if (!api)
+      e = embed(msg, this.color).setThumbnail(
+        'https://apps.jellyfin.org/chromecast/img/logo.png'
+      )
 
     switch (args[0]) {
       case 'streams': {
@@ -150,9 +165,12 @@ export default class Emby extends Command {
 
           if (api) return { currentStreamCount, currentStreams }
 
-          if (!currentStreamCount) return standardMessage(msg, this.color, 'Nothing is playing')
+          if (!currentStreamCount)
+            return standardMessage(msg, this.color, 'Nothing is playing')
 
-          e.setTitle(`Jellyfin Stats - Current Streams [ ${currentStreamCount} ]`)
+          e.setTitle(
+            `Jellyfin Stats - Current Streams [ ${currentStreamCount} ]`
+          )
 
           currentStreams.forEach((i) => {
             e.addField(
@@ -176,7 +194,14 @@ export default class Emby extends Command {
       case 'stats': {
         const stats = (await fetchData('/Items/Counts')) as EmbyStats
         if (stats) {
-          const { MovieCount, SeriesCount, EpisodeCount, ArtistCount, SongCount, BookCount } = stats
+          const {
+            MovieCount,
+            SeriesCount,
+            EpisodeCount,
+            ArtistCount,
+            SongCount,
+            BookCount
+          } = stats
           return channel.send(
             embed(msg, this.color)
               .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
@@ -193,7 +218,8 @@ export default class Emby extends Command {
       }
       // TODO add typing for emby recent
       case 'recent': {
-        const mediaType = args[1] === 'movies' ? 'Movie' : args[1] === 'series' ? 'Episode' : ''
+        const mediaType =
+          args[1] === 'movies' ? 'Movie' : args[1] === 'series' ? 'Episode' : ''
 
         const endpoint = `/Users/${userID}/Items/Latest`
         const params = `?IncludeItemTypes=${mediaType}&Limit=10&IsPlayed=false&GroupItems=false`

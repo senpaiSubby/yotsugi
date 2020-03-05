@@ -22,21 +22,29 @@ export class ActivityLogger {
      * TODO leaderboard command
      */
 
-    const db = await database.models.Servers.findOne({ where: { id: guild.id } })
+    const db = await database.models.Servers.findOne({
+      where: { id: guild.id }
+    })
     const config = JSON.parse(db.get('userActivity') as string)
 
     if (content.startsWith('//') || !content.length) return
 
     // Give a activity point
     if (!config[author.id]) {
-      config[author.id] = { score: 0, active: true, inactive: false, userID: author.id }
+      config[author.id] = {
+        score: 0,
+        active: true,
+        inactive: false,
+        userID: author.id
+      }
       console.log('new user')
     }
 
     // ------------
 
     // If command isn't in cooldown then set it
-    if (!this.cooldowns.has(author.id)) this.cooldowns.set(author.id, new Collection())
+    if (!this.cooldowns.has(author.id))
+      this.cooldowns.set(author.id, new Collection())
 
     // Get current date
     const now = Date.now()

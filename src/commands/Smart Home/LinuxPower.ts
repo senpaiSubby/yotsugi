@@ -23,11 +23,22 @@ export default class LinuxPower extends Command {
   }
 
   // TODO add linuxpower typings
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    api: boolean
+  ) {
     // * ------------------ Setup --------------------
 
     const { Utils, Log } = client
-    const { errorMessage, validOptions, standardMessage, embed, capitalize } = Utils
+    const {
+      errorMessage,
+      validOptions,
+      standardMessage,
+      embed,
+      capitalize
+    } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -36,7 +47,10 @@ export default class LinuxPower extends Command {
 
     // * ------------------ Logic --------------------
 
-    const sendCommand = async (device: { host: string; mac: string; name: string }, command: string) => {
+    const sendCommand = async (
+      device: { host: string; mac: string; name: string },
+      command: string
+    ) => {
       const { host, mac, name } = device
 
       const options = ['reboot', 'off', 'on']
@@ -57,19 +71,34 @@ export default class LinuxPower extends Command {
               if (statusCode === 200) {
                 const text = command === 'reboot' ? 'reboot' : 'power off'
                 if (api) return `Told [ ${capitalize(name)} ] to [ ${text} ]`
-                return standardMessage(msg, 'green', `:desktop: Told [ ${capitalize(name)} ] to [ ${text}] `)
+                return standardMessage(
+                  msg,
+                  'green',
+                  `:desktop: Told [ ${capitalize(name)} ] to [ ${text}] `
+                )
               }
             } catch (e) {
               if (api) return `Failed to connect to ${capitalize(name)}`
-              Log.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
-              await errorMessage(msg, `Failed to connect to [ ${capitalize(name)} ]`)
+              Log.error(
+                'System Power Control',
+                `Failed to connect to [ ${capitalize(name)} ]`,
+                e
+              )
+              await errorMessage(
+                msg,
+                `Failed to connect to [ ${capitalize(name)} ]`
+              )
             }
             return
           }
           case 'on': {
             await wol.wake(mac)
             if (api) return `Sent WOL to [ ${capitalize(name)} ]`
-            return standardMessage(msg, 'green', `:desktop: Sent WOL to [ ${capitalize(name)} ]`)
+            return standardMessage(
+              msg,
+              'green',
+              `:desktop: Sent WOL to [ ${capitalize(name)} ]`
+            )
           }
         }
       }

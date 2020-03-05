@@ -27,7 +27,14 @@ export default class Docker extends Command {
 
     const { p, Utils, Log } = client
 
-    const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig, embed } = Utils
+    const {
+      errorMessage,
+      warningMessage,
+      validOptions,
+      standardMessage,
+      missingConfig,
+      embed
+    } = Utils
 
     const { channel } = msg
 
@@ -47,7 +54,9 @@ export default class Docker extends Command {
     const getContainers = async (state = 'running') => {
       const params = `filters={%22status%22:[%22${state}%22]}`
       try {
-        const response = await get(urljoin(host, `/containers/json?${params}`)).headers({
+        const response = await get(
+          urljoin(host, `/containers/json?${params}`)
+        ).headers({
           accept: 'application/json'
         })
         const containers = response.body as DockerContainer[]
@@ -77,32 +86,53 @@ export default class Docker extends Command {
       }
     }
 
-    const setContainerState = async (containers: ContainerList[], newState: string, containerName: string) => {
+    const setContainerState = async (
+      containers: ContainerList[],
+      newState: string,
+      containerName: string
+    ) => {
       const options = ['start', 'restart', 'stop']
       if (!options.includes(newState)) return validOptions(msg, options)
 
       // Find index based off of key name
-      const index = containers.findIndex((c) => c.name === containerName, newState)
+      const index = containers.findIndex(
+        (c) => c.name === containerName,
+        newState
+      )
       // If container name doesnt match
       if (!containers[index].id) {
-        return warningMessage(msg, `No container named: [ ${containerName} ] found`)
+        return warningMessage(
+          msg,
+          `No container named: [ ${containerName} ] found`
+        )
       }
 
       try {
-        const response = await post(urljoin(host, `/containers/${containers[index].id}/${newState}`))
+        const response = await post(
+          urljoin(host, `/containers/${containers[index].id}/${newState}`)
+        )
         const { status }: { status: number } = response
 
         if (status >= 200 && status < 300) {
-          if (api) return `Container [ ${containerName}]  has been [ ${newState}ed ] successfully`
-          return standardMessage(msg, 'green', `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`)
+          if (api)
+            return `Container [ ${containerName}]  has been [ ${newState}ed ] successfully`
+          return standardMessage(
+            msg,
+            'green',
+            `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`
+          )
         }
         if (newState !== 'restart' && status >= 300 && status < 400) {
           if (api) {
-            return `Container [ ${containerName} ] is already [ ${newState}${newState === 'stop' ? 'ped' : 'ed'} ]`
+            return `Container [ ${containerName} ] is already [ ${newState}${
+              newState === 'stop' ? 'ped' : 'ed'
+            } ]`
           }
           return warningMessage(
             msg,
-            `Container [ ${containerName} ] is already [ ${newState}${newState === 'stop' ? 'ped' : 'ed'} ]`
+            `Container [ ${containerName} ] is already [ ${newState}${
+              newState === 'stop' ? 'ped' : 'ed'
+            } ]`
           )
         }
       } catch (e) {
@@ -118,7 +148,14 @@ export default class Docker extends Command {
       case 'list': {
         const filterState = args[1] || 'running'
 
-        const options = ['running', 'paused', 'exited', 'created', 'restarting', 'dead']
+        const options = [
+          'running',
+          'paused',
+          'exited',
+          'created',
+          'restarting',
+          'dead'
+        ]
         if (!options.includes(filterState)) {
           if (api) return `Valid options are [ ${options.join(', ')} ]`
           return validOptions(msg, options)
@@ -128,17 +165,26 @@ export default class Docker extends Command {
         if (containers) {
           if (containers.length) {
             if (api) return containers
-            const e = embed(msg, 'green', 'docker.png').setDescription('Docker Containers')
+            const e = embed(msg, 'green', 'docker.png').setDescription(
+              'Docker Containers'
+            )
 
             containers.forEach((container) => {
               const { name, ports, state } = container
-              e.addField(`${name}`, `${state}\n${ports.length ? ports.join(', ') : '---'}`, true)
+              e.addField(
+                `${name}`,
+                `${state}\n${ports.length ? ports.join(', ') : '---'}`,
+                true
+              )
             })
 
             return channel.send(e)
           }
           if (api) return `No containers currently in state [ ${filterState} ]`
-          return warningMessage(msg, `No containers currently in state [ ${filterState} ]`)
+          return warningMessage(
+            msg,
+            `No containers currently in state [ ${filterState} ]`
+          )
         }
         return
       }

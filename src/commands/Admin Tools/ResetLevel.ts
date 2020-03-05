@@ -41,6 +41,10 @@ export default class Level extends Command {
 
     await db.update({ memberLevels: JSON.stringify(memberLevels) })
 
-    return standardMessage(msg, 'green', `Reset member [ ${user.user.tag} ] to level 1`)
+    return standardMessage(
+      msg,
+      'green',
+      `Reset member [ ${user.user.tag} ] to level 1`
+    )
   }
 }

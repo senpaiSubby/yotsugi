@@ -30,10 +30,13 @@ export default class RemoveRole extends Command {
     // * ------------------ Logic --------------------
 
     // Member we will remove the role from
-    const rMember = msg.guild.member(msg.mentions.users.first() || msg.guild.members.get(args[0]))
+    const rMember = msg.guild.member(
+      msg.mentions.users.first() || msg.guild.members.get(args[0])
+    )
 
     // If no member specified then notify
-    if (!rMember) return errorMessage(msg, `No user given or Invalid user given`)
+    if (!rMember)
+      return errorMessage(msg, `No user given or Invalid user given`)
 
     // Set target role
     args.shift()
@@ -43,7 +46,9 @@ export default class RemoveRole extends Command {
     if (!role) return msg.reply('Please specify a role')
 
     // Check for and find role in guild
-    const gRole = msg.guild.roles.find((a) => a.name.toLowerCase() === role.toLowerCase())
+    const gRole = msg.guild.roles.find(
+      (a) => a.name.toLowerCase() === role.toLowerCase()
+    )
 
     // If role doesnt exist notify
     if (!gRole) return errorMessage(msg, `Role doesn't exist`)

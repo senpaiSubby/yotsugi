@@ -34,9 +34,10 @@ export class LevelManager {
   public async manage(): Promise<void> {
     // Only handle XP and levels in Guild Text Channels
     if (this.msg.channel.type === 'text') {
-
       const db = await generalConfig(config.ownerID)
-      const { disabledCommands } = JSON.parse(db.get('config') as string) as GeneralDBConfig
+      const { disabledCommands } = JSON.parse(
+        db.get('config') as string
+      ) as GeneralDBConfig
 
       let disabled = false
 
@@ -77,7 +78,11 @@ export class LevelManager {
 
     // If member doesn't have a level entry then create one
     if (!memberLevels.levels[this.author.id]) {
-      memberLevels.levels[this.author.id] = { level: 1, exp: 0, expTillNextLevel: 100 }
+      memberLevels.levels[this.author.id] = {
+        level: 1,
+        exp: 0,
+        expTillNextLevel: 100
+      }
     }
 
     // Return members level information
@@ -96,7 +101,9 @@ export class LevelManager {
 
     // Fetch the server config
     // tslint:disable-next-line:no-shadowed-variable
-    const serverConfig = JSON.parse(db!.get('config') as string) as ServerDBConfig
+    const serverConfig = JSON.parse(
+      db!.get('config') as string
+    ) as ServerDBConfig
 
     // Get server's level multiplier
     const { levelMultiplier } = serverConfig
@@ -108,7 +115,9 @@ export class LevelManager {
     const levelUpMessage = async (level: number) => {
       await this.author.send(
         Utils.embed(this.msg)
-          .setTitle(`**You are now level [ ${level} ] in server [ ${this.guild.name} ] :confetti_ball:**`)
+          .setTitle(
+            `**You are now level [ ${level} ] in server [ ${this.guild.name} ] :confetti_ball:**`
+          )
           .setThumbnail(this.guild.iconURL)
       )
     }
@@ -155,13 +164,17 @@ export class LevelManager {
 
     const highestRole = levelRoles
       .map((l) => l.level)
-      .reduce((prev, curr) => (Math.abs(curr - this.level) < Math.abs(prev - this.level) ? curr : prev))
+      .reduce((prev, curr) =>
+        Math.abs(curr - this.level) < Math.abs(prev - this.level) ? curr : prev
+      )
 
     // Iterate through all level roles
     for (const levelInfo of levelRoles) {
       const { role, level } = levelInfo
 
-      const gRole = this.guild.roles.find((r) => r.name.toLowerCase() === role.toLowerCase())
+      const gRole = this.guild.roles.find(
+        (r) => r.name.toLowerCase() === role.toLowerCase()
+      )
 
       if (gRole) {
         // Assign role
@@ -178,7 +191,8 @@ export class LevelManager {
                 .setThumbnail(this.guild.iconURL)
             )
           }
-        } else if (gMember.roles.find((r) => r.name === role)) await gMember.removeRole(gRole.id)
+        } else if (gMember.roles.find((r) => r.name === role))
+          await gMember.removeRole(gRole.id)
       }
     }
   }

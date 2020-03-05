@@ -58,7 +58,12 @@ export default class TinyTtext extends Command {
     })
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], _api: boolean) {
+  public async run(
+    client: NezukoClient,
+    msg: NezukoMessage,
+    args: any[],
+    _api: boolean
+  ) {
     // * ------------------ Setup --------------------
     const { channel } = msg
     const { embed } = client.Utils
@@ -67,7 +72,10 @@ export default class TinyTtext extends Command {
 
     let output = args.join(' ')
 
-    mappings.forEach((replacer) => (output = output.replace(replacer.regex, replacer.replacement)))
+    mappings.forEach(
+      (replacer) =>
+        (output = output.replace(replacer.regex, replacer.replacement))
+    )
 
     return channel.send(output)
   }

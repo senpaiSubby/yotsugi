@@ -30,12 +30,25 @@ export default class JFManager extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: string[]) {
     // * ------------------ Setup --------------------
 
-    const { standardMessage, embed, warningMessage, errorMessage, validOptions, missingConfig } = client.Utils
+    const {
+      standardMessage,
+      embed,
+      warningMessage,
+      errorMessage,
+      validOptions,
+      missingConfig
+    } = client.Utils
     const { channel, p } = msg
 
     // * ------------------ Config --------------------
 
-    const { apiKey, host, userID, username, password } = client.db.config.jellyfin
+    const {
+      apiKey,
+      host,
+      userID,
+      username,
+      password
+    } = client.db.config.jellyfin
 
     // * ------------------ Check Config --------------------
 
@@ -87,20 +100,27 @@ export default class JFManager extends Command {
      * Get the users from JF
      */
     const getUsers = async () => {
-      const response = await get(`${host}/jellyfin/Users?api_key=${apiKey}`).headers({ 'X-Emby-Token': token })
+      const response = await get(
+        `${host}/jellyfin/Users?api_key=${apiKey}`
+      ).headers({ 'X-Emby-Token': token })
       if (response.code === 200) {
         interface ParsedUserList {
           username: string
           userID: string
         }
 
-        const userList = response.body.map((u) => ({ username: u.Name, userID: u.Id }))
+        const userList = response.body.map((u) => ({
+          username: u.Name,
+          userID: u.Id
+        }))
         return userList.sort() as ParsedUserList[]
       }
     }
 
     const removeUser = async (ID: string) => {
-      const response = await unirest.delete(`${host}/jellyfin/Users/${ID}`).headers({ 'X-Emby-Token': token })
+      const response = await unirest
+        .delete(`${host}/jellyfin/Users/${ID}`)
+        .headers({ 'X-Emby-Token': token })
 
       switch (response.code) {
         case 204: {
@@ -146,7 +166,9 @@ export default class JFManager extends Command {
      */
     const createUser = async (name: string) => {
       try {
-        const response = await post(`${host}/jellyfin/Users/New?api_key=${apiKey}`)
+        const response = await post(
+          `${host}/jellyfin/Users/New?api_key=${apiKey}`
+        )
           .headers({ 'X-Emby-Token': token })
           .send({ name })
 
@@ -160,7 +182,10 @@ export default class JFManager extends Command {
             return { newPassword, name: Name, ID: Id }
           }
           case 400: {
-            await warningMessage(msg, `The user [ ${name} ] is already added to Jellyfin`)
+            await warningMessage(
+              msg,
+              `The user [ ${name} ] is already added to Jellyfin`
+            )
             break
           }
           case 401: {
@@ -180,7 +205,9 @@ export default class JFManager extends Command {
      */
     const getUserInfo = async (user: string) => {
       const userList = await getUsers()
-      const foundUser = userList.find((u) => u.username.toLowerCase() === user.toLowerCase())
+      const foundUser = userList.find(
+        (u) => u.username.toLowerCase() === user.toLowerCase()
+      )
 
       if (foundUser) return foundUser
     }
@@ -207,17 +234,23 @@ export default class JFManager extends Command {
           case 'reset': {
             let member = args[0]
 
-            if (discordMember) member = discordMember.user.username.toLowerCase()
+            if (discordMember)
+              member = discordMember.user.username.toLowerCase()
 
             const foundUser = await getUserInfo(member)
 
             if (foundUser) {
               const newPass = createRandomPassword()
-              if ((await resetPassword(foundUser.userID)) && (await setUserPassword(foundUser.userID, newPass))) {
+              if (
+                (await resetPassword(foundUser.userID)) &&
+                (await setUserPassword(foundUser.userID, newPass))
+              ) {
                 if (discordMember) {
                   await discordMember.send(
                     embed(msg, '#9B62C5')
-                      .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
+                      .setThumbnail(
+                        'https://apps.jellyfin.org/chromecast/img/logo.png'
+                      )
                       .setTitle('JellyFin Manager')
                       .setDescription(
                         `Your password has been reset.
@@ -230,7 +263,9 @@ export default class JFManager extends Command {
 
                 return channel.send(
                   embed(msg, '#9B62C5')
-                    .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
+                    .setThumbnail(
+                      'https://apps.jellyfin.org/chromecast/img/logo.png'
+                    )
                     .setTitle('JellyFin Manager')
                     .setDescription(`Successfully reset password.`)
                     .addField('Username', member, true)
@@ -239,19 +274,26 @@ export default class JFManager extends Command {
                 )
               }
 
-              return warningMessage(msg, `No user by the name [ ${args[0]} ] to reset password for`)
+              return warningMessage(
+                msg,
+                `No user by the name [ ${args[0]} ] to reset password for`
+              )
             }
             return warningMessage(msg, 'An error occured')
           }
           case 'remove': {
             let member = args[0]
 
-            if (discordMember) member = discordMember.user.username.toLowerCase()
+            if (discordMember)
+              member = discordMember.user.username.toLowerCase()
 
             const foundUser = await getUserInfo(member)
             if (foundUser) return removeUser(foundUser.userID)
 
-            return warningMessage(msg, `No user by the name [ ${member} ] to remove`)
+            return warningMessage(
+              msg,
+              `No user by the name [ ${member} ] to remove`
+            )
           }
           case 'add': {
             let user = args[0].toLowerCase()
@@ -267,7 +309,9 @@ export default class JFManager extends Command {
             if (isCreated) {
               const { name, ID, newPassword } = isCreated
 
-              const db = await database.models.JellyfinUsers.findOne({ where: { id: ID } })
+              const db = await database.models.JellyfinUsers.findOne({
+                where: { id: ID }
+              })
               if (!db) {
                 const data = {
                   jfUsername: name,
@@ -290,7 +334,9 @@ export default class JFManager extends Command {
               if (discordMember) {
                 discordMember.send(
                   embed(msg, '#9B62C5')
-                    .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
+                    .setThumbnail(
+                      'https://apps.jellyfin.org/chromecast/img/logo.png'
+                    )
                     .setTitle('Welcome to TLD Server Management')
                     .setDescription(
                       `You've been added to TLD Server Managements Jellyfin server.
@@ -303,7 +349,9 @@ export default class JFManager extends Command {
 
               return channel.send(
                 embed(msg, '#9B62C5')
-                  .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
+                  .setThumbnail(
+                    'https://apps.jellyfin.org/chromecast/img/logo.png'
+                  )
                   .setTitle('JellyFin Manager')
                   .setDescription(`Sucessfully created a new account.`)
                   .addField('Username', name, true)
@@ -319,6 +367,9 @@ export default class JFManager extends Command {
       }
     }
 
-    return errorMessage(msg, 'Failed to connect to Jellfin instance. Maybe the username/password is incorrect?')
+    return errorMessage(
+      msg,
+      'Failed to connect to Jellfin instance. Maybe the username/password is incorrect?'
+    )
   }
 }

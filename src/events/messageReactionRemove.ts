@@ -15,7 +15,9 @@ export const messageReactionRemove = async (reaction: MessageReaction) => {
   const { embed, warningMessage } = Utils
 
   const db = await serverConfig(msg.guild.id)
-  const { starboardChannel, prefix } = JSON.parse(db.get('config') as string) as ServerDBConfig
+  const { starboardChannel, prefix } = JSON.parse(
+    db.get('config') as string
+  ) as ServerDBConfig
 
   const extension = async (attachment) => {
     const imageLink = attachment.split('.')
@@ -37,12 +39,19 @@ export const messageReactionRemove = async (reaction: MessageReaction) => {
 
   const fetchedMessages = await starChannel.fetchMessages({ limit: 100 })
   const stars = fetchedMessages.find(
-    (m) => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(reaction.message.id)
+    (m) =>
+      m.embeds[0].footer.text.startsWith('⭐') &&
+      m.embeds[0].footer.text.endsWith(reaction.message.id)
   )
   if (stars) {
-    const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text)
+    const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(
+      stars.embeds[0].footer.text
+    )
     const foundStar = stars.embeds[0]
-    const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
+    const image =
+      msg.attachments.size > 0
+        ? await extension(msg.attachments.array()[0].url)
+        : ''
     const e = embed(msg)
       .setColor('RANDOM')
       .setColor(foundStar.color)

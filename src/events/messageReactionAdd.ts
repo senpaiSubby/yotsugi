@@ -8,7 +8,10 @@ import { ServerDBConfig } from 'typings'
 import { serverConfig } from '../core/database/database'
 import { Utils } from '../core/Utils'
 
-export const messageReactionAdd = async (reaction: MessageReaction, user: User) => {
+export const messageReactionAdd = async (
+  reaction: MessageReaction,
+  user: User
+) => {
   if (reaction.emoji.name !== '⭐') return
 
   const { message: msg } = reaction
@@ -16,7 +19,9 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   const { embed } = Utils
 
   const db = await serverConfig(msg.guild.id)
-  const { starboardChannel, prefix } = JSON.parse(db.get('config') as string) as ServerDBConfig
+  const { starboardChannel, prefix } = JSON.parse(
+    db.get('config') as string
+  ) as ServerDBConfig
 
   const extension = async (attachment) => {
     const imageLink = attachment.split('.')
@@ -28,13 +33,17 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
 
   if (msg.author.id === user.id) {
     if (channel.id === starboardChannel) return
-    const m = (await msg.reply(embed(msg).setDescription(`**You cannot star your own messages**`))) as Message
+    const m = (await msg.reply(
+      embed(msg).setDescription(`**You cannot star your own messages**`)
+    )) as Message
     return m.delete(10000)
   }
 
   if (msg.author.bot) {
     if (channel.id === starboardChannel) return
-    const m = (await msg.reply(embed(msg).setDescription(`**You cannot star bot messages**`))) as Message
+    const m = (await msg.reply(
+      embed(msg).setDescription(`**You cannot star bot messages**`)
+    )) as Message
     return m.delete(10000)
   }
   const starChannel = msg.guild.channels.get(starboardChannel) as TextChannel
@@ -50,13 +59,20 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   const fetchedMessages = await starChannel.fetchMessages({ limit: 100 })
 
   const stars = fetchedMessages.find(
-    (m) => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(msg.id)
+    (m) =>
+      m.embeds[0].footer.text.startsWith('⭐') &&
+      m.embeds[0].footer.text.endsWith(msg.id)
   )
 
   if (stars) {
-    const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text)
+    const star = /^⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(
+      stars.embeds[0].footer.text
+    )
     const foundStar = stars.embeds[0]
-    const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
+    const image =
+      msg.attachments.size > 0
+        ? await extension(msg.attachments.array()[0].url)
+        : ''
     const e = embed(msg)
       .setColor('RANDOM')
       .setColor(foundStar.color)
@@ -70,9 +86,14 @@ export const messageReactionAdd = async (reaction: MessageReaction, user: User) 
   }
 
   if (!stars) {
-    const image = msg.attachments.size > 0 ? await extension(msg.attachments.array()[0].url) : ''
+    const image =
+      msg.attachments.size > 0
+        ? await extension(msg.attachments.array()[0].url)
+        : ''
     if (image === '' && msg.cleanContent.length < 1) {
-      const m = (await channel.send(embed(msg).setDescription(`**You cannot star an empty message**`))) as Message
+      const m = (await channel.send(
+        embed(msg).setDescription(`**You cannot star an empty message**`)
+      )) as Message
 
       return m.delete(10000)
     }

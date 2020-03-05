@@ -9,7 +9,11 @@ import { NezukoMessage } from 'typings'
 import { serverConfig } from '../core/database/database'
 import { NezukoClient } from '../core/NezukoClient'
 
-export const messageUpdate = async (old: Message, _new: NezukoMessage, client: NezukoClient) => {
+export const messageUpdate = async (
+  old: Message,
+  _new: NezukoMessage,
+  client: NezukoClient
+) => {
   const { member, channel } = old
   const { Utils, config, commandManager } = client
   const { embed } = Utils
@@ -30,7 +34,9 @@ export const messageUpdate = async (old: Message, _new: NezukoMessage, client: N
       if (foundChannel && _new.content) {
         const e = embed(old)
           .setTitle('Message Updated')
-          .setDescription(`Message sent by [ <@${member.id}> ] was editited in [ <#${channel.id}> ]`)
+          .setDescription(
+            `Message sent by [ <@${member.id}> ] was editited in [ <#${channel.id}> ]`
+          )
           .addField('Old Message', old.content)
           .addField('New Content', _new.content)
           .setAuthor(member.user.tag, member.user.avatarURL)

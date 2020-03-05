@@ -31,12 +31,20 @@ export default class CMD extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const { warningMessage, standardMessage, asyncForEach, embed, validOptions } = Utils
+    const {
+      warningMessage,
+      standardMessage,
+      asyncForEach,
+      embed,
+      validOptions
+    } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const db = await generalConfig.findOne({ where: { id: client.config.ownerID } })
+    const db = await generalConfig.findOne({
+      where: { id: client.config.ownerID }
+    })
     const { config } = client.db
     const { lockedCommands, disabledCommands } = config
     const nonDisableable = ['command', 'cmd', 'help']
@@ -118,7 +126,9 @@ export default class CMD extends Command {
     const checkIfDisabled = async (command) => {
       let isDisabled = false
       disabledCommands.forEach((i) => {
-        if (command === i.command || i.aliases.includes(command)) isDisabled = true
+        if (command === i.command || i.aliases.includes(command)) {
+          isDisabled = true
+        }
       })
       if (isDisabled) return true
       return false
@@ -149,7 +159,9 @@ export default class CMD extends Command {
       if (cannotDisable.length) {
         const m = (await channel.send(
           embed(msg, 'red')
-            .setTitle('The following commands CANNOT be disabled since they are required!')
+            .setTitle(
+              'The following commands CANNOT be disabled since they are required!'
+            )
             .setDescription(`**- ${cannotDisable.join('\n- ')}**`)
         )) as Message
         m.delete(20000)
@@ -190,7 +202,9 @@ export default class CMD extends Command {
           await asyncForEach(disabledCommands, async (c, index) => {
             const { aliases, command } = c
 
-            if (aliases.includes(i) || command === i) disabledCommands.splice(index, 1)
+            if (aliases.includes(i) || command === i) {
+              disabledCommands.splice(index, 1)
+            }
 
             await db.update({ config: JSON.stringify(config) })
           })
@@ -260,7 +274,14 @@ export default class CMD extends Command {
       case 'locked':
         return listLocked()
       default:
-        return validOptions(msg, ['disable', 'enable', 'disabled', 'lock', 'unlock', 'locked'])
+        return validOptions(msg, [
+          'disable',
+          'enable',
+          'disabled',
+          'lock',
+          'unlock',
+          'locked'
+        ])
     }
   }
 }

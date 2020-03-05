@@ -14,7 +14,12 @@ export default class DB extends Command {
       name: 'db',
       category: 'Nezuko Management',
       description: 'Get/Set database configs',
-      usage: ['config backup', 'config get', 'config get emby', 'config set emby host https://emby.url'],
+      usage: [
+        'config backup',
+        'config get',
+        'config get emby',
+        'config set emby host https://emby.url'
+      ],
       aliases: ['config'],
       ownerOnly: true,
       args: true
@@ -25,12 +30,20 @@ export default class DB extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig, p } = client
-    const { warningMessage, validOptions, standardMessage, chunkArray, embed } = Utils
+    const {
+      warningMessage,
+      validOptions,
+      standardMessage,
+      chunkArray,
+      embed
+    } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const db = await generalConfig.findOne({ where: { id: client.config.ownerID } })
+    const db = await generalConfig.findOne({
+      where: { id: client.config.ownerID }
+    })
     const { config } = client.db
 
     // * ------------------ Usage Logic --------------------
@@ -46,7 +59,9 @@ export default class DB extends Command {
 
           const e = embed(msg, 'green', 'settings.png')
             .setTitle('Database Config')
-            .setDescription(`[ \`${p}config get <key>\` ] for more detailed info`)
+            .setDescription(
+              `[ \`${p}config get <key>\` ] for more detailed info`
+            )
 
           const splitArray = chunkArray(Object.keys(config).sort(), 7)
           splitArray.forEach((item) => {
@@ -60,7 +75,9 @@ export default class DB extends Command {
           const keys = Object.keys(config[key1])
           const e = embed(msg, 'green', 'settings.png')
             .setTitle(`Database Config [ ${key1} ]`)
-            .setDescription(`[ \`${p}config set ${key1} <option> <new value>\` ] to change`)
+            .setDescription(
+              `[ \`${p}config set ${key1} <option> <new value>\` ] to change`
+            )
 
           keys.forEach((i) => {
             e.addField(`${i}`, `${config[key1][i]}`, true)

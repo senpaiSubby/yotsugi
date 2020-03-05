@@ -35,7 +35,8 @@ export default class Whois extends Command {
     super(client, {
       name: 'brandfinder',
       category: 'Information',
-      description: 'See if a website and Twitter account is available for a new brand',
+      description:
+        'See if a website and Twitter account is available for a new brand',
       usage: ['brandfinder <brand name>'],
       args: true
     })
@@ -65,7 +66,21 @@ export default class Whois extends Command {
     if (results && results.domain_name) {
       domainAvailable = false
       domainExpiration = results.registry_expiry_date
-      for (const alt of ['net', 'org', 'tech', 'io', 'biz', 'edu', 'co', 'app', 'me', 'dev', 'site', 'online', 'us']) {
+      for (const alt of [
+        'net',
+        'org',
+        'tech',
+        'io',
+        'biz',
+        'edu',
+        'co',
+        'app',
+        'me',
+        'dev',
+        'site',
+        'online',
+        'us'
+      ]) {
         results = await this.domain_search(`${keyword}.${alt}`)
         if (!results.domain_name) availableAltDomainsList = `${keyword}.${alt}`
       }
@@ -80,17 +95,32 @@ export default class Whois extends Command {
       access_token_secret: 'xxxx'
     })
 
-    tw.get('users/lookup', { screen_name: keyword }, (error, data, response) => {
-      if (!error) twitterAvailable = false
-      else twitterAvailable = true
-    })
+    tw.get(
+      'users/lookup',
+      { screen_name: keyword },
+      (error, data, response) => {
+        if (!error) twitterAvailable = false
+        else twitterAvailable = true
+      }
+    )
 
     return channel.send(
       embed(msg)
         .setTitle('Brand Availability')
-        .addField(`${keyword}.com`, domainAvailable ? 'Available' : `Unavailable (Expires ${domainExpiration})`)
-        .addField(!domainAvailable ? 'Alternate domains' : ' ', !domainAvailable ? availableAltDomainsList : ' ')
-        .addField(`@${keyword} on Twitter`, !twitterAvailable ? 'Unavailable' : 'Available')
+        .addField(
+          `${keyword}.com`,
+          domainAvailable
+            ? 'Available'
+            : `Unavailable (Expires ${domainExpiration})`
+        )
+        .addField(
+          !domainAvailable ? 'Alternate domains' : ' ',
+          !domainAvailable ? availableAltDomainsList : ' '
+        )
+        .addField(
+          `@${keyword} on Twitter`,
+          !twitterAvailable ? 'Unavailable' : 'Available'
+        )
     )
   }
 }

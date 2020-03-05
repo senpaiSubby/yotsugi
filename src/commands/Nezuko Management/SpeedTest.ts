@@ -25,7 +25,9 @@ export default class SpeedTest extends Command {
 
     const test = speedTest({ maxTime: 5000 })
     const m = (await msg.channel.send(
-      embed(msg, 'green').setDescription(`**:desktop: Testing network throughput...**`)
+      embed(msg, 'green').setDescription(
+        `**:desktop: Testing network throughput...**`
+      )
     )) as Message
 
     test.on('data', async (data: SpeedTestResult) => {

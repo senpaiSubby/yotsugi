@@ -45,7 +45,12 @@ export class MessageManager {
 
         if (!messages.channels[channel.id]) messages.channels[channel.id] = []
 
-        messages.channels[channel.id].push({ id, createdAt, content, username: tag })
+        messages.channels[channel.id].push({
+          id,
+          createdAt,
+          content,
+          username: tag
+        })
         await db.update({ messages: JSON.stringify(messages) })
       }
     }
@@ -95,7 +100,8 @@ export class MessageManager {
         const dir = `${__dirname}/../../../logs/attachments/${this.guild.id}/${name}`
 
         // Check if dir exists and create if not
-        if (!existsSync(dirname(dir))) mkdirSync(dirname(dir), { recursive: true })
+        if (!existsSync(dirname(dir)))
+          mkdirSync(dirname(dir), { recursive: true })
 
         const res = await fetch(url)
         const fileStream = createWriteStream(dir)
@@ -106,7 +112,10 @@ export class MessageManager {
           fileStream.on('finish', () => resolve())
         })
       } catch (error) {
-        this.client.Log.warn('Attachment Handler', `Failed to handle attachment`)
+        this.client.Log.warn(
+          'Attachment Handler',
+          `Failed to handle attachment`
+        )
       }
     })
   }

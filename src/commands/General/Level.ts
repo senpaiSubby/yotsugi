@@ -28,7 +28,13 @@ export default class Level extends Command {
   public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { warningMessage, standardMessage, paginate, embed, checkPerms } = client.Utils
+    const {
+      warningMessage,
+      standardMessage,
+      paginate,
+      embed,
+      checkPerms
+    } = client.Utils
     const { guild, mentions, author, channel } = msg
 
     // * ------------------ Config --------------------
@@ -40,7 +46,9 @@ export default class Level extends Command {
 
     const user = mentions.members.first() || guild.member(author)
 
-    if (!levels[user.user.id]) levels[user.user.id] = { level: 0, exp: 0, expTillNextLevel: 0 }
+    if (!levels[user.user.id]) {
+      levels[user.user.id] = { level: 0, exp: 0, expTillNextLevel: 0 }
+    }
 
     const member = levels[user.user.id]
 
@@ -55,14 +63,20 @@ export default class Level extends Command {
           const role = args.join(' ')
 
           // Check if user specified the role and level to add
-          if (!guild.roles.find((r) => r.name.toLowerCase() === role.toLowerCase())) {
+          if (
+            !guild.roles.find(
+              (r) => r.name.toLowerCase() === role.toLowerCase()
+            )
+          ) {
             return warningMessage(msg, `Role [ ${role} ] doesn't exist`)
           }
           if (!role) return warningMessage(msg, `You must provide a role`)
           if (!level) return warningMessage(msg, `You must provide a level`)
 
           // Get index of role level in config
-          let index = levelRoles.findIndex((i: MemberLevel) => i.level === level)
+          let index = levelRoles.findIndex(
+            (i: MemberLevel) => i.level === level
+          )
 
           // If level role doesnt exit then add it in
           if (index === -1) {
@@ -72,14 +86,21 @@ export default class Level extends Command {
 
           // Else if it exists already notify user
           else if (levelRoles[index].role === role) {
-            return warningMessage(msg, `Role [ ${role} ] is already assigned to level [ ${level} ]`)
+            return warningMessage(
+              msg,
+              `Role [ ${role} ] is already assigned to level [ ${level} ]`
+            )
           }
 
           // Save changes
           levelRoles[index] = { level, role }
           await db.update({ memberLevels: JSON.stringify(memberLevels) })
 
-          return standardMessage(msg, 'green', `Added role [ ${role} ] to level [ ${level} ]`)
+          return standardMessage(
+            msg,
+            'green',
+            `Added role [ ${role} ] to level [ ${level} ]`
+          )
         }
         return
       }
@@ -95,11 +116,16 @@ export default class Level extends Command {
           if (!level) return warningMessage(msg, `You must provide a level`)
 
           // Get index of role level in config
-          const index = levelRoles.findIndex((i: MemberLevel) => i.level === level)
+          const index = levelRoles.findIndex(
+            (i: MemberLevel) => i.level === level
+          )
 
           // Check if the role is assigned to a level
           if (index === -1) {
-            return warningMessage(msg, `The role [ ${role} ] isn't assigned to level [ ${level} ]`)
+            return warningMessage(
+              msg,
+              `The role [ ${role} ] isn't assigned to level [ ${level} ]`
+            )
           }
 
           // If it is then remove it
@@ -108,7 +134,11 @@ export default class Level extends Command {
           // Save changes
           await db.update({ memberLevels: JSON.stringify(memberLevels) })
 
-          return standardMessage(msg, 'green', `Removed role [ ${role} ] from level [ ${level} ]`)
+          return standardMessage(
+            msg,
+            'green',
+            `Removed role [ ${role} ] from level [ ${level} ]`
+          )
         }
         return
       }
@@ -122,11 +152,16 @@ export default class Level extends Command {
           if (!level) return warningMessage(msg, `You must provide a level`)
 
           // Get index of role level in config
-          const index = levelRoles.findIndex((i: MemberLevel) => i.level === level)
+          const index = levelRoles.findIndex(
+            (i: MemberLevel) => i.level === level
+          )
 
           // Check if the role is assigned to a level
           if (index === -1) {
-            return warningMessage(msg, `The role [ ${role} ] isn't assigned to level [ ${level} ]`)
+            return warningMessage(
+              msg,
+              `The role [ ${role} ] isn't assigned to level [ ${level} ]`
+            )
           }
           // If it is then change it
           levelRoles[index] = { level, role }
@@ -134,7 +169,11 @@ export default class Level extends Command {
           // Save changes
           await db.update({ memberLevels: JSON.stringify(memberLevels) })
 
-          return standardMessage(msg, 'green', `Changed level [ ${level} ] role to [ ${role} ]`)
+          return standardMessage(
+            msg,
+            'green',
+            `Changed level [ ${level} ] role to [ ${role} ]`
+          )
         }
         return
       }
@@ -155,7 +194,11 @@ export default class Level extends Command {
           return channel.send(e)
         }
 
-        return standardMessage(msg, 'green', `There are no roles assigned to any levels right now`)
+        return standardMessage(
+          msg,
+          'green',
+          `There are no roles assigned to any levels right now`
+        )
       }
       case 'leaderboard':
       case 'leader': {

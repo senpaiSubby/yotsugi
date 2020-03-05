@@ -53,7 +53,11 @@ export default class YoutubeSearch extends Command {
             .setTitle(`YT - ${title}`)
             .setURL(`https://youtube.com/watch?v=${videoId})`)
             .addField('Channel', channelTitle, true)
-            .addField('Published', publishedAt.toString().substring(0, 10), true)
+            .addField(
+              'Published',
+              publishedAt.toString().substring(0, 10),
+              true
+            )
             .addField('Description', description || 'No Description..')
             .setImage(thumbnail)
         )

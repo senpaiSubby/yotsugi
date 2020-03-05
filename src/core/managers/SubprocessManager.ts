@@ -49,7 +49,8 @@ export class SubprocessManager {
         }
       }
     }
-    for (const subprocess of this.processes.values()) this.startModule(subprocess)
+    for (const subprocess of this.processes.values())
+      this.startModule(subprocess)
     Log.ok('Subprocess Manager', `Loaded [ ${this.loadedModules.join(' | ')} ]`)
   }
 
