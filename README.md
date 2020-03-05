@@ -1,4 +1,4 @@
-[![Feature Requests](https://feathub.com/callmekory/nezuko?format=svg)](https://feathub.com/callmekory/nezuko)
+[![CodeFactor](https://www.codefactor.io/repository/github/callmekory/nezuko/badge)](https://www.codefactor.io/repository/github/callmekory/nezuko)
 
 <!------------------------- PROJECT LoggerO ------------------------->
 <br />
