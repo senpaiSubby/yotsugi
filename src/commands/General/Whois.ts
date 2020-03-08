@@ -17,7 +17,7 @@ export default class Whois extends Command {
   constructor(client: BotClient) {
     super(client, {
       name: 'whois',
-      category: 'Information',
+      category: 'General',
       description: 'Get WHOIS information on a domain',
       usage: ['whois <domain to search for>'],
       args: true

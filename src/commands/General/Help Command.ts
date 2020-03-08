@@ -12,7 +12,7 @@ export default class Help extends Command {
   constructor(client: BotClient) {
     super(client, {
       name: 'help',
-      category: 'Information',
+      category: 'General',
       description: 'Get command help',
       guildOnly: true,
       usage: ['help', 'help <some command>']

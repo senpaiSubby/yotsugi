@@ -34,7 +34,7 @@ export default class Whois extends Command {
   constructor(client: BotClient) {
     super(client, {
       name: 'brandfinder',
-      category: 'Information',
+      category: 'General',
       description:
         'See if a website and Twitter account is available for a new brand',
       usage: ['brandfinder <brand name>'],

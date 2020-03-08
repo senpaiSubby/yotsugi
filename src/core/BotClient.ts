@@ -26,7 +26,7 @@ export class BotClient extends Client {
     ownerID: string
     prefix: string
     token: string
-    webServerPort: number
+    apiPort: number
     exemptUsers: string[]
   }
 

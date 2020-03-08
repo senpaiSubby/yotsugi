@@ -28,47 +28,9 @@ export class MessageManager {
    * Logs message and attachments if any
    */
   public async log() {
-    const { content, guild, author, channel, createdAt, attachments } = this.msg
-    const { id, tag, username } = author
-    const { serverConfig, config } = this.client
-    const { ownerID } = config
-
     // Check if msg contains attachments
+    if (this.msg.attachments) this.handleAttachments(this.msg.attachments)
 
-    if (attachments) this.handleAttachments(attachments)
-
-    // Log every msg inside of guilds
-    if (channel.type === 'text') {
-      const db = await serverConfig.findOne({ where: { id: guild.id } })
-      if (db) {
-        const messages = JSON.parse(db.dataValues.messages)
-
-        if (!messages.channels[channel.id]) messages.channels[channel.id] = []
-
-        messages.channels[channel.id].push({
-          id,
-          createdAt,
-          content,
-          username: tag
-        })
-        await db.update({ messages: JSON.stringify(messages) })
-      }
-    }
-
-    // Log every msg inside of DM's
-    if (this.msg.channel.type === 'dm') {
-      if (id === ownerID) return
-
-      const db = await serverConfig.findOne({ where: { ownerID } })
-      if (db) {
-        const messages = JSON.parse(db.dataValues.messages)
-
-        if (!messages.dm[id]) messages.dm[id] = []
-
-        messages.dm[id].push({ username, id, createdAt, content })
-        await db.update({ messages: JSON.stringify(messages) })
-      }
-    }
   }
 
   public async runCommand(cmdString: string) {

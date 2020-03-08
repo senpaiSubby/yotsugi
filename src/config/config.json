@@ -2,6 +2,6 @@
   "ownerID": "",
   "prefix": "//",
   "token": "",
-  "webServerPort": 5700,
+  "apiPort": 5700,
   "exemptUsers": []
 }
