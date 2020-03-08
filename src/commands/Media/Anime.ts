@@ -40,8 +40,6 @@ export default class Anime extends Command {
       )}`
     )
 
-    // Fs.writeFile('data.json', JSON.stringify(response.body), () => null)
-
     if (response.body) {
       const { data } = response.body as AnimeSearch
       if (data.length) {
