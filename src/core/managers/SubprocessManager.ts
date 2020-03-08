@@ -7,20 +7,20 @@ import fs from 'fs'
 import path, { join } from 'path'
 
 import { Subprocess } from '../base/Subprocess'
+import { BotClient } from '../BotClient'
 import { Log } from '../Logger'
-import { NezukoClient } from '../NezukoClient'
 
 // tslint:disable: completed-docs
 
 export class SubprocessManager {
-  public client: NezukoClient
+  public client: BotClient
   public processes: any
   public loadedModules: string[]
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     this.client = client
 
-    if (!this.client || !(this.client instanceof NezukoClient)) {
+    if (!this.client || !(this.client instanceof BotClient)) {
       throw new Error('Discord Client is required')
     }
 
@@ -46,11 +46,13 @@ export class SubprocessManager {
           throw new Error('Subprocesses cannot have the same name')
         } else {
           this.processes.set(instance.name, instance)
+          this.loadedModules.push(instance.name)
         }
       }
     }
-    for (const subprocess of this.processes.values())
+    for (const subprocess of this.processes.values()) {
       this.startModule(subprocess)
+    }
     Log.ok('Subprocess Manager', `Loaded [ ${this.loadedModules.join(' | ')} ]`)
   }
 

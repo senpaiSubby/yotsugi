@@ -5,10 +5,10 @@
 import { PermissionResolvable } from 'discord.js'
 import { CommandData } from 'typings/Command'
 
-import { NezukoClient } from '../NezukoClient'
+import { BotClient } from '../BotClient'
 
 export class Command {
-  public client: NezukoClient
+  public client: BotClient
   public name: string
   public category: string
   public description: string
@@ -22,7 +22,7 @@ export class Command {
   public disabled: boolean
   public cooldown: number
 
-  constructor(client: NezukoClient, data: CommandData) {
+  constructor(client: BotClient, data: CommandData) {
     this.client = client
     this.name = data.name
     this.category = data.category || ''

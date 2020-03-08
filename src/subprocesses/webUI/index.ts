@@ -9,16 +9,16 @@ import serveIndex from 'serve-index'
 import shortid from 'shortid'
 
 import { Subprocess } from '../../core/base/Subprocess'
+import { BotClient } from '../../core/BotClient'
 import { CommandManager } from '../../core/managers/CommandManager'
-import { NezukoClient } from '../../core/NezukoClient'
 
 import('moment-duration-format')
 
 export default class WebServer extends Subprocess {
-  public client: NezukoClient
+  public client: BotClient
   public commandManager: CommandManager
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'WebUI',
       description: 'WebUI',
@@ -51,7 +51,7 @@ export default class WebServer extends Subprocess {
           'WebUI',
           `[ ${req.device.type} ] [ ${req.device.parser.useragent.family} ] [ ${req.ip} ]sent command [ ${req.body.command} ] without APIKEY`
         )
-        return res.status(401).json({ response: "Missing params 'apiKey'" })
+        return res.status(401).json({ response: 'Missing params \'apiKey\'' })
       }
       if (req.body.apiKey !== apiKey) {
         Log.info(
@@ -154,8 +154,9 @@ export default class WebServer extends Subprocess {
         Log.info('WebUI', `Running command [ ${req.ip} ]`)
 
         // Check if all required params are met
-        if (!req.body.command)
-          res.status(406).json({ response: "Missing params 'command'" })
+        if (!req.body.command) {
+          res.status(406).json({ response: 'Missing params \'command\'' })
+        }
 
         const args = req.body.command.split(' ')
         const cmdName = args.shift().toLowerCase()

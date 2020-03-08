@@ -2,13 +2,13 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoClient } from 'core/NezukoClient'
+import { BotClient } from 'core/BotClient'
 import { NezukoMessage } from 'typings'
 
 import { Command } from '../core/base/Command'
 
 export default class Template extends Command {
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'template',
       category: '',
@@ -24,7 +24,7 @@ export default class Template extends Command {
   }
 
   public async run(
-    client: NezukoClient,
+    client: BotClient,
     msg: NezukoMessage,
     args: any[],
     api: boolean

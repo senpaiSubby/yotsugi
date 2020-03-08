@@ -6,10 +6,10 @@ import TuyAPI from 'tuyapi'
 import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class Tuya extends Command {
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'tuya',
       category: 'Smart Home',
@@ -22,7 +22,7 @@ export default class Tuya extends Command {
   }
 
   public async run(
-    client: NezukoClient,
+    client: BotClient,
     msg: NezukoMessage,
     args: any[],
     api: boolean
@@ -171,8 +171,9 @@ export default class Tuya extends Command {
         const device = tuyaDevices[index]
         const name = capitalize(args[0])
         // If plug name not found
-        if (index === -1)
+        if (index === -1) {
           return warningMessage(msg, `No plug named [ ${name} ]`)
+        }
 
         // If on/off specified
         if (args[1]) return setPlug(device, args[1])

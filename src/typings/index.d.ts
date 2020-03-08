@@ -23,6 +23,7 @@ interface MemberDBConfig {
 
 interface ServerDBConfig {
   [key: string]: any
+
   announcementChannel: string | null
   logChannel: string | null
   prefix: string

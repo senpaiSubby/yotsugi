@@ -3,10 +3,10 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { Subprocess } from '../../core/base/Subprocess'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class Template extends Subprocess {
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'Template',
       description: 'Template',
@@ -16,5 +16,6 @@ export default class Template extends Subprocess {
     this.client = client
   }
 
-  public async run() {}
+  public async run() {
+  }
 }

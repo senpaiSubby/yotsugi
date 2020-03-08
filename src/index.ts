@@ -4,10 +4,10 @@
  */
 import clear from 'clear'
 
-import { NezukoClient } from './core/NezukoClient'
+import { BotClient } from './core/BotClient'
 
 // Clear screen
 clear()
 
 // Start Nezuko
-new NezukoClient().start()
+new BotClient().start()

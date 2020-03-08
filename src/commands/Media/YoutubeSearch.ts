@@ -6,12 +6,12 @@ import { NezukoMessage } from 'typings'
 import { YoutubeDataAPI } from 'youtube-v3-api'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class YoutubeSearch extends Command {
   public color: string
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'yt',
       category: 'Media',
@@ -22,7 +22,7 @@ export default class YoutubeSearch extends Command {
     this.color = '#FF3333'
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { Utils, db, p } = client
     const { paginate, embed, missingConfig } = Utils

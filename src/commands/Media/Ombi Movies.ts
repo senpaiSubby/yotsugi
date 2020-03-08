@@ -7,7 +7,7 @@ import { get, post } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 /*
 requires role "requestmovie"
@@ -16,7 +16,7 @@ requires role "requestmovie"
 export default class OmbiMovies extends Command {
   public color: string
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'movie',
       category: 'Media',
@@ -27,7 +27,7 @@ export default class OmbiMovies extends Command {
     this.color = '#E37200'
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client
@@ -87,10 +87,12 @@ export default class OmbiMovies extends Command {
       if (movie.quality) e.addField('Quality', movie.quality, true)
       if (movie.requested) e.addField('Requested', '✅', true)
       if (movie.approved) e.addField('Approved', '✅', true)
-      if (movie.plexUrl)
+      if (movie.plexUrl) {
         e.addField('Plex', `[Watch now](${movie.plexUrl})`, true)
-      if (movie.embyUrl)
+      }
+      if (movie.embyUrl) {
         e.addField('Emby', `[Watch now](${movie.embyUrl})`, true)
+      }
 
       return e
     }
@@ -169,8 +171,9 @@ export default class OmbiMovies extends Command {
 
     const movieName = args.join(' ')
 
-    if (!movieName)
+    if (!movieName) {
       return warningMessage(msg, `Please enter a valid TV show name!`)
+    }
 
     const results = await getTMDbID(movieName)
 

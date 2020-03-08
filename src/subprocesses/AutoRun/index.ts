@@ -5,14 +5,14 @@
 import later from 'later'
 
 import { Subprocess } from '../../core/base/Subprocess'
+import { BotClient } from '../../core/BotClient'
 import { generalConfig } from '../../core/database/database'
 import { CommandManager } from '../../core/managers/CommandManager'
-import { NezukoClient } from '../../core/NezukoClient'
 
 export default class AutoRun extends Subprocess {
   public commandManager: CommandManager
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'AutoRun',
       description: 'Schedule commands to run at specified times',
@@ -36,7 +36,7 @@ export default class AutoRun extends Subprocess {
         const args = cmdName.split(' ')
         const cmd = args.shift().toLowerCase()
         const command = this.client.commandManager.findCommand(cmd)
-        if (command)
+        if (command) {
           return this.client.commandManager.runCommand(
             this.client,
             command,
@@ -44,6 +44,7 @@ export default class AutoRun extends Subprocess {
             args,
             true
           )
+        }
         return `No command [ ${cmdName} ]`
       }
 

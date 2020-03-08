@@ -7,12 +7,12 @@ import { NezukoMessage } from 'typings'
 import { get } from 'unirest'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class Anime extends Command {
   public color: string
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'anime',
       category: 'Media',
@@ -23,7 +23,7 @@ export default class Anime extends Command {
     this.color = '#E96C55'
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { Utils } = client
     const { standardMessage, embed, paginate, warningMessage } = Utils
@@ -54,8 +54,8 @@ export default class Anime extends Command {
             embed(msg, this.color)
               .setTitle(
                 `Kitsu.io Anime - [ ${attributes.titles.en ||
-                  attributes.titles.en_jp ||
-                  attributes.titles.ja_jp} ]`
+                attributes.titles.en_jp ||
+                attributes.titles.ja_jp} ]`
               )
               .setDescription(`${attributes.synopsis.substring(0, 1021)}...`)
               .addField('Type', attributes.subtype, true)
@@ -79,7 +79,7 @@ export default class Anime extends Command {
               .addField(
                 'Airing Date',
                 `${attributes.startDate ||
-                  'Not Aired'} - ${attributes.endDate || 'Not Finished'}`,
+                'Not Aired'} - ${attributes.endDate || 'Not Finished'}`,
                 true
               )
               .addField('Status', attributes.status, true)

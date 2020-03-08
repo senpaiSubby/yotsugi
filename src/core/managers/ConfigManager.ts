@@ -30,7 +30,6 @@ export class ConfigManager {
         id: ownerID,
         config: JSON.stringify({
           archivebox: { path: null },
-          priceTracking: [],
           autorun: [],
           disabledCommands: [],
           docker: { host: null },
@@ -83,27 +82,7 @@ export class ConfigManager {
         id,
         ownerID,
         config: JSON.stringify({
-          announcementChannel: null,
-          logChannel: null,
-          prefix: config.prefix,
-          rules: [],
-          modMailChannel: null,
-          leveling: false,
-          levelMultiplier: 2,
-          starboardChannel: null,
-          welcomeChannel: null,
-          verifyUsers: false,
-          verifyChannel: null,
-          verifiedRole: null
-        }),
-        levelMultiplier: '2',
-        memberLevels: JSON.stringify({
-          levelRoles: [],
-          levels: {}
-        }),
-        messages: JSON.stringify({
-          channels: {},
-          dm: {}
+          prefix: config.prefix
         }),
         statChannels: JSON.stringify({
           enabled: false,
@@ -112,7 +91,6 @@ export class ConfigManager {
           bots: { enabled: true, channelID: null },
           members: { enabled: true, channelID: null }
         }),
-        userActivity: JSON.stringify({}),
         serverName: name
       })
     }

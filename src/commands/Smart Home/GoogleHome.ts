@@ -6,12 +6,12 @@ import { Device } from 'google-home-notify-client'
 import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class GoogleHome extends Command {
   public color: string
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'say',
       category: 'Smart Home',
@@ -25,7 +25,7 @@ export default class GoogleHome extends Command {
   }
 
   // TODO add google home typings
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[], api) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[], api) {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client

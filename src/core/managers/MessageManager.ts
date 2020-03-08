@@ -9,15 +9,15 @@ import { dirname } from 'path'
 import torrent2magnet from 'torrent2magnet'
 import { NezukoMessage } from 'typings'
 
-import { NezukoClient } from '../NezukoClient'
+import { BotClient } from '../BotClient'
 
 export class MessageManager {
-  public client: NezukoClient
+  public client: BotClient
   public msg: NezukoMessage
   public context: any
   public guild: Guild
 
-  constructor(client: NezukoClient, msg: NezukoMessage) {
+  constructor(client: BotClient, msg: NezukoMessage) {
     this.client = client
     this.msg = msg
     this.context = msg.context
@@ -100,8 +100,9 @@ export class MessageManager {
         const dir = `${__dirname}/../../../logs/attachments/${this.guild.id}/${name}`
 
         // Check if dir exists and create if not
-        if (!existsSync(dirname(dir)))
+        if (!existsSync(dirname(dir))) {
           mkdirSync(dirname(dir), { recursive: true })
+        }
 
         const res = await fetch(url)
         const fileStream = createWriteStream(dir)

@@ -7,10 +7,10 @@ import { post } from 'unirest'
 import wol from 'wol'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class LinuxPower extends Command {
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'pc',
       category: 'Smart Home',
@@ -24,7 +24,7 @@ export default class LinuxPower extends Command {
 
   // TODO add linuxpower typings
   public async run(
-    client: NezukoClient,
+    client: BotClient,
     msg: NezukoMessage,
     args: any[],
     api: boolean

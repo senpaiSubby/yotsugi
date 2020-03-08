@@ -8,12 +8,12 @@ import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class Emby extends Command {
   public color: string
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'jf',
       category: 'Media',
@@ -26,7 +26,7 @@ export default class Emby extends Command {
   }
 
   public async run(
-    client: NezukoClient,
+    client: BotClient,
     msg: NezukoMessage,
     args: any[],
     api: boolean
@@ -131,10 +131,11 @@ export default class Emby extends Command {
     // * ------------------ Usage Logic --------------------
 
     let e: RichEmbed
-    if (!api)
+    if (!api) {
       e = embed(msg, this.color).setThumbnail(
         'https://apps.jellyfin.org/chromecast/img/logo.png'
       )
+    }
 
     switch (args[0]) {
       case 'streams': {
@@ -165,8 +166,9 @@ export default class Emby extends Command {
 
           if (api) return { currentStreamCount, currentStreams }
 
-          if (!currentStreamCount)
+          if (!currentStreamCount) {
             return standardMessage(msg, this.color, 'Nothing is playing')
+          }
 
           e.setTitle(
             `Jellyfin Stats - Current Streams [ ${currentStreamCount} ]`

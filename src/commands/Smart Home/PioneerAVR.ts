@@ -7,10 +7,10 @@ import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 export default class PioneerAVR extends Command {
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'avr',
       category: 'Smart Home',
@@ -23,7 +23,7 @@ export default class PioneerAVR extends Command {
   }
 
   public async run(
-    client: NezukoClient,
+    client: BotClient,
     msg: NezukoMessage,
     args: any[],
     api: boolean

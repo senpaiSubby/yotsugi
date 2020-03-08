@@ -38,8 +38,9 @@ export class Utils {
     const missingPerms: PermissionResolvable[] = []
 
     if (user.id !== config.ownerID && !config.exemptUsers.includes(user.id)) {
-      for (const perm of permsNeeded)
+      for (const perm of permsNeeded) {
         if (!user.permissions.has(perm)) missingPerms.push(perm)
+      }
     }
     return missingPerms
   }
@@ -63,8 +64,9 @@ export class Utils {
    * @param callback Callback function for data use
    */
   public static async asyncForEach(array: any[], callback) {
-    for (let index = 0; index < array.length; index++)
+    for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array)
+    }
   }
 
   /**
@@ -80,8 +82,9 @@ export class Utils {
     let willFit = false
     while (!willFit) {
       let sizeInRange = true
-      for (const i of splitArray)
+      for (const i of splitArray) {
         if (i.join().length > 1024) sizeInRange = false
+      }
 
       if (sizeInRange) {
         willFit = true
@@ -223,8 +226,9 @@ export class Utils {
 
       const stat = fs.statSync(innerDir)
 
-      if (stat.isDirectory())
+      if (stat.isDirectory()) {
         results = results.concat(this.findNested(innerDir, pattern))
+      }
 
       if (stat.isFile() && innerDir.endsWith(pattern)) results.push(innerDir)
     })

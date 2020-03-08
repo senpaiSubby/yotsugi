@@ -6,11 +6,11 @@ import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { post } from 'unirest'
 
 import { Command } from '../../core/base/Command'
+import { BotClient } from '../../core/BotClient'
 import { generalConfig } from '../../core/database/database'
-import { NezukoClient } from '../../core/NezukoClient'
 
 export default class Sengled extends Command {
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'sengled',
       category: 'Smart Home',
@@ -23,7 +23,7 @@ export default class Sengled extends Command {
   }
 
   public async run(
-    client: NezukoClient,
+    client: BotClient,
     msg: NezukoMessage,
     args: any[],
     api: boolean
@@ -175,10 +175,11 @@ export default class Sengled extends Command {
           if (newBrightness === 0 || newBrightness === 100) {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
-            if (api)
+            if (api) {
               return `[ ${deviceName} ] light turned [ ${capitalize(
                 newStatus
               )} ]`
+            }
             return standardMessage(
               msg,
               'green',
@@ -187,8 +188,9 @@ export default class Sengled extends Command {
               )} ]`
             )
           }
-          if (api)
+          if (api) {
             return `[ ${deviceName} ] brightness set to [ ${newBrightness} ]`
+          }
           return standardMessage(
             msg,
             'green',
@@ -243,10 +245,11 @@ export default class Sengled extends Command {
           }
           // If light not found
           if (index === -1) {
-            if (api)
+            if (api) {
               return `Could not find a light named [ ${capitalize(
                 deviceName
               )} ]`
+            }
             return warningMessage(
               msg,
               `Could not find a light named [ ${capitalize(deviceName)} ]`

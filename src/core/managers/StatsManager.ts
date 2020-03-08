@@ -70,8 +70,9 @@ export class StatsManager {
 
         // Create channels if they dont exist and are enabled
         if (!total.channelID && total.enabled) await createVoiceChannel('total')
-        if (!members.channelID && members.enabled)
+        if (!members.channelID && members.enabled) {
           await createVoiceChannel('members')
+        }
         if (!bots.channelID && bots.enabled) await createVoiceChannel('bots')
 
         // Update stats if they are enabled
@@ -89,12 +90,13 @@ export class StatsManager {
           }
         }
 
-        if (total.enabled)
+        if (total.enabled) {
           await updateStats(
             'total',
             total.channelID,
             `ᴛᴏᴛᴀʟ ᴍᴇᴍʙᴇʀs: ${guild.members.size}`
           )
+        }
         if (members.enabled) {
           await updateStats(
             'members',

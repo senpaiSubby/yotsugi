@@ -4,18 +4,19 @@
  */
 import { Collection, Message } from 'discord.js'
 import Enmap from 'enmap'
-import path, { join } from 'path'
+import { join } from 'path'
 import { NezukoMessage, ServerDBConfig } from 'typings'
 
 import config from '../../config/config.json'
 import { Command } from '../base/Command'
+import { BotClient } from '../BotClient'
 import { database, generalConfig, serverConfig } from '../database/database'
 import { Log } from '../Logger'
-import { NezukoClient } from '../NezukoClient'
+
 import { ConfigManager } from './ConfigManager'
 
 export class CommandManager {
-  public client: NezukoClient
+  public client: BotClient
   // tslint:disable-next-line:variable-name
   public Log: typeof Log
   public commands: Enmap<string | number, any>
@@ -25,10 +26,10 @@ export class CommandManager {
   public loadedCommands: number
   public cooldowns: any
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     this.client = client
 
-    if (!this.client || !(this.client instanceof NezukoClient)) {
+    if (!this.client || !(this.client instanceof BotClient)) {
       throw new Error('Nezuko Client is required')
     }
 
@@ -50,11 +51,8 @@ export class CommandManager {
    */
   public loadCommands(directory = join(__dirname, '..', '..', 'commands')) {
     const cmdFiles = this.client.Utils.findNested(directory, '.js')
-    for (const file of cmdFiles) {
-      const dirName = path.basename(path.dirname(file))
+    for (const file of cmdFiles) this.startModule(file)
 
-      this.startModule(file)
-    }
     this.Log.ok('Command Manager', `Loaded [ ${this.loadedCommands} ] commands`)
   }
 
@@ -120,7 +118,7 @@ export class CommandManager {
 
   /**
    * Runs command
-   * @param client NezukoClient
+   * @param client BotClient
    * @param command
    * @param msg
    * @param args
@@ -128,7 +126,7 @@ export class CommandManager {
    * @returns
    */
   public async runCommand(
-    client: NezukoClient,
+    client: BotClient,
     command: any,
     msg: NezukoMessage | null,
     args?: any[],
@@ -159,11 +157,11 @@ export class CommandManager {
   /**
    * Handles message
    * @param msg NezukoMessage
-   * @param client NezukoClient
+   * @param client BotClient
    */
   public async handleMessage(
     msg: NezukoMessage,
-    client: NezukoClient,
+    client: BotClient,
     addLevel = false
   ) {
     // * -------------------- Setup --------------------

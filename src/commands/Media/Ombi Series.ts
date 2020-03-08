@@ -7,7 +7,7 @@ import { get, post } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
-import { NezukoClient } from '../../core/NezukoClient'
+import { BotClient } from '../../core/BotClient'
 
 /*
 requires role "requesttv"
@@ -16,7 +16,7 @@ requires role "requesttv"
 export default class OmbiTV extends Command {
   public color: string
 
-  constructor(client: NezukoClient) {
+  constructor(client: BotClient) {
     super(client, {
       name: 'tv',
       category: 'Media',
@@ -27,7 +27,7 @@ export default class OmbiTV extends Command {
     this.color = '#E37200'
   }
 
-  public async run(client: NezukoClient, msg: NezukoMessage, args: any[]) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client
@@ -125,11 +125,12 @@ export default class OmbiTV extends Command {
         )
       }
 
-      if (show.approved)
+      if (show.approved) {
         return warningMessage(
           msg,
           `[ ${show.title} ] is already approved in Ombi`
         )
+      }
 
       if (show.requested) {
         return warningMessage(
@@ -164,8 +165,9 @@ export default class OmbiTV extends Command {
 
     const showName = args.join(' ')
 
-    if (!showName)
+    if (!showName) {
       return warningMessage(msg, `Please enter a valid TV show name!`)
+    }
 
     const results = await getTVDBID(showName)
 

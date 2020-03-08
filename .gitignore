@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 build
 config
 *.log
@@ -16,6 +15,4 @@ rclone.conf
 node_modules/
 nezukoDocker
 test.js
-=======
 node_modules
->>>>>>> c1750d0f3a5960098d84b397597b49d018abaf5b

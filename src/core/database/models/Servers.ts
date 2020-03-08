@@ -19,14 +19,5 @@ export default class Servers extends Model<Servers> {
   public config: string | undefined
 
   @Column
-  public messages: string | undefined
-
-  @Column
-  public memberLevels: string | undefined
-
-  @Column
   public statChannels: string | undefined
-
-  @Column
-  public userActivity: string | undefined
 }
