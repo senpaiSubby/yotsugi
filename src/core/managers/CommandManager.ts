@@ -5,12 +5,12 @@
 import { Collection, Message } from 'discord.js'
 import Enmap from 'enmap'
 import { join } from 'path'
-import { NezukoMessage, ServerDBConfig } from 'typings'
+import { NezukoMessage } from 'typings'
 
 import config from '../../config/config.json'
 import { Command } from '../base/Command'
 import { BotClient } from '../BotClient'
-import { database, generalConfig, serverConfig } from '../database/database'
+import { generalConfig, serverConfig } from '../database/database'
 import { Log } from '../Logger'
 
 import { ConfigManager } from './ConfigManager'
@@ -161,8 +161,7 @@ export class CommandManager {
    */
   public async handleMessage(
     msg: NezukoMessage,
-    client: BotClient,
-    addLevel = false
+    client: BotClient
   ) {
     // * -------------------- Setup --------------------
 
@@ -177,13 +176,6 @@ export class CommandManager {
     if (msg.author.bot) return
 
     // * -------------------- Assign Prefix --------------------
-
-    const SDB = await database.models.Servers.findOne({
-      where: { id: guild.id }
-    })
-    const { leveling } = JSON.parse(
-      SDB.get('config') as string
-    ) as ServerDBConfig
 
     const prefix = guild
       ? await ConfigManager.handleServerConfig(guild)
@@ -239,13 +231,7 @@ export class CommandManager {
     const command = this.findCommand(commandName) as Command
 
     // If command doesnt exist then notify user and do nothing
-    if (!command) {
-      const m = (await errorMessage(
-        msg,
-        `No command: [ ${commandName} ]`
-      )) as Message
-      return m.delete(5000)
-    }
+    if (!command) return
 
     // * -------------------- Handle DB Configs --------------------
     await ConfigManager.handleMemberConfig(msg)
@@ -306,7 +292,7 @@ export class CommandManager {
     timestamps.set(author.id, now)
 
     // Checks for non owner user
-    if (author.id !== ownerID || !config.exemptUsers.includes(author.id)) {
+    if (author.id !== ownerID && !config.exemptUsers.includes(author.id)) {
       // If command is marked 'ownerOnly: true' then don't execute
       if (command.ownerOnly && !config.exemptUsers.includes(author.id)) {
         Log.info(
