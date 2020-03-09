@@ -4,9 +4,9 @@
  */
 import { GuildChannel, Message } from 'discord.js'
 import { existsSync } from 'fs'
+import path from 'path'
 import { performance } from 'perf_hooks'
 import { NezukoMessage } from 'typings'
-
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
 import { database } from '../../core/database/database'
@@ -26,7 +26,9 @@ export default class RClone extends Command {
         'rclone list',
         'rclone size <remote>:/<dir>',
         'rclone ls <remote>:/<dir>',
-        'rclone sizeof <remote1> <remote2> <remote3> <remote4>'
+        'rclone sizeof <remote1> <remote2> <remote3> <remote4>',
+        'rclone find <remote> <search terms>',
+        'rclone find <remote> <search terms> -filter <dir or file extension>'
       ],
       args: true
     })
@@ -103,7 +105,30 @@ export default class RClone extends Command {
     switch (command) {
       case 'find': {
         const remote = args[0]
+        // Remove remote from argument list
         args.shift()
+
+        // Variable to hold filter if applicable
+        let filter
+
+        // Find index of flag if specified
+        const flagIndex = args.findIndex((s) => s === '-type')
+        // If flag
+        if (flagIndex !== -1) {
+          // And flag argument
+          if (args[flagIndex + 1]) {
+            // Set filter
+            filter = args[flagIndex + 1]
+            // Remove flag and filter from argument list
+            args.splice(flagIndex, flagIndex + 1)
+          } else {
+            // If no filter args specified notify user
+            return warningMessage(
+              msg,
+              `You specified and blank filter. Correct usage would be like \`-type folder\` or \`-type .mp4\``
+            )
+          }
+        }
 
         // TODO allow user to specify the folder to search in
         const searchTerms = args
@@ -143,7 +168,7 @@ export default class RClone extends Command {
 
         const data = JSON.parse(db.get('cache') as string)
 
-        const results = data.filter((item) => {
+        let results = data.filter((item) => {
           let match = 0
 
           searchTerms.forEach((term) => {
@@ -155,6 +180,30 @@ export default class RClone extends Command {
         })
 
         const sorted = []
+
+        // If user specified a -type filer
+        if (filter) {
+          results = results.filter((i) => {
+            switch (filter) {
+              // If user wants only directories
+              case 'folder':
+              case 'dir': {
+                return i.IsDir
+              }
+              default: {
+                // Get file extension
+                const extension = path.extname(i.Name)
+                // If user specified a file extension
+                // Guessing that it will start with .
+                if (filter.startsWith('.')) {
+                  // If extension matches filter return it
+                  if (filter === extension) return true
+                }
+              }
+            }
+          })
+        }
+
         // Remake array with nice emojis based on file extensions
         results.forEach((i) => {
           if (i.IsDir) {
@@ -199,7 +248,9 @@ export default class RClone extends Command {
             embed(msg, 'blue', 'rclone.gif')
               .setTitle(`Rclone Search - [ ${remote} ]`)
               .addField('Results', `${splitArray[index].join('\n')}`)
-              .setDescription(`Total results [ ${sorted.length} ]`)
+              .setDescription(
+                `Total results [ ${sorted.length} ]\nUsing filter [ ${filter} ]`
+              )
           )
         })
 
