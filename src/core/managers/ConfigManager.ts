@@ -95,14 +95,6 @@ export class ConfigManager {
       })
     }
 
-    // * just to handle db updates when adding commands
-    const conf = JSON.parse(db.get('config') as string)
-
-    if (!conf.announcementChannel) {
-      conf.announcementChannel = null
-      await db.update({ config: JSON.stringify(conf) })
-    }
-
     return conf.prefix || config.prefix
   }
 
