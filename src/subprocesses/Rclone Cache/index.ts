@@ -3,6 +3,8 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { existsSync } from 'fs'
+import { join } from 'path'
+import { spawn } from 'promisify-child-process'
 import { Subprocess } from '../../core/base/Subprocess'
 import { BotClient } from '../../core/BotClient'
 import { database } from '../../core/database/database'
@@ -21,7 +23,8 @@ export default class RcloneCache extends Subprocess {
 
   public async run() {
     const { execAsync } = Utils
-    const configPath = `${__dirname}/../../config/rclone.conf`
+    const configPath = join(`${__dirname}/../../config/rclone.conf`)
+    console.log(configPath)
 
     // * ------------------ Check Config --------------------
 
@@ -30,7 +33,7 @@ export default class RcloneCache extends Subprocess {
         Place your \`rclone.conf\` file inside the \`/build/config\` directory of Nezuko!`)
     }
 
-    const updateRcloneCache = async () => {
+    const fetchRemotes = async () => {
       const { code, stdout } = await execAsync(
         `rclone listremotes --config='${configPath}'`,
         {
@@ -39,47 +42,48 @@ export default class RcloneCache extends Subprocess {
       )
 
       if (code !== 0) {
-        return console.log(`A error occurred with Rclone when listing remotes`)
+        console.log(`A error occurred with Rclone when listing remotes`)
+      } else {
+        return stdout
+          .replace(/:/g, '')
+          .split('\n')
+          .filter(Boolean)
       }
+    }
 
-      const remotes = stdout
-        .replace(/:/g, '')
-        .split('\n')
-        .filter(Boolean)
+    const updateRcloneCache = async () => {
+      const remotes = await fetchRemotes()
 
-      for (const remote of remotes) {
-        const {
-          code: c,
-          stdout: s
-        } = await execAsync(
-          `rclone --config='${configPath}' lsjson ${remote}:/ --fast-list -R`,
-          { silent: true }
-        )
+      if (remotes) {
+        for (const remote of remotes) {
+          // @ts-ignore
+          const { stdout, stderr } = await spawn(
+            `rclone`,
+            [`--config=${configPath} lsjson ${remote}:/ --fast-list -R`],
+            {
+              maxBuffer: 500 * 1024 * 1024,
+              shell: true
+            }
+          )
 
-        if (code !== 0) {
-          return console.log(`Error scanning remote [ ${remote} ]`)
-        }
-
-        let db = await database.models.RcloneCache.findOne({
-          where: { id: remote }
-        })
-
-        if (!db) {
-          // Create new db for remote cache
-          await database.models.RcloneCache.create({
-            id: remote,
-            cache: JSON.stringify([])
-          })
-
-          db = await database.models.RcloneCache.findOne({
+          let db = await database.models.RcloneCache.findOne({
             where: { id: remote }
           })
+
+          if (!db) {
+            // Create new db for remote cache
+            await database.models.RcloneCache.create({
+              id: remote,
+              cache: JSON.stringify([])
+            })
+
+            db = await database.models.RcloneCache.findOne({
+              where: { id: remote }
+            })
+          }
+
+          await db.update({ cache: stdout })
         }
-
-        const x = s
-        console.log(x)
-
-        await db.update({ cache: s })
       }
     }
 
