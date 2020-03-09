@@ -76,6 +76,8 @@ export class BotClient extends Client {
    * Starts Altair
    */
   public async start() {
+    console.log('-'.repeat(60))
+
     console.log('Copyright callmekory 2020 - https://github.com/callmekory\n')
 
     // Login
@@ -84,6 +86,8 @@ export class BotClient extends Client {
     await this.user.setActivity(`${config.prefix}`, { type: 'LISTENING' })
 
     Log.info('Bot Invite Link', `${await this.generateInvite()}\n`)
+
+    console.log('-'.repeat(60))
 
     // Handle general config
 
