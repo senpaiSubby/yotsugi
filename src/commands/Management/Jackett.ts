@@ -15,7 +15,7 @@ export default class Jackett extends Command {
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'jackett',
+      name: 'torrent',
       category: 'Management',
       description: 'Search for torrents via Jackett',
       usage: ['find <torrent to look for>'],
