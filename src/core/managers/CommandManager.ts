@@ -226,7 +226,7 @@ export class CommandManager {
     else {
       commandName = args.shift()!.toLowerCase()
     }
-
+    
     // Find the requested command
     const command = this.findCommand(commandName) as Command
 

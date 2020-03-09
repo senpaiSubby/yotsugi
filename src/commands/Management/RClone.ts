@@ -141,10 +141,7 @@ export default class RClone extends Command {
           )
         }
 
-        const data = db.get('cache') as any[]
-        console.log(data[0])
-
-        console.log(JSON.parse(data))
+        const data = JSON.parse(db.get('cache') as string)
 
         const results = data.filter((item) => {
           let match = 0
@@ -200,8 +197,8 @@ export default class RClone extends Command {
         Object.keys(splitArray).forEach((key, index) => {
           embedList.push(
             embed(msg, 'blue', 'rclone.gif')
-              .setTitle(remote)
-              .addField('Files', `${splitArray[index].join('\n')}`)
+              .setTitle(`Rclone Search - [ ${remote} ]`)
+              .addField('Results', `${splitArray[index].join('\n')}`)
               .setDescription(`Total results [ ${sorted.length} ]`)
           )
         })
