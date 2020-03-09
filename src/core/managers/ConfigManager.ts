@@ -95,6 +95,9 @@ export class ConfigManager {
       })
     }
 
+    // * just to handle db updates when adding commands
+    const conf = JSON.parse(db.get('config') as string)
+
     return conf.prefix || config.prefix
   }
 
