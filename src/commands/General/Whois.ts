@@ -4,8 +4,7 @@
  */
 import { BotClient } from 'core/BotClient'
 import { NezukoMessage } from 'typings'
-import whois from 'whois-2'
-
+import whoiser from 'whoiser'
 import { Command } from '../../core/base/Command'
 
 /*!
@@ -31,18 +30,28 @@ export default class Whois extends Command {
     const { channel } = msg
 
     const domain = args.join(' ')
-    const results = await whois(domain, { format: 'json' }) // Not sure if needs to be awaited
 
-    if (results && results.domain_name) {
+    try {
+      const results = await whoiser(domain)
+      const key = Object.keys(results)[0]
+      const registrarServer = results[key]['Registrar WHOIS Server']
+      const registrarName = results[key].Registrar
+      const updatedTime = new Date(results[key]['Updated Date']).toString()
+      const createdTime = new Date(results[key]['Created Date']).toString()
+      const expiryTime = new Date(results[key]['Expiry Date']).toString()
+
       return channel.send(
-        embed(msg)
-          .setTitle('WHOIS Info')
-          .addField('Domain', results.domain_name)
-          .addField('Created', results.creation_date)
-          .addField('Updated', results.updated_date)
-          .addField('Expires', results.registry_expiry_date)
+        embed(msg, 'blue')
+          .setTitle(`Whois [ ${domain} ]`)
+          .addField('Registrar Server', registrarServer, true)
+          .addField('Registrar Name', registrarName, true)
+          .addField('Created', createdTime, true)
+          .addField('Updated Time', updatedTime, true)
+          .addField('Expiry Time', expiryTime, true)
       )
+    } catch {
+      // Tld not found
+      return errorMessage(msg, `Looks like [ ${domain} ] ins't a valid tld`)
     }
-    return errorMessage(msg, 'Sorry, not sorry bro. That domain doesn\'t exist.')
   }
 }
