@@ -34,7 +34,7 @@ export class Command {
     this.guildOnly = data.guildOnly || false
     this.ownerOnly = data.ownerOnly || false
     this.permsNeeded = data.permsNeeded || []
-    this.cooldown = data.cooldown || 0
+    this.cooldown = data.cooldown || 2
     this.disabled = data.disabled || false
   }
 }
