@@ -44,15 +44,35 @@ export class ConfigManager {
           pihole: { apiKey: null, host: null },
           pioneerAVR: { host: null },
           routines: [],
+          rssFeeds: [],
           sabnzbd: { apiKey: null, host: null },
           sengled: { jsessionid: null, password: null, username: null },
           shortcuts: [],
           systemPowerControl: [{ host: 'xxx', mac: 'xxx', name: 'xxx' }],
-          transmission: { host: null, port: '9091', ssl: false },
+          transmission: {
+            host: null,
+            port: '9091',
+            ssl: false,
+            username: null,
+            password: null
+          },
           tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
           webUI: { apiKey: '111', commands: [] }
         })
       })
+    }
+
+    // Handle DB changes for existing databases
+    const cfg = JSON.parse(db.get('config') as string)
+
+    if (!cfg.rssFeeds) {
+      cfg.rssFeeds = []
+      await db.update({ config: JSON.stringify(cfg) })
+    }
+    if (!cfg.transmission.username && !cfg.transmission.password) {
+      cfg.transmission.username = null
+      cfg.transmission.password = null
+      await db.update({ config: JSON.stringify(cfg) })
     }
   }
 
@@ -82,14 +102,16 @@ export class ConfigManager {
         id,
         ownerID,
         config: JSON.stringify({
-          prefix: config.prefix
+          prefix: config.prefix,
+          lockedCommands: [],
+          disabledCommands: []
         }),
         statChannels: JSON.stringify({
-          enabled: false,
-          categoryID: null,
-          total: { enabled: true, channelID: null },
           bots: { enabled: true, channelID: null },
-          members: { enabled: true, channelID: null }
+          categoryID: null,
+          enabled: false,
+          members: { enabled: true, channelID: null },
+          total: { enabled: true, channelID: null }
         }),
         serverName: name
       })
