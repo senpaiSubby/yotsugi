@@ -40,7 +40,7 @@ export default class Transmission extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, port, ssl } = db.config!.transmission
+    const { host, port, ssl, username, password } = db.config!.transmission
 
     // * ------------------ Check Config --------------------
 
@@ -51,13 +51,16 @@ export default class Transmission extends Command {
         `${p}config set transmission ssl <true/false>`
       ]
       return missingConfig(msg, 'transmission', settings)
+
     }
 
     const trans = new Trans({
       host, // Default 'localhost'
       port, // Default 9091
       ssl, // Default false use https
-      url: '/transmission/rpc' // Default '/transmission/rpc'
+      url: '/transmission/rpc', // Default '/transmission/rpc'
+      username: username || '',
+      password: password || ''
     })
 
     // * ------------------ Logic --------------------
