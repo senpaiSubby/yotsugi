@@ -45,9 +45,9 @@ export default class Whois extends Command {
           .setTitle(`Whois [ ${domain} ]`)
           .addField('Registrar Server', registrarServer, true)
           .addField('Registrar Name', registrarName, true)
-          .addField('Created', createdTime, true)
-          .addField('Updated Time', updatedTime, true)
-          .addField('Expiry Time', expiryTime, true)
+          .addField('Created', createdTime)
+          .addField('Updated Time', updatedTime)
+          .addField('Expiry Time', expiryTime)
       )
     } catch {
       // Tld not found
