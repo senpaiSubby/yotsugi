@@ -126,7 +126,7 @@ export default class RcloneCache extends Subprocess {
     }
 
     // Update cache on bot start
-    // UpdateRcloneCache()
+    updateRcloneCache()
 
     // Update cache every 6 hours
     setInterval(async () => updateRcloneCache(), 1000 * 60 * 60 * 6)

@@ -2,6 +2,9 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
+
+// TODO fix this shit it doesnt work
+
 import { BotClient } from 'core/BotClient'
 import twitter from 'twitter'
 import { NezukoMessage } from 'typings'
@@ -84,9 +87,7 @@ export default class Whois extends Command {
         results = await this.domain_search(`${keyword}.${alt}`)
         if (!results.domain_name) availableAltDomainsList = `${keyword}.${alt}`
       }
-    } else {
-      domainAvailable = true
-    }
+    } else domainAvailable = true
 
     /** Check if Twitter handle is available */
 

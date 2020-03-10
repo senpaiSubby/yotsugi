@@ -73,7 +73,7 @@ interface GeneralDBConfig {
   }
   shortcuts: any[]
   systemPowerControl: [{ host: 'xxx'; mac: 'xxx'; name: 'xxx' }]
-  transmission: { host: string | null; port: string | null; ssl: boolean }
+  transmission: { host: string | null; port: string | null; ssl: boolean; username: string | null; password: string | null }
   tuyaDevices: [{ id: string | null; key: string | null; name: string | null }]
   webUI: { apiKey: string | null; commands: any[] }
 }

@@ -18,6 +18,8 @@
     "watch": "tsc -w"
   },
   "dependencies": {
+    "@ctrl/deluge": "^2.2.0",
+    "@ctrl/transmission": "^1.8.0",
     "@types/shelljs": "^0.8.6",
     "bluebird": "^3.7.2",
     "chalk": "^3.0.0",
@@ -54,7 +56,11 @@
     "unirest": "^0.6.0",
     "url-join": "^4.0.1",
     "useragent": "^2.3.0",
+    "whois": "^2.12.0",
     "whois-2": "^0.0.8",
+    "whois-parsed": "^1.0.10",
+    "whois-promise": "^1.2.4",
+    "whoiser": "^1.6.5",
     "wol": "^1.0.7",
     "youtube-v3-api": "^1.1.1"
   },
