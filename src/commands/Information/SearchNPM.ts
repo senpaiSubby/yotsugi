@@ -32,11 +32,8 @@ export default class SearchNPM extends Command {
       const embedList = JSON.parse(results).map((r) => {
         const { name, version, description, date, links, author } = r
 
-        return embed(msg, 'red')
+        return embed(msg, 'red', 'npm.png')
           .setTitle(`NPM Search [ ${name} ]`)
-          .setThumbnail(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Npm-logo.svg/540px-Npm-logo.svg.png'
-          )
           .setDescription(description)
           .setURL(links.npm)
           .addField('Author', author.username, true)
