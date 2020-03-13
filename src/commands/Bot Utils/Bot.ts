@@ -32,13 +32,7 @@ export default class Reload extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { user } = client
-    const {
-      warningMessage,
-      standardMessage,
-      embed,
-      execAsync,
-      validOptions
-    } = client.Utils
+    const { warningMessage, standardMessage, embed, execAsync, validOptions } = client.Utils
     const { context, channel, author, guild } = msg
     const { round } = Math
     const { memoryUsage } = process
@@ -50,24 +44,18 @@ export default class Reload extends Command {
 
     switch (option) {
       case 'leave': {
-        const waitMessage = (await channel.send(
-          'Are you sure bb? Reply with YES or NO'
-        )) as Message
+        const waitMessage = (await channel.send('Are you sure bb? Reply with YES or NO')) as Message
 
-        const collector = new MessageCollector(
-          waitMessage.channel,
-          (m) => m.author.id === author.id,
-          {
-            time: 10000
-          }
-        )
+        const collector = new MessageCollector(waitMessage.channel, (m) => m.author.id === author.id, {
+          time: 10000
+        })
         return collector.on('collect', async (m: Message) => {
           if (m.content === 'YES') {
             await standardMessage(msg, 'green', 'Ok bye dude')
             guild.leave()
             collector.stop()
           } else if (m.content === 'NO') {
-            await standardMessage(msg, 'green', 'Ok I\'ll stay bb')
+            await standardMessage(msg, 'green', "Ok I'll stay bb")
             collector.stop()
           }
         })
@@ -76,15 +64,9 @@ export default class Reload extends Command {
         const module = args[1]
 
         if (!module) {
-          const msg1 = (await standardMessage(
-            msg,
-            'green',
-            `Reloading all modules..`
-          )) as Message
+          const msg1 = (await standardMessage(msg, 'green', `Reloading all modules..`)) as Message
           await context.reloadCommands()
-          return msg1.edit(
-            standardMessage(msg, 'green', `Reloading all modules.. done!`)
-          )
+          return msg1.edit(standardMessage(msg, 'green', `Reloading all modules.. done!`))
         }
 
         const run = await context.reloadCommand(module)
@@ -97,9 +79,7 @@ export default class Reload extends Command {
         let count = 10
 
         const m = (await channel.send(
-          embed(msg, 'yellow').setDescription(
-            `Restarting in ${count} seconds..`
-          )
+          embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`)
         )) as Message
         const interval = setInterval(async () => {
           if (count === 0) {
@@ -108,40 +88,24 @@ export default class Reload extends Command {
             return process.exit()
           }
           count--
-          await m.edit(
-            embed(msg, 'yellow').setDescription(
-              `Restarting in ${count} seconds..`
-            )
-          )
+          await m.edit(embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`))
         }, 1000)
         break
       }
       case 'avatar': {
         await client.user.setAvatar(args[0])
-        return standardMessage(
-          msg,
-          'green',
-          `[ ${client.user.username} ] avatar updated`
-        )
+        return standardMessage(msg, 'green', `[ ${client.user.username} ] avatar updated`)
       }
       case 'status': {
         const gameName = args.join(' ')
         // Bot info
         await client.user.setActivity(gameName)
-        return standardMessage(
-          msg,
-          'green',
-          `[ ${client.user.username} ] status set to [ ${gameName} ]`
-        )
+        return standardMessage(msg, 'green', `[ ${client.user.username} ] status set to [ ${gameName} ]`)
       }
       case 'name': {
         const username = args.join(' ')
         const u = await client.user.setUsername(username)
-        return standardMessage(
-          msg,
-          'green',
-          `[ ${client.user.username} ] name changed to [ ${u.username} ]`
-        )
+        return standardMessage(msg, 'green', `[ ${client.user.username} ] name changed to [ ${u.username} ]`)
       }
       case 'info': {
         const { stdout: npmVersion } = await execAsync('npm -v', {
@@ -156,35 +120,17 @@ export default class Reload extends Command {
           embed(msg, 'green')
             .setTitle(`Nezuko`)
             .setThumbnail(user.avatarURL)
-            .addField(
-              'Uptime',
-              duration(client.uptime).format('d[d] h[h] m[m] s[s]'),
-              true
-            )
-            .addField(
-              'Memory Usage',
-              `${round(memoryUsage().heapUsed / 1024 / 1024)} MB`,
-              true
-            )
+            .addField('Uptime', duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
+            .addField('Memory Usage', `${round(memoryUsage().heapUsed / 1024 / 1024)} MB`, true)
             .addField('Node Version', nodeVersion.replace('v', ''), true)
             .addField('NPM Version', npmv.replace('\n', ''), true)
             .addField('Commands', context.commands.size, true)
             .addField('Users', client.users.size + 2123, true)
-            .setDescription(
-              `Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`
-            )
+            .setDescription(`Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`)
         )
       }
       default:
-        return validOptions(msg, [
-          'avatar',
-          'status',
-          'name',
-          'info',
-          'restart',
-          'reload',
-          'leave'
-        ])
+        return validOptions(msg, ['avatar', 'status', 'name', 'info', 'restart', 'reload', 'leave'])
     }
   }
 }

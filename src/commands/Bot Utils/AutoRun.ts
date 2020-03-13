@@ -30,22 +30,11 @@ export default class AutoRun extends Command {
     })
   }
 
-  public async run(
-    client: BotClient,
-    msg: NezukoMessage,
-    args: string[],
-    api: boolean
-  ) {
+  public async run(client: BotClient, msg: NezukoMessage, args: string[], api: boolean) {
     // * ------------------ Setup --------------------
 
     const { Utils } = client
-    const {
-      validOptions,
-      warningMessage,
-      standardMessage,
-      embed,
-      paginate
-    } = Utils
+    const { validOptions, warningMessage, standardMessage, embed, paginate } = Utils
 
     // * ------------------ Config --------------------
 
@@ -66,10 +55,7 @@ export default class AutoRun extends Command {
         // Check for new name
         if (!newTime) {
           if (api) return `Please specify the time for autorun [ ${newTime} ]`
-          return warningMessage(
-            msg,
-            `Please specify the time for autorun [ ${newTime} ]`
-          )
+          return warningMessage(msg, `Please specify the time for autorun [ ${newTime} ]`)
         }
 
         // Check if autorun exists
@@ -84,11 +70,7 @@ export default class AutoRun extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) return `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`
-        await standardMessage(
-          msg,
-          'green',
-          `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`
-        )
+        await standardMessage(msg, 'green', `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`)
         return process.exit()
       }
 
@@ -107,10 +89,7 @@ export default class AutoRun extends Command {
           if (api) {
             return `Please specify the command # in [ ${taskTime} ] autorun to enable`
           }
-          return warningMessage(
-            msg,
-            `Please specify the command # in [ ${taskTime} ] autorun to enable`
-          )
+          return warningMessage(msg, `Please specify the command # in [ ${taskTime} ] autorun to enable`)
         }
 
         const command = (args[2] as any) - 1
@@ -123,10 +102,7 @@ export default class AutoRun extends Command {
           if (api) {
             return `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`
           }
-          return warningMessage(
-            msg,
-            `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`
-          )
+          return warningMessage(msg, `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`)
         }
 
         // Check current status
@@ -148,11 +124,7 @@ export default class AutoRun extends Command {
         if (api) {
           return `Enabled command [ ${foundCommand.command} ] in autorun at [ ${taskTime} ]`
         }
-        await standardMessage(
-          msg,
-          'green',
-          `Enabled command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun`
-        )
+        await standardMessage(msg, 'green', `Enabled command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun`)
         return process.exit()
       }
 
@@ -171,10 +143,7 @@ export default class AutoRun extends Command {
           if (api) {
             return `Please specify the command # in [ ${taskTime} ] autorun to disable`
           }
-          return warningMessage(
-            msg,
-            `Please specify the command # in [ ${taskTime} ] autorun to disable`
-          )
+          return warningMessage(msg, `Please specify the command # in [ ${taskTime} ] autorun to disable`)
         }
 
         const command = (args[2] as any) - 1
@@ -187,19 +156,14 @@ export default class AutoRun extends Command {
           if (api) {
             return `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`
           }
-          return warningMessage(
-            msg,
-            `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`
-          )
+          return warningMessage(msg, `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`)
         }
 
         // Check current status
         const isEnabled = autorun[timeIndex].commands[command].enabled
         if (!isEnabled) {
           if (api) {
-            return `Command [ ${command + 1} ] [ ${
-              foundCommand[1]
-            } ] in [ ${taskTime} ] autorun is already disabled`
+            return `Command [ ${command + 1} ] [ ${foundCommand[1]} ] in [ ${taskTime} ] autorun is already disabled`
           }
           return warningMessage(
             msg,
@@ -212,16 +176,12 @@ export default class AutoRun extends Command {
         // Save changes
         await db.update({ config: JSON.stringify(config) })
         if (api) {
-          return `Disabled command  [ ${command + 1} ][ ${
-            foundCommand.command
-          } ] in [ ${taskTime} ] autorun`
+          return `Disabled command  [ ${command + 1} ][ ${foundCommand.command} ] in [ ${taskTime} ] autorun`
         }
         await standardMessage(
           msg,
           'green',
-          `Disabled command  [ ${command + 1} ][ ${
-            foundCommand.command
-          } ] in [ ${taskTime} ] autorun`
+          `Disabled command  [ ${command + 1} ][ ${foundCommand.command} ] in [ ${taskTime} ] autorun`
         )
         return process.exit()
       }
@@ -236,9 +196,7 @@ export default class AutoRun extends Command {
         autorun.forEach((i) => {
           const { time, commands } = i
 
-          const e = embed(msg, 'green', 'timer.png').setTitle(
-            `autoruns - [ ${time} ]`
-          )
+          const e = embed(msg, 'green', 'timer.png').setTitle(`autoruns - [ ${time} ]`)
 
           commands.forEach((c, index) => {
             const { enabled, command } = c
@@ -260,10 +218,7 @@ export default class AutoRun extends Command {
 
         if (!command) {
           if (api) return `Please specify the command to add to the autorun`
-          return warningMessage(
-            msg,
-            `Please specify the command to add to the autorun`
-          )
+          return warningMessage(msg, `Please specify the command to add to the autorun`)
         }
 
         // Create autorun if doesnt exist
@@ -275,18 +230,11 @@ export default class AutoRun extends Command {
           index = autorun.findIndex((i) => i.time === taskTime)
         }
         // Check if command is already part of autorun
-        else if (
-          autorun[index].commands.find(
-            (c) => c.command.toLowerCase() === command.toLowerCase()
-          )
-        ) {
+        else if (autorun[index].commands.find((c) => c.command.toLowerCase() === command.toLowerCase())) {
           if (api) {
             return `[ ${taskTime} ] autorun already has command [ ${command} ]`
           }
-          return warningMessage(
-            msg,
-            `[ ${taskTime} ] autorun already has command [ ${command} ]`
-          )
+          return warningMessage(msg, `[ ${taskTime} ] autorun already has command [ ${command} ]`)
         } else {
           autorun[index].commands.push({ command, enabled: true })
         }
@@ -296,11 +244,7 @@ export default class AutoRun extends Command {
         if (api) {
           return `Added command [ ${command} ] to [ ${taskTime} ] autorun`
         }
-        await standardMessage(
-          msg,
-          'green',
-          `Added command [ ${command} ] to [ ${taskTime} ] autorun`
-        )
+        await standardMessage(msg, 'green', `Added command [ ${command} ] to [ ${taskTime} ] autorun`)
 
         return process.exit()
       }
@@ -327,17 +271,13 @@ export default class AutoRun extends Command {
           // Check if command exists
           if (
             commandIndex === -1 ||
-            autorun[timeIndex].commands[commandIndex].command.toLowerCase() !==
-            command.toLowerCase()
+            autorun[timeIndex].commands[commandIndex].command.toLowerCase() !== command.toLowerCase()
           ) {
             if (api) {
               return `[ ${taskTime} ] autorun doesnt contain command [ ${command} ]`
             }
 
-            return warningMessage(
-              msg,
-              `[ ${taskTime} ] autorun doesnt contain command [ ${command} ]`
-            )
+            return warningMessage(msg, `[ ${taskTime} ] autorun doesnt contain command [ ${command} ]`)
           }
 
           // Remove command from autorun
@@ -346,11 +286,7 @@ export default class AutoRun extends Command {
           if (api) {
             return `Removed command [ ${command} ] from [ ${taskTime} ] autorun`
           }
-          await standardMessage(
-            msg,
-            'green',
-            `Removed command [ ${command} ] from [ ${taskTime} ] autorun`
-          )
+          await standardMessage(msg, 'green', `Removed command [ ${command} ] from [ ${taskTime} ] autorun`)
           return process.exit()
         }
 
@@ -363,14 +299,7 @@ export default class AutoRun extends Command {
       }
 
       default:
-        return validOptions(msg, [
-          'list',
-          'add',
-          'remove',
-          'changetime',
-          'disable',
-          'enable'
-        ])
+        return validOptions(msg, ['list', 'add', 'remove', 'changetime', 'disable', 'enable'])
     }
   }
 }

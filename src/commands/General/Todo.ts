@@ -20,21 +20,10 @@ export default class Todo extends Command {
     })
   }
 
-  public async run(
-    client: BotClient,
-    msg: NezukoMessage,
-    args: any[],
-    api: boolean
-  ) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
     const { p, Utils, memberConfig } = client
     const { ownerID } = client.config
-    const {
-      standardMessage,
-      embed,
-      asyncForEach,
-      warningMessage,
-      validOptions
-    } = Utils
+    const { standardMessage, embed, asyncForEach, warningMessage, validOptions } = Utils
     const { author, channel } = msg
 
     const todo = args.slice(1).join(' ')
@@ -56,10 +45,7 @@ export default class Todo extends Command {
 
         if (!todo) {
           if (api) return 'Todo cannot be empty!'
-          const m = (await warningMessage(
-            msg,
-            'Todo cannot be empty!'
-          )) as Message
+          const m = (await warningMessage(msg, 'Todo cannot be empty!')) as Message
           return m.delete(3000)
         }
 
@@ -94,9 +80,7 @@ export default class Todo extends Command {
         ]
         // Setup inital embed
         const e = embed(msg, 'green', 'todo.png').setTitle('Todo List')
-        todos.forEach((i, index) =>
-          e.addField(`[ ${index + 1} ]`, `${i}`, true)
-        )
+        todos.forEach((i, index) => e.addField(`[ ${index + 1} ]`, `${i}`, true))
         const m = (await channel.send(e)) as Message
 
         await asyncForEach(todos, async (i, index) => {
@@ -125,11 +109,7 @@ export default class Todo extends Command {
           const name = todos[index]
           todos.splice(index, 1)
           await db.update({ config: JSON.stringify(config) })
-          const removeMessage = (await standardMessage(
-            msg,
-            'green',
-            `[ ${name} ] removed from todo list`
-          )) as Message
+          const removeMessage = (await standardMessage(msg, 'green', `[ ${name} ] removed from todo list`)) as Message
           removeMessage.delete(2000)
 
           // Edit original embed with updated content
@@ -142,9 +122,7 @@ export default class Todo extends Command {
             )
           }
           const newEmbed = embed(msg, 'green').setTitle('Todo List')
-          todos.forEach((i, ind) =>
-            newEmbed.addField(`[ ${ind + 1} ]`, `${i}`, true)
-          )
+          todos.forEach((i, ind) => newEmbed.addField(`[ ${ind + 1} ]`, `${i}`, true))
           await m.edit(newEmbed)
           await asyncForEach(todos, async (i, ind) => {
             await m.react(reactions[ind])

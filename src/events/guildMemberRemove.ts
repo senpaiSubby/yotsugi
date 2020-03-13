@@ -3,5 +3,4 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-export const guildMemberRemove = async (member) => {
-}
+export const guildMemberRemove = async (member) => {}

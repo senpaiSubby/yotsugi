@@ -29,9 +29,7 @@ export default class WebServer extends Subprocess {
   }
 
   public async run() {
-    shortid.characters(
-      '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-@'
-    )
+    shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-@')
     /**
      * example API usage
      *  {
@@ -164,35 +162,21 @@ export default class WebServer extends Subprocess {
 
         if (cmd) {
           if (cmd.disabled) {
-            return res
-              .status(403)
-              .json({ response: 'Command is disabled bot wide.' })
+            return res.status(403).json({ response: 'Command is disabled bot wide.' })
           }
 
           if (!cmd.webUI) {
-            return res
-              .status(403)
-              .json({ response: 'Command is disabled for use in the API.' })
+            return res.status(403).json({ response: 'Command is disabled for use in the API.' })
           }
 
-          const response = await this.commandManager.runCommand(
-            this.client,
-            cmd,
-            null,
-            args,
-            true
-          )
+          const response = await this.commandManager.runCommand(this.client, cmd, null, args, true)
           return res.status(200).json({ response })
         }
-        return res
-          .status(406)
-          .json({ response: `Command [ ${req.body.command} ] not found.` })
+        return res.status(406).json({ response: `Command [ ${req.body.command} ] not found.` })
       }
     })
 
     // Start server
-    app.listen(apiPort, '0.0.0.0', () =>
-      Log.ok(`WebUI`, `Active on port [ ${apiPort} ]`)
-    )
+    app.listen(apiPort, '0.0.0.0', () => Log.ok(`WebUI`, `Active on port [ ${apiPort} ]`))
   }
 }

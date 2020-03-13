@@ -23,19 +23,7 @@ export default class Template extends Command {
     })
   }
 
-  public async run(
-    client: BotClient,
-    msg: NezukoMessage,
-    args: any[],
-    api: boolean
-  ) {
-    // * ------------------ Setup --------------------
-    const { Utils } = client
-    const { author, channel } = msg
-    // * ------------------ Config --------------------
-    // * ------------------ Check Config --------------------
-
-    // * ------------------ Logic --------------------
-    // * ------------------ Usage Logic --------------------
+  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+    // Logic
   }
 }

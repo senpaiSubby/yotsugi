@@ -22,10 +22,7 @@ export class ConfigManager {
     const db = await generalConfig(ownerID)
 
     if (!db) {
-      Log.info(
-        'Config Manager',
-        `Created new general config for [ ${ownerID} ]`
-      )
+      Log.info('Config Manager', `Created new general config for [ ${ownerID} ]`)
       await database.models.Configs.create({
         id: ownerID,
         config: JSON.stringify({
@@ -42,6 +39,7 @@ export class ConfigManager {
           meraki: { apiKey: null, serielNum: null },
           ombi: { apiKey: null, host: null, username: null },
           pihole: { apiKey: null, host: null },
+          aria2: { host: null, port: null, secure: false, secret: null, saveDir: null },
           pioneerAVR: { host: null },
           routines: [],
           rssFeeds: [],
@@ -74,6 +72,10 @@ export class ConfigManager {
       cfg.transmission.password = null
       await db.update({ config: JSON.stringify(cfg) })
     }
+    if (!cfg.aria2) {
+      cfg.aria2 = { host: null, port: null, secure: false, secret: null, saveDir: null }
+      await db.update({ config: JSON.stringify(cfg) })
+    }
   }
 
   /**
@@ -94,10 +96,7 @@ export class ConfigManager {
     })
 
     if (!db) {
-      Log.info(
-        'Config Manager',
-        `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`
-      )
+      Log.info('Config Manager', `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`)
       db = await database.models.Servers.create({
         id,
         ownerID,
@@ -107,11 +106,11 @@ export class ConfigManager {
           disabledCommands: []
         }),
         statChannels: JSON.stringify({
-          bots: { enabled: true, channelID: null },
+          bots: { enabled: false, channelID: null },
           categoryID: null,
           enabled: false,
-          members: { enabled: true, channelID: null },
-          total: { enabled: true, channelID: null }
+          members: { enabled: false, channelID: null },
+          total: { enabled: false, channelID: null }
         }),
         serverName: name
       })
@@ -137,10 +136,7 @@ export class ConfigManager {
     const db = await database.models.Members.findOne({ where: { id } })
 
     if (!db) {
-      Log.info(
-        'Config Manager',
-        `Created new member config for user [ ${id} ] [ ${username} ]`
-      )
+      Log.info('Config Manager', `Created new member config for user [ ${id} ] [ ${username} ]`)
       await database.models.Members.create({
         username,
         id,

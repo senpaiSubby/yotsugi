@@ -44,11 +44,7 @@ const BotInfo = () => {
         gridTemplateColumns: 'auto auto'
       }}
     >
-      <img
-        src={data ? `${data.avatar}` : ''}
-        alt=".."
-        style={{ width: '48px', height: '48px' }}
-      />
+      <img src={data ? `${data.avatar}` : ''} alt=".." style={{ width: '48px', height: '48px' }} />
       <span>
         {data ? `${data.username}` : '..'}
         <br />

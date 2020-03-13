@@ -102,9 +102,7 @@ export class MessageManager {
 
       try {
         const name = basename(url)
-        const dir = join(
-          `${__dirname}/../../../logs/attachments/${this.guild.id}/${name}`
-        )
+        const dir = join(`${__dirname}/../../../logs/attachments/${this.guild.id}/${name}`)
 
         // Check if dir exists and create if not
         if (!existsSync(dirname(dir))) {
@@ -120,10 +118,7 @@ export class MessageManager {
           fileStream.on('finish', () => resolve())
         })
       } catch (error) {
-        this.client.Log.warn(
-          'Attachment Handler',
-          `Failed to handle attachment`
-        )
+        this.client.Log.warn('Attachment Handler', `Failed to handle attachment`)
       }
     })
   }

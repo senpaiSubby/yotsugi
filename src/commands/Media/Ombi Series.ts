@@ -31,14 +31,7 @@ export default class OmbiTV extends Command {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client
-    const {
-      errorMessage,
-      warningMessage,
-      standardMessage,
-      missingConfig,
-      embed,
-      paginate
-    } = Utils
+    const { errorMessage, warningMessage, standardMessage, missingConfig, embed, paginate } = Utils
     const { author, member } = msg
 
     const role = msg.guild.roles.find((r) => r.name === 'requesttv')
@@ -72,11 +65,7 @@ export default class OmbiTV extends Command {
 
     const outputTVShow = (show) => {
       const e = embed(msg, this.color, 'ombi.png')
-        .setTitle(
-          `${show.title} ${
-            show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''
-          }`
-        )
+        .setTitle(`${show.title} ${show.firstAired ? `(${show.firstAired.substring(0, 4)})` : ''}`)
         .setDescription(`${show.overview.substr(0, 255)}(...)`)
         .setThumbnail(show.banner)
         .setURL(`https://www.thetvdb.com/?id=${show.id}&tab=series`)
@@ -96,9 +85,7 @@ export default class OmbiTV extends Command {
 
     const getTVDBID = async (name) => {
       try {
-        const response = await get(
-          urljoin(host, '/api/v1/Search/tv/', name)
-        ).headers({
+        const response = await get(urljoin(host, '/api/v1/Search/tv/', name)).headers({
           accept: 'application/json',
           ApiKey: apiKey
         })
@@ -112,31 +99,19 @@ export default class OmbiTV extends Command {
 
     const requestTVShow = async (show) => {
       if (!member.roles.some((r) => r.name === 'requesttv')) {
-        return warningMessage(
-          msg,
-          'You must be part of the [ `requesttv` ] role to request TV Shows.'
-        )
+        return warningMessage(msg, 'You must be part of the [ `requesttv` ] role to request TV Shows.')
       }
 
       if (show.available) {
-        return warningMessage(
-          msg,
-          `[ ${show.title} ] is already available in Ombi`
-        )
+        return warningMessage(msg, `[ ${show.title} ] is already available in Ombi`)
       }
 
       if (show.approved) {
-        return warningMessage(
-          msg,
-          `[ ${show.title} ] is already approved in Ombi`
-        )
+        return warningMessage(msg, `[ ${show.title} ] is already approved in Ombi`)
       }
 
       if (show.requested) {
-        return warningMessage(
-          msg,
-          `[ ${show.title} ] is already requested in Ombi`
-        )
+        return warningMessage(msg, `[ ${show.title} ] is already requested in Ombi`)
       }
 
       if (!show.available && !show.requested && !show.approved) {
@@ -148,11 +123,7 @@ export default class OmbiTV extends Command {
               ApiAlias: `${author.tag}`
             })
             .send({ tvDbId: show.id, requestAll: true })
-          return standardMessage(
-            msg,
-            'green',
-            `Requested [ ${show.title} ] in Ombi`
-          )
+          return standardMessage(msg, 'green', `Requested [ ${show.title} ] in Ombi`)
         } catch (e) {
           const text = 'Failed to connect to Ombi'
           Log.error('Ombi Movies', text, e)
@@ -175,9 +146,7 @@ export default class OmbiTV extends Command {
       const embedList = []
       for (const show of results) {
         try {
-          const response = await get(
-            urljoin(host, '/api/v1/Search/tv/info/', String(show.id))
-          ).headers({
+          const response = await get(urljoin(host, '/api/v1/Search/tv/info/', String(show.id))).headers({
             ApiKey: apiKey,
             accept: 'application/json'
           })

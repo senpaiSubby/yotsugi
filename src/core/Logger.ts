@@ -17,37 +17,11 @@ export class Log {
     return moment().format('MM-DD h:mm A')
   }
 
-  // Logger
-  private static logger(
-    style: chalk.Chalk,
-    errorType: string | boolean,
-    name: string,
-    message: string | Error,
-    stacktrace?: any
-  ) {
-    const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(
-      name
-    )} ${chalk.yellow(message ? `${chalk.white('-')} ${message}` : '')}`
-
-    // Logger Stacktrace
-    if (stacktrace) {
-      console.log(msg)
-      return console.trace(format(message))
-    }
-
-    // Logger Normally
-    return console.log(msg)
-  }
-
   public static ok(name: string, message: string | Error) {
     return Log.logger(chalk.green.bold, 'OK', name, message)
   }
 
-  public static error(
-    name: string,
-    message: string | Error,
-    stacktrace = null
-  ) {
+  public static error(name: string, message: string | Error, stacktrace = null) {
     return Log.logger(chalk.red.bold, 'ERROR', name, message, stacktrace)
   }
 
@@ -61,5 +35,27 @@ export class Log {
 
   public static debug(name: string, message: string | Error) {
     return Log.logger(chalk.magenta.bold, 'DEBUG', name, message)
+  }
+
+  // Logger
+  private static logger(
+    style: chalk.Chalk,
+    errorType: string | boolean,
+    name: string,
+    message: string | Error,
+    stacktrace?: any
+  ) {
+    const msg = `[${chalk.grey(Log.time())}] ${style(errorType)}: ${chalk.green(name)} ${chalk.yellow(
+      message ? `${chalk.white('-')} ${message}` : ''
+    )}`
+
+    // Logger Stacktrace
+    if (stacktrace) {
+      console.log(msg)
+      return console.trace(format(message))
+    }
+
+    // Logger Normally
+    return console.log(msg)
   }
 }

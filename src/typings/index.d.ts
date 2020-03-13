@@ -22,8 +22,6 @@ interface MemberDBConfig {
 }
 
 interface ServerDBConfig {
-  [key: string]: any
-
   announcementChannel: string | null
   logChannel: string | null
   prefix: string
@@ -36,10 +34,13 @@ interface ServerDBConfig {
   verifyUsers: boolean
   verfiedRole: string | null
   verifiedChannel: string | null
+
+  [key: string]: any
 }
 
 interface GeneralDBConfig {
   archivebox: { path: string | null }
+  aria2: { host: null; port: null; secure: false; secret: null; saveDir: null }
   autorun: AutorunItem[]
   priceTracking: any[]
   disabledCommands: any[]
@@ -73,7 +74,13 @@ interface GeneralDBConfig {
   }
   shortcuts: any[]
   systemPowerControl: [{ host: 'xxx'; mac: 'xxx'; name: 'xxx' }]
-  transmission: { host: string | null; port: string | null; ssl: boolean; username: string | null; password: string | null }
+  transmission: {
+    host: string | null
+    port: string | null
+    ssl: boolean
+    username: string | null
+    password: string | null
+  }
   tuyaDevices: [{ id: string | null; key: string | null; name: string | null }]
   webUI: { apiKey: string | null; commands: any[] }
 }

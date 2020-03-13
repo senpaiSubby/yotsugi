@@ -45,10 +45,7 @@ export default class Help extends Command {
       })
       if (disabled) return false
 
-      if (
-        i.permsNeeded.length &&
-        checkPerms(msg.member, i.permsNeeded).length
-      ) {
+      if (i.permsNeeded.length && checkPerms(msg.member, i.permsNeeded).length) {
         return false
       }
 
@@ -67,11 +64,7 @@ export default class Help extends Command {
       const sorted = commands
         .array()
         .sort((i: Command, c: Command) =>
-          i.category > c.category
-            ? 1
-            : i.name > c.name && i.category === c.category
-            ? 1
-            : -1
+          i.category > c.category ? 1 : i.name > c.name && i.category === c.category ? 1 : -1
         )
 
       const newSorted = groupBy(sorted, 'category')
@@ -98,9 +91,7 @@ export default class Help extends Command {
           if (i.name.length === longestString) {
             desc += `${i.name} - ${i.description}\n`
           } else {
-            desc += `${i.name}${addSpace(longestString - i.name.length)} - ${
-              i.description
-            }\n`
+            desc += `${i.name}${addSpace(longestString - i.name.length)} - ${i.description}\n`
           }
         })
 
@@ -119,12 +110,8 @@ export default class Help extends Command {
         embed(msg, 'green')
           .setTitle(`Help - ${capitalize(command.name)}`)
           .setDescription(
-            `**${command.description}**\n\`\`\`css\n${command.usage.join(
-              '\n'
-            )}\n\`\`\`\n${
-              command.aliases.length
-                ? `Aliases\n\`\`\`css\n${command.aliases.join(', ')}\n\`\`\``
-                : ''
+            `**${command.description}**\n\`\`\`css\n${command.usage.join('\n')}\n\`\`\`\n${
+              command.aliases.length ? `Aliases\n\`\`\`css\n${command.aliases.join(', ')}\n\`\`\`` : ''
             }`
           )
       )

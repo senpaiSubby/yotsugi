@@ -37,13 +37,7 @@ export default class AutoRun extends Subprocess {
         const cmd = args.shift().toLowerCase()
         const command = this.client.commandManager.findCommand(cmd)
         if (command) {
-          return this.client.commandManager.runCommand(
-            this.client,
-            command,
-            null,
-            args,
-            true
-          )
+          return this.client.commandManager.runCommand(this.client, command, null, args, true)
         }
         return `No command [ ${cmdName} ]`
       }

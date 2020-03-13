@@ -3,9 +3,9 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { NezukoMessage } from 'typings'
-import { BotClient } from '../../core/BotClient'
 
 import { Command } from '../../core/base/Command'
+import { BotClient } from '../../core/BotClient'
 
 export default class SearchNPM extends Command {
   constructor(client: BotClient) {
@@ -24,9 +24,7 @@ export default class SearchNPM extends Command {
     // Get search term from user input
     const searchTerm = args.join(' ')
 
-    const { code, stdout: results } = await execAsync(
-      `npm search --json ${searchTerm}`
-    )
+    const { code, stdout: results } = await execAsync(`npm search --json ${searchTerm}`)
 
     if (results && code === 0) {
       const embedList = JSON.parse(results).map((r) => {
@@ -43,12 +41,8 @@ export default class SearchNPM extends Command {
 
       return paginate(msg, embedList)
     }
-
     if (code !== 0) return warningMessage(msg, 'An error occurred with NPM')
 
-    return warningMessage(
-      msg,
-      `Couldn't find any NPM packages matching [ ${searchTerm} ]`
-    )
+    return warningMessage(msg, `Couldn't find any NPM packages matching [ ${searchTerm} ]`)
   }
 }

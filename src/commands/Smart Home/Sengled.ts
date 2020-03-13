@@ -22,23 +22,11 @@ export default class Sengled extends Command {
     })
   }
 
-  public async run(
-    client: BotClient,
-    msg: NezukoMessage,
-    args: any[],
-    api: boolean
-  ) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
     // * ------------------ Setup --------------------
 
     const { Log, Utils, p, db } = client
-    const {
-      missingConfig,
-      warningMessage,
-      errorMessage,
-      standardMessage,
-      capitalize,
-      embed
-    } = Utils
+    const { missingConfig, warningMessage, errorMessage, standardMessage, capitalize, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -49,10 +37,7 @@ export default class Sengled extends Command {
     // * ------------------ Check Config --------------------
 
     if (!username || !password) {
-      const settings = [
-        `${p}config set sengled username <user>`,
-        `${p}config set sengled password <pass>`
-      ]
+      const settings = [`${p}config set sengled username <user>`, `${p}config set sengled password <pass>`]
       return missingConfig(msg, 'sengled', settings)
     }
 
@@ -87,9 +72,7 @@ export default class Sengled extends Command {
     if (!jsessionid) {
       const session = await login()
       const configDB = await generalConfig(this.client.config.ownerID)
-      const config = JSON.parse(
-        (await configDB.get('config')) as string
-      ) as GeneralDBConfig
+      const config = JSON.parse((await configDB.get('config')) as string) as GeneralDBConfig
 
       config.sengled.jsessionid = session
       jsessionid = session
@@ -99,9 +82,7 @@ export default class Sengled extends Command {
 
     const getDevices = async () => {
       try {
-        const response = await post(
-          `${baseUrl}/room/getUserRoomsDetail.json`
-        ).headers(headers)
+        const response = await post(`${baseUrl}/room/getUserRoomsDetail.json`).headers(headers)
 
         const data = response.body as SengledDevices
 
@@ -147,11 +128,7 @@ export default class Sengled extends Command {
         const icon = newState === 'on' ? ':full_moon:' : ':new_moon:'
         const state = newState === 'on' ? 'on' : 'off'
         if (api) return `[ ${deviceName} ] light turned [ ${state} ]`
-        return standardMessage(
-          msg,
-          'green',
-          `${icon} [ ${deviceName} ] light turned [ ${state} ]`
-        )
+        return standardMessage(msg, 'green', `${icon} [ ${deviceName} ] light turned [ ${state} ]`)
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
         Log.error('Sengled', 'Failed to connect to Sengled', e)
@@ -165,9 +142,7 @@ export default class Sengled extends Command {
         // Convert 0-100 to 0-255
         const brightness = (newBrightness / 100) * 255
 
-        const response = await post(
-          `${baseUrl}/device/deviceSetBrightness.json`
-        )
+        const response = await post(`${baseUrl}/device/deviceSetBrightness.json`)
           .headers(headers)
           .send({ deviceUuid, brightness })
 
@@ -176,26 +151,14 @@ export default class Sengled extends Command {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
             if (api) {
-              return `[ ${deviceName} ] light turned [ ${capitalize(
-                newStatus
-              )} ]`
+              return `[ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`
             }
-            return standardMessage(
-              msg,
-              'green',
-              `${icon} [ ${deviceName} ] light turned [ ${capitalize(
-                newStatus
-              )} ]`
-            )
+            return standardMessage(msg, 'green', `${icon} [ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`)
           }
           if (api) {
             return `[ ${deviceName} ] brightness set to [ ${newBrightness} ]`
           }
-          return standardMessage(
-            msg,
-            'green',
-            `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness} ]`
-          )
+          return standardMessage(msg, 'green', `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness} ]`)
         }
       } catch (e) {
         if (api) return `Failed to connect to Sengled`
@@ -218,16 +181,12 @@ export default class Sengled extends Command {
 
         case 'list': {
           if (api) return devices
-          const e = embed(msg, 'green', 'light.png').setTitle(
-            ':bulb: Sengled Lights'
-          )
+          const e = embed(msg, 'green', 'light.png').setTitle(':bulb: Sengled Lights')
           if (typeof devices !== 'string') {
             devices.forEach((device) => {
               e.addField(
                 `${device.name}`,
-                `Status: ${capitalize(device.status)}\n Brightness: ${
-                  device.brightness
-                }\nID: ${device.uuid}`,
+                `Status: ${capitalize(device.status)}\n Brightness: ${device.brightness}\nID: ${device.uuid}`,
                 true
               )
             })
@@ -239,21 +198,14 @@ export default class Sengled extends Command {
           // Find index based of of key name
           let index: number
           if (typeof devices !== 'string') {
-            index = devices.findIndex(
-              (d) => d.name.toLowerCase() === deviceName
-            )
+            index = devices.findIndex((d) => d.name.toLowerCase() === deviceName)
           }
           // If light not found
           if (index === -1) {
             if (api) {
-              return `Could not find a light named [ ${capitalize(
-                deviceName
-              )} ]`
+              return `Could not find a light named [ ${capitalize(deviceName)} ]`
             }
-            return warningMessage(
-              msg,
-              `Could not find a light named [ ${capitalize(deviceName)} ]`
-            )
+            return warningMessage(msg, `Could not find a light named [ ${capitalize(deviceName)} ]`)
           }
           const device = devices[index].uuid
 

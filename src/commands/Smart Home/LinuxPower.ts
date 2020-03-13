@@ -23,22 +23,11 @@ export default class LinuxPower extends Command {
   }
 
   // TODO add linuxpower typings
-  public async run(
-    client: BotClient,
-    msg: NezukoMessage,
-    args: any[],
-    api: boolean
-  ) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
     // * ------------------ Setup --------------------
 
     const { Utils, Log } = client
-    const {
-      errorMessage,
-      validOptions,
-      standardMessage,
-      embed,
-      capitalize
-    } = Utils
+    const { errorMessage, validOptions, standardMessage, embed, capitalize } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -49,57 +38,36 @@ export default class LinuxPower extends Command {
 
     const sendCommand = async (
       device: { host: string; mac: string; name: string },
-      command: string
+      command: 'off' | 'on' | 'reboot'
     ) => {
       const { host, mac, name } = device
 
-      const options = ['reboot', 'off', 'on']
-      if (!options.includes(command)) {
-        if (api) return `Valid commands are [ ${options.join(', ')} ]`
-        await validOptions(msg, options)
-      } else {
-        switch (command) {
-          case 'reboot':
-          case 'off': {
-            try {
-              const response = await post(host)
-                .headers({ 'Content-Type': 'application/json' })
-                .send({ command })
+      switch (command) {
+        case 'reboot':
+        case 'off': {
+          try {
+            const response = await post(host)
+              .headers({ 'Content-Type': 'application/json' })
+              .send({ command })
 
-              const statusCode = response.status
+            const statusCode = response.status
 
-              if (statusCode === 200) {
-                const text = command === 'reboot' ? 'reboot' : 'power off'
-                if (api) return `Told [ ${capitalize(name)} ] to [ ${text} ]`
-                return standardMessage(
-                  msg,
-                  'green',
-                  `:desktop: Told [ ${capitalize(name)} ] to [ ${text}] `
-                )
-              }
-            } catch (e) {
-              if (api) return `Failed to connect to ${capitalize(name)}`
-              Log.error(
-                'System Power Control',
-                `Failed to connect to [ ${capitalize(name)} ]`,
-                e
-              )
-              await errorMessage(
-                msg,
-                `Failed to connect to [ ${capitalize(name)} ]`
-              )
+            if (statusCode === 200) {
+              const text = command === 'reboot' ? 'reboot' : 'power off'
+              if (api) return `Told [ ${capitalize(name)} ] to [ ${text} ]`
+              return standardMessage(msg, 'green', `:desktop: Told [ ${capitalize(name)} ] to [ ${text}] `)
             }
-            return
+          } catch (e) {
+            if (api) return `Failed to connect to ${capitalize(name)}`
+            Log.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
+            await errorMessage(msg, `Failed to connect to [ ${capitalize(name)} ]`)
           }
-          case 'on': {
-            await wol.wake(mac)
-            if (api) return `Sent WOL to [ ${capitalize(name)} ]`
-            return standardMessage(
-              msg,
-              'green',
-              `:desktop: Sent WOL to [ ${capitalize(name)} ]`
-            )
-          }
+          return
+        }
+        case 'on': {
+          await wol.wake(mac)
+          if (api) return `Sent WOL to [ ${capitalize(name)} ]`
+          return standardMessage(msg, 'green', `:desktop: Sent WOL to [ ${capitalize(name)} ]`)
         }
       }
     }

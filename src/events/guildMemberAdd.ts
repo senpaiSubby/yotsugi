@@ -3,5 +3,4 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-export const guildMemberAdd = async (member) => {
-}
+export const guildMemberAdd = async (member) => {}

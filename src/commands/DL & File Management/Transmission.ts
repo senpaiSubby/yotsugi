@@ -14,7 +14,7 @@ export default class Transmission extends Command {
   constructor(client: BotClient) {
     super(client, {
       name: 'tor',
-      category: 'Management',
+      category: 'DL & File Management',
       description: 'Transmission Management',
       usage: [`tor list`, 'tor add <magnet link>'],
       args: true
@@ -51,7 +51,6 @@ export default class Transmission extends Command {
         `${p}config set transmission ssl <true/false>`
       ]
       return missingConfig(msg, 'transmission', settings)
-
     }
 
     const trans = new Trans({
@@ -94,22 +93,12 @@ export default class Transmission extends Command {
         const downloadQueue: any[] = []
 
         torrents.forEach((item: any) => {
-          const {
-            name,
-            id,
-            rateUpload,
-            rateDownload,
-            downloadedEver,
-            status,
-            sizeWhenDone
-          } = item
+          const { name, id, rateUpload, rateDownload, downloadedEver, status, sizeWhenDone } = item
           downloadQueue.push({
             name,
             id,
             status: getStatus(status),
-            percentage: downloadedEver
-              ? Math.round((downloadedEver / sizeWhenDone) * 100).toString()
-              : '0',
+            percentage: downloadedEver ? Math.round((downloadedEver / sizeWhenDone) * 100).toString() : '0',
             rate: {
               up: rateUpload ? bytesToSize(rateUpload) : 0,
               down: rateDownload ? bytesToSize(rateDownload) : 0
@@ -131,11 +120,7 @@ export default class Transmission extends Command {
     const addTorrent = async (magnet: string) => {
       try {
         const response = await trans.addUrl(magnet)
-        return standardMessage(
-          msg,
-          'green',
-          `[ ${response.name} ] Added to Transmission`
-        )
+        return standardMessage(msg, 'green', `[ ${response.name} ] Added to Transmission`)
       } catch (e) {
         const text = 'Failed to connect to Transmission'
         Log.error('Transmission', text, e)

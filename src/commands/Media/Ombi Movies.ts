@@ -31,14 +31,7 @@ export default class OmbiMovies extends Command {
     // * ------------------ Setup --------------------
 
     const { p, Utils, Log } = client
-    const {
-      errorMessage,
-      warningMessage,
-      missingConfig,
-      standardMessage,
-      embed,
-      paginate
-    } = Utils
+    const { errorMessage, warningMessage, missingConfig, standardMessage, embed, paginate } = Utils
     const { author, channel, member } = msg
 
     const role = msg.guild.roles.find((r) => r.name === 'requestmovie')
@@ -72,13 +65,7 @@ export default class OmbiMovies extends Command {
 
     const outputMovie = (movie) => {
       const e = embed(msg, this.color, 'ombi.png')
-        .setTitle(
-          `${movie.title} ${
-            movie.releaseDate
-              ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})`
-              : ''
-          }`
-        )
+        .setTitle(`${movie.title} ${movie.releaseDate ? `(${movie.releaseDate.split('T')[0].substring(0, 4)})` : ''}`)
         .setDescription(`${movie.overview.substring(0, 255)}(...)`)
         .setThumbnail(`https://image.tmdb.org/t/p/w500${movie.posterPath}`)
         .setURL(`https://www.themoviedb.org/movie/${movie.theMovieDbId}`)
@@ -98,9 +85,7 @@ export default class OmbiMovies extends Command {
     }
     const getTMDbID = async (name) => {
       try {
-        const response = await get(
-          urljoin(host, '/api/v1/Search/movie/', name)
-        ).headers({
+        const response = await get(urljoin(host, '/api/v1/Search/movie/', name)).headers({
           accept: 'application/json',
           ApiKey: apiKey,
           'User-Agent': `Mellow/${process.env.npm_package_version}`
@@ -115,31 +100,19 @@ export default class OmbiMovies extends Command {
 
     const requestMovie = async (movie) => {
       if (!member.roles.some((r) => r.name === 'requestmovie')) {
-        return warningMessage(
-          msg,
-          'You must be part of the [ `requestmovie` ] role to request movies.'
-        )
+        return warningMessage(msg, 'You must be part of the [ `requestmovie` ] role to request movies.')
       }
 
       if (movie.available) {
-        return warningMessage(
-          msg,
-          `[ ${movie.title} ] is already available in Ombi`
-        )
+        return warningMessage(msg, `[ ${movie.title} ] is already available in Ombi`)
       }
 
       if (movie.approved) {
-        return warningMessage(
-          msg,
-          `[ ${movie.title} ] is already approved in Ombi`
-        )
+        return warningMessage(msg, `[ ${movie.title} ] is already approved in Ombi`)
       }
 
       if (movie.requested) {
-        return warningMessage(
-          msg,
-          `[ ${movie.title} ] is already requested in Ombi`
-        )
+        return warningMessage(msg, `[ ${movie.title} ] is already requested in Ombi`)
       }
 
       if (!movie.available && !movie.requested && !movie.approved) {
@@ -154,11 +127,7 @@ export default class OmbiMovies extends Command {
             })
             .send({ theMovieDbId: movie.theMovieDbId })
 
-          return standardMessage(
-            msg,
-            'green',
-            `Requested [ ${movie.title} ] in Ombi.`
-          )
+          return standardMessage(msg, 'green', `Requested [ ${movie.title} ] in Ombi.`)
         } catch (e) {
           const text = 'Failed to connect to Ombi'
           Log.error('Ombi Movies', text, e)
@@ -181,9 +150,7 @@ export default class OmbiMovies extends Command {
       const embedList = []
       for (const movie of results) {
         try {
-          const response = await get(
-            urljoin(host, '/api/v1/Search/movie/info/', String(movie.id))
-          ).headers({
+          const response = await get(urljoin(host, '/api/v1/Search/movie/info/', String(movie.id))).headers({
             ApiKey: apiKey,
             accept: 'application/json'
           })

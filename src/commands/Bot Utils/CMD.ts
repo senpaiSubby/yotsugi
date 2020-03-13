@@ -31,13 +31,7 @@ export default class CMD extends Command {
     // * ------------------ Setup --------------------
 
     const { Utils, generalConfig } = client
-    const {
-      warningMessage,
-      standardMessage,
-      asyncForEach,
-      embed,
-      validOptions
-    } = Utils
+    const { warningMessage, standardMessage, asyncForEach, embed, validOptions } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
@@ -159,9 +153,7 @@ export default class CMD extends Command {
       if (cannotDisable.length) {
         const m = (await channel.send(
           embed(msg, 'red')
-            .setTitle(
-              'The following commands CANNOT be disabled since they are required!'
-            )
+            .setTitle('The following commands CANNOT be disabled since they are required!')
             .setDescription(`**- ${cannotDisable.join('\n- ')}**`)
         )) as Message
         m.delete(20000)
@@ -274,14 +266,7 @@ export default class CMD extends Command {
       case 'locked':
         return listLocked()
       default:
-        return validOptions(msg, [
-          'disable',
-          'enable',
-          'disabled',
-          'lock',
-          'unlock',
-          'locked'
-        ])
+        return validOptions(msg, ['disable', 'enable', 'disabled', 'lock', 'unlock', 'locked'])
     }
   }
 }

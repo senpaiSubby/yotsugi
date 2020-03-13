@@ -44,10 +44,7 @@ export default class Shortcut extends Command {
         }
 
         const e = embed(msg, 'green', 'shortcut.png').setTitle('Shortcuts')
-        shortcuts.forEach(
-          (i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`),
-          true
-        )
+        shortcuts.forEach((i) => e.addField(`${i.name}`, `${i.command} ${i.arg.join(' ')}`), true)
         return channel.send(e)
       }
       case 'add': {
@@ -63,11 +60,7 @@ export default class Shortcut extends Command {
         const arg = args.join(' ')
         shortcuts.push({ name, command, arg: arg.split(' ') })
         await db.update({ config: JSON.stringify(config) })
-        return standardMessage(
-          msg,
-          'green',
-          `[ ${name} ] added to shortcut list`
-        )
+        return standardMessage(msg, 'green', `[ ${name} ] added to shortcut list`)
       }
       case 'remove': {
         const name = args[1]
@@ -79,11 +72,7 @@ export default class Shortcut extends Command {
         shortcuts.splice(index, 1)
         await db.update({ config: JSON.stringify(config) })
         if (name) {
-          return standardMessage(
-            msg,
-            'green',
-            `[ ${name} ] removed from shortcut list`
-          )
+          return standardMessage(msg, 'green', `[ ${name} ] removed from shortcut list`)
         }
 
         break

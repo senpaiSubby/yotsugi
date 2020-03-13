@@ -16,6 +16,5 @@ export default class Template extends Subprocess {
     this.client = client
   }
 
-  public async run() {
-  }
+  public async run() {}
 }

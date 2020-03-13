@@ -57,19 +57,13 @@ export class BotClient extends Client {
 
     // Log discord warnings
     this.on('warn', (info) => console.log(`warn: ${info}`))
-    this.on('reconnecting', () =>
-      this.Log.warn('Altair', 'Reconnecting to Discord')
-    )
+    this.on('reconnecting', () => this.Log.warn('Altair', 'Reconnecting to Discord'))
     this.on('resume', () => this.Log.warn('Altair', 'Reconnected to Discord'))
 
     // Unhandled Promise Rejections
-    process.on('unhandledRejection', (reason: any) =>
-      this.Log.error('Unhandled Rejection', reason.stack)
-    )
+    process.on('unhandledRejection', (reason: any) => this.Log.error('Unhandled Rejection', reason.stack))
     // Unhandled Errors
-    process.on('uncaughtException', (error) =>
-      this.Log.error('Uncaught Exception', error)
-    )
+    process.on('uncaughtException', (error) => this.Log.error('Uncaught Exception', error))
   }
 
   /**
@@ -112,34 +106,12 @@ export class BotClient extends Client {
 
     // * ---------- Events ----------
 
-    this.on(
-      'message',
-      async (message: NezukoMessage) => await onMessage(message, this)
-    )
-    this.on(
-      'messageUpdate',
-      async (old: Message, _new: NezukoMessage) =>
-        await messageUpdate(old, _new, this)
-    )
-    this.on(
-      'guildMemberAdd',
-      async (member: GuildMember) => await guildMemberAdd(member)
-    )
-    this.on(
-      'guildMemberRemove',
-      async (member: GuildMember) => await guildMemberRemove(member)
-    )
-    this.on(
-      'messageReactionAdd',
-      async (reaction, user) => await messageReactionAdd(reaction, user)
-    )
-    this.on(
-      'messageReactionRemove',
-      async (reaction) => await messageReactionRemove(reaction)
-    )
-    this.on(
-      'messageDelete',
-      async (message: Message) => await messageDelete(message, this)
-    )
+    this.on('message', async (message: NezukoMessage) => await onMessage(message, this))
+    this.on('messageUpdate', async (old: Message, _new: NezukoMessage) => await messageUpdate(old, _new, this))
+    this.on('guildMemberAdd', async (member: GuildMember) => await guildMemberAdd(member))
+    this.on('guildMemberRemove', async (member: GuildMember) => await guildMemberRemove(member))
+    this.on('messageReactionAdd', async (reaction, user) => await messageReactionAdd(reaction, user))
+    this.on('messageReactionRemove', async (reaction) => await messageReactionRemove(reaction))
+    this.on('messageDelete', async (message: Message) => await messageDelete(message, this))
   }
 }

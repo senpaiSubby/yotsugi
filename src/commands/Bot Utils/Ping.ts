@@ -25,10 +25,6 @@ export default class Ping extends Command {
 
     // * ------------------ Logic --------------------
 
-    return standardMessage(
-      msg,
-      'green',
-      `Pong! My ping is [ ${Date.now() - createdTimestamp} ] ms`
-    )
+    return standardMessage(msg, 'green', `Pong! My ping is [ ${Date.now() - createdTimestamp} ] ms`)
   }
 }

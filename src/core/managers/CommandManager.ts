@@ -76,9 +76,7 @@ export class CommandManager {
 
     instance.aliases.forEach((alias: string) => {
       if (this.aliases.has(alias)) {
-        throw new Error(
-          `Commands cannot share aliases: ${instance.name} has ${alias}`
-        )
+        throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
       }
 
       this.aliases.set(alias, instance)
@@ -106,8 +104,7 @@ export class CommandManager {
    * @param commandName Command to reload
    */
   public reloadCommand(commandName: string) {
-    const existingCommand =
-      this.commands.get(commandName) || this.aliases.get(commandName)
+    const existingCommand = this.commands.get(commandName) || this.aliases.get(commandName)
     if (!existingCommand) return false
     for (const alias of existingCommand.aliases) this.aliases.delete(alias)
     this.commands.delete(commandName)
@@ -125,13 +122,7 @@ export class CommandManager {
    * @param [api]
    * @returns
    */
-  public async runCommand(
-    client: BotClient,
-    command: any,
-    msg: NezukoMessage | null,
-    args?: any[],
-    api?: boolean
-  ) {
+  public async runCommand(client: BotClient, command: any, msg: NezukoMessage | null, args?: any[], api?: boolean) {
     if (api) {
       msg = ({
         channel: null,
@@ -173,18 +164,13 @@ export class CommandManager {
     await ConfigManager.handleMemberConfig(msg)
 
     // Assign prefix
-    this.prefix = guild
-      ? await ConfigManager.handleServerConfig(guild)
-      : config.prefix
+    this.prefix = guild ? await ConfigManager.handleServerConfig(guild) : config.prefix
     client.p = this.prefix
     msg.p = this.prefix
 
     // If message doesnt start with assigned prefix
     if (!content.startsWith(this.prefix)) {
-      if (
-        (channel.type !== 'dm' && !content.startsWith(this.prefix)) ||
-        content.length < this.prefix.length
-      ) {
+      if ((channel.type !== 'dm' && !content.startsWith(this.prefix)) || content.length < this.prefix.length) {
         // If bot is mentioned then reply with prefix
         if (content.startsWith(`<@${client.user.id}>`)) {
           const m = (await standardMessage(
@@ -209,9 +195,7 @@ export class CommandManager {
     // Check if command is on cooldown for user
     if (await this.onCooldown(msg, command)) return
     // Check if user is either the owner or a exempt user
-    if (
-      await this.isNotOwnerOrExempt(msg, command, requestedCommandName, args)
-    ) {
+    if (await this.isNotOwnerOrExempt(msg, command, requestedCommandName, args)) {
       return
     }
     // Check if the command is disabled
@@ -224,10 +208,7 @@ export class CommandManager {
     if (await this.missingArgs(msg, command, args)) return
 
     // * -------------------- Run Command --------------------
-    Log.info(
-      'Command Manager',
-      `[ ${author.tag} ] => [ ${msg.content.slice(this.prefix.length)} ]`
-    )
+    Log.info('Command Manager', `[ ${author.tag} ] => [ ${msg.content.slice(this.prefix.length)} ]`)
 
     // Assign general config to client for use in commands
     const generalDB = await generalConfig(this.ownerID)
@@ -277,11 +258,7 @@ export class CommandManager {
         await msg.reply(
           Utils.warningMessage(
             msg,
-            `Please wait [ ${timeLeft.toFixed(
-              1
-            )} ] more second(s) before reusing the [ \`${
-              command.name
-            }\` ] command`
+            `Please wait [ ${timeLeft.toFixed(1)} ] more second(s) before reusing the [ \`${command.name}\` ] command`
           )
         )
         return true
@@ -298,12 +275,7 @@ export class CommandManager {
    * @param requestedCommandName
    * @param args
    */
-  private async commandLocked(
-    msg: Message,
-    command: Command,
-    requestedCommandName: string,
-    args: string[]
-  ) {
+  private async commandLocked(msg: Message, command: Command, requestedCommandName: string, args: string[]) {
     const db = await generalConfig(config.ownerID)
 
     const { lockedCommands } = JSON.parse(db.get('config') as string)
@@ -314,10 +286,7 @@ export class CommandManager {
     let lockedMessage = ''
 
     lockedCommands.forEach((c) => {
-      if (
-        command.name === c.command ||
-        command.aliases.includes(requestedCommandName)
-      ) {
+      if (command.name === c.command || command.aliases.includes(requestedCommandName)) {
         lockedMessage = requestedCommandName
         locked = true
       } else if (`${requestedCommandName} ${args.join(' ')}` === c.command) {
@@ -327,32 +296,19 @@ export class CommandManager {
     })
 
     if (locked && !config.exemptUsers.includes(msg.author.id)) {
-      Log.info(
-        'Command Manager',
-        `[ ${msg.author.tag} ] tried to run locked command [ ${lockedMessage} ]`
-      )
+      Log.info('Command Manager', `[ ${msg.author.tag} ] tried to run locked command [ ${lockedMessage} ]`)
       return Utils.warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
     }
   }
 
-  private async commandDisabled(
-    msg: Message,
-    command: Command,
-    requestedCommandName: string
-  ) {
+  private async commandDisabled(msg: Message, command: Command, requestedCommandName: string) {
     const db = await generalConfig(config.ownerID)
 
     const { disabledCommands } = JSON.parse(db.get('config') as string)
     // Check if command is disabled
     for (const c of disabledCommands) {
-      if (
-        command.name === c.command ||
-        c.aliases.includes(requestedCommandName)
-      ) {
-        return Utils.warningMessage(
-          msg,
-          `Command [ ${requestedCommandName} ] is disabled`
-        )
+      if (command.name === c.command || c.aliases.includes(requestedCommandName)) {
+        return Utils.warningMessage(msg, `Command [ ${requestedCommandName} ] is disabled`)
       }
     }
   }
@@ -367,15 +323,9 @@ export class CommandManager {
     if (command.guildOnly && msg.channel.type !== 'text') {
       Log.info(
         'Command Manager',
-        `[ ${msg.author.tag} ] tried to run [ ${msg.content.slice(
-          this.prefix.length
-        )} ] in a DM`
+        `[ ${msg.author.tag} ] tried to run [ ${msg.content.slice(this.prefix.length)} ] in a DM`
       )
-      return Utils.standardMessage(
-        msg,
-        'green',
-        `This command cannot be slid into my DM`
-      )
+      return Utils.standardMessage(msg, 'green', `This command cannot be slid into my DM`)
     }
   }
 
@@ -388,14 +338,8 @@ export class CommandManager {
     // Check if user and bot has all required perms in permsNeeded
     if (msg.channel.type !== 'dm') {
       if (command.permsNeeded) {
-        const userMissingPerms = Utils.checkPerms(
-          msg.member,
-          command.permsNeeded
-        )
-        const botMissingPerms = Utils.checkPerms(
-          msg.guild.me,
-          command.permsNeeded
-        )
+        const userMissingPerms = Utils.checkPerms(msg.member, command.permsNeeded)
+        const botMissingPerms = Utils.checkPerms(msg.guild.me, command.permsNeeded)
 
         if (userMissingPerms.length) {
           Log.info(
@@ -417,9 +361,9 @@ export class CommandManager {
         if (botMissingPerms.length) {
           Log.info(
             'Command Manager',
-            `I lack the perms  [ ${msg.content.slice(
-              this.prefix.length
-            )} ] for command [ ${userMissingPerms.join(', ')} ]`
+            `I lack the perms  [ ${msg.content.slice(this.prefix.length)} ] for command [ ${userMissingPerms.join(
+              ', '
+            )} ]`
           )
 
           const m = (await msg.channel.send(
@@ -443,10 +387,7 @@ export class CommandManager {
   private async missingArgs(msg: Message, command: Command, args: string[]) {
     // If command requires args but none specified
     if (command.args && !args.length) {
-      Log.info(
-        'Command Manager',
-        `[ ${msg.author.tag} ] tried to run [ ${command.name} ] without parameters`
-      )
+      Log.info('Command Manager', `[ ${msg.author.tag} ] tried to run [ ${command.name} ] without parameters`)
 
       const m = (await msg.reply(
         Utils.embed(msg, 'yellow')
@@ -472,26 +413,14 @@ export class CommandManager {
    * @param requestedCommandName
    * @param args
    */
-  private async isNotOwnerOrExempt(
-    msg: Message,
-    command: Command,
-    requestedCommandName: string,
-    args: string[]
-  ) {
+  private async isNotOwnerOrExempt(msg: Message, command: Command, requestedCommandName: string, args: string[]) {
     // Checks for non owner user
-    if (
-      msg.author.id !== config.ownerID &&
-      !config.exemptUsers.includes(msg.author.id)
-    ) {
+    if (msg.author.id !== config.ownerID && !config.exemptUsers.includes(msg.author.id)) {
       // If command is marked 'ownerOnly: true' then don't execute
       if (command.ownerOnly && !config.exemptUsers.includes(msg.author.id)) {
         Log.info(
           'Command Manager',
-          `[ ${
-            msg.author.tag
-          } ] tried to run owner only command [ ${msg.content.slice(
-            this.prefix.length
-          )} ]`
+          `[ ${msg.author.tag} ] tried to run owner only command [ ${msg.content.slice(this.prefix.length)} ]`
         )
 
         return Utils.errorMessage(msg, `This command is reserved for my Senpai`)

@@ -27,5 +27,4 @@ export const memberConfig = async (id: string) =>
     where: { id }
   })
 
-export const jellyfinUsers = async (id: string) =>
-  database.models.JellyfinUsers.findOne({ where: { id } })
+export const jellyfinUsers = async (id: string) => database.models.JellyfinUsers.findOne({ where: { id } })

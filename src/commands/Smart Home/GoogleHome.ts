@@ -26,17 +26,13 @@ export default class GoogleHome extends Command {
 
   // TODO add google home typings
   public async run(client: BotClient, msg: NezukoMessage, args: any[], api) {
-    // * ------------------ Setup --------------------
-
     const { p, Utils, Log } = client
     const { errorMessage, missingConfig, standardMessage } = Utils
 
-    // * ------------------ Config --------------------
-
+    // Grab Google Home config from database
     const { ip, name, language } = client.db.config.googleHome
 
-    // * ------------------ Check Config --------------------
-
+    // If config parameters aren't set, notify user
     if (!ip || !name || !language) {
       const settings = [
         `${p}config set googleHome name <name>`,
@@ -46,27 +42,25 @@ export default class GoogleHome extends Command {
       return missingConfig(msg, 'googleHome', settings)
     }
 
-    // * ------------------ Logic --------------------
+    const textToHaveSpoken = args.join(' ')
 
-    const googleSpeak = async (speech: string) => {
-      try {
-        const device = new Device(ip, name, language)
-        device.notify(speech)
-        if (api) return `Told Google Home to say [ ${speech} ]`
-        return standardMessage(
-          msg,
-          'green',
-          `Told Google Home to say [ ${speech} ]`
-        )
-      } catch (e) {
-        if (api) return `Failed to connect to Google Home`
-        Log.error('Google Home', 'Failed to connect to Google Home', e)
-        await errorMessage(msg, `Failed to connect to Google Home`)
-      }
+    try {
+      // Connect to google home device
+      const device = new Device(ip, name, language)
+
+      // Send text to be spoken
+      await device.notify(textToHaveSpoken)
+
+      const responseText = `Told Google Home to say [ ${textToHaveSpoken} ]`
+
+      if (api) return responseText
+      return standardMessage(msg, 'green', responseText)
+    } catch (e) {
+      const errorText = `Failed to connect to Google Home`
+
+      if (api) return errorText
+      Log.error('Google Home', errorText, e)
+      await errorMessage(msg, errorText)
     }
-
-    // * ------------------ Usage Logic --------------------
-
-    return googleSpeak(args.join(' '))
   }
 }

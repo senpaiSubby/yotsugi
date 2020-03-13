@@ -42,19 +42,13 @@ export default class RcloneCache extends Subprocess {
      * Fetches and returns the remotes from the supplied rclone config file
      */
     const fetchRemotes = async () => {
-      const { code, stdout } = await execAsync(
-        `rclone listremotes --config='${configPath}'`,
-        {
-          silent: true
-        }
-      )
+      const { code, stdout } = await execAsync(`rclone listremotes --config='${configPath}'`, {
+        silent: true
+      })
 
       // If listing remotes failed log to console
       if (code !== 0) {
-        Log.error(
-          'Rclone Cache',
-          `A error occurred with Rclone when listing remotes`
-        )
+        Log.error('Rclone Cache', `A error occurred with Rclone when listing remotes`)
       }
       // Else parse and return list of remotes
       else {
@@ -117,9 +111,7 @@ export default class RcloneCache extends Subprocess {
 
           Log.info(
             'Rclone Cache',
-            `Cache update for remote [ ${remote} ] completed in [ ${Utils.millisecondsToTime(
-              stop - start
-            )} ]`
+            `Cache update for remote [ ${remote} ] completed in [ ${Utils.millisecondsToTime(stop - start)} ]`
           )
         }
       }
