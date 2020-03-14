@@ -23,60 +23,56 @@
 
 <h2 align="center"><b>About The Project</b></h2>
 
-I made Nezuko to automate and simplify my life. From controlling lights and smart plugs to media management and Docker control. If its not here it'll be here. Feel free to PR and ask for new features!
+Nezuko was created to simplify the management of my servers. I wanted a easy way to manage my docker container, smart devices, download clients and many more.
 
 <!------------------------- COMMANDS ------------------------->
 
 <h2 align="center"><b>Commands</b></h2>
 
-| Category    | Command     | Description                                                       | WebUI |
-| :---------- | :---------- | ----------------------------------------------------------------- | :---: |
-| Bot Utils   | autorun     | Schedule tasks to run at specified times                          |   Y   |
-| Bot Utils   | bot         | Bot Commands                                                      |       |
-| Bot Utils   | cmd         | Lock, Unlock, Disable, Enable commands                            |       |
-| Bot Utils   | db          | Get/Set database configs                                          |       |
-| Bot Utils   | exec        | Run shell commands                                                |       |
-| Bot Utils   | ip          | Get the server IP                                                 |   Y   |
-| Bot Utils   | ping        | Check discord latency                                             |       |
-| Bot Utils   | routine     | Routines to run multiple commands at once                         |   Y   |
-| Bot Utils   | shortcut    | Shortcut to run specific commands                                 |       |
-| Bot Utils   | si          | Live system stats                                                 |       |
-| Bot Utils   | speedtest   | Runs a network speedtest                                          |       |
-| General     | todo        | A personal todo list                                              |   Y   |
-| Information | brandfinder | See if a website and Twitter account is available for a new brand |       |
-| Information | help        | Get command help                                                  |       |
-| Information | invite      | Invite Nezuko to your own server                                  |       |
-| Information | whois       | Get WHOIS information on a domain                                 |       |
-| Management  | archive     | Archive web pages via ArchiveBox                                  |       |
-| Management  | docker      | Docker Management                                                 |   Y   |
-| Management  | jackett     | Search for torrents via Jackett                                   |       |
-| Management  | jfm         | Manages Jellyfin Server Management server account                 |       |
-| Management  | pihole      | PiHole stats and management                                       |   Y   |
-| Management  | rclone      | Get info on RClone remotes                                        |       |
-| Management  | sab         | sabNZBD Management                                                |       |
-| Management  | tor         | Transmission Management                                           |       |
-| Media       | anime       | Search for anime                                                  |       |
-| Media       | jf          | Jellyfin media info                                               |   Y   |
-| Media       | manga       | Search for manga                                                  |       |
-| Media       | movie       | Search and request movies via Ombi                                |       |
-| Media       | tv          | Search and request TV Shows via Ombi                              |       |
-| Media       | yt          | Search Youtube videos                                             |       |
-| Smart Home  | avr         | Pioneer AVR controller                                            |   Y   |
-| Smart Home  | pc          | Linux system power control                                        |   Y   |
-| Smart Home  | say         | Speak through Google Home                                         |   Y   |
-| Smart Home  | sengled     | Sengled light control                                             |   Y   |
-| Smart Home  | tuya        | Tuya device control                                               |   Y   |
+| Category             | Command   | Description                                |
+| -------------------- | --------- | ------------------------------------------ |
+| Bot Utils            | autorun   | Autorun commands at specified times        |
+| Bot Utils            | bot       | General bot options                        |
+| Bot Utils            | clear     | Remove messages from channels              |
+| Bot Utils            | command   | Lock, unlock, disable, enable commands     |
+| Bot Utils            | config    | View and edit bot settings                 |
+| Bot Utils            | eval      | Eval Javascript code                       |
+| Bot Utils            | exec      | Run shell commands                         |
+| Bot Utils            | ping      | Check discord latency                      |
+| Bot Utils            | routine   | Run multiple commands as routines          |
+| Bot Utils            | server    | View and edit server settings              |
+| Bot Utils            | shortcut  | Make and run shortcuts to other commands   |
+| DL & File Management | archive   | Archive web pages via ArchiveBox           |
+| DL & File Management | aria      | Aria2 download management                  |
+| DL & File Management | rclone    | Search and get info from RClone            |
+| DL & File Management | sab       | Control SABNZBD downloads                  |
+| DL & File Management | tor       | Control Transmission downloads             |
+| DL & File Management | torrent   | Search and find torrents                   |
+| General              | help      | Get help on command usage                  |
+| General              | invite    | Invite Nezuko to your own server           |
+| General              | remindme  | Set yourself some reminders                |
+| General              | todo      | Your personal todo list                    |
+| Information          | npm       | Search the NPM package repos               |
+| Information          | whois     | Get WHOIS information on a domain          |
+| Management           | docker    | Manage Docker containers                   |
+| Media                | anime     | Search Kitsu.io for anime                  |
+| Media                | jf        | Jellyfin media server info and stats       |
+| Media                | manga     | Search Kitsu.io for manga                  |
+| Media                | movie     | Search and request movies via Ombi         |
+| Media                | tv        | Search and request TV Shows via Ombi       |
+| Media                | yt        | Search Youtube videos                      |
+| Networking           | meraki    | Get network information for Meraki Devices |
+| Networking           | pihole    | PiHole stats and management                |
+| Smart Home           | avr       | Control Pioneer AV Recievers               |
+| Smart Home           | pc        | Manage power state of linux computers      |
+| Smart Home           | say       | Speak through Google Home devices          |
+| Smart Home           | sengled   | Control Sengled smart lights               |
+| Smart Home           | tuya      | Control Tuya smart plugs and devices       |
+| Utils                | ip        | Get the server IP                          |
+| Utils                | si        | Live system stats                          |
+| Utils                | speedtest | Runs a network speedtest                   |
 
-<!------------------------- Web UI ------------------------->
 
-Nezuko has a built in web UI / API server for remotely running commands and settings configs. For API enabled commands you can add them as buttons on the Web UI send HTTP POST requests from your favorite applications. I personally use HTTP Request Shortcuts on my Galaxy. It has a nice UI with support for custom icons, etc.
-
-<div align="center">
-<img src="src/core/images/screenshots/app1.png" width="200px" />
-<img src="src/core/images/screenshots/app2.png" width="200px" />
-<img src="src/core/images/screenshots/app3.png" width="200px" />
-<img src="src/core/images/screenshots/app4.png" width="200px" />
-</div>
 
 <!------------------------- GETTING STARTED ------------------------->
 
@@ -108,7 +104,7 @@ Arch Linux
 sudo pacman -S yarn
 ```
 
-3. Install packages
+3. Install needed libraries
 
 ```sh
 > yarn install
@@ -116,37 +112,8 @@ sudo pacman -S yarn
 
 <h2 align="center"><b>Setup</b></h2>
 
-1. Setup Bot Token and Prefix
-
-> Navigate to /nezuko/data and rename `config.js.sample` to `config.js`. Open the file and edit as needed.
-
-2. Setup Command Configs
-
-> All commands and other settings are setup after the bot is added to your server. Either by running `config get` which will list all the settings you can edit and how to edit them or by navigating to `http://botIP:5700` and setting up your details there. Everything is saved to the database at `/nezuko/data/db.sqlite`.
-
-If you would like to run Nezuko as a Docker container you'll need to build the image yourself.
-
-1. Clone the repo to a folder of choice
-2. CD into the folder and inside the folder `data` rename `config.js.sample` to `config.js` and enter your discord user ID and your bot token.
-3. Navigate back into the main directory and run `docker build -t nezuko .`
-4. After the build is finished you can run Nezuko with `docker run -p 570:5700 --name nezuko nezuko`. If you'd rather use Docker-Compose as I do then you can use the following sample config. Simply save it as `docker-compose.yml` and run `docker-compose up -d` to start her up. The webUI will be available at `http://BOTIP:5700`.
-
-```json
-version: '3'
-services:
-  nezukoBot:
-    image: callmekory/nezuko
-    container_name: nezuko
-    volumes:
-      - ./nezukoDocker/config:/app/build/config
-      - ./nezukoDocker/logs:/app/logs
-    ports:
-      - 5700:5700
-    network_mode: bridge
-    restart: unless-stopped
 
 
-```
 
 <h2 align="center"><b>Roadmap</b></h2>
 
@@ -185,6 +152,5 @@ You can shoot me a PM on Discord if you have any question. My tag is Sublime#423
 
 - [Mellow - Ombi movies/series code](https://github.com/v0idp/Mellow)
 - [nwithan8](https://github.com/nwithan8)
-- [codetheweb/tuyapi](https://github.com/codetheweb/tuyapi)
 
 <!------------------------- MARKDOWN LINKS & IMAGES ------------------------->

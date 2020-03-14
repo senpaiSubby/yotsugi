@@ -4,22 +4,24 @@
  */
 import Aria2 from 'aria2'
 import { BotClient } from 'core/BotClient'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
 export default class Template extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'aria',
-      category: 'DL & File Management',
-      description: 'Control Aria2 downloads',
-      usage: [],
       aliases: ['dl'],
-      args: true
+      args: true,
+      category: 'DL & File Management',
+      description: 'Aria2 download management',
+      name: 'aria',
+      usage: []
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     const { channel, p } = msg
     const {
       embed,
@@ -31,11 +33,12 @@ export default class Template extends Command {
       validOptions,
       sleep,
       missingConfig
-    } = client.Utils
+    } = Utils
 
     // * ------------------ Config --------------------
-
-    const { host, port, secure, secret, saveDir } = client.db.config!.aria2
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host, port, secure, secret, saveDir } = config.aria2
 
     // * ------------------ Check Config --------------------
 

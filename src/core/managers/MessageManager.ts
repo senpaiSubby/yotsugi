@@ -3,9 +3,7 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { Collection, Guild, MessageAttachment } from 'discord.js'
-import { createWriteStream, existsSync, mkdirSync } from 'fs'
-import fetch from 'node-fetch'
-import { basename, dirname, extname, join } from 'path'
+import { basename, extname } from 'path'
 import torrent2magnet from 'torrent2magnet'
 import { NezukoMessage } from 'typings'
 
@@ -31,14 +29,12 @@ export class MessageManager {
   }
 
   /**
-   * Logs and parses attachments sent in guilds and dm's.
-   * Attachments are saved into the respective guilds log directory.
    * Attachments are parsed based on file extension. For example,
    * .torrent files will be added into transmissions download queue
    */
   public async log() {
     // If message contains attachments, send them to be parsed
-    if (this.msg.attachments) this.handleMessage(this.msg.attachments)
+    if (this.msg.attachments) this.attachmentParser(this.msg.attachments)
   }
 
   /**
@@ -62,64 +58,36 @@ export class MessageManager {
   }
 
   /**
-   * Handles tasks to be performed for specified file extensions
-   * @param url
-   */
-  private async attachmentParser(url: string) {
-    // Parse file name from url
-    const fileName = basename(url)
-
-    // Command with params to be ran based on file extension
-    let cmd: string | null
-
-    // Parse uploaded files based of file extension
-    switch (extname(fileName)) {
-      // Add uploaded torrent files to Transmissions download queue
-      case '.torrent':
-        cmd = `tor add ${await torrent2magnet(url)}`
-        break
-      case '.nzb': {
-        // TODO add nzb uploading
-        break
-      }
-      // If no matches set cmd to null
-      default:
-        cmd = null
-    }
-
-    // If cmd string then run command
-    if (cmd) return this.runCommand(cmd)
-  }
-
-  /**
-   * Parses attachments. Saves a copy of each attachment sent in guilds and bot DM's.
+   * Parses attachments
    * @param attachments
    */
-  private handleMessage(attachments: Collection<string, MessageAttachment>) {
+  private attachmentParser(attachments: Collection<string, MessageAttachment>) {
     attachments.forEach(async (a) => {
       const { url } = a
-      await this.attachmentParser(url)
 
-      try {
-        const name = basename(url)
-        const dir = join(`${__dirname}/../../../logs/attachments/${this.guild.id}/${name}`)
+      // Parse file name from url
+      const fileName = basename(url)
 
-        // Check if dir exists and create if not
-        if (!existsSync(dirname(dir))) {
-          mkdirSync(dirname(dir), { recursive: true })
+      // Command with params to be ran based on file extension
+      let cmd: string
+
+      // Parse uploaded files based of file extension
+      switch (extname(fileName)) {
+        // Add uploaded torrent files to Transmissions download queue
+        case '.torrent':
+          cmd = `tor add ${await torrent2magnet(url)}`
+          break
+        case '.nzb': {
+          // TODO add nzb uploading
+          break
         }
-
-        const res = await fetch(url)
-        const fileStream = createWriteStream(dir)
-
-        await new Promise((resolve, reject) => {
-          res.body.pipe(fileStream)
-          res.body.on('error', (err) => reject(err))
-          fileStream.on('finish', () => resolve())
-        })
-      } catch (error) {
-        this.client.Log.warn('Attachment Handler', `Failed to handle attachment`)
+        // If no matches set cmd to null
+        default:
+          cmd = null
       }
+
+      // If cmd string then run command
+      if (cmd) return this.runCommand(cmd)
     })
   }
 }

@@ -7,32 +7,40 @@ import { post } from 'unirest'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
-import { generalConfig } from '../../core/database/database'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to control Sengled smart lights and devices
+ */
 export default class Sengled extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'sengled',
-      category: 'Smart Home',
-      description: 'Sengled light control',
-      usage: [`sengled desk`, `sengled list`],
-      webUI: true,
+      aliases: ['lamp'],
       args: true,
-      ownerOnly: true
+      category: 'Smart Home',
+      description: 'Control Sengled smart lights',
+      name: 'sengled',
+      ownerOnly: true,
+      usage: [`sengled [light name]`, `sengled list`],
+      webUI: true
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Log, Utils, p, db } = client
+    const { p } = client
     const { missingConfig, warningMessage, errorMessage, standardMessage, capitalize, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
 
-    const { username, password } = db.config.sengled
-    let { jsessionid } = db.config.sengled
+    const { username, password } = config.sengled
+    const { jsessionid } = config.sengled
 
     // * ------------------ Check Config --------------------
 
@@ -70,14 +78,9 @@ export default class Sengled extends Command {
     }
 
     if (!jsessionid) {
-      const session = await login()
-      const configDB = await generalConfig(this.client.config.ownerID)
-      const config = JSON.parse((await configDB.get('config')) as string) as GeneralDBConfig
+      config.sengled.jsessionid = await login()
 
-      config.sengled.jsessionid = session
-      jsessionid = session
-
-      await configDB.update({ config: JSON.stringify(config) })
+      await db.update({ config: JSON.stringify(config) })
     }
 
     const getDevices = async () => {
@@ -127,10 +130,8 @@ export default class Sengled extends Command {
 
         const icon = newState === 'on' ? ':full_moon:' : ':new_moon:'
         const state = newState === 'on' ? 'on' : 'off'
-        if (api) return `[ ${deviceName} ] light turned [ ${state} ]`
         return standardMessage(msg, 'green', `${icon} [ ${deviceName} ] light turned [ ${state} ]`)
       } catch (e) {
-        if (api) return `Failed to connect to Sengled`
         Log.error('Sengled', 'Failed to connect to Sengled', e)
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
@@ -150,18 +151,13 @@ export default class Sengled extends Command {
           if (newBrightness === 0 || newBrightness === 100) {
             const icon = newBrightness === 100 ? ':full_moon:' : ':new_moon:'
             const newStatus = newBrightness === 100 ? 'on' : 'off'
-            if (api) {
-              return `[ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`
-            }
+
             return standardMessage(msg, 'green', `${icon} [ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`)
           }
-          if (api) {
-            return `[ ${deviceName} ] brightness set to [ ${newBrightness} ]`
-          }
+
           return standardMessage(msg, 'green', `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness} ]`)
         }
       } catch (e) {
-        if (api) return `Failed to connect to Sengled`
         Log.error('Sengled', 'Failed to connect to Sengled', e)
         await errorMessage(msg, `Failed to connect to Sengled`)
       }
@@ -180,7 +176,6 @@ export default class Sengled extends Command {
         }
 
         case 'list': {
-          if (api) return devices
           const e = embed(msg, 'green', 'light.png').setTitle(':bulb: Sengled Lights')
           if (typeof devices !== 'string') {
             devices.forEach((device) => {
@@ -202,9 +197,6 @@ export default class Sengled extends Command {
           }
           // If light not found
           if (index === -1) {
-            if (api) {
-              return `Could not find a light named [ ${capitalize(deviceName)} ]`
-            }
             return warningMessage(msg, `Could not find a light named [ ${capitalize(deviceName)} ]`)
           }
           const device = devices[index].uuid

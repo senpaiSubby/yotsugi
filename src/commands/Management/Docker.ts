@@ -2,43 +2,50 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get, post } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to manage your servers docker containers
+ */
 export default class Docker extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'docker',
-      category: 'Management',
-      description: 'Docker Management',
-      usage: [`docker <state> <name>`, `docker list <state>`],
-      webUI: true,
       args: true,
-      ownerOnly: true
+      category: 'Management',
+      description: 'Manage Docker containers',
+      name: 'docker',
+      ownerOnly: true,
+      usage: [`docker [state] [name]`, `docker list [state]`],
+      webUI: true
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[], api) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p } = client
 
     const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig, embed } = Utils
 
     const { channel } = msg
 
     // * ------------------ Config --------------------
-
-    const { host } = client.db.config!.docker
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host } = config.docker
 
     // * ------------------ Check Config --------------------
 
     if (!host) {
-      const settings = [`${p}config set docker host <http://ip>`]
+      const settings = [`${p}config set docker host <http://ip:port>`]
       return missingConfig(msg, 'docker', settings)
     }
 
@@ -93,22 +100,15 @@ export default class Docker extends Command {
         const { status }: { status: number } = response
 
         if (status >= 200 && status < 300) {
-          if (api) {
-            return `Container [ ${containerName}]  has been [ ${newState}ed ] successfully`
-          }
           return standardMessage(msg, 'green', `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`)
         }
         if (newState !== 'restart' && status >= 300 && status < 400) {
-          if (api) {
-            return `Container [ ${containerName} ] is already [ ${newState}${newState === 'stop' ? 'ped' : 'ed'} ]`
-          }
           return warningMessage(
             msg,
             `Container [ ${containerName} ] is already [ ${newState}${newState === 'stop' ? 'ped' : 'ed'} ]`
           )
         }
       } catch (e) {
-        if (api) return `Failed to connect to Docker daemon`
         Log.error('Docker', 'Failed to connect to Docker', e)
         await errorMessage(msg, `Failed to connect to Docker daemon`)
       }
@@ -122,14 +122,12 @@ export default class Docker extends Command {
 
         const options = ['running', 'paused', 'exited', 'created', 'restarting', 'dead']
         if (!options.includes(filterState)) {
-          if (api) return `Valid options are [ ${options.join(', ')} ]`
           return validOptions(msg, options)
         }
 
         const containers = await getContainers(filterState)
         if (containers) {
           if (containers.length) {
-            if (api) return containers
             const e = embed(msg, 'green', 'docker.png').setDescription('Docker Containers')
 
             containers.forEach((container) => {
@@ -139,7 +137,6 @@ export default class Docker extends Command {
 
             return channel.send(e)
           }
-          if (api) return `No containers currently in state [ ${filterState} ]`
           return warningMessage(msg, `No containers currently in state [ ${filterState} ]`)
         }
         return

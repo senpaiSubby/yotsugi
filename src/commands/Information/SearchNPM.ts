@@ -6,20 +6,24 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to search the NPM package repos
+ */
 export default class SearchNPM extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'npm',
+      args: true,
       category: 'Information',
       description: 'Search the NPM package repos',
-      usage: ['npm [search term]'],
-      args: true
+      name: 'npm',
+      usage: ['npm [search term]']
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    const { execAsync, warningMessage, embed, paginate } = client.Utils
+    const { execAsync, warningMessage, embed, paginate } = Utils
 
     // Get search term from user input
     const searchTerm = args.join(' ')

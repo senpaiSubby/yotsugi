@@ -6,7 +6,7 @@ import { Guild } from 'discord.js'
 import { NezukoMessage } from 'typings'
 
 import * as config from '../../config/config.json'
-import { database, generalConfig } from '../database/database'
+import { database } from '../database/database'
 import { Log } from '../Logger'
 
 /**
@@ -14,15 +14,29 @@ import { Log } from '../Logger'
  */
 export class ConfigManager {
   /**
-   * Handles general config
+   * Handles general config. Creating it if it doesn't exist
    */
   public static async handleGeneralConfig() {
+    // Sync database so it is created if doesnt exist on disk
     await database.sync()
-    const { ownerID } = config
-    const db = await generalConfig(ownerID)
 
-    if (!db) {
+    // Fetch owner ID from config
+    const { ownerID } = config
+
+    // Load database
+    const db = await database.models.Configs.findOne({ where: { id: ownerID } })
+
+    // If database exists
+    if (db) {
+      // Handle DB changes for existing databases
+      const cfg = JSON.parse(db.get('config') as string)
+    }
+    // If database doesn\'t exist then create it with the following defaults
+    else {
+      // Log that new table is created
       Log.info('Config Manager', `Created new general config for [ ${ownerID} ]`)
+
+      // Create new table for configs
       await database.models.Configs.create({
         id: ownerID,
         config: JSON.stringify({
@@ -36,13 +50,12 @@ export class ConfigManager {
           jackett: { apiKey: null, host: null },
           jellyfin: { apiKey: null, host: null, userID: null },
           lockedCommands: [],
-          meraki: { apiKey: null, serielNum: null },
+          meraki: { apiKey: null, serialNum: null },
           ombi: { apiKey: null, host: null, username: null },
           pihole: { apiKey: null, host: null },
           aria2: { host: null, port: null, secure: false, secret: null, saveDir: null },
           pioneerAVR: { host: null },
           routines: [],
-          rssFeeds: [],
           sabnzbd: { apiKey: null, host: null },
           sengled: { jsessionid: null, password: null, username: null },
           shortcuts: [],
@@ -54,27 +67,9 @@ export class ConfigManager {
             username: null,
             password: null
           },
-          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }],
-          webUI: { apiKey: '111', commands: [] }
+          tuyaDevices: [{ id: 'xxxxxxx', key: 'xxx', name: 'xxx' }]
         })
       })
-    }
-
-    // Handle DB changes for existing databases
-    const cfg = JSON.parse(db.get('config') as string)
-
-    if (!cfg.rssFeeds) {
-      cfg.rssFeeds = []
-      await db.update({ config: JSON.stringify(cfg) })
-    }
-    if (!cfg.transmission.username && !cfg.transmission.password) {
-      cfg.transmission.username = null
-      cfg.transmission.password = null
-      await db.update({ config: JSON.stringify(cfg) })
-    }
-    if (!cfg.aria2) {
-      cfg.aria2 = { host: null, port: null, secure: false, secret: null, saveDir: null }
-      await db.update({ config: JSON.stringify(cfg) })
     }
   }
 
@@ -83,43 +78,47 @@ export class ConfigManager {
    * @param guild Guild that the message from sent from
    */
   public static async handleServerConfig(guild: Guild) {
-    // * -------------------- Setup --------------------
     const { id, ownerID, name } = guild
 
-    // * -------------------- Handle Per Server Configs --------------------
-
-    // Per server config
+    // If not ran from guild return default prefix from config
     if (!guild) return config.prefix
 
-    let db = await database.models.Servers.findOne({
+    // Laod server config database
+    const db = await database.models.Servers.findOne({
       where: { id }
     })
 
-    if (!db) {
-      Log.info('Config Manager', `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`)
-      db = await database.models.Servers.create({
-        id,
-        ownerID,
-        config: JSON.stringify({
-          prefix: config.prefix,
-          lockedCommands: [],
-          disabledCommands: []
-        }),
-        statChannels: JSON.stringify({
-          bots: { enabled: false, channelID: null },
-          categoryID: null,
-          enabled: false,
-          members: { enabled: false, channelID: null },
-          total: { enabled: false, channelID: null }
-        }),
-        serverName: name
-      })
+    // If database table exists for guild
+    if (db) {
+      // Load server config
+      const conf = JSON.parse(db.get('config') as string)
+
+      // Return server prefix
+      return conf.prefix || config.prefix
     }
 
-    // * just to handle db updates when adding commands
-    const conf = JSON.parse(db.get('config') as string)
+    // If database table doesn't exist for guild
+    // Log that a new table is being created
+    Log.info('Config Manager', `Creating new server config for guild ID [ ${guild.id} ] [ ${guild.name} ]`)
 
-    return conf.prefix || config.prefix
+    // Create new database with following defaults
+    return database.models.Servers.create({
+      id,
+      ownerID,
+      config: JSON.stringify({
+        prefix: config.prefix,
+        lockedCommands: [],
+        disabledCommands: []
+      }),
+      statChannels: JSON.stringify({
+        bots: { enabled: false, channelID: null },
+        categoryID: null,
+        enabled: false,
+        members: { enabled: false, channelID: null },
+        total: { enabled: false, channelID: null }
+      }),
+      serverName: name
+    })
   }
 
   /**
@@ -127,17 +126,19 @@ export class ConfigManager {
    * @param msg Original message
    */
   public static async handleMemberConfig(msg: NezukoMessage) {
-    // * -------------------- Setup --------------------
     const { author } = msg
     const { id, tag: username } = author
 
-    // * -------------------- Setup --------------------
-
+    // Fetch and load member database
     const db = await database.models.Members.findOne({ where: { id } })
 
+    // If database table for memeber doesn't exist
     if (!db) {
+      // Log that a new table will be created
       Log.info('Config Manager', `Created new member config for user [ ${id} ] [ ${username} ]`)
-      await database.models.Members.create({
+
+      // Create new member table with following defaults
+      return database.models.Members.create({
         username,
         id,
         config: JSON.stringify({ todos: [] })

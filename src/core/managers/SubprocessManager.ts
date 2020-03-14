@@ -61,7 +61,7 @@ export class SubprocessManager {
       await subprocess.run()
       this.loadedModules.push(subprocess.name)
     } catch (err) {
-      this.client.Log.warn('Subprocess', err)
+      Log.warn('Subprocess', err)
     }
   }
 }

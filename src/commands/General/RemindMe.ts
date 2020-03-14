@@ -7,20 +7,23 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to set reminders for yourself
+ */
 export default class RemindMe extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'remindme',
+      aliases: ['remind'],
       category: 'General',
-      description: 'Set some reminders',
-      usage: ['remindme 10s do the dishes', 'remindme 1h make memes', 'remindme 1m get funky with it'],
-      aliases: ['remind']
+      description: 'Set yourself some reminders',
+      name: 'remindme',
+      usage: ['remindme 10s do the dishes', 'remindme 1h make memes', 'remindme 1m get funky with it']
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    const { Utils } = client
     const { standardMessage, embed } = Utils
     const { author } = msg
 

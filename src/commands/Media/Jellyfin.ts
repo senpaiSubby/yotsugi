@@ -3,32 +3,38 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { RichEmbed } from 'discord.js'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
-export default class Emby extends Command {
+/**
+ * Command to get information from Jellyfin media server
+ */
+export default class Jellyfin extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'jf',
-      category: 'Media',
-      description: 'Jellyfin media info',
-      usage: ['jf streams', 'jf stats', 'jf recent <movies/series>'],
       args: true,
+      category: 'Media',
+      description: 'Jellyfin media server info and stats',
+      name: 'jf',
+      usage: ['jf streams', 'jf stats', 'jf recent [movies/series]'],
       webUI: true
     })
     this.color = '#9B62C5'
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p } = client
     const { channel } = msg
     const {
       errorMessage,
@@ -42,8 +48,9 @@ export default class Emby extends Command {
     } = Utils
 
     // * ------------------ Config --------------------
-
-    const { apiKey, host, userID } = client.db.config.jellyfin
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { apiKey, host, userID } = config.jellyfin
 
     // * ------------------ Check Config --------------------
 
@@ -69,17 +76,17 @@ export default class Emby extends Command {
       // Console.log(mediaType)
       if (mediaType === 'Episode') {
         const seriesId = item.SeriesId
-        return urljoin(host, 'jellyfin/Items/', seriesId, '/images/Primary')
+        return urljoin(host, 'Items/', seriesId, '/images/Primary')
       }
 
       const Id = item.Id
-      return urljoin(host, 'jellyfin/Items/', Id, '/images/Primary')
+      return urljoin(host, 'Items/', Id, '/images/Primary')
     }
 
     const getOverview = async (item) => {
       const ID = item.Id
 
-      const response = await get(`${urljoin(host, 'jellyfin', `Users/${userID}/Items/${ID}`)}`).headers(headers)
+      const response = await get(`${urljoin(host, `Users/${userID}/Items/${ID}`)}`).headers(headers)
 
       const data = response.body
 
@@ -88,7 +95,8 @@ export default class Emby extends Command {
 
     const fetchData = async (endPoint: string) => {
       try {
-        const response = await get(`${urljoin(host, 'jellyfin', endPoint)}`).headers(headers)
+        const response = await get(`${urljoin(host, endPoint)}`).headers(headers)
+        console.log(response.body)
 
         switch (response.status) {
           case 200: {
@@ -96,21 +104,18 @@ export default class Emby extends Command {
           }
           case 401: {
             const text = 'Bad API key'
-            if (api) return text
             await warningMessage(msg, text)
             Log.error('Emby', text)
             break
           }
           default: {
             const text = 'Failed to connect to Emby'
-            if (api) return text
             Log.error('Emby', text)
             await errorMessage(msg, text)
           }
         }
       } catch (e) {
         const text = 'Failed to connect to Emby'
-        if (api) return text
         Log.error('Emby', text)
         await errorMessage(msg, text)
       }
@@ -119,9 +124,6 @@ export default class Emby extends Command {
     // * ------------------ Usage Logic --------------------
 
     let e: RichEmbed
-    if (!api) {
-      e = embed(msg, this.color).setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
-    }
 
     switch (args[0]) {
       case 'streams': {
@@ -149,8 +151,6 @@ export default class Emby extends Command {
               })
             }
           })
-
-          if (api) return { currentStreamCount, currentStreams }
 
           if (!currentStreamCount) {
             return standardMessage(msg, this.color, 'Nothing is playing')

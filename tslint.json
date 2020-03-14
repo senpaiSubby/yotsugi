@@ -20,6 +20,7 @@
     "no-parameter-reassignment": false,
     "no-increment-decrement": false,
     "brace-style": false,
+    "curly": [true, "ignore-same-line"],
     "lines-between-class-members": [true, 1],
     "jsdoc-format": false,
     "ordered-imports": true,

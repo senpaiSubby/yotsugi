@@ -6,13 +6,17 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to check ping from bots server location to discord
+ */
 export default class Ping extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'ping',
       category: 'Bot Utils',
       description: 'Check discord latency',
+      name: 'ping',
       ownerOnly: true
     })
   }
@@ -20,7 +24,7 @@ export default class Ping extends Command {
   public async run(client: BotClient, msg: NezukoMessage) {
     // * ------------------ Setup --------------------
 
-    const { standardMessage } = client.Utils
+    const { standardMessage } = Utils
     const { createdTimestamp } = msg
 
     // * ------------------ Logic --------------------

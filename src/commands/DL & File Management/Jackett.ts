@@ -3,31 +3,37 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { Message } from 'discord.js'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to search your Jackett instance for torrents
+ */
 export default class Jackett extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'torrent',
-      category: 'DL & File Management',
-      description: 'Search for torrents via Jackett',
-      usage: ['find <torrent to look for>'],
       aliases: ['find'],
-      args: true
+      args: true,
+      category: 'DL & File Management',
+      description: 'Search and find torrents',
+      name: 'torrent',
+      usage: ['find [torrent to look for]']
     })
     this.color = '#282828'
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
-    const { Utils, Log, db, p } = client
+    const { p } = client
     const {
       bytesToSize,
       sortByKey,
@@ -40,8 +46,9 @@ export default class Jackett extends Command {
     } = Utils
 
     // * ------------------ Config --------------------
-
-    const { host, apiKey } = db.config!.jackett
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host, apiKey } = config.jackett
 
     // * ------------------ Check Config --------------------
 

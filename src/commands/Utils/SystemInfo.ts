@@ -10,27 +10,29 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to view live system information of the server the bot is hosted on
+ */
 export default class SystemInfo extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'si',
       category: 'Utils',
       description: 'Live system stats',
-      usage: ['si <interval in seconds>'],
-      ownerOnly: true
+      name: 'si',
+      ownerOnly: true,
+      usage: ['si <interval in seconds>']
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api) {
-    // * ------------------ Setup --------------------
-    const { bytesToSize, embed } = client.Utils
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
+    const { bytesToSize, embed } = Utils
     const { channel, author } = msg
     const { round } = Math
-    // * ------------------ Config --------------------
-    if (!args[0]) args[0] = 1
 
-    // * ------------------ Logic --------------------
+    // If user doesn't specify a refresh time set to 1 second
+    if (!args[0]) args[0] = 1
 
     const cpuInfo = async () => {
       const coreCount = cpu.count()
@@ -55,23 +57,24 @@ export default class SystemInfo extends Command {
 
     // * ------------------ Usage Logic --------------------
 
-    if (api) {
-      return {
-        cpu: await cpuInfo(),
-        ram: await ramInfo()
-      }
-    }
+    // Send wait message to let user know stats are loading
+    const waitMessage = (await channel.send(
+      embed(msg, 'green').setDescription('**:timer: Loading system stats..**')
+    )) as Message
 
-    const ms = (await channel.send(embed(msg, 'green').setDescription('**:timer: Loading system stats..**'))) as Message
-    await ms.react('🛑')
+    // React with a stop sign so when click live stats will stop
+    await waitMessage.react('🛑')
 
+    /**
+     * Refreshes waitMessage with updated stats
+     */
     const refreshEmbed = async () => {
       const cpuStats = await cpuInfo()
       const ramStats = await ramInfo()
       const { cores, percentage, load } = cpuStats
       const { total, free, used } = ramStats
 
-      await ms.edit(
+      return waitMessage.edit(
         embed(msg, 'green')
           .setTitle(':computer: Live System Stats')
           .addField('Host', `**[${hostname()}] ${type()} ${arch()} ${release()}**`)
@@ -84,19 +87,24 @@ export default class SystemInfo extends Command {
       )
     }
 
+    // Update waitMessage with current stats
     await refreshEmbed()
+
+    // Refresh waitMessage with current stats every x seconds specified by user
     const interval = setInterval(async () => await refreshEmbed(), args[0] * 1000)
 
-    const collected = await ms.awaitReactions(
+    // Await the stop sign reaction
+    const collected = await waitMessage.awaitReactions(
       (reaction: MessageReaction, user: GuildMember) => ['🛑'].includes(reaction.emoji.name) && user.id === author.id,
       { max: 1 }
     )
 
+    // If reacted with stop sign stop refreshing stats
     const foundReaction = collected.first()
     if (foundReaction) {
       if (foundReaction.emoji.name === '🛑') {
         clearInterval(interval)
-        return ms.clearReactions()
+        return waitMessage.clearReactions()
       }
     }
   }

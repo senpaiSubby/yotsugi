@@ -6,9 +6,11 @@ import later from 'later'
 
 import { Subprocess } from '../../core/base/Subprocess'
 import { BotClient } from '../../core/BotClient'
-import { generalConfig } from '../../core/database/database'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
 import { CommandManager } from '../../core/managers/CommandManager'
 
+// TODO add autorun channel to config
 export default class AutoRun extends Subprocess {
   public commandManager: CommandManager
 
@@ -21,23 +23,20 @@ export default class AutoRun extends Subprocess {
   }
 
   public async run() {
-    const { Log } = this.client
     const { ownerID } = this.client.config
 
-    const db = await generalConfig(ownerID)
+    const db = await database.models.Configs.findOne({ where: { id: ownerID } })
 
     if (db) {
       const config = JSON.parse(db.get('config') as string)
       const { autorun } = config
 
       const runCommand = async (cmdName: string) => {
-        this.client.db.config = config
-
         const args = cmdName.split(' ')
         const cmd = args.shift().toLowerCase()
         const command = this.client.commandManager.findCommand(cmd)
         if (command) {
-          return this.client.commandManager.runCommand(this.client, command, null, args, true)
+          return this.client.commandManager.runCommand(this.client, command, null, args)
         }
         return `No command [ ${cmdName} ]`
       }

@@ -291,7 +291,7 @@ export class Utils {
   }
 
   /**
-   * Converts miliseconds to HH:MM format
+   * Converts milliseconds to HH:MM format
    * @param ms Milliseconds
    */
   public static millisecondsToTime(ms: number) {
@@ -339,8 +339,6 @@ export class Utils {
       grey: '#928374'
     }
     const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
-
-    // If (msg && typeof msg !== 'boolean') e.setFooter(`Requested by: ${msg.author.tag}`, msg.author.avatarURL || '')
 
     if (image) {
       e.setThumbnail(`https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`)

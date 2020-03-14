@@ -2,33 +2,40 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { YoutubeDataAPI } from 'youtube-v3-api'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to search for Youtube videos
+ */
 export default class YoutubeSearch extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'yt',
+      args: true,
       category: 'Media',
       description: 'Search Youtube videos',
-      usage: ['yt <video to search for>'],
-      args: true
+      name: 'yt',
+      usage: ['yt [video to search for]']
     })
     this.color = '#FF3333'
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
-    const { Utils, db, p } = client
+    const { p } = client
     const { paginate, embed, missingConfig } = Utils
     // * ------------------ Config --------------------
 
-    const { apiKey } = db.config.google
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { apiKey } = config.google
     const yt = new YoutubeDataAPI(apiKey)
 
     // * ------------------ Check Config --------------------

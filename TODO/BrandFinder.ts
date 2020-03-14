@@ -5,12 +5,13 @@
 
 // TODO fix this shit it doesnt work
 
-import { BotClient } from 'core/BotClient'
+import { BotClient } from 'src/core/BotClient'
+import { NezukoMessage } from 'src/typings'
 import twitter from 'twitter'
-import { NezukoMessage } from 'typings'
 import whois from 'whois-2'
 
-import { Command } from '../../core/base/Command'
+import { Command } from '../src/core/base/Command'
+import { Utils } from '../src/core/Utils'
 
 /*!
  * Coded by nwithan8 - https://github.com/nwithan8
@@ -36,11 +37,11 @@ interface WhoisLookup {
 export default class Whois extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'brandfinder',
+      args: true,
       category: 'Information',
-      description: 'See if a website and Twitter account is available for a new brand',
-      usage: ['brandfinder <brand name>'],
-      args: true
+      description: 'Check if a twitter or domain name is available',
+      name: 'brandfinder',
+      usage: ['brandfinder [brand name]']
     })
   }
 
@@ -49,7 +50,6 @@ export default class Whois extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    const { Utils } = client
     const { embed } = Utils
     const { channel } = msg
 
@@ -86,11 +86,7 @@ export default class Whois extends Command {
     })
 
     tw.get('users/lookup', { screen_name: keyword }, (error, data, response) => {
-      if (!error) {
-        twitterAvailable = false
-      } else {
-        twitterAvailable = true
-      }
+      twitterAvailable = error
     })
 
     return channel.send(

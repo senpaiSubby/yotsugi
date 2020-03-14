@@ -2,36 +2,39 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
-import { generalConfig } from '../../core/database/database'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to set shortcuts to other commands
+ */
 export default class Shortcut extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'shortcut',
       aliases: ['s'],
-      category: 'Bot Utils',
-      usage: ['s list', 's add <name> <command>', 's remove <name>'],
-      description: 'Shortcut to run specific commands',
       args: true,
-      ownerOnly: true
+      category: 'Bot Utils',
+      description: 'Make and run shortcuts to other commands',
+      name: 'shortcut',
+      ownerOnly: true,
+      usage: ['s list', 's add [name] [command]', 's remove [name]']
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
     const { warningMessage, standardMessage, errorMessage, embed } = Utils
     const { author, context, channel } = msg
 
     // * ------------------ Config --------------------
 
-    const db = await generalConfig(author.id)
-    const { config } = client.db
+    const db = await database.models.Configs.findOne({ where: { id: author.id } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { shortcuts } = config
 
     // * ------------------ Logic --------------------

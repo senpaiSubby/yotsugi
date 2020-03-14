@@ -3,34 +3,42 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { Device } from 'google-home-notify-client'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to send text to your google home device to be spoken aloud
+ */
 export default class GoogleHome extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'say',
-      category: 'Smart Home',
-      description: 'Speak through Google Home',
-      usage: [`say <msg>`],
-      webUI: true,
       args: true,
-      ownerOnly: true
+      category: 'Smart Home',
+      description: 'Speak through Google Home devices',
+      name: 'say',
+      ownerOnly: true,
+      usage: [`say [msg]`],
+      webUI: true
     })
     this.color = '#4586F7'
   }
 
   // TODO add google home typings
   public async run(client: BotClient, msg: NezukoMessage, args: any[], api) {
-    const { p, Utils, Log } = client
+    const { p } = client
     const { errorMessage, missingConfig, standardMessage } = Utils
 
     // Grab Google Home config from database
-    const { ip, name, language } = client.db.config.googleHome
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { ip, name, language } = config.googleHome
 
     // If config parameters aren't set, notify user
     if (!ip || !name || !language) {
@@ -51,16 +59,9 @@ export default class GoogleHome extends Command {
       // Send text to be spoken
       await device.notify(textToHaveSpoken)
 
-      const responseText = `Told Google Home to say [ ${textToHaveSpoken} ]`
-
-      if (api) return responseText
-      return standardMessage(msg, 'green', responseText)
+      return standardMessage(msg, 'green', `Told Google Home to say [ ${textToHaveSpoken} ]`)
     } catch (e) {
-      const errorText = `Failed to connect to Google Home`
-
-      if (api) return errorText
-      Log.error('Google Home', errorText, e)
-      await errorMessage(msg, errorText)
+      return errorMessage(msg, `Failed to connect to Google Home`)
     }
   }
 }

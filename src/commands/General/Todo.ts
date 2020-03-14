@@ -7,64 +7,61 @@ import { MemberDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to manage your to-do items
+ */
 export default class Todo extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'todo',
-      category: 'General',
-      description: 'A personal todo list',
-      usage: ['todo add do the dishes', 'todo list'],
       args: true,
+      category: 'General',
+      description: 'Your personal todo list',
+      name: 'todo',
+      usage: ['todo add [what you want to do later]', 'todo list'],
       webUI: true
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
-    const { p, Utils, memberConfig } = client
-    const { ownerID } = client.config
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
+    const { p } = client
     const { standardMessage, embed, asyncForEach, warningMessage, validOptions } = Utils
     const { author, channel } = msg
 
     const todo = args.slice(1).join(' ')
 
-    const db = api
-      ? await memberConfig.findOne({ where: { id: ownerID } })
-      : await memberConfig.findOne({ where: { id: author.id } })
+    const db = await database.models.Members.findOne({ where: { id: author.id } })
 
-    const config = JSON.parse(db.get('config')) as MemberDBConfig
+    const config = JSON.parse(db.get('config') as string) as MemberDBConfig
 
     const { todos } = config
 
     switch (args[0]) {
       case 'add': {
         if (todos.length >= 10) {
-          if (api) return 'You cannot have more than [ 10 ] todos!'
           return warningMessage(msg, 'You cannot have more than [ 10 ] todos!')
         }
 
         if (!todo) {
-          if (api) return 'Todo cannot be empty!'
           const m = (await warningMessage(msg, 'Todo cannot be empty!')) as Message
           return m.delete(3000)
         }
 
         todos.push(todo.trim())
         await db.update({ config: JSON.stringify(config) })
-        if (api) return `Added [ ${todo} ] to todo list`
         return standardMessage(msg, 'green', `Added [ ${todo} ] to todo list`)
       }
 
       case 'list': {
         if (!todos.length) {
-          if (api) return `Todo list is empty!`
           return channel.send(
             embed(msg, 'yellow')
               .setTitle(`Todo list is empty!`)
               .setDescription(`\`${p}todos add <todo to add>\` to add one`)
           )
         }
-        if (api) return JSON.stringify(todos)
 
         const reactions = [
           '\u0031\u20E3',
@@ -78,7 +75,7 @@ export default class Todo extends Command {
           '\u0039\u20E3',
           '🔟'
         ]
-        // Setup inital embed
+        // Setup initial embed
         const e = embed(msg, 'green', 'todo.png').setTitle('Todo List')
         todos.forEach((i, index) => e.addField(`[ ${index + 1} ]`, `${i}`, true))
         const m = (await channel.send(e)) as Message
@@ -132,7 +129,6 @@ export default class Todo extends Command {
         break
       }
       default:
-        if (api) return 'Valid options are [ add, list ]'
         return validOptions(msg, ['add', 'list'])
     }
   }

@@ -22,6 +22,7 @@
     "@ctrl/transmission": "^1.8.0",
     "@types/shelljs": "^0.8.6",
     "aria2": "^4.1.0",
+    "async-eval": "^0.1.5",
     "bluebird": "^3.7.2",
     "chalk": "^3.0.0",
     "clear": "^0.1.0",

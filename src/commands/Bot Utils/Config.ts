@@ -2,105 +2,99 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage, ServerDBConfig } from 'typings'
+import { Message } from 'discord.js'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
 import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
 /**
- * Get and set server config
+ * Command to set configs for other commands into the database
  */
 export default class Config extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'server',
-      category: 'Moderation',
-      description: 'Set/Get server config for bot',
-      usage: ['server', 'server set <key> <value'],
-      permsNeeded: ['MANAGE_GUILD']
+      aliases: ['db'],
+      args: true,
+      category: 'Bot Utils',
+      description: 'View and edit bot settings',
+      name: 'config',
+      ownerOnly: true,
+      usage: ['config get', 'config get emby', 'config set emby host https://emby.url']
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils, p } = client
-    const { warningMessage, validOptions, standardMessage, embed } = Utils
-    const { channel, guild } = msg
+    const { p } = client
+    const { warningMessage, validOptions, standardMessage, chunkArray, embed } = Utils
+    const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const db = await database.models.Servers.findOne({
-      where: { id: guild.id }
+    const db = await database.models.Configs.findOne({
+      where: { id: client.config.ownerID }
     })
-
-    const server = JSON.parse(db.get('config') as string) as ServerDBConfig
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
 
     // * ------------------ Usage Logic --------------------
 
     switch (args[0]) {
-      // Set server settings
-      case 'set': {
-        // Setting to change
-        const keyToChange = args[1] as string
-        // New value
-        const newValue = args[2] as string
+      case 'get': {
+        const key1 = args[1]
+        if (!key1) {
+          delete config.disabledCommands
+          delete config.webUI
+          delete config.routines
+          delete config.shortcuts
 
-        // If the setting exists
-        if (keyToChange in server) {
-          // Change key to new one
-          server[keyToChange] = newValue
-          // Update the database
-          await db.update({ config: JSON.stringify(server) })
-          // Notify the user
-          return standardMessage(msg, 'green', `[ ${keyToChange} ] changed to [ ${newValue} ]`)
-        } // If the setting doesn't exist
-        return warningMessage(msg, `[${keyToChange}] doesn't exist`)
-      }
-      // Get the current server settings
-      default: {
-        args.shift()
-        // Remove the server rules key to remove bloat from
-        // The info embed
-        delete server.rules
-
-        // Sort keys
-        let keys = Object.keys(server).sort()
-
-        if (args.length) {
-          // Info embed
           const e = embed(msg, 'green', 'settings.png')
-            .setTitle(`Server Config [ ${args[0]} ]`)
-            .setDescription(
-              `**[ ${p}server set <${args[0]}> <setting> <new value> ] to change\nChannel and roles are set via ID**`
-            )
+            .setTitle('Database Config')
+            .setDescription(`[ \`${p}config get <key>\` ] for more detailed info`)
 
-          // Add a new field to the embed for every key in the settings
-          const values = server[args[0]]
-          // Sort keys
-          keys = Object.keys(values).sort()
-
-          // Add a new field to the embed for every key in the settings
-          keys.forEach((i) => e.addField(`${i}`, `${server[i] ? server[i] : 'false'}`, true))
-
-          // Ship it off
+          const splitArray = chunkArray(Object.keys(config).sort(), 7)
+          splitArray.forEach((item) => {
+            let text = ''
+            item.forEach((i) => (text += `${i}\n`))
+            e.addField(`\u200b`, text, true)
+          })
           return channel.send(e)
         }
+        if (key1 in config) {
+          const keys = Object.keys(config[key1])
+          const e = embed(msg, 'green', 'settings.png')
+            .setTitle(`Database Config [ ${key1} ]`)
+            .setDescription(`[ \`${p}config set ${key1} <option> <new value>\` ] to change`)
 
-        // Info embed
-        const e = embed(msg, 'green', 'settings.png')
-          .setTitle('Server Config')
-          .setDescription(`**[ ${p}server set <settings> <new value> ] to change**`)
+          keys.forEach((i) => {
+            e.addField(`${i}`, `${config[key1][i]}`, true)
+          })
 
-        // Add a new field to the embed for every key in the settings
-        keys.forEach((i) => {
-          e.addField(`${i}`, `${server[i] ? server[i] : server[i] === false ? 'false' : 'unset'}`, true)
-        })
-
-        // Ship it off
-        return channel.send(e)
+          return channel.send(e)
+        }
+        return warningMessage(msg, `Option [ ${key1} ] doesnt exist`)
       }
+      case 'set': {
+        const keyToChange = args[1]
+        const key1 = args[2]
+        const val1 = args[3]
+        if (keyToChange in config && key1 in config[keyToChange]) {
+          config[keyToChange][key1] = val1
+          await db.update({ config: JSON.stringify(config) })
+          const m = (await standardMessage(
+            msg,
+            'green',
+            `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`
+          )) as Message
+          return m.delete(10000)
+        }
+        return warningMessage(msg, `Option [ ${key1} ] doesnt exist`)
+      }
+      default:
+        return validOptions(msg, ['get', 'set'])
     }
   }
 }

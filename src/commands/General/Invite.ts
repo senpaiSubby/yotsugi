@@ -6,7 +6,11 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to display an invite code for others to add her to their own servers
+ */
 export default class Invite extends Command {
   constructor(client: BotClient) {
     super(client, {
@@ -19,7 +23,7 @@ export default class Invite extends Command {
   public async run(client: BotClient, msg: NezukoMessage) {
     // * ------------------ Setup --------------------
 
-    const { embed } = client.Utils
+    const { embed } = Utils
     const { channel } = msg
 
     // * ------------------ Logic --------------------

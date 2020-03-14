@@ -6,16 +6,20 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to execute shell commands
+ */
 export default class Executor extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'exec',
+      args: true,
       category: 'Bot Utils',
       description: 'Run shell commands',
+      name: 'exec',
       ownerOnly: true,
-      args: true,
-      usage: ['exec <command>']
+      usage: ['exec [command]']
     })
   }
 
@@ -23,7 +27,7 @@ export default class Executor extends Command {
     // * ------------------ Setup --------------------
 
     const { channel } = msg
-    const { execAsync } = client.Utils
+    const { execAsync } = Utils
 
     // * ------------------ Usage Logic --------------------
 

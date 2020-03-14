@@ -3,33 +3,42 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import TuyAPI from 'tuyapi'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to control Tuya smart plugs and lights
+ */
 export default class Tuya extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'tuya',
-      category: 'Smart Home',
-      description: 'Tuya device control',
-      usage: [`plug <name>`],
-      webUI: true,
+      aliases: ['plug'],
       args: true,
-      ownerOnly: true
+      category: 'Smart Home',
+      description: 'Control Tuya smart plugs and devices',
+      name: 'tuya',
+      ownerOnly: true,
+      usage: [`tuya [device name]`],
+      webUI: true
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
-    const { Utils, Log } = client
+
     const { errorMessage, warningMessage, standardMessage, asyncForEach, capitalize, embed } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const { tuyaDevices } = client.db.config
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { tuyaDevices } = config
 
     // * ------------------ Logic --------------------
 
@@ -55,7 +64,6 @@ export default class Tuya extends Command {
         return deviceList
       } catch (e) {
         const text = `Failed to collect device list`
-        if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
       }
@@ -77,11 +85,9 @@ export default class Tuya extends Command {
         await device.disconnect()
 
         const status = currentStatus ? 'Off' : 'On'
-        if (api) return `[ ${name} ] turned [ ${status} ]`
         return standardMessage(msg, 'green', `:electric_plug: [ ${name} ] turned [ ${status} ]`)
       } catch (e) {
         const text = `Failed to connect to [ ${name} ]`
-        if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
       }
@@ -102,16 +108,13 @@ export default class Tuya extends Command {
 
         if (currentState === newState) {
           await device.disconnect()
-          if (api) return `[ ${name} ] is already [ ${state} ]`
           return standardMessage(msg, 'green', `:electric_plug: [ ${name} ] is already [ ${state} ]`)
         }
         await device.set({ set: !currentState })
         await device.disconnect()
-        if (api) return `[ ${name} ] turned [ ${state} ]`
         return standardMessage(msg, 'green', `:electric_plug: [ ${name} ] turned [ ${state} ]`)
       } catch (e) {
         const text = `Failed to connect to [ ${name} ]`
-        if (api) return text
         Log.error('Tuya', text, e)
         await errorMessage(msg, text)
       }
@@ -123,7 +126,6 @@ export default class Tuya extends Command {
       case 'list': {
         const deviceList = await listPlugs()
         if (deviceList) {
-          if (api) return deviceList
           const e = embed(msg, 'green', 'plug.png').setTitle(':electric_plug: Tuya Smart Plugs')
           if (typeof deviceList !== 'string') {
             deviceList.forEach((device) => e.addField(`${device.name}`, `Status: [ ${capitalize(device.status)} ]`))

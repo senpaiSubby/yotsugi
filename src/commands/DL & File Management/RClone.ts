@@ -10,34 +10,33 @@ import { NezukoMessage } from 'typings'
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
 import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
 /**
- * TODO make rclone update stats on the server stats category
- * Manage Rclone
+ * Command to view, search and get information from your rclone remotes
  */
 export default class RClone extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'rclone',
-      category: 'DL & File Management',
       aliases: ['drive'],
-      description: 'Get info on RClone remotes',
+      args: true,
+      category: 'DL & File Management',
+      description: 'Search and get info from RClone',
+      name: 'rclone',
       usage: [
         'rclone list',
-        'rclone size <remote>:/<dir>',
-        'rclone ls <remote>:/<dir>',
-        'rclone sizeof <remote1> <remote2> <remote3> <remote4>',
-        'rclone find <remote> <search terms>',
-        'rclone find <remote> <search terms> -filter <dir or file extension>'
-      ],
-      args: true
+        'rclone size [remote]:/[dir[',
+        'rclone ls [remote]:/[dir]',
+        'rclone sizeof [remote1] [remote2] [remote3] [remote4]',
+        'rclone find [remote] [search terms]',
+        'rclone find [remote] [search terms] -filter [dir or file extension]'
+      ]
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils } = client
     const { channel, guild } = msg
 
     const {
@@ -227,7 +226,7 @@ export default class RClone extends Command {
             embed(msg, 'blue', 'rclone.gif')
               .setTitle(`Rclone Search - [ ${remote} ]`)
               .addField('Results', `${splitArray[index].join('\n')}`)
-              .setDescription(`Total results [ ${sorted.length} ]\nUsing filter [ ${filter} ]`)
+              .setDescription(`Total results [ ${sorted.length} ]${filter ? `\nUsing filter [ ${filter} ]` : ''}`)
           )
         })
 

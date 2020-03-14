@@ -2,37 +2,44 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { post } from 'unirest'
 import wol from 'wol'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to change power state of linux servers
+ */
 export default class LinuxPower extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'pc',
-      category: 'Smart Home',
-      description: 'Linux system power control',
-      usage: [`system gaara off`, `pc thinkboi reboot`],
-      webUI: true,
       args: true,
-      ownerOnly: true
+      category: 'Smart Home',
+      description: 'Manage power state of linux computers',
+      name: 'pc',
+      ownerOnly: true,
+      usage: [`system gaara off`, `pc thinkboi reboot`],
+      webUI: true
     })
   }
 
   // TODO add linuxpower typings
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils, Log } = client
     const { errorMessage, validOptions, standardMessage, embed, capitalize } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const devices = client.db.config.systemPowerControl
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const devices = config.systemPowerControl
 
     // * ------------------ Logic --------------------
 
@@ -54,11 +61,9 @@ export default class LinuxPower extends Command {
 
             if (statusCode === 200) {
               const text = command === 'reboot' ? 'reboot' : 'power off'
-              if (api) return `Told [ ${capitalize(name)} ] to [ ${text} ]`
               return standardMessage(msg, 'green', `:desktop: Told [ ${capitalize(name)} ] to [ ${text}] `)
             }
           } catch (e) {
-            if (api) return `Failed to connect to ${capitalize(name)}`
             Log.error('System Power Control', `Failed to connect to [ ${capitalize(name)} ]`, e)
             await errorMessage(msg, `Failed to connect to [ ${capitalize(name)} ]`)
           }
@@ -66,7 +71,6 @@ export default class LinuxPower extends Command {
         }
         case 'on': {
           await wol.wake(mac)
-          if (api) return `Sent WOL to [ ${capitalize(name)} ]`
           return standardMessage(msg, 'green', `:desktop: Sent WOL to [ ${capitalize(name)} ]`)
         }
       }

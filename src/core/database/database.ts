@@ -11,20 +11,3 @@ export const database = new Sequelize({
   models: [`${__dirname}/models`],
   storage: join(`${__dirname}/../../config/db.sqlite`)
 })
-
-export const generalConfig = async (id: string) =>
-  database.models.Configs.findOne({
-    where: { id }
-  })
-
-export const serverConfig = async (id: string) =>
-  database.models.Servers.findOne({
-    where: { id }
-  })
-
-export const memberConfig = async (id: string) =>
-  database.models.Members.findOne({
-    where: { id }
-  })
-
-export const jellyfinUsers = async (id: string) => database.models.JellyfinUsers.findOne({ where: { id } })

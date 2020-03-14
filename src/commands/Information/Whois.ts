@@ -6,30 +6,33 @@ import { BotClient } from 'core/BotClient'
 import { NezukoMessage } from 'typings'
 import whoiser from 'whoiser'
 import { Command } from '../../core/base/Command'
+import { Utils } from '../../core/Utils'
 
 /*!
  * Coded by nwithan8 - https://github.com/nwithan8
  * TODO: Some witty tagline
  */
 
+/**
+ * Command to get whois information on a domain
+ */
 export default class Whois extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'whois',
+      args: true,
       category: 'Information',
       description: 'Get WHOIS information on a domain',
-      usage: ['whois <domain to search for>'],
-      args: true
+      name: 'whois',
+      usage: ['whois [domain]']
     })
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    const { Utils } = client
     const { errorMessage, embed } = Utils
 
     const { channel } = msg
 
-    const domain = args.join(' ')
+    const domain = args[0]
 
     try {
       const results = await whoiser(domain)

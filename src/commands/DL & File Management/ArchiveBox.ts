@@ -2,20 +2,25 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to save web pages into your archivebox server
+ */
 export default class ArchiveBox extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'archive',
-      category: 'DL & File Management',
-      description: 'Archive web pages via ArchiveBox',
-      usage: ['a <url to archive>'],
       aliases: ['a'],
       args: true,
+      category: 'DL & File Management',
+      description: 'Archive web pages via ArchiveBox',
+      name: 'archive',
+      usage: ['a <url to archive>'],
       webUI: false
     })
   }
@@ -23,17 +28,18 @@ export default class ArchiveBox extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils, db } = client
     const { standardMessage, errorMessage, execAsync, embed, missingConfig } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const { path } = db!.config!.archivebox
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { path } = config.archivebox
 
     // If archivebox path is not set
     if (!path) {
-      return missingConfig(msg, 'ArchiveBox', ['config set archivebox path <path to archivebox>'])
+      return missingConfig(msg, 'ArchiveBox', ['config set archivebox path [path to archivebox]'])
     }
 
     // * ------------------ Logic --------------------
@@ -52,7 +58,7 @@ export default class ArchiveBox extends Command {
       silent: true
     })
 
-    // If exit code isnt 0 then the archive failed
+    // If exit code isn't 0 then the archive failed
     if (code !== 0) return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)
 
     // Notify that archive is complete

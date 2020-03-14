@@ -2,27 +2,33 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get, post } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
 /*
-requires role "requesttv"
-*/
+ requires role "requesttv"
+ */
 
+/**
+ * Command to search and request series in your Ombi server
+ */
 export default class OmbiTV extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'tv',
+      args: true,
       category: 'Media',
       description: 'Search and request TV Shows via Ombi',
-      usage: [`tv <Series Name>`],
-      args: true
+      name: 'tv',
+      usage: [`tv [Series Name]`]
     })
     this.color = '#E37200'
   }
@@ -30,7 +36,7 @@ export default class OmbiTV extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p } = client
     const { errorMessage, warningMessage, standardMessage, missingConfig, embed, paginate } = Utils
     const { author, member } = msg
 
@@ -48,7 +54,9 @@ export default class OmbiTV extends Command {
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey, username } = client.db.config.ombi
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host, apiKey, username } = config.ombi
 
     // * ------------------ Config --------------------
 

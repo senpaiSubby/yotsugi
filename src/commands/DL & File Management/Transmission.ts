@@ -3,21 +3,27 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import Trans from 'transmission-promise'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to add and view Transmission downloads
+ */
 export default class Transmission extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'tor',
+      args: true,
       category: 'DL & File Management',
-      description: 'Transmission Management',
-      usage: [`tor list`, 'tor add <magnet link>'],
-      args: true
+      description: 'Control Transmission downloads',
+      name: 'tor',
+      usage: [`tor list`, 'tor add [magnet link]']
     })
     this.color = '#AE0701'
   }
@@ -25,7 +31,7 @@ export default class Transmission extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log, db } = client
+    const { p } = client
     const {
       bytesToSize,
       sortByKey,
@@ -39,8 +45,9 @@ export default class Transmission extends Command {
     } = Utils
 
     // * ------------------ Config --------------------
-
-    const { host, port, ssl, username, password } = db.config!.transmission
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host, port, ssl, username, password } = config.transmission
 
     // * ------------------ Check Config --------------------
 

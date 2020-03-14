@@ -61,7 +61,7 @@ interface GeneralDBConfig {
     password: string
   }
   lockedCommands: any[]
-  meraki: { apiKey: string | null; serielNum: string | null }
+  meraki: { apiKey: string | null; serialNum: string | null }
   ombi: { apiKey: string | null; host: string | null; username: string | null }
   pihole: { apiKey: string | null; host: string | null }
   pioneerAVR: { host: string | null }

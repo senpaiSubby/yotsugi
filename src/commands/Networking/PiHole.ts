@@ -2,40 +2,48 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to enable, disable and get information for your PiHole server
+ */
 export default class PiHole extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'pihole',
+      args: true,
       category: 'Networking',
       description: 'PiHole stats and management',
-      usage: [`pihole <enable/disable>`, `pihole stats`],
-      webUI: true,
-      args: true,
-      ownerOnly: true
+      name: 'pihole',
+      ownerOnly: true,
+      usage: [`pihole [enable/disable]`, `pihole stats`],
+      webUI: true
     })
     this.color = 'green'
   }
 
   // TODO add pihole typings
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { p, Log, Utils } = client
+    const { p } = client
     const { errorMessage, validOptions, missingConfig, embed, capitalize } = Utils
     const { channel } = msg
 
     // * ------------------ Config --------------------
 
-    const { host, apiKey } = client.db.config.pihole
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host, apiKey } = config.pihole
 
     // * ------------------ Check Config --------------------
 
@@ -54,17 +62,14 @@ export default class PiHole extends Command {
         const data = await response.body
 
         if (data.status !== 'enabled' && data.status !== 'disabled') {
-          if (api) return `API key is incorrect`
           await errorMessage(msg, `API key is incorrect`)
         }
 
         const text = newState === 'enable' ? 'enabled' : 'disabled'
         const color = newState === 'enable' ? 'green' : 'yellow'
 
-        if (api) return `PiHole [ ${text} ]`
         return channel.send(embed(msg, color).setDescription(`**PiHole [ ${text} ]**`))
       } catch (e) {
-        if (api) return `Failed to connect to PiHole`
         Log.error('PiHole', 'Failed to connect to PiHole', e)
         await errorMessage(msg, `Failed to connect to PiHole`)
       }
@@ -90,7 +95,6 @@ export default class PiHole extends Command {
           blockedPercentage: data.ads_percentage_today
         }
       } catch (e) {
-        if (api) return `Failed to connect to PiHole`
         Log.error('PiHole', 'Failed to connect to PiHole', e)
         await errorMessage(msg, `Failed to connect to PiHole`)
       }

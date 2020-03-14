@@ -3,25 +3,29 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import generator from 'generate-password'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'src/typings'
 import unirest, { get, post } from 'unirest'
 
-import { Command } from '../../core/base/Command'
-import { BotClient } from '../../core/BotClient'
-import { database } from '../../core/database/database'
+import { Command } from '../src/core/base/Command'
+import { BotClient } from '../src/core/BotClient'
+import { database } from '../src/core/database/database'
+import { Utils } from '../src/core/Utils'
 
+/**
+ * Command to manage jellyfin media server users
+ */
 export default class JFManager extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'jfm',
-      category: 'Management',
-      description: 'Manages Jellyfin Server Management server account',
-      ownerOnly: true,
       args: true,
+      category: 'Management',
+      description: 'Manage Jellyfin users',
+      name: 'jfm',
+      ownerOnly: true,
       usage: [
-        'jfm add <@user | username>',
-        'jfm remove <@user | username>',
-        'jfm reset <@user | username>',
+        'jfm add [@user | username]',
+        'jfm remove [@user | username]',
+        'jfm reset [@user | username]',
         'jfm users'
       ]
     })
@@ -30,12 +34,13 @@ export default class JFManager extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: string[]) {
     // * ------------------ Setup --------------------
 
-    const { standardMessage, embed, warningMessage, errorMessage, validOptions, missingConfig } = client.Utils
+    const { standardMessage, embed, warningMessage, errorMessage, validOptions, missingConfig } = Utils
     const { channel, p } = msg
 
     // * ------------------ Config --------------------
-
-    const { apiKey, host, userID, username, password } = client.db.config.jellyfin
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { apiKey, host, userID, username, password } = config.jellyfin
 
     // * ------------------ Check Config --------------------
 

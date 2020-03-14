@@ -7,25 +7,24 @@ import Enmap from 'enmap'
 import { join } from 'path'
 import { NezukoMessage } from 'typings'
 
+import fs from 'fs'
+import table from 'markdown-table'
 import config from '../../config/config.json'
 import { Command } from '../base/Command'
 import { BotClient } from '../BotClient'
-import { generalConfig, serverConfig } from '../database/database'
+import { database } from '../database/database'
 import { Log } from '../Logger'
 import { Utils } from '../Utils'
-
 import { ConfigManager } from './ConfigManager'
-
 export class CommandManager {
   public client: BotClient
-  // tslint:disable-next-line:variable-name
-  public Log: typeof Log
   public commands: Enmap<string | number, any>
   public aliases: Enmap<string | number, any>
   public prefix: string
   public ownerID: string
   public loadedCommands: number
   public cooldowns: any
+  public table: any[]
 
   constructor(client: BotClient) {
     this.client = client
@@ -34,14 +33,13 @@ export class CommandManager {
       throw new Error('Nezuko Client is required')
     }
 
-    this.Log = client.Log
+    this.table = [['Category', 'Command', 'Description']]
     this.commands = new Enmap()
     this.aliases = new Enmap()
     this.ownerID = client.config.ownerID
     this.loadedCommands = 0
     this.loadCommands()
 
-    // First, this must be at the top level of your code, **NOT** in any event!
     this.cooldowns = new Collection()
   }
 
@@ -50,95 +48,76 @@ export class CommandManager {
    * @param directory Directory of command files
    */
   public loadCommands(directory = join(__dirname, '..', '..', 'commands')) {
-    const cmdFiles = this.client.Utils.findNested(directory, '.js')
+    // Find all files in command directory ending in .js
+    const cmdFiles = Utils.findNested(directory, '.js')
+
+    // For each of those files send them to be loaded
     for (const file of cmdFiles) this.startModule(file)
 
-    this.Log.ok('Command Manager', `Loaded [ ${this.loadedCommands} ] commands`)
+    // Log how many commands were loaded
+    Log.ok('Command Manager', `Loaded [ ${this.loadedCommands} ] commands`)
+    fs.writeFileSync('table.md', table(this.table))
   }
 
   /**
-   * Starts module
+   * Finds all commands in target dir and attempts to load them
    * @param location Directory Command module
    */
   public startModule(location: string) {
+    // Import command class
     const cmd = require(location).default
+    // Create a new instance of command
     const instance = new cmd(this.client)
 
+    // Get comamnd name
     const commandName = instance.name.toLowerCase()
+
+    // Assign location to command instance
     instance.location = location
 
+    // If command is marked disabled dont load
     if (instance.disabled) return
+    this.table.push([instance.category, instance.name, instance.description])
 
+    // If a command with the same name attempts to be loaded error out
     if (this.commands.has(commandName)) {
-      this.Log.warn('Start Module', `"${commandName}" already exists!`)
+      Log.warn('Start Module', `"${commandName}" already exists!`)
       throw new Error('Commands cannot have the same name')
     }
 
     instance.aliases.forEach((alias: string) => {
+      // If a command shares the same aliases as another error out
       if (this.aliases.has(alias)) {
         throw new Error(`Commands cannot share aliases: ${instance.name} has ${alias}`)
       }
 
+      // Else assign alias globally
       this.aliases.set(alias, instance)
     })
 
+    // Assign command globally
     this.commands.set(commandName, instance)
+
+    // Add 1 to global command count
     this.loadedCommands++
   }
 
   /**
-   * Reloads commands
-   */
-  public reloadCommands() {
-    this.Log.warn('Reload Manager', 'Clearing Module Cache')
-    this.commands = new Enmap()
-    this.aliases = new Enmap()
-    this.Log.warn('Reload Manager', 'Reinitialising Modules')
-    this.loadCommands(`${__dirname}/../commands`)
-    this.Log.ok('Reload Manager', 'Reload Commands Success')
-    return true
-  }
-
-  /**
-   * Reloads command
-   * @param commandName Command to reload
-   */
-  public reloadCommand(commandName: string) {
-    const existingCommand = this.commands.get(commandName) || this.aliases.get(commandName)
-    if (!existingCommand) return false
-    for (const alias of existingCommand.aliases) this.aliases.delete(alias)
-    this.commands.delete(commandName)
-    delete require.cache[require.resolve(existingCommand.location)]
-    this.startModule(existingCommand.location)
-    return true
-  }
-
-  /**
-   * Runs command
+   * Runs specified command
    * @param client BotClient
    * @param command
    * @param msg
    * @param args
-   * @param [api]
    * @returns
    */
-  public async runCommand(client: BotClient, command: any, msg: NezukoMessage | null, args?: any[], api?: boolean) {
-    if (api) {
-      msg = ({
-        channel: null,
-        author: null,
-        context: this
-      } as unknown) as NezukoMessage
-      return command.run(client, msg, args, api)
-    }
-
+  public async runCommand(client: BotClient, command: any, msg: NezukoMessage | null, args?: any[]) {
     msg.channel.startTyping()
-    command.run(client, msg, args, api)
-    return setTimeout(async () => msg.channel.stopTyping(true), 1000)
+    command.run(client, msg, args)
+    return setTimeout(() => msg.channel.stopTyping(true), 1000)
   }
 
   /**
-   * Finds command
+   * Finds and return specified command
    * @param commandName Command to get
    */
   public findCommand(commandName: string) {
@@ -151,11 +130,7 @@ export class CommandManager {
    * @param client BotClient
    */
   public async handleMessage(msg: NezukoMessage, client: BotClient) {
-    const { standardMessage } = Utils
     const { content, author, channel, guild } = msg
-
-    // TODO move this a word detection method
-    if (content.startsWith('oof')) await channel.send('BIG OOF')
 
     // If message author is the bot then ignore it
     if (msg.author.bot) return
@@ -169,64 +144,59 @@ export class CommandManager {
     msg.p = this.prefix
 
     // If message doesnt start with assigned prefix
-    if (!content.startsWith(this.prefix)) {
-      if ((channel.type !== 'dm' && !content.startsWith(this.prefix)) || content.length < this.prefix.length) {
-        // If bot is mentioned then reply with prefix
-        if (content.startsWith(`<@${client.user.id}>`)) {
-          const m = (await standardMessage(
-            msg,
-            'green',
-            `Heya! My prefix is [ ${this.prefix} ] if you'd like to chat ;)`
-          )) as Message
-          return m.delete(5000)
-        }
-      }
-    }
+    if (!content.startsWith(this.prefix)) return
 
     // Anything after command becomes a list of args
     const args = content.slice(this.prefix.length).split(' ')
+
     // Get requested command name
     const requestedCommandName = args.shift()!.toLowerCase()
+
     // Find the requested command
     const command = this.findCommand(requestedCommandName) as Command
+
     // If command doesnt exist then notify user and do nothing
     if (!command) return
 
+    // If command is ran from a DM and user isn't the owner notify
+    if (msg.channel.type === 'dm' && msg.author.id !== this.ownerID) {
+      Log.info(
+        'Command Manager',
+        `User [ ${author.username} ] tried to run command [ ${requestedCommandName} ] in a DM`
+      )
+      return Utils.warningMessage(msg, 'Commands cannot be ran in DM\'s')
+    }
+
     // Check if command is on cooldown for user
     if (await this.onCooldown(msg, command)) return
+
     // Check if user is either the owner or a exempt user
     if (await this.isNotOwnerOrExempt(msg, command, requestedCommandName, args)) {
+      // If user is neither excempt or the bot owner check if the command is locked
+      if (await this.commandLocked(msg, command, requestedCommandName, args)) {
+        return
+      }
       return
     }
+
     // Check if the command is disabled
     if (await this.commandDisabled(msg, command, requestedCommandName)) return
+
     // Check if command is guild only
     if (await this.isGuildOnly(msg, command)) return
+
     // Check if user or bot is missing permissions for command actions
     if (await this.missingPerms(msg, command)) return
+
     // Check if requested command is missing arguments
     if (await this.missingArgs(msg, command, args)) return
 
-    // * -------------------- Run Command --------------------
+    // Assign command manager instance to msg.context
+    msg.context = this
+
+    // Run command
     Log.info('Command Manager', `[ ${author.tag} ] => [ ${msg.content.slice(this.prefix.length)} ]`)
 
-    // Assign general config to client for use in commands
-    const generalDB = await generalConfig(this.ownerID)
-
-    if (generalDB) {
-      client.db.config = JSON.parse(generalDB.get('config') as string)
-    }
-
-    // Assign server config to client for use in commands
-    if (guild) {
-      const serverDB = await serverConfig(guild ? guild.id : null)
-
-      if (serverDB) {
-        client.db.server = JSON.parse(serverDB.get('config') as string)
-      }
-    }
-
-    msg.context = this
     return this.runCommand(client, command, msg, args)
   }
 
@@ -264,7 +234,7 @@ export class CommandManager {
         return true
       }
     }
-    // Add user to command cooldown
+    // Add user and time to command cooldown
     timestamps.set(msg.author.id, now)
   }
 
@@ -276,8 +246,10 @@ export class CommandManager {
    * @param args
    */
   private async commandLocked(msg: Message, command: Command, requestedCommandName: string, args: string[]) {
-    const db = await generalConfig(config.ownerID)
+    // Load config database
+    const db = await database.models.Configs.findOne({ where: { id: config.ownerID } })
 
+    // Read lockedCommands from db
     const { lockedCommands } = JSON.parse(db.get('config') as string)
 
     // TODO add checks for per server locked and disabled commands
@@ -285,28 +257,38 @@ export class CommandManager {
     let locked = false
     let lockedMessage = ''
 
+    // Check each command to see if it is locked
     lockedCommands.forEach((c) => {
+      // If command is locked
       if (command.name === c.command || command.aliases.includes(requestedCommandName)) {
         lockedMessage = requestedCommandName
         locked = true
-      } else if (`${requestedCommandName} ${args.join(' ')}` === c.command) {
+      }
+      // If command usage is locked
+      else if (`${requestedCommandName} ${args.join(' ')}` === c.command) {
         lockedMessage = `${requestedCommandName} ${args.join(' ')}`
         locked = true
       }
     })
 
+    // If command or usage is locked and user isn't excempt
     if (locked && !config.exemptUsers.includes(msg.author.id)) {
+      // Notify that command is locked
       Log.info('Command Manager', `[ ${msg.author.tag} ] tried to run locked command [ ${lockedMessage} ]`)
       return Utils.warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
     }
   }
 
   private async commandDisabled(msg: Message, command: Command, requestedCommandName: string) {
-    const db = await generalConfig(config.ownerID)
+    // Load config database
+    const db = await database.models.Configs.findOne({ where: { id: config.ownerID } })
 
+    // Load disabldCommands from db
     const { disabledCommands } = JSON.parse(db.get('config') as string)
+
     // Check if command is disabled
     for (const c of disabledCommands) {
+      // If command is ldisabled then notify user
       if (command.name === c.command || c.aliases.includes(requestedCommandName)) {
         return Utils.warningMessage(msg, `Command [ ${requestedCommandName} ] is disabled`)
       }
@@ -319,13 +301,16 @@ export class CommandManager {
    * @param command
    */
   private async isGuildOnly(msg: Message, command: Command) {
-    // If guildOnly and not ran in a guild channel
+    // If command is guildOnly and not ran in a guild channel
     if (command.guildOnly && msg.channel.type !== 'text') {
+      // Notify user that command can only be ran inside of a guild
       Log.info(
         'Command Manager',
         `[ ${msg.author.tag} ] tried to run [ ${msg.content.slice(this.prefix.length)} ] in a DM`
       )
-      return Utils.standardMessage(msg, 'green', `This command cannot be slid into my DM`)
+
+      // Log command was attempted
+      return Utils.standardMessage(msg, 'yellow', `This command only works inside of guilds`)
     }
   }
 
@@ -335,45 +320,52 @@ export class CommandManager {
    * @param command
    */
   private async missingPerms(msg: Message, command: Command) {
-    // Check if user and bot has all required perms in permsNeeded
-    if (msg.channel.type !== 'dm') {
-      if (command.permsNeeded) {
-        const userMissingPerms = Utils.checkPerms(msg.member, command.permsNeeded)
-        const botMissingPerms = Utils.checkPerms(msg.guild.me, command.permsNeeded)
+    // If command requires specific permissiong
+    if (command.permsNeeded) {
+      // Check which permissions the user is missing
+      const userMissingPerms = Utils.checkPerms(msg.member, command.permsNeeded)
 
-        if (userMissingPerms.length) {
-          Log.info(
-            'Command Manager',
-            `[ ${msg.author.tag} ] tried to run [ ${msg.content.slice(
-              this.prefix.length
-            )} ] but lacks the perms [ ${userMissingPerms.join(', ')} ]`
-          )
+      // If user is missing perms
+      if (userMissingPerms.length) {
+        // Notify use of the permissions they lack
+        await msg.reply(
+          Utils.embed(msg, 'red')
+            .setTitle('You lack the perms')
+            .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
+            .setFooter('Message will self destruct in 30 seconds')
+        )
 
-          const m = (await msg.reply(
-            Utils.embed(msg, 'red')
-              .setTitle('You lack the perms')
-              .setDescription(`**- ${userMissingPerms.join('\n - ')}**`)
-              .setFooter('Message will self destruct in 30 seconds')
-          )) as Message
-          return m.delete(10000)
-        }
+        // Log that user tried to run command yet lacked the perms needed
+        Log.info(
+          'Command Manager',
+          `[ ${msg.author.tag} ] tried to run [ ${msg.content.slice(
+            this.prefix.length
+          )} ] but lacks the perms [ ${userMissingPerms.join(', ')} ]`
+        )
+        return true
+      }
 
-        if (botMissingPerms.length) {
-          Log.info(
-            'Command Manager',
-            `I lack the perms  [ ${msg.content.slice(this.prefix.length)} ] for command [ ${userMissingPerms.join(
-              ', '
-            )} ]`
-          )
+      // Check which permissions the bot is missing
+      const botMissingPerms = Utils.checkPerms(msg.guild.me, command.permsNeeded)
 
-          const m = (await msg.channel.send(
-            Utils.embed(msg, 'red')
-              .setTitle('I lack the perms needed to perform that action')
-              .setFooter('Message will self destruct in 30 seconds')
-              .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
-          )) as Message
-          return m.delete(10000)
-        }
+      // If bot is missing perms
+      if (botMissingPerms.length) {
+        // Notify the user of the perms needed for command
+        await msg.channel.send(
+          Utils.embed(msg, 'red')
+            .setTitle('I lack the perms needed to perform that action')
+            .setFooter('Message will self destruct in 30 seconds')
+            .setDescription(`**- ${botMissingPerms.join('\n - ')}**`)
+        )
+
+        // Log which perms the bot needed for command
+        Log.info(
+          'Command Manager',
+          `I lack the perms  [ ${msg.content.slice(this.prefix.length)} ] for command [ ${userMissingPerms.join(
+            ', '
+          )} ]`
+        )
+        return true
       }
     }
   }
@@ -387,8 +379,10 @@ export class CommandManager {
   private async missingArgs(msg: Message, command: Command, args: string[]) {
     // If command requires args but none specified
     if (command.args && !args.length) {
+      // Log that the user tried to run the command without arguments
       Log.info('Command Manager', `[ ${msg.author.tag} ] tried to run [ ${command.name} ] without parameters`)
 
+      // Notify the user of the arguments needed for the command
       const m = (await msg.reply(
         Utils.embed(msg, 'yellow')
           .setTitle('Command requires parameters')
@@ -418,16 +412,14 @@ export class CommandManager {
     if (msg.author.id !== config.ownerID && !config.exemptUsers.includes(msg.author.id)) {
       // If command is marked 'ownerOnly: true' then don't execute
       if (command.ownerOnly && !config.exemptUsers.includes(msg.author.id)) {
+        // Log that the user tried to run a owner only command
         Log.info(
           'Command Manager',
           `[ ${msg.author.tag} ] tried to run owner only command [ ${msg.content.slice(this.prefix.length)} ]`
         )
 
+        // Notify user that command is owner only
         return Utils.errorMessage(msg, `This command is reserved for my Senpai`)
-      }
-
-      if (await this.commandLocked(msg, command, requestedCommandName, args)) {
-        return
       }
     }
   }

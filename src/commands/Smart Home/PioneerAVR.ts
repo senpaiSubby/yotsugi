@@ -2,36 +2,42 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to control Pioneer AVR receivers
+ */
 export default class PioneerAVR extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'avr',
-      category: 'Smart Home',
-      description: 'Pioneer AVR controller',
-      usage: [`avr vol <1-100>`, `avr <off/on>`, `avr <mute>`],
-      webUI: true,
       args: true,
-      ownerOnly: true
+      category: 'Smart Home',
+      description: 'Control Pioneer AV Recievers',
+      name: 'avr',
+      ownerOnly: true,
+      usage: [`avr vol [1-100]`, `avr [off/on]`, `avr [mute]`],
+      webUI: true
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { sleep } = client.Utils
-    const { p, Utils } = client
+    const { sleep } = Utils
+    const { p } = client
     const { missingConfig, warningMessage, validOptions, standardMessage, capitalize } = Utils
 
     // * ------------------ Config --------------------
-
-    const { host } = client.db.config.pioneerAVR
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host } = config.pioneerAVR
 
     // * ------------------ Check Config --------------------
 
@@ -84,7 +90,6 @@ export default class PioneerAVR extends Command {
       await get(urljoin(host, `/EventHandler.asp?WebToHostItem=${state}`)).headers({
         accept: 'application/json'
       })
-      if (api) return `AVR turned [ ${capitalize(onoff)} ]`
       return standardMessage(msg, 'green', `:radio: AVR turned [ ${capitalize(onoff)} ]`)
     }
 
@@ -95,7 +100,6 @@ export default class PioneerAVR extends Command {
         accept: 'application/json'
       })
       const muteStatus = status.Z[0].M === 0 ? ':mute:' : ':speaker:'
-      if (api) return `AVR [ ${muteStatus} ]`
       return standardMessage(msg, 'green', `${muteStatus} AVR [ ${muteStatus} ]`)
     }
 
@@ -117,11 +121,9 @@ export default class PioneerAVR extends Command {
         // Set volume
         if (!level) {
           const currentVol = await getVolume()
-          if (api) return `Current volume is [ ${currentVol} / 100 ]`
           return standardMessage(msg, 'green', `:speaker: Current volume is [ ${currentVol} / 100 ]`)
         }
         if (isNaN(level)) {
-          if (api) return `Volume should be a number between 1-100`
           return warningMessage(msg, `Volume should be a number between 1-100`)
         }
         for (let i = 0; i < 3; i++) {
@@ -129,7 +131,6 @@ export default class PioneerAVR extends Command {
           await sleep(600)
         }
 
-        if (api) return `Volume set to ${level}`
         return standardMessage(msg, 'green', `:speaker: Volume set to [ ${level} ]`)
 
       default:

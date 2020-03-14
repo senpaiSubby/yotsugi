@@ -8,22 +8,26 @@ import { NezukoMessage } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { Utils } from '../../core/Utils'
 
 import('moment-duration-format')
 
-export default class Reload extends Command {
+/**
+ * A few methods for setting bot username, avatar, status and restarting
+ */
+export default class Bot extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'bot',
       category: 'Bot Utils',
-      description: 'Bot Commands',
+      description: 'General bot options',
+      name: 'bot',
       ownerOnly: true,
       usage: [
-        'bot reload <command>',
+        'bot reload [command]',
         'bot restart',
-        'bot avatar <new avatar url>',
-        'bot status <new status>',
-        'bot name <new name>',
+        'bot avatar [new avatar url]',
+        'bot status [new status]',
+        'bot name [new name]',
         'bot leave'
       ]
     })
@@ -32,13 +36,12 @@ export default class Reload extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
     const { user } = client
-    const { warningMessage, standardMessage, embed, execAsync, validOptions } = client.Utils
+    const { warningMessage, standardMessage, embed, execAsync, validOptions } = Utils
     const { context, channel, author, guild } = msg
     const { round } = Math
     const { memoryUsage } = process
 
-    const option = args[0]
-    args.shift()
+    const option = args.shift()
 
     // * ------------------ Logic --------------------
 
@@ -52,10 +55,10 @@ export default class Reload extends Command {
         return collector.on('collect', async (m: Message) => {
           if (m.content === 'YES') {
             await standardMessage(msg, 'green', 'Ok bye dude')
-            guild.leave()
+            await guild.leave()
             collector.stop()
           } else if (m.content === 'NO') {
-            await standardMessage(msg, 'green', "Ok I'll stay bb")
+            await standardMessage(msg, 'green', 'Ok I\'ll stay bb')
             collector.stop()
           }
         })

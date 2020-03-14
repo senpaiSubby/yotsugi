@@ -2,23 +2,29 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Log } from '../../core/Logger'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to add and view download information from sabNZBD
+ */
 export default class SabNZBD extends Command {
   public color: string
 
   constructor(client: BotClient) {
     super(client, {
-      name: 'sab',
+      args: true,
       category: 'DL & File Management',
-      description: 'sabNZBD Management',
-      usage: [`sab list`],
-      args: true
+      description: 'Control SABNZBD downloads',
+      name: 'sab',
+      usage: [`sab list`]
     })
     this.color = '#FFCA28'
   }
@@ -26,13 +32,14 @@ export default class SabNZBD extends Command {
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { p, Utils, Log } = client
+    const { p } = client
 
     const { errorMessage, warningMessage, validOptions, missingConfig, sortByKey, embed, paginate } = Utils
 
     // * ------------------ Config --------------------
-
-    const { host, apiKey } = client.db.config!.sabnzbd
+    const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
+    const { host, apiKey } = config.sabnzbd
 
     // * ------------------ Check Config --------------------
 

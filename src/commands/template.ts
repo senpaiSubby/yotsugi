@@ -10,20 +10,20 @@ import { Command } from '../core/base/Command'
 export default class Template extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'template',
-      category: '',
-      description: 'Template',
-      usage: [],
       aliases: [],
       args: true,
+      category: '',
+      description: 'Template',
       disabled: true,
-      ownerOnly: true,
       guildOnly: true,
+      name: 'template',
+      ownerOnly: true,
+      usage: [],
       webUI: false
     })
   }
 
-  public async run(client: BotClient, msg: NezukoMessage, args: any[], api: boolean) {
+  public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // Logic
   }
 }

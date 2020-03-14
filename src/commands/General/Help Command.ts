@@ -2,39 +2,42 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { Memoize } from 'typescript-memoize'
-import { NezukoMessage } from 'typings'
+import { GeneralDBConfig, NezukoMessage, ServerDBConfig } from 'typings'
 
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
+import { database } from '../../core/database/database'
+import { Utils } from '../../core/Utils'
 
+/**
+ * Command to get information on what other commands are available and how to use them
+ */
 export default class Help extends Command {
   constructor(client: BotClient) {
     super(client, {
-      name: 'help',
       category: 'General',
-      description: 'Get command help',
+      description: 'Get help on command usage',
       guildOnly: true,
-      usage: ['help', 'help <some command>']
+      name: 'help',
+      usage: ['help', 'help [some command]']
     })
   }
 
-  @Memoize()
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     // * ------------------ Setup --------------------
 
-    const { Utils, serverConfig } = client
-    const { embed, groupBy, paginate, capitalize, checkPerms, addSpace } = Utils
+    const { embed, groupBy, paginate, capitalize, checkPerms } = Utils
     const { channel, context, guild, author } = msg
 
     // * ------------------ Config --------------------
 
     // Get server config
-    const db = await serverConfig.findOne({ where: { id: guild.id } })
-    const { prefix: p } = JSON.parse(db.dataValues.config)
+    const serverDB = await database.models.Servers.findOne({ where: { id: guild.id } })
+    const { prefix: p } = JSON.parse(serverDB.get('config') as string) as ServerDBConfig
     const prefix = p || context.prefix
 
-    const { disabledCommands } = client.db.config
+    const configDB = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
+    const { disabledCommands } = JSON.parse(configDB.get('config') as string) as GeneralDBConfig
 
     // * ------------------ Logic --------------------
 
@@ -50,11 +53,9 @@ export default class Help extends Command {
       }
 
       if (i.ownerOnly) {
-        if (author.id === client.config.ownerID) return true
-        return false
+        return author.id === client.config.ownerID
       }
-      if (i.disabled) return false
-      return true
+      return !i.disabled
     }
 
     // Filter commands based on author access
@@ -74,29 +75,16 @@ export default class Help extends Command {
         const e = Utils.embed(msg, 'green')
           .setTitle(`${client.user.username} Help - [ ${key} ]`)
           .setThumbnail(client.user.avatarURL)
-        /**
-         .setDescription(
-         `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
-         )
-         */
-
-        let desc = `-\n** Help [ ${key} ]**\n\`Showing commands you have access to\`\n**\`${prefix}help [ command ]\` for command usage**\n\`\`\`css\n`
-        let longestString = 0
-
-        newSorted[key].forEach((s) => {
-          if (s.name.length > longestString) longestString = s.name.length
-        })
+          .setDescription(
+            `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
+          )
 
         newSorted[key].forEach((i: Command) => {
-          if (i.name.length === longestString) {
-            desc += `${i.name} - ${i.description}\n`
-          } else {
-            desc += `${i.name}${addSpace(longestString - i.name.length)} - ${i.description}\n`
-          }
+          e.addField(i.name, i.description)
         })
 
-        desc = `${desc}\n\`\`\``
-        embedList.push(desc)
+        embedList.push(e)
+
       })
 
       return paginate(msg, embedList)
