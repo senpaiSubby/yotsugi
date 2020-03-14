@@ -72,53 +72,27 @@ Nezuko was created to simplify the management of my servers. I wanted a easy way
 | Utils                | si        | Live system stats                          |
 | Utils                | speedtest | Runs a network speedtest                   |
 
-
-
 <!------------------------- GETTING STARTED ------------------------->
-
-<h2 align="center"><b>Prerequisites</b></h2>
-
-To get a local copy up and running follow these simple steps.
-
-1. Clone Nezuko
-
-```sh
-git clone https://github.com/callmekory/nezuko.git
-```
-
-2. Install Yarn
-
-Ubuntu / Debain
-
-```sh
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-
-echo deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-sudo apt install yarn
-```
-
-Arch Linux
-
-```sh
-sudo pacman -S yarn
-```
-
-3. Install needed libraries
-
-```sh
-> yarn install
-```
 
 <h2 align="center"><b>Setup</b></h2>
 
+To get a local copy up and running follow these simple steps.
 
+1. Download latest release
 
+```sh
+https://github.com/callmekory/nezuko/releases
+```
 
-<h2 align="center"><b>Roadmap</b></h2>
+2. Unzip nezuko.zip
 
-See the [open issues](https://github.com/callmekory/nezuko/issues) for a
-list of proposed features (and known issues).
+3. Navigate into nezuko folder
+
+4. Run `npm install` to install project dependencies
+
+5. Edit `config/config.json` with you bot token and user ID
+
+6. Run the bot with `npm start`
 
 <!------------------------- CONTRIBUTING ------------------------->
 
@@ -133,6 +107,11 @@ appreciated**.
 3. Edit config in /src/config/config.json with your bot token and user ID
 4. Run `tsc -w` to watch and build the project as you edit source
 5. Run the bot with `nodemon build/index.js` make sure you have `nodemon` install globally with NPM
+
+<h2 align="center"><b>Roadmap</b></h2>
+
+See the [open issues](https://github.com/callmekory/nezuko/issues) for a
+list of proposed features (and known issues).
 
 <!------------------------- LICENSE ------------------------->
 

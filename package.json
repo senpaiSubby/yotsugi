@@ -8,14 +8,9 @@
   },
   "license": "GNU GPLv3",
   "author": "callmekory",
-  "main": "build/nezuko.js",
+  "main": "index.js",
   "scripts": {
-    "build": "gulp",
-    "dev": "nodemon build/index.js",
-    "lint": "tslint -p tsconfig.json \"src/**/*.ts\"",
-    "start": "pm2 start",
-    "stop": "pm2 stop nezuko",
-    "watch": "tsc -w"
+    "start": "node index.js"
   },
   "dependencies": {
     "@ctrl/deluge": "^2.2.0",
