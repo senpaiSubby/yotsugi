@@ -21,6 +21,7 @@
 | General              | invite    | Invite Nezuko to your own server           |
 | General              | remindme  | Set yourself some reminders                |
 | General              | todo      | Your personal todo list                    |
+| Information          | corona    | Get info on the Corona Virus               |
 | Information          | npm       | Search the NPM package repos               |
 | Information          | whois     | Get WHOIS information on a domain          |
 | Management           | docker    | Manage Docker containers                   |

@@ -18,8 +18,7 @@ export default class Template extends Command {
       guildOnly: true,
       name: 'template',
       ownerOnly: true,
-      usage: [],
-      webUI: false
+      usage: []
     })
   }
 
