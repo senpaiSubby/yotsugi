@@ -29,14 +29,18 @@ export default class Whois extends Command {
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
     const { errorMessage, embed } = Utils
-
     const { channel } = msg
 
+    // Domain to search for
     const domain = args[0]
 
     try {
+      // Fetch domain results
       const results = await whoiser(domain)
+
+      // Key since results are a collection
       const key = Object.keys(results)[0]
+
       const registrarServer = results[key]['Registrar WHOIS Server']
       const registrarName = results[key].Registrar
       const updatedTime = new Date(results[key]['Updated Date']).toString()

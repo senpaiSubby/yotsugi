@@ -29,38 +29,36 @@ export default class Docker extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[], api) {
-    // * ------------------ Setup --------------------
-
     const { p } = client
-
     const { errorMessage, warningMessage, validOptions, standardMessage, missingConfig, embed } = Utils
-
     const { channel } = msg
 
-    // * ------------------ Config --------------------
+    // Fetch config from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { host } = config.docker
 
-    // * ------------------ Check Config --------------------
-
+    // If host isnt set
     if (!host) {
       const settings = [`${p}config set docker host <http://ip:port>`]
       return missingConfig(msg, 'docker', settings)
     }
 
-    // * ------------------ Logic --------------------
-
+    /**
+     * return all containers in specified state
+     * @param state state of containers you want
+     */
     const getContainers = async (state = 'running') => {
       const params = `filters={%22status%22:[%22${state}%22]}`
+
       try {
         const response = await get(urljoin(host, `/containers/json?${params}`)).headers({
           accept: 'application/json'
         })
-        const containers = response.body as DockerContainer[]
-        const containerList: ContainerList[] = []
 
-        containers.forEach((container) => {
+        const containers = response.body as DockerContainer[]
+
+        return containers.forEach((container) => {
           const { Id, Names, Ports, State, Status, Image } = container
           const exposedports: number[] = []
 
@@ -68,28 +66,33 @@ export default class Docker extends Command {
             // Filter out only exposed host ports
             if ('PublicPort' in port) exposedports.push(port.PublicPort)
           })
-          containerList.push({
+
+          return {
             name: Names[0].replace('/', ''),
             image: Image,
             id: Id,
             state: State,
             status: Status,
             ports: exposedports
-          })
+          }
         })
-        return containerList
       } catch (e) {
-        Log.error('Docker', 'Failed to connect to Docker', e)
         await errorMessage(msg, `Failed to connect to Docker daemon`)
       }
+
+      return [] as ContainerList[]
     }
 
+    /**
+     * Sets the new state of a container
+     */
     const setContainerState = async (containers: ContainerList[], newState: string, containerName: string) => {
       const options = ['start', 'restart', 'stop']
       if (!options.includes(newState)) return validOptions(msg, options)
 
       // Find index based off of key name
       const index = containers.findIndex((c) => c.name === containerName, newState)
+
       // If container name doesnt match
       if (!containers[index].id) {
         return warningMessage(msg, `No container named: [ ${containerName} ] found`)
@@ -102,6 +105,7 @@ export default class Docker extends Command {
         if (status >= 200 && status < 300) {
           return standardMessage(msg, 'green', `Container [ ${containerName} ] has been [ ${newState}ed ] successfully`)
         }
+
         if (newState !== 'restart' && status >= 300 && status < 400) {
           return warningMessage(
             msg,
@@ -114,9 +118,8 @@ export default class Docker extends Command {
       }
     }
 
-    // * ------------------ Usage Logic --------------------
-
     switch (args[0]) {
+      // TODO cleanup changing state of containers
       case 'list': {
         const filterState = args[1] || 'running'
 
@@ -126,6 +129,7 @@ export default class Docker extends Command {
         }
 
         const containers = await getContainers(filterState)
+
         if (containers) {
           if (containers.length) {
             const e = embed(msg, 'green', 'docker.png').setDescription('Docker Containers')

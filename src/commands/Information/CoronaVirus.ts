@@ -51,6 +51,9 @@ export default class CoronaVirus extends Command {
     const { sortByKey, validOptions, embed, errorMessage, warningMessage } = Utils
     const { channel } = msg
 
+    /**
+     * Fetches statistics from arcgis.com
+     */
     const fetchData = async () => {
       try {
         const reponse = await fetch(
@@ -64,9 +67,14 @@ export default class CoronaVirus extends Command {
       }
     }
 
+    /**
+     * parses the results into a readable format
+     * @param coronaInfo data from fetchData method
+     */
     const parseResults = async (coronaInfo: CoronaInfo[]) =>
       coronaInfo.map((i) => {
         const { Country_Region, Last_Update, Confirmed, Deaths, Recovered, Active } = i
+
         return {
           country: Country_Region,
           lastUpdate: new Date(Last_Update).toDateString(),
@@ -77,12 +85,17 @@ export default class CoronaVirus extends Command {
         } as ParsedCoronaInfo
       })
 
+    // Fetch statistics
     const data = await fetchData()
 
+    // If statistics
     if (data) {
+      // Parse results
       const results = await parseResults(data)
 
+      // Get command from user args
       const command = args.shift()
+
       switch (command) {
         case 'country': {
           const countryWanted = args.shift().toLowerCase()
