@@ -31,31 +31,19 @@ Nezuko was created to simplify the management of my servers. I wanted a easy way
 
 | Category             | Command   | Description                                |
 | -------------------- | --------- | ------------------------------------------ |
-| Bot Utils            | autorun   | Autorun commands at specified times        |
-| Bot Utils            | bot       | General bot options                        |
-| Bot Utils            | clear     | Remove messages from channels              |
-| Bot Utils            | command   | Lock, unlock, disable, enable commands     |
-| Bot Utils            | config    | View and edit bot settings                 |
-| Bot Utils            | eval      | Eval Javascript code                       |
-| Bot Utils            | exec      | Run shell commands                         |
-| Bot Utils            | ping      | Check discord latency                      |
-| Bot Utils            | routine   | Run multiple commands as routines          |
-| Bot Utils            | server    | View and edit server settings              |
-| Bot Utils            | shortcut  | Make and run shortcuts to other commands   |
 | DL & File Management | archive   | Archive web pages via ArchiveBox           |
 | DL & File Management | aria      | Aria2 download management                  |
 | DL & File Management | rclone    | Search and get info from RClone            |
 | DL & File Management | sab       | Control SABNZBD downloads                  |
 | DL & File Management | tor       | Control Transmission downloads             |
 | DL & File Management | torrent   | Search and find torrents                   |
-| General              | help      | Get help on command usage                  |
-| General              | invite    | Invite Nezuko to your own server           |
-| General              | remindme  | Set yourself some reminders                |
-| General              | todo      | Your personal todo list                    |
+| Information          | corona    | Get info on the Corona Virus               |
+| Information          | help      | Get help on command usage                  |
 | Information          | npm       | Search the NPM package repos               |
 | Information          | whois     | Get WHOIS information on a domain          |
 | Management           | docker    | Manage Docker containers                   |
 | Media                | anime     | Search Kitsu.io for anime                  |
+| Media                | emby      | Emby media server info and stats           |
 | Media                | jf        | Jellyfin media server info and stats       |
 | Media                | manga     | Search Kitsu.io for manga                  |
 | Media                | movie     | Search and request movies via Ombi         |
@@ -63,14 +51,28 @@ Nezuko was created to simplify the management of my servers. I wanted a easy way
 | Media                | yt        | Search Youtube videos                      |
 | Networking           | meraki    | Get network information for Meraki Devices |
 | Networking           | pihole    | PiHole stats and management                |
+| Settings             | bot       | General bot options                        |
+| Settings             | clear     | Remove messages from channels              |
+| Settings             | command   | Lock, unlock, disable, enable commands     |
+| Settings             | config    | View and edit bot settings                 |
+| Settings             | ping      | Check discord latency                      |
+| Settings             | server    | View and edit server settings              |
 | Smart Home           | avr       | Control Pioneer AV Recievers               |
 | Smart Home           | pc        | Manage power state of linux computers      |
 | Smart Home           | say       | Speak through Google Home devices          |
 | Smart Home           | sengled   | Control Sengled smart lights               |
 | Smart Home           | tuya      | Control Tuya smart plugs and devices       |
+| Utils                | autorun   | Autorun commands at specified times        |
+| Utils                | eval      | Eval Javascript code                       |
+| Utils                | exec      | Run shell commands                         |
 | Utils                | ip        | Get the server IP                          |
+| Utils                | remindme  | Set yourself some reminders                |
+| Utils                | routine   | Run multiple commands as routines          |
+| Utils                | shortcut  | Make and run shortcuts to other commands   |
 | Utils                | si        | Live system stats                          |
 | Utils                | speedtest | Runs a network speedtest                   |
+| Utils                | todo      | Your personal todo list                    |
+| Utils                | video     | Live system stats                          |
 
 <!------------------------- GETTING STARTED ------------------------->
 
