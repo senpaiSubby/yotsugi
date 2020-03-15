@@ -8,17 +8,15 @@ import { Subprocess } from '../../core/base/Subprocess'
 import { BotClient } from '../../core/BotClient'
 
 export default class Template extends Subprocess {
-  constructor(client: BotClient) {
-    super(client, {
+  constructor() {
+    super({
       name: 'HorribleSubsNotify',
       description: 'Will DM your user when your selected anime are released on HorribleSubs.info',
       disabled: false
     })
-
-    this.client = client
   }
 
-  public async run() {
+  public async run(client: BotClient) {
     const webhook = new WebhookClient(
       '687579405291356196',
       'otXxnHQSz9Fbw0eiU7XwedvCuYBHvJ44NIhUEe7XoHtcQL8ASqS9vB2jbzAtlv0l1EyF'

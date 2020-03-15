@@ -13,17 +13,15 @@ import { Log } from '../../core/Logger'
 import { Utils } from '../../core/Utils'
 
 export default class RcloneCache extends Subprocess {
-  constructor(client: BotClient) {
-    super(client, {
+  constructor() {
+    super({
       name: 'Rclone Cache',
       description: 'Caches rclone ls results for the "rclone find command"',
       disabled: false
     })
-
-    this.client = client
   }
 
-  public async run() {
+  public async run(client: BotClient) {
     const { execAsync } = Utils
     const configPath = join(`${__dirname}/../../config/rclone.conf`)
 

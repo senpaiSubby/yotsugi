@@ -6,15 +6,13 @@ import { Subprocess } from '../../core/base/Subprocess'
 import { BotClient } from '../../core/BotClient'
 
 export default class Template extends Subprocess {
-  constructor(client: BotClient) {
-    super(client, {
+  constructor() {
+    super({
       name: 'Template',
       description: 'Template',
       disabled: true
     })
-
-    this.client = client
   }
 
-  public async run() {}
+  public async run(client: BotClient) {}
 }

@@ -9,17 +9,15 @@ import { Subprocess } from '../../core/base/Subprocess'
 import { BotClient } from '../../core/BotClient'
 
 export default class Template extends Subprocess {
-  constructor(client: BotClient) {
-    super(client, {
+  constructor() {
+    super({
       name: 'SpeedTest Logger',
       description: 'Notifies via discord webhook your internet speed every hour',
       disabled: false
     })
-
-    this.client = client
   }
 
-  public async run() {
+  public async run(client: BotClient) {
     const webhook = new WebhookClient(
       '687581246196678676',
       'ilN2cqIni8CmCbs_mUUjPu__lsBUwKkSYWlj0Vl_eKWYf-3mkGRc6F9wq1WnofwltSpQ'
