@@ -330,7 +330,7 @@ export class Utils {
   public static embed(msg: NezukoMessage | Message | boolean = false, color = 'green', image?: string) {
     const colors = {
       red: '#fb4934',
-      green: '#7C835B',
+      green: '#9EBB19',
       blue: '#83a598',
       yellow: '#fabd2f',
       orange: '#d79921',

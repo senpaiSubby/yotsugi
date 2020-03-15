@@ -21,6 +21,8 @@
     "discord.js": "^11.5.1",
     "enmap": "^5.2.4",
     "generate-password": "^1.4.2",
+    "gif-creation-service": "^0.0.2",
+    "gifshot": "^0.4.5",
     "google-home-notify-client": "^0.3.1",
     "gulp": "^4.0.2",
     "gulp-typescript": "^6.0.0-alpha.1",

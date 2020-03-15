@@ -46,11 +46,12 @@ export default class Whois extends Command {
       return channel.send(
         embed(msg, 'blue')
           .setTitle(`Whois [ ${domain} ]`)
+          .setThumbnail('https://pbs.twimg.com/profile_images/3493029206/8c2a2a47618aad68f1070cd73e5ecff8.png')
           .addField('Registrar Server', registrarServer, true)
           .addField('Registrar Name', registrarName, true)
-          .addField('Created', createdTime)
-          .addField('Updated Time', updatedTime)
-          .addField('Expiry Time', expiryTime)
+          .addField('Created', new Date(createdTime).toDateString(), true)
+          .addField('Updated Time', new Date(updatedTime).toDateString(), true)
+          .addField('Expiry Time', new Date(expiryTime).toDateString(), true)
       )
     } catch {
       // Tld not found

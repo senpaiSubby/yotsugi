@@ -3,7 +3,6 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { GeneralDBConfig, NezukoMessage } from 'typings'
-
 import { Command } from '../../core/base/Command'
 import { BotClient } from '../../core/BotClient'
 import { database } from '../../core/database/database'
@@ -26,29 +25,24 @@ export default class ArchiveBox extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
-
     const { standardMessage, errorMessage, execAsync, embed, missingConfig } = Utils
     const { channel } = msg
 
-    // * ------------------ Config --------------------
-
+    // Load configuration from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { path } = config.archivebox
 
-    // If archivebox path is not set
+    // If archivebox path ins't set then inform user
     if (!path) {
       return missingConfig(msg, 'ArchiveBox', ['config set archivebox path [path to archivebox]'])
     }
-
-    // * ------------------ Logic --------------------
 
     // Let the user know the archiving is beginning
     await channel.send(
       embed(msg, 'green', 'archivebox.png').setDescription(`**:printer: Archiving the url
 
-    - ${args[0]}
+    - ${args[0]}s
 
     :hourglass: This may take some time...**`)
     )

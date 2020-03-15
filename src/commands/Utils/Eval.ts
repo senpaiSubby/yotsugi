@@ -14,7 +14,7 @@ export default class Evaluator extends Command {
   constructor(client: BotClient) {
     super(client, {
       args: true,
-      category: 'Bot Utils',
+      category: 'Utils',
       description: 'Eval Javascript code',
       name: 'eval',
       ownerOnly: true,

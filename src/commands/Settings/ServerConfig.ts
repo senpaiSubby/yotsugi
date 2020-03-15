@@ -15,7 +15,7 @@ import { Utils } from '../../core/Utils'
 export default class ServerConfig extends Command {
   constructor(client: BotClient) {
     super(client, {
-      category: 'Bot Utils',
+      category: 'Settings',
       description: 'View and edit server settings',
       name: 'server',
       permsNeeded: ['MANAGE_GUILD'],

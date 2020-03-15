@@ -30,83 +30,88 @@ export default class SabNZBD extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
-
     const { p } = client
 
     const { errorMessage, warningMessage, validOptions, missingConfig, sortByKey, embed, paginate } = Utils
 
-    // * ------------------ Config --------------------
+    // Load config from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { host, apiKey } = config.sabnzbd
 
-    // * ------------------ Check Config --------------------
-
+    // Check if host and apiKey are set, if not inform user
     if (!host || !apiKey) {
       const settings = [`${p}config set sabnzbd host <http://ip>`, `${p}config set sabnzbd apiKey <APIKEY>`]
       return missingConfig(msg, 'sabnzbd', settings)
     }
 
-    // * ------------------ Logic --------------------
-
+    /**
+     * Fetchs the download queue
+     */
     const getQueue = async () => {
       try {
+        // Endpoint for download queue
         const endpoint = '/api?output=json&mode=queue'
-        const response = await get(urljoin(host, endpoint, `&apikey=${apiKey}`))
-        const data = response.body as SABNZBD
-        const downloadQueue: SabQue[] = []
 
+        // Fetch reponse
+        const response = await get(urljoin(host, endpoint, `&apikey=${apiKey}`))
+
+        // Parse results in JSON
+        const data = response.body as SABNZBD
+
+        // If results
         if (data) {
-          data.queue.slots.forEach((key) => {
-            downloadQueue.push({
-              filename: key.filename,
-              index: key.index,
-              status: key.status,
-              percentage: key.percentage,
-              time: { left: key.timeleft, eta: key.eta },
-              size: { total: key.size, left: key.sizeleft }
-            })
-          })
+          // Remap queue into a parsable format
+          const downloadQueue = data.queue.slots.map((key) => ({
+            filename: key.filename,
+            index: key.index,
+            status: key.status,
+            percentage: key.percentage,
+            time: { left: key.timeleft, eta: key.eta },
+            size: { total: key.size, left: key.sizeleft }
+          }))
+
+          // Return the array sorted by index
           return sortByKey(downloadQueue, '-index') as SabQue[]
         }
       } catch (e) {
-        const text = 'Could not connect to sabNZBD'
-        Log.error('sabNZBD', text, e)
-        await errorMessage(msg, text)
+        // If error fetching queue
+        await errorMessage(msg, 'Could not connect to sabNZBD')
       }
     }
 
-    // * ------------------ Usage Logic --------------------
+    const option = args.shift()
 
-    switch (args[0]) {
+    switch (option) {
       case 'list': {
+        // Fetch download queue
         const data = await getQueue()
-        if (data) {
-          if (!data.length) {
-            return warningMessage(msg, `Nothing in download Queue`)
-          }
 
-          const embedList: any[] = []
-          data.forEach((item) => {
+        // If download results
+        if (data && data.length) {
+          // Generate embed list
+          const embedList = data.map((item) => {
             const { filename, status, percentage, time, size } = item
-            embedList.push(
-              embed(msg, this.color, 'sabnzbd.png')
-                .setTitle('SabNZBD Queue')
-                .addField('Filename', `${filename}`, false)
-                .addField('Status', `${status}`, true)
-                .addField('Percentage', `${percentage}`, true)
-                .addField('Size Total', `${size.total}`, true)
-                .addField('Size Left', `${size.left}`, true)
-                .addField('Time Left', `${time.left}`, true)
-                .addField('ETA', `${time.eta}`, true)
-            )
+
+            return embed(msg, this.color, 'sabnzbd.png')
+              .setTitle('SabNZBD Queue')
+              .addField('Filename', `${filename}`, false)
+              .addField('Status', `${status}`, true)
+              .addField('Percentage', `${percentage}`, true)
+              .addField('Size Total', `${size.total}`, true)
+              .addField('Size Left', `${size.left}`, true)
+              .addField('Time Left', `${time.left}`, true)
+              .addField('ETA', `${time.eta}`, true)
           })
+
+          // Send results
           return paginate(msg, embedList)
         }
-        return
+        // Else nothing is in download queue
+        return warningMessage(msg, `Nothing in download Queue`)
       }
 
+      // If none of the above options are specified
       default:
         return validOptions(msg, ['list'])
     }

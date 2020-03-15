@@ -17,7 +17,7 @@ export default class Clear extends Command {
     super(client, {
       aliases: ['rm'],
       args: true,
-      category: 'Bot Utils',
+      category: 'Settings',
       description: 'Remove messages from channels',
       guildOnly: true,
       name: 'clear',

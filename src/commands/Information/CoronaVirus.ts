@@ -41,7 +41,7 @@ export default class CoronaVirus extends Command {
         'corona top confirmed',
         'corona top deaths',
         'corona top recovered',
-        'corona top active]',
+        'corona top active',
         'corona top [country]'
       ]
     })

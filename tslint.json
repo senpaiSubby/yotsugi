@@ -32,7 +32,6 @@
     "no-unnecessary-initializer": true,
     "no-angle-bracket-type-assertion": true,
     "object-shorthand-properties-first": true,
-    "no-boolean-literal-compare": true,
     "object-literal-key-quotes": [true, "as-needed"],
     "prefer-switch": true,
     "prefer-template": true,

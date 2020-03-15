@@ -32,7 +32,6 @@ export default class Jackett extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
     const { p } = client
     const {
       bytesToSize,
@@ -45,75 +44,84 @@ export default class Jackett extends Command {
       standardMessage
     } = Utils
 
-    // * ------------------ Config --------------------
+    // Fetch config from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { host, apiKey } = config.jackett
 
-    // * ------------------ Check Config --------------------
-
+    // If host and apikey arent set notify user to set them
     if (!host || !apiKey) {
       const settings = [`${p}config set jackett host <http://ip>`, `${p}config set jackett apiKey <APIKEY>`]
       return missingConfig(msg, 'jackett', settings)
     }
 
-    // * ------------------ Logic --------------------
-
+    // Wait message while we are searching for torrents
     const waitMessage = (await standardMessage(msg, this.color, 'Searching..')) as Message
 
+    /**
+     * Fetches results for the provided term
+     * @param term torrent to search for
+     */
     const fetchResults = async (term: string) => {
       try {
+        // Fetch results
         const response = await get(
           urljoin(host, `/api/v2.0/indexers/all/results?apikey=${apiKey}&Query=${term}`)
         ).headers({ accept: 'application/json' })
 
+        // Destructure Results from reponse body
         const { Results } = response.body as JackettAPISearch
 
+        // If there are results
         if (Results.length) {
-          const filteredResults: any[] = []
-          Results.forEach((i) => {
+          // Reformat results to be more parsable
+          const filteredResults = Results.map((i) => {
             const { Tracker, Title, Guid, Size, Seeders, Peers } = i
 
-            filteredResults.push({
+            return {
               name: Title,
               tracker: Tracker,
               link: Guid,
               size: bytesToSize(Size),
               seeders: Seeders,
               peers: Peers
-            })
+            }
           })
+
+          // Return results sorted by amount of seeder
           return sortByKey(filteredResults, 'seeders')
         }
+        // If no results
         await warningMessage(msg, `No results for [ ${term} ]`)
       } catch (e) {
-        const text = 'Could not connect to Jackett'
-        Log.error('Jackett', text, e)
-        await errorMessage(msg, text)
+        // If unable to connect to jackett
+        await errorMessage(msg, 'Could not connect to Jackett')
       }
     }
 
-    // * ------------------ Usage Logic --------------------
+    // Fetch results from user search terms
     const results = await fetchResults(args.join(' '))
+
+    // Remove wait message
     await waitMessage.delete()
 
+    // If results for search term
     if (results) {
-      const embedList: any[] = []
-
-      results.forEach((i) => {
+      // Generate embed list
+      const embedList = results.map((i) => {
         const { name, tracker, size, seeders, peers } = i
-        embedList.push(
-          embed(msg, this.color, 'torrent.png')
-            .setTitle(`Torrent Results [ ${args.join(' ')} ]`)
-            .addField('Name', `${name}`, false)
-            .addField('Tracker', tracker, true)
-            .addField('Size', size, true)
-            .addField('Seeder | Peers', `${seeders} | ${peers}`, true)
-        )
+        return embed(msg, this.color, 'torrent.png')
+          .setTitle(`Torrent Results [ ${args.join(' ')} ]`)
+          .addField('Name', `${name}`, false)
+          .addField('Tracker', tracker, true)
+          .addField('Size', size, true)
+          .addField('Seeder | Peers', `${seeders} | ${peers}`, true)
       })
 
+      // Paginate results and wait for checkmark reaction for slection
       const choice = await paginate(msg, embedList, true)
 
+      // If user picks a result post the magnet link
       if (choice || choice === 0) return msg.reply(results[0].link)
     }
   }

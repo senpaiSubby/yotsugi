@@ -16,7 +16,7 @@ export default class CMD extends Command {
   constructor(client: BotClient) {
     super(client, {
       args: true,
-      category: 'Bot Utils',
+      category: 'Settings',
       description: 'Lock, unlock, disable, enable commands',
       name: 'command',
       ownerOnly: true,

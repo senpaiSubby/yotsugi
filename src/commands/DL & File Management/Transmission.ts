@@ -29,8 +29,6 @@ export default class Transmission extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
-
     const { p } = client
     const {
       bytesToSize,
@@ -44,13 +42,12 @@ export default class Transmission extends Command {
       embed
     } = Utils
 
-    // * ------------------ Config --------------------
+    // Fetch config from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { host, port, ssl, username, password } = config.transmission
 
-    // * ------------------ Check Config --------------------
-
+    // If host and port arent set
     if (!host || !port) {
       const settings = [
         `${p}config set transmission host <http://ip>`,
@@ -60,6 +57,7 @@ export default class Transmission extends Command {
       return missingConfig(msg, 'transmission', settings)
     }
 
+    // Connect to transmission client
     const trans = new Trans({
       host, // Default 'localhost'
       port, // Default 9091
@@ -69,8 +67,10 @@ export default class Transmission extends Command {
       password: password || ''
     })
 
-    // * ------------------ Logic --------------------
-
+    /**
+     * Translates Transmissions status code to human format
+     * @param code transmission status code
+     */
     const getStatus = (code: number) => {
       switch (code) {
         case 0:
@@ -92,16 +92,20 @@ export default class Transmission extends Command {
       }
     }
 
-    // TODO add typing for Transmission wue
+    /**
+     * Fetches download queue
+     */
     const getQueue = async () => {
       try {
+        // Fetch response
         const response = await trans.get()
         const { torrents } = response
-        const downloadQueue: any[] = []
 
-        torrents.forEach((item: any) => {
+        // Parse download queue
+        const downloadQueue = torrents.map((item: any) => {
           const { name, id, rateUpload, rateDownload, downloadedEver, status, sizeWhenDone } = item
-          downloadQueue.push({
+
+          return {
             name,
             id,
             status: getStatus(status),
@@ -114,61 +118,71 @@ export default class Transmission extends Command {
               current: downloadedEver ? bytesToSize(downloadedEver) : 0,
               complete: sizeWhenDone ? bytesToSize(sizeWhenDone) : 0
             }
-          })
+          }
         })
+
+        // Return queue sorted by completed percentage
         return sortByKey(downloadQueue, 'percentage')
       } catch (e) {
-        const text = 'Failed to connect to Transmission'
-        Log.error('Transmission', text, e)
-        await errorMessage(msg, text)
+        // If failed to fetch results
+        const text = await errorMessage(msg, 'Failed to connect to Transmission')
       }
     }
 
+    /**
+     * Adds a torrent via magnet link to Transmission
+     * @param magnet marget link to add
+     */
     const addTorrent = async (magnet: string) => {
       try {
+        // Add magnet to dl queue
         const response = await trans.addUrl(magnet)
+
+        // Return success status
         return standardMessage(msg, 'green', `[ ${response.name} ] Added to Transmission`)
       } catch (e) {
-        const text = 'Failed to connect to Transmission'
-        Log.error('Transmission', text, e)
-        await errorMessage(msg, text)
+        // If torrent failed to add
+        await errorMessage(msg, 'Failed to connect to Transmission')
       }
     }
 
-    // * ------------------ Usage Logic --------------------
+    // User selected option
+    const option = args.shift()
 
-    switch (args[0]) {
+    switch (option) {
+      // Lists all downloads
       case 'list': {
         const data = await getQueue()
 
-        if (data) {
-          if (!data.length) {
-            return warningMessage(msg, `Nothing in download Queue`)
-          }
-
-          const embedList: any[] = []
-          data.forEach((item) => {
+        // If downloads in queue
+        if (data && data.length) {
+          // Generate embed list
+          const embedList = data.map((item) => {
             const { name, id, status, percentage, rate, size } = item
-            embedList.push(
-              embed(msg, this.color, 'transmission.png')
-                .setTitle('Transmission Queue')
-                .addField('Filename', `[ ${id} ] ${name}`, false)
-                .addField('Status', `${status}`, true)
-                .addField('Percentage', `${percentage}`, true)
-                .addField('Size Total', `${size.complete}`, true)
-                .addField('Size Current', `${size.current}`, true)
-                .addField('Rate Down', `${rate.down}`, true)
-                .addField('Rate Upload', `${rate.up}`, true)
-            )
+
+            return embed(msg, this.color, 'transmission.png')
+              .setTitle('Transmission Queue')
+              .addField('Filename', `[ ${id} ] ${name}`, false)
+              .addField('Status', `${status}`, true)
+              .addField('Percentage', `${percentage}`, true)
+              .addField('Size Total', `${size.complete}`, true)
+              .addField('Size Current', `${size.current}`, true)
+              .addField('Rate Down', `${rate.down}`, true)
+              .addField('Rate Upload', `${rate.up}`, true)
           })
+
+          // Return results
           return paginate(msg, embedList)
         }
-        return
+        // Else nothing in download wueue
+        return warningMessage(msg, `Nothing in download Queue`)
       }
 
+      // Adds a torrent via magnet link
       case 'add':
         return addTorrent(args[1])
 
+      // If user chooses neither of the above options
       default:
         return validOptions(msg, ['list', 'add'])
     }

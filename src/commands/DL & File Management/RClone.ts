@@ -25,7 +25,7 @@ export default class RClone extends Command {
       name: 'rclone',
       usage: [
         'rclone list',
-        'rclone size [remote]:/[dir[',
+        'rclone size [remote]:/[dir]',
         'rclone ls [remote]:/[dir]',
         'rclone sizeof [remote1] [remote2] [remote3] [remote4]',
         'rclone find [remote] [search terms]',
@@ -35,8 +35,6 @@ export default class RClone extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
-
     const { channel, guild } = msg
 
     const {
@@ -52,12 +50,10 @@ export default class RClone extends Command {
       standardMessage
     } = Utils
 
-    // * ------------------ Config --------------------
-
+    // Load rclone config
     const configPath = `${__dirname}/../../config/rclone.conf`
 
-    // * ------------------ Check Config --------------------
-
+    // Check if rclone config exists
     if (!existsSync(configPath)) {
       return warningMessage(
         msg,
@@ -66,19 +62,27 @@ export default class RClone extends Command {
       )
     }
 
-    // * get remotes from config
-    const { code: c, stdout: o } = await execAsync(`rclone listremotes --config='${configPath}'`, {
-      silent: true
-    })
+    /**
+     * Fetches and parses remotes from rclone config
+     */
+    const fetchRemotes = async () => {
+      const { code, stdout } = await execAsync(`rclone listremotes --config='${configPath}'`, {
+        silent: true
+      })
 
-    if (c !== 0) return errorMessage(msg, `A error occurred with Rclone`)
+      if (code !== 0) return false
 
-    const remotes = o
-      .replace(/:/g, '')
-      .split('\n')
-      .filter(Boolean)
+      return stdout
+        .replace(/:/g, '')
+        .split('\n')
+        .filter(Boolean)
+    }
 
-    // * ------------------ Logic --------------------
+    // Fetch rclone remotes from config
+    const remotes = await fetchRemotes()
+
+    // If no remotes or config is invalid
+    if (!remotes) return errorMessage(msg, `A error occurred with Rclone`)
 
     /**
      * TODO make this customizable via the rclone command
@@ -94,13 +98,17 @@ export default class RClone extends Command {
       }
     }
 
+    // Fetch command from user args
     const command = args.shift()
 
     switch (command) {
+      // Find filed in a rclone remote
       case 'find': {
-        const remote = args[0]
-        // Remove remote from argument list
-        args.shift()
+        // Target rclone remote
+        const remote = args.shift()
+
+        // Search arguments
+        const searchTerms = args
 
         // Variable to hold filter if applicable
         let filter
@@ -119,139 +127,156 @@ export default class RClone extends Command {
             // If no filter args specified notify user
             return warningMessage(
               msg,
-              `You specified and blank filter. Correct usage would be like \`-type folder\` or \`-type .mp4\``
+              `You specified a blank filter. Correct usage would be like \`-type folder\` or \`-type .mp4\``
             )
           }
         }
 
-        // TODO allow user to specify the folder to search in
-        const searchTerms = args
-
+        // If user doesn't specify what to search for
         if (!searchTerms.length) {
           return warningMessage(msg, `Please specify what you want to search for`)
         }
 
+        // If remote doesn't exist in rclone config
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `[ ${remote} ] isn't a valid rclone remote`)
         }
 
+        // Send a wait message while parsing results
         const waitMessage = (await channel.send(
           embed(msg, 'yellow', 'rclone.gif').setDescription(
             `**Searching [ ${remote} ] for [ ${searchTerms.join(' ')} ]**`
           )
         )) as Message
 
-        // TODO add a check to see if file or database is initialized and if not initialize and inform user
-
+        // Load rclone cache from database
         const db = await database.models.RcloneCache.findOne({
           where: { id: remote }
         })
 
-        if (!db) {
-          return errorMessage(
-            msg,
-            `No cache has been run for remote [ ${remote} ]. One will be generated soon. Please try again later.`
-          )
-        }
+        // If cache exists in database
+        if (db) {
+          // Load cache
+          const data = JSON.parse(db.get('cache') as string)
 
-        const data = JSON.parse(db.get('cache') as string)
+          // Filter out non matching results
+          let results = data.filter((item) => {
+            let match = 0
 
-        let results = data.filter((item) => {
-          let match = 0
+            // Result must match each search term
+            searchTerms.forEach((term) => {
+              const reg = new RegExp(term, 'gmi')
+              if (item.Name.match(reg)) match++
+            })
 
-          searchTerms.forEach((term) => {
-            const reg = new RegExp(term, 'gmi')
-            if (item.Name.match(reg)) match++
+            // If it does then return result
+            if (match === searchTerms.length) return item
           })
 
-          if (match === searchTerms.length) return item
-        })
-
-        const sorted = []
-
-        // If user specified a -type filer
-        if (filter) {
-          results = results.filter((i) => {
-            switch (filter) {
-              // If user wants only directories
-              case 'folder':
-              case 'dir': {
-                return i.IsDir
-              }
-              default: {
-                // Get file extension
-                const extension = path.extname(i.Name)
-                // If user specified a file extension
-                // Guessing that it will start with .
-                if (filter.startsWith('.')) {
-                  // If extension matches filter return it
-                  if (filter === extension) return true
+          // If user specified a -type filer
+          if (filter) {
+            results = results.filter((i) => {
+              switch (filter) {
+                // If user wants only directories
+                case 'folder':
+                case 'dir': {
+                  return i.IsDir
+                }
+                default: {
+                  // Get file extension
+                  const extension = path.extname(i.Name)
+                  // If user specified a file extension
+                  // Guessing that it will start with .
+                  if (filter.startsWith('.')) {
+                    // If extension matches filter return it
+                    if (filter === extension) return true
+                  }
                 }
               }
+            })
+          }
+
+          // Array for cleaned results for embed list
+          const prettified = []
+
+          // Remake array with nice emojis based on file extensions
+          results.forEach((i) => {
+            if (i.IsDir) {
+              prettified.push(`:file_folder: [${i.Name}](https://drive.google.com/drive/u/0/folders/${i.ID})`)
+            } else {
+              switch (i.Name.split('.').pop()) {
+                case 'png':
+                case 'jpg':
+                case 'jpeg':
+                  prettified.push(`:frame_photo: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
+                  break
+                case 'mkv':
+                case 'mp4':
+                case 'avi':
+                  prettified.push(`:tv: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
+                  break
+                case 'mp3':
+                case 'flac':
+                  prettified.push(`:musical_note: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
+                  break
+                default:
+                  prettified.push(`:newspaper: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
+              }
             }
           })
-        }
 
-        // Remake array with nice emojis based on file extensions
-        results.forEach((i) => {
-          if (i.IsDir) {
-            sorted.push(`:file_folder: [${i.Name}](https://drive.google.com/drive/u/0/folders/${i.ID})`)
-          } else {
-            switch (i.Name.split('.').pop()) {
-              case 'png':
-              case 'jpg':
-              case 'jpeg':
-                sorted.push(`:frame_photo: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
-                break
-              case 'mkv':
-              case 'mp4':
-              case 'avi':
-                sorted.push(`:tv: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
-                break
-              case 'mp3':
-              case 'flac':
-                sorted.push(`:musical_note: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
-                break
-              default:
-                sorted.push(`:newspaper: [${i.Name}](https://drive.google.com/file/d/${i.ID}/view)`)
-            }
-          }
-        })
+          // Split array to fit within discord 2k character limit
+          const splitArray = arraySplitter(prettified)
 
-        const splitArray = arraySplitter(sorted)
-
-        const embedList = []
-        Object.keys(splitArray).forEach((key, index) => {
-          embedList.push(
+          // Generat embed list
+          const embedList = Object.keys(splitArray).map((key, index) =>
             embed(msg, 'blue', 'rclone.gif')
               .setTitle(`Rclone Search - [ ${remote} ]`)
               .addField('Results', `${splitArray[index].join('\n')}`)
-              .setDescription(`Total results [ ${sorted.length} ]${filter ? `\nUsing filter [ ${filter} ]` : ''}`)
+              .setDescription(`Total results [ ${prettified.length} ]${filter ? `\nUsing filter [ ${filter} ]` : ''}`)
           )
-        })
 
-        if (!embedList.length) {
-          return warningMessage(msg, `No results for search term [ ${searchTerms.join(' ')} ]`)
+          // If embed list is empty there were no results
+          if (!embedList.length) {
+            return warningMessage(msg, `No results for search term [ ${searchTerms.join(' ')} ]`)
+          }
+
+          // Delete wait message
+          await waitMessage.delete()
+
+          // Send results
+          return channel.send(paginate(msg, embedList))
         }
 
-        await waitMessage.delete()
-        return channel.send(paginate(msg, embedList))
+        // If database entry doesn't exist for remote a cache hasn't been completed yet
+        return errorMessage(
+          msg,
+          `No cache has been run for remote [ ${remote} ]. One will be generated soon. Please try again later.`
+        )
       }
+      // List remotes from rclone config
       case 'list': {
-        const e = embed(msg, 'blue', 'rclone.gif')
-          .setTitle('RClone Remotes')
-          .setDescription(`**- ${remotes.join('\n- ')}**`)
-        return channel.send(e)
+        // Return rclone remotes
+        return channel.send(
+          embed(msg, 'blue', 'rclone.gif')
+            .setTitle('RClone Remotes')
+            .setDescription(`**- ${remotes.join('\n- ')}**`)
+        )
       }
+      // Finds size of rclone remote
+      // TODO directories with spaces result in error
       case 'size': {
+        // Parse remote and path from args
         const resp = args.join().split(':')
         const remote = resp[0]
         const dirPath = resp.length >= 2 ? resp[1] : '/'
 
+        // If remote doesn't exist in config
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `[ ${remote} ] isn't a valid rclone remote`)
         }
 
+        // Send wait message
         const waitMessage = (await channel.send(
           embed(msg, 'yellow', 'rclone.gif').setDescription(`**Calculating size of
 
@@ -260,8 +285,10 @@ export default class RClone extends Command {
           :hourglass: This may take some time...**`)
         )) as Message
 
+        // Start time timestamp
         const startTime = performance.now()
 
+        // List all files in directory
         const { code, stdout } = await execAsync(
           `rclone size --json "${remote}":"${dirPath}" --config="${configPath}"`,
           {
@@ -269,20 +296,26 @@ export default class RClone extends Command {
           }
         )
 
+        // Remove wait message
         await waitMessage.delete()
 
+        // End time timestamp
         const stopTime = performance.now()
 
         // 3 doesnt exist 0 good
 
+        // If exist code is good
         if (code === 0) {
+          // Pasrse json output
           const response = JSON.parse(stdout)
           const { count } = response
+          // Convert size from bytes to readable format
           const size = bytesToSize(response.bytes)
 
           // Handle setting channel names to size of remote
           await handleChannelStats(remote, size)
 
+          // Return size of directory
           return msg.reply(
             embed(msg, 'blue', 'rclone.gif')
               .setTitle(remote)
@@ -293,38 +326,49 @@ export default class RClone extends Command {
           )
         }
 
+        // If code is 3 then the path doesnt exist in config
         if (code === 3) {
           return warningMessage(msg, `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`)
         }
 
+        // If command failed
         return errorMessage(msg, `A error occurred with Rclone`)
       }
-      case 'sizeof': {
-        const driveSizeChannel = guild.channels.get('664102340621500416') as GuildChannel
 
+      // Find size of multiple remotes
+      case 'sizeof': {
+        // Remotes to scan
         const toScan = args
 
-        for (const r of toScan) {
-          if (!remotes.includes(r)) {
-            return warningMessage(msg, `Remote [ ${r} ] isn't in your provided Rclone config`)
+        // Check that each remote is in config file
+        for (const remote of toScan) {
+          if (!remotes.includes(remote)) {
+            return warningMessage(msg, `Remote [ ${remote} ] isn't in your provided Rclone config`)
           }
         }
 
+        // Total byte size count
         let totalSize = 0
 
+        // Start time
         const startTime = performance.now()
 
+        // Initial wait message
         const waitMessage = (await msg.channel.send(
           embed(msg, 'blue', 'rclone.gif')
             .setTitle('Scanning configured remotes')
             .addField('Currently Scanning', toScan[0])
         )) as Message
 
+        // List of remotes already scanned
         const scannedRemotes: string[] = []
 
+        // Scan each remote
         for (const remote of toScan) {
+          // Remove remote from toScan list
           delete toScan[remote]
 
+          // Edit wait message with updated info when a scan is complete
           await waitMessage.edit(
             embed(msg, 'blue', 'rclone.gif')
               .setTitle('Scanning configured remotes')
@@ -333,8 +377,11 @@ export default class RClone extends Command {
               .addField('Scanned', `${scannedRemotes.length ? scannedRemotes.join(', ') : '--'}`)
               .addField('Total Size So Far', bytesToSize(totalSize))
           )
+
+          // Add remote to Scanned remoted
           scannedRemotes.push(remote)
 
+          // Fetch size of remte
           const { code, stdout } = await execAsync(
             `rclone size --json "${remote}:/" --config="${configPath}" --fast-list`,
             {
@@ -342,22 +389,17 @@ export default class RClone extends Command {
             }
           )
 
+          // If exit code id good
           if (code === 0) {
+            // Add new size with total size
             totalSize += JSON.parse(stdout).bytes
-            // Handle setting channel names to size of remote
-            await handleChannelStats(remote, bytesToSize(JSON.parse(stdout).bytes))
           }
         }
 
-        if (driveSizeChannel) {
-          await driveSizeChannel.setName(
-            `📁size ${bytesToSize(totalSize)
-              .replace('.', '_')
-              .replace(' ', '\u2009\u2009\u2009')}`
-          )
-        }
-
+        // Ending timestamp
         const stopTime = performance.now()
+
+        // Update waitmessage when all scans are complete with total sizes
         return waitMessage.edit(
           embed(msg, 'blue', 'rclone.gif')
             .setTitle('Rclone Size Scan Complete')
@@ -365,15 +407,19 @@ export default class RClone extends Command {
             .addField('Completed In', millisecondsToTime(stopTime - startTime))
         )
       }
+      // List contents of rclone directories
       case 'ls': {
+        // Parse remote and directory from args
         const resp = args.join().split(':')
         const remote = resp[0]
         const dirPath = resp.length >= 2 ? resp[1] : '/'
 
+        // If remote doesnt exist is config
         if (!remotes.includes(remote)) {
           return errorMessage(msg, `[ ${remote} ] isn't a valid rclone remote`)
         }
 
+        // Send wait message
         const waitMessage = (await channel.send(
           embed(msg, 'yellow', 'rclone.gif').setDescription(
             `**Getting Directory
@@ -384,70 +430,76 @@ export default class RClone extends Command {
           )
         )) as Message
 
+        // List files in target remote and dir
         const { code, stdout } = await execAsync(`rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`, {
           silent: true
         })
 
+        // Remove wait message
         await waitMessage.delete()
         // 3 doesnt exist 0 good
 
+        // If exit code is good
         if (code === 0) {
-          let response = JSON.parse(stdout)
+          // Parse output
+          const response = JSON.parse(stdout)
 
           // Handle folder being empty
           if (!response.length) {
             return standardMessage(msg, 'green', `:file_cabinet: [ ${remote}:${dirPath || '/'} ] is empty`)
           }
 
-          const sorted = []
           // Remake array with nice emojis based on file extensions
-          response.forEach((i) => {
+          const sorted = response.map((i) => {
             if (i.IsDir) {
-              sorted.push(`:file_folder: ${i.Name}`)
-            } else {
-              switch (i.Name.split('.').pop()) {
-                case 'png':
-                case 'jpg':
-                case 'jpeg':
-                  sorted.push(`:frame_photo: ${i.Name}`)
-                  break
-                case 'mkv':
-                case 'mp4':
-                case 'avi':
-                  sorted.push(`:tv: ${i.Name}`)
-                  break
-                case 'mp3':
-                case 'flac':
-                  sorted.push(`:musical_note: ${i.Name}`)
-                  break
-                default:
-                  sorted.push(`:newspaper: ${i.Name}`)
-              }
+              return `:file_folder: ${i.Name}`
+            }
+            switch (i.Name.split('.').pop()) {
+              case 'png':
+              case 'jpg':
+              case 'jpeg':
+                return `:frame_photo: ${i.Name}`
+
+              case 'mkv':
+              case 'mp4':
+              case 'avi':
+                return `:tv: ${i.Name}`
+
+              case 'mp3':
+              case 'flac':
+                return `:musical_note: ${i.Name}`
+
+              default:
+                return `:newspaper: ${i.Name}`
             }
           })
 
-          response = sorted.join()
+          // Split array to fit under discords 2k character limit
           const splitArray = arraySplitter(sorted)
 
-          const embedList = []
-          Object.keys(splitArray).forEach((key, index) => {
+          // Generate embed list
+          const embedList = Object.keys(splitArray).map((key, index) =>
             embedList.push(
               embed(msg, 'blue', 'rclone.gif')
                 .setTitle(remote)
                 .addField('Path', `${dirPath || '/'}`)
                 .addField('Files', `${splitArray[index].join('\n')}`)
             )
-          })
+          )
 
+          // Return results
           return paginate(msg, embedList)
         }
 
+        // If target directory doesnt exit in remote
         if (code === 3) {
           return warningMessage(msg, `Directory [ ${dirPath} ] in remote [ ${remote} ] doesn't exist!`)
         }
 
+        // If rclone failed to run
         return errorMessage(msg, 'A error occurred with RClone')
       }
+      // If user doesnt choose and of the above options inform them
       default:
         return validOptions(msg, ['ls', 'size', 'list', 'find'])
     }

@@ -16,7 +16,7 @@ export default class RemindMe extends Command {
   constructor(client: BotClient) {
     super(client, {
       aliases: ['remind'],
-      category: 'General',
+      category: 'Utils',
       description: 'Set yourself some reminders',
       name: 'remindme',
       usage: ['remindme 10s do the dishes', 'remindme 1h make memes', 'remindme 1m get funky with it']

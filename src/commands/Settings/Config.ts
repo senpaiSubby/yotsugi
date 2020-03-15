@@ -18,7 +18,7 @@ export default class Config extends Command {
     super(client, {
       aliases: ['db'],
       args: true,
-      category: 'Bot Utils',
+      category: 'Settings',
       description: 'View and edit bot settings',
       name: 'config',
       ownerOnly: true,

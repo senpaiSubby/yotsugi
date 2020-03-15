@@ -4,11 +4,10 @@
  */
 import { Collection, Message } from 'discord.js'
 import Enmap from 'enmap'
-import { join } from 'path'
-import { NezukoMessage } from 'typings'
-
 import fs from 'fs'
 import table from 'markdown-table'
+import { join } from 'path'
+import { NezukoMessage } from 'typings'
 import config from '../../config/config.json'
 import { Command } from '../base/Command'
 import { BotClient } from '../BotClient'
@@ -16,6 +15,7 @@ import { database } from '../database/database'
 import { Log } from '../Logger'
 import { Utils } from '../Utils'
 import { ConfigManager } from './ConfigManager'
+
 export class CommandManager {
   public client: BotClient
   public commands: Enmap<string | number, any>
@@ -164,7 +164,7 @@ export class CommandManager {
         'Command Manager',
         `User [ ${author.username} ] tried to run command [ ${requestedCommandName} ] in a DM`
       )
-      return Utils.warningMessage(msg, 'Commands cannot be ran in DM\'s')
+      return Utils.warningMessage(msg, "Commands cannot be ran in DM's")
     }
 
     // Check if command is on cooldown for user
