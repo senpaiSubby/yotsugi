@@ -78,7 +78,44 @@ Nezuko was created to simplify the management of my servers. I wanted a easy way
 
 <!------------------------- GETTING STARTED ------------------------->
 
-<h2 align="center"><b>Setup</b></h2>
+<h2 align="center"><b>Setup With Docker</b></h2>
+Easy setup with docker-compose
+
+1. Create a folder for Nezuko with a `config` and `logs` directory inside of it. 
+2. Inside the `config` directory make a `config.json` file with the following content. Changing ownerID, prefix and token accordingly. `exceptUsers` are the user ID's of members who bypass permission checks for commands.
+
+```json
+{
+  "ownerID": "YOUR DISCORD USER ID",
+  "prefix": "//",
+  "token": "YOUR BOT TOKEN",
+  "exemptUsers": []
+}
+
+```
+
+3. Create a docker-compose.yml file with the following content. Changing the host directories if opting to store the config and log directories elsewhere.
+
+```yaml
+version: '3'
+services:
+  nezuko:
+    image: callmekory/nezuko:latest
+    container_name: nezuko
+    volumes:
+      # where config.json, rclone.conf and db are stored
+      - ./config:/app/dist/config
+      # path for logs
+      - ./logs:/app/logs
+    restart: unless-stopped
+```
+
+4. Run `docker-compose up` in the same directory as your `docker-compose.yml` file. If all goes well you should see the bot login and present you with a invite link to add her to your server. Press `ctrl + c` to exit then run it with `docker-compose up -d` to start the bot in the background.
+
+![sample](https://i.imgur.com/nJeAIU1.png)
+
+
+<h2 align="center"><b>Setup Without Docker</b></h2>
 
 To get a local copy up and running follow these simple steps.
 
@@ -97,6 +134,11 @@ https://github.com/callmekory/nezuko/releases
 5. Edit `config/config.json` with you bot token and user ID
 
 6. Run the bot with `npm start`
+
+
+<h2 align="center"><b>Usage</b></h2>
+
+All commands in Nezuko are linked to a database where all params are set with the command `//config`. For example to see Embys config you would do `//config get emby` and to set a param like apiKey you would do `//config set emby apiKey YOURAPIKEY`. For command usages, etc run the `//help` command.
 
 <!------------------------- CONTRIBUTING ------------------------->
 
