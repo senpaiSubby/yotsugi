@@ -112,7 +112,7 @@ export default class JFManager extends Command {
 
       switch (response.code) {
         case 204: {
-          return standardMessage(msg, 'green', `User has been removed`)
+          return standardMessage(msg, 'green', 'User has been removed')
         }
       }
     }
@@ -172,7 +172,7 @@ export default class JFManager extends Command {
             break
           }
           case 401: {
-            await errorMessage(msg, `Your access token is invalid`)
+            await errorMessage(msg, 'Your access token is invalid')
             break
           }
         }
@@ -242,7 +242,7 @@ export default class JFManager extends Command {
                   embed(msg, '#9B62C5')
                     .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
                     .setTitle('JellyFin Manager')
-                    .setDescription(`Successfully reset password.`)
+                    .setDescription('Successfully reset password.')
                     .addField('Username', member, true)
                     .addField('New Password', newPass, true)
                     .addField('User ID', foundUser.userID)
@@ -319,7 +319,7 @@ export default class JFManager extends Command {
                 embed(msg, '#9B62C5')
                   .setThumbnail('https://apps.jellyfin.org/chromecast/img/logo.png')
                   .setTitle('JellyFin Manager')
-                  .setDescription(`Sucessfully created a new account.`)
+                  .setDescription('Sucessfully created a new account.')
                   .addField('Username', name, true)
                   .addField('Password', newPassword, true)
                   .addField('User ID', ID)
