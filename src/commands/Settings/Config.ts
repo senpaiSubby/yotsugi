@@ -59,7 +59,7 @@ export default class Config extends Command {
           splitArray.forEach((item) => {
             let text = ''
             item.forEach((i) => (text += `${i}\n`))
-            e.addField(`\u200b`, text, true)
+            e.addField('\u200b', text, true)
           })
           return channel.send(e)
         }
@@ -84,12 +84,8 @@ export default class Config extends Command {
         if (keyToChange in config && key1 in config[keyToChange]) {
           config[keyToChange][key1] = val1
           await db.update({ config: JSON.stringify(config) })
-          const m = (await standardMessage(
-            msg,
-            'green',
-            `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`
-          )) as Message
-          return m.delete(10000)
+          const m = await standardMessage(msg, 'green', `[ ${keyToChange} ${key1} ] changed to [ ${val1} ]`)
+          return m.delete({ timeout: 10000 })
         }
         return warningMessage(msg, `Option [ ${key1} ] doesnt exist`)
       }

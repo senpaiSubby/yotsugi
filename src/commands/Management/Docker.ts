@@ -23,7 +23,7 @@ export default class Docker extends Command {
       description: 'Manage Docker containers',
       name: 'docker',
       ownerOnly: true,
-      usage: [`docker [state] [name]`, `docker list [state]`],
+      usage: ['docker [state] [name]', 'docker list [state]'],
       webUI: true
     })
   }
@@ -77,7 +77,7 @@ export default class Docker extends Command {
           }
         })
       } catch (e) {
-        await errorMessage(msg, `Failed to connect to Docker daemon`)
+        await errorMessage(msg, 'Failed to connect to Docker daemon')
       }
 
       return [] as ContainerList[]
@@ -114,7 +114,7 @@ export default class Docker extends Command {
         }
       } catch (e) {
         Log.error('Docker', 'Failed to connect to Docker', e)
-        await errorMessage(msg, `Failed to connect to Docker daemon`)
+        await errorMessage(msg, 'Failed to connect to Docker daemon')
       }
     }
 

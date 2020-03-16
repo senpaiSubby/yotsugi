@@ -22,7 +22,7 @@ export default class Clear extends Command {
       guildOnly: true,
       name: 'clear',
       permsNeeded: ['MANAGE_MESSAGES'],
-      usage: [`clear [0-100]`, 'clear [@user] [0-100]']
+      usage: ['clear [0-100]', 'clear [@user] [0-100]']
     })
   }
 
@@ -58,7 +58,7 @@ export default class Clear extends Command {
     }
 
     // Search channel for messages from user if specified or target number of messages
-    const foundMessages = await channel.fetchMessages({
+    const foundMessages = await channel.messages.fetch({
       limit: user ? 100 : amount
     })
 

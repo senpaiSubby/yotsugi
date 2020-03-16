@@ -82,7 +82,7 @@ export default class RClone extends Command {
     const remotes = await fetchRemotes()
 
     // If no remotes or config is invalid
-    if (!remotes) return errorMessage(msg, `A error occurred with Rclone`)
+    if (!remotes) return errorMessage(msg, 'A error occurred with Rclone')
 
     /**
      * TODO make this customizable via the rclone command
@@ -92,7 +92,7 @@ export default class RClone extends Command {
     const handleChannelStats = async (remote: string, size: string) => {
       switch (remote) {
         case 'AnimeDrive': {
-          const channelToName = client.channels.get('666705180250865678') as GuildChannel
+          const channelToName = client.channels.cache.get('666705180250865678') as GuildChannel
           if (channelToName) await channelToName.setName(`ᴛᴅ sɪᴢᴇ: ${size}`)
         }
       }
@@ -127,14 +127,14 @@ export default class RClone extends Command {
             // If no filter args specified notify user
             return warningMessage(
               msg,
-              `You specified a blank filter. Correct usage would be like \`-type folder\` or \`-type .mp4\``
+              'You specified a blank filter. Correct usage would be like `-type folder` or `-type .mp4`'
             )
           }
         }
 
         // If user doesn't specify what to search for
         if (!searchTerms.length) {
-          return warningMessage(msg, `Please specify what you want to search for`)
+          return warningMessage(msg, 'Please specify what you want to search for')
         }
 
         // If remote doesn't exist in rclone config
@@ -143,11 +143,11 @@ export default class RClone extends Command {
         }
 
         // Send a wait message while parsing results
-        const waitMessage = (await channel.send(
+        const waitMessage = await channel.send(
           embed(msg, 'yellow', 'rclone.gif').setDescription(
             `**Searching [ ${remote} ] for [ ${searchTerms.join(' ')} ]**`
           )
-        )) as Message
+        )
 
         // Load rclone cache from database
         const db = await database.models.RcloneCache.findOne({
@@ -277,13 +277,13 @@ export default class RClone extends Command {
         }
 
         // Send wait message
-        const waitMessage = (await channel.send(
+        const waitMessage = await channel.send(
           embed(msg, 'yellow', 'rclone.gif').setDescription(`**Calculating size of
 
           [ ${remote}:${dirPath || '/'} ]
 
           :hourglass: This may take some time...**`)
-        )) as Message
+        )
 
         // Start time timestamp
         const startTime = performance.now()
@@ -332,7 +332,7 @@ export default class RClone extends Command {
         }
 
         // If command failed
-        return errorMessage(msg, `A error occurred with Rclone`)
+        return errorMessage(msg, 'A error occurred with Rclone')
       }
 
       // Find size of multiple remotes
@@ -354,11 +354,11 @@ export default class RClone extends Command {
         const startTime = performance.now()
 
         // Initial wait message
-        const waitMessage = (await msg.channel.send(
+        const waitMessage = await msg.channel.send(
           embed(msg, 'blue', 'rclone.gif')
             .setTitle('Scanning configured remotes')
             .addField('Currently Scanning', toScan[0])
-        )) as Message
+        )
 
         // List of remotes already scanned
         const scannedRemotes: string[] = []
@@ -420,7 +420,7 @@ export default class RClone extends Command {
         }
 
         // Send wait message
-        const waitMessage = (await channel.send(
+        const waitMessage = await channel.send(
           embed(msg, 'yellow', 'rclone.gif').setDescription(
             `**Getting Directory
 
@@ -428,7 +428,7 @@ export default class RClone extends Command {
 
           :hourglass: This may take some time...**`
           )
-        )) as Message
+        )
 
         // List files in target remote and dir
         const { code, stdout } = await execAsync(`rclone lsjson "${remote}":"${dirPath}" --config="${configPath}"`, {
@@ -479,12 +479,10 @@ export default class RClone extends Command {
 
           // Generate embed list
           const embedList = Object.keys(splitArray).map((key, index) =>
-            embedList.push(
-              embed(msg, 'blue', 'rclone.gif')
-                .setTitle(remote)
-                .addField('Path', `${dirPath || '/'}`)
-                .addField('Files', `${splitArray[index].join('\n')}`)
-            )
+            embed(msg, 'blue', 'rclone.gif')
+              .setTitle(remote)
+              .addField('Path', `${dirPath || '/'}`)
+              .addField('Files', `${splitArray[index].join('\n')}`)
           )
 
           // Return results

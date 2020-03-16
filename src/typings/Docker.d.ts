@@ -10,13 +10,13 @@ interface DockerContainer {
   ImageID: string
   Command: string
   Created: number
-  Ports: Array<Port | Ports2>
+  Ports: (Port | Ports2)[]
   Labels: Labels
   State: string
   Status: string
   HostConfig: HostConfig
   NetworkSettings: NetworkSettings
-  Mounts: Array<Mount | Mounts2>
+  Mounts: (Mount | Mounts2)[]
 }
 
 interface Mounts2 {
@@ -129,5 +129,5 @@ interface ContainerList {
   state: string
   status: string
   ports: number[]
-  mounts?: Array<Mount | Mounts2>
+  mounts?: (Mount | Mounts2)[]
 }

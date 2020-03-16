@@ -23,7 +23,7 @@ export default class Sengled extends Command {
       description: 'Control Sengled smart lights',
       name: 'sengled',
       ownerOnly: true,
-      usage: [`sengled [light name]`, `sengled list`],
+      usage: ['sengled [light name]', 'sengled list'],
       webUI: true
     })
   }
@@ -109,7 +109,7 @@ export default class Sengled extends Command {
       } catch (e) {
         // If (api) return `Failed to connect to Sengled`
         Log.error('Sengled', 'Failed to connect to Sengled', e)
-        await errorMessage(msg, `Failed to connect to Sengled`)
+        await errorMessage(msg, 'Failed to connect to Sengled')
       }
     }
 
@@ -139,7 +139,7 @@ export default class Sengled extends Command {
         }
       } catch (e) {
         Log.error('Sengled', 'Failed to connect to Sengled', e)
-        await errorMessage(msg, `Failed to connect to Sengled`)
+        await errorMessage(msg, 'Failed to connect to Sengled')
       }
     }
 

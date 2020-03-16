@@ -23,7 +23,7 @@ export default class LinuxPower extends Command {
       description: 'Manage power state of linux computers',
       name: 'pc',
       ownerOnly: true,
-      usage: [`system gaara off`, `pc thinkboi reboot`],
+      usage: ['system gaara off', 'pc thinkboi reboot'],
       webUI: true
     })
   }

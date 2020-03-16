@@ -47,7 +47,7 @@ export default class Bot extends Command {
 
     switch (option) {
       case 'leave': {
-        const waitMessage = (await channel.send('Are you sure bb? Reply with YES or NO')) as Message
+        const waitMessage = await channel.send('Are you sure bb? Reply with YES or NO')
 
         const collector = new MessageCollector(waitMessage.channel, (m) => m.author.id === author.id, {
           time: 10000
@@ -67,9 +67,9 @@ export default class Bot extends Command {
         const module = args[1]
 
         if (!module) {
-          const msg1 = (await standardMessage(msg, 'green', `Reloading all modules..`)) as Message
+          const msg1 = await standardMessage(msg, 'green', 'Reloading all modules..')
           await context.reloadCommands()
-          return msg1.edit(standardMessage(msg, 'green', `Reloading all modules.. done!`))
+          return msg1.edit(standardMessage(msg, 'green', 'Reloading all modules.. done!'))
         }
 
         const run = await context.reloadCommand(module)
@@ -81,12 +81,10 @@ export default class Bot extends Command {
       case 'restart': {
         let count = 10
 
-        const m = (await channel.send(
-          embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`)
-        )) as Message
+        const m = await channel.send(embed(msg, 'yellow').setDescription(`Restarting in ${count} seconds..`))
         const interval = setInterval(async () => {
           if (count === 0) {
-            await m.edit(embed(msg, 'yellow').setDescription(`Restarting..`))
+            await m.edit(embed(msg, 'yellow').setDescription('Restarting..'))
             clearInterval(interval)
             return process.exit()
           }
@@ -121,15 +119,15 @@ export default class Bot extends Command {
 
         return channel.send(
           embed(msg, 'green')
-            .setTitle(`Nezuko`)
-            .setThumbnail(user.avatarURL)
+            .setTitle('Nezuko')
+            .setThumbnail(user.avatarURL())
             .addField('Uptime', duration(client.uptime).format('d[d] h[h] m[m] s[s]'), true)
             .addField('Memory Usage', `${round(memoryUsage().heapUsed / 1024 / 1024)} MB`, true)
             .addField('Node Version', nodeVersion.replace('v', ''), true)
             .addField('NPM Version', npmv.replace('\n', ''), true)
             .addField('Commands', context.commands.size, true)
-            .addField('Users', client.users.size + 2123, true)
-            .setDescription(`Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)`)
+            .addField('Users', client.users.cache.size + 2123, true)
+            .setDescription('Nezuko! Created to automate my life [GITHUB](https://github.com/callmekory/nezuko)')
         )
       }
       default:

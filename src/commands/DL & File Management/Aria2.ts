@@ -184,7 +184,7 @@ export default class Template extends Command {
                   .addField('Download Dir', status.dir, true)
                   .addField(
                     'Download Speed',
-                    `${status.downloadSpeed === '0' ? bytesToSize(status.downloadSpeed) : `0 kb`}/s`,
+                    `${status.downloadSpeed === '0' ? bytesToSize(status.downloadSpeed) : '0 kb'}/s`,
                     true
                   )
                   .addField('Total Size', bytesToSize(status.totalLength), true)
@@ -197,7 +197,7 @@ export default class Template extends Command {
           }
 
           // If user didn't specify a download GID
-          return warningMessage(msg, `Please specify the GID of the download to get info on`)
+          return warningMessage(msg, 'Please specify the GID of the download to get info on')
         }
         // Removes a download from the download queue
         case 'remove': {
@@ -332,7 +332,7 @@ export default class Template extends Command {
                   .addField('Download Dir', d.dir, true)
                   .addField(
                     'Download Speed',
-                    `${d.downloadSpeed === '0' ? `0 kb` : bytesToSize(d.downloadSpeed)}/s`,
+                    `${d.downloadSpeed === '0' ? '0 kb' : bytesToSize(d.downloadSpeed)}/s`,
                     true
                   )
                   .addField('Total Size', bytesToSize(d.totalLength), true)
@@ -360,7 +360,7 @@ export default class Template extends Command {
                   .addField('Download Dir', d.dir, true)
                   .addField(
                     'Download Speed',
-                    `${d.downloadSpeed === '0' ? `0 kb` : bytesToSize(d.downloadSpeed)}/s`,
+                    `${d.downloadSpeed === '0' ? '0 kb' : bytesToSize(d.downloadSpeed)}/s`,
                     true
                   )
                   .addField('Total Size', bytesToSize(d.totalLength), true)
@@ -388,7 +388,7 @@ export default class Template extends Command {
                   .addField('Download Dir', d.dir, true)
                   .addField(
                     'Download Speed',
-                    `${d.downloadSpeed === '0' ? `0 kb` : bytesToSize(d.downloadSpeed)}/s`,
+                    `${d.downloadSpeed === '0' ? '0 kb' : bytesToSize(d.downloadSpeed)}/s`,
                     true
                   )
                   .addField('Total Size', bytesToSize(d.totalLength), true)
@@ -425,7 +425,7 @@ export default class Template extends Command {
         }
       }
     } catch {
-      // If client annot connect to Aria2 ith the provided details
+      // If client cannot connect to Aria2 ith the provided details
       return errorMessage(msg, 'Failed to connect to Aria2. Are you sure your host and port details are correct?')
     }
   }

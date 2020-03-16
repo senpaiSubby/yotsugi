@@ -25,7 +25,7 @@ export default class PiHole extends Command {
       description: 'PiHole stats and management',
       name: 'pihole',
       ownerOnly: true,
-      usage: [`pihole [enable/disable]`, `pihole stats`],
+      usage: ['pihole [enable/disable]', 'pihole stats'],
       webUI: true
     })
     this.color = 'green'
@@ -62,7 +62,7 @@ export default class PiHole extends Command {
         const data = await response.body
 
         if (data.status !== 'enabled' && data.status !== 'disabled') {
-          await errorMessage(msg, `API key is incorrect`)
+          await errorMessage(msg, 'API key is incorrect')
         }
 
         const text = newState === 'enable' ? 'enabled' : 'disabled'
@@ -71,7 +71,7 @@ export default class PiHole extends Command {
         return channel.send(embed(msg, color).setDescription(`**PiHole [ ${text} ]**`))
       } catch (e) {
         Log.error('PiHole', 'Failed to connect to PiHole', e)
-        await errorMessage(msg, `Failed to connect to PiHole`)
+        await errorMessage(msg, 'Failed to connect to PiHole')
       }
     }
 
@@ -96,7 +96,7 @@ export default class PiHole extends Command {
         }
       } catch (e) {
         Log.error('PiHole', 'Failed to connect to PiHole', e)
-        await errorMessage(msg, `Failed to connect to PiHole`)
+        await errorMessage(msg, 'Failed to connect to PiHole')
       }
     }
 

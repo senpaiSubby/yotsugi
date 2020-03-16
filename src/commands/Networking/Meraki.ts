@@ -22,7 +22,7 @@ export default class Meraki extends Command {
       description: 'Get network information for Meraki Devices',
       name: 'meraki',
       ownerOnly: true,
-      usage: [`meraki list`],
+      usage: ['meraki list'],
       webUI: true
     })
   }
@@ -98,7 +98,7 @@ export default class Meraki extends Command {
         }
       } catch (e) {
         Log.error('Meraki', 'Failed to connect to Meraki', e)
-        await errorMessage(msg, `Failed to connect to Meraki`)
+        await errorMessage(msg, 'Failed to connect to Meraki')
       }
     }
 

@@ -158,7 +158,7 @@ export default class AutoRun extends Command {
 
       case 'list': {
         if (!tasks.length) {
-          return warningMessage(msg, `There are no autorun commands set!`)
+          return warningMessage(msg, 'There are no autorun commands set!')
         }
 
         const embedList = []
@@ -186,7 +186,7 @@ export default class AutoRun extends Command {
         const command = args.join(' ')
 
         if (!command) {
-          return warningMessage(msg, `Please specify the command to add to the tasks`)
+          return warningMessage(msg, 'Please specify the command to add to the tasks')
         }
 
         // Create tasks if doesnt exist

@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { RichEmbed } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
@@ -123,7 +123,7 @@ export default class Jellyfin extends Command {
 
     // * ------------------ Usage Logic --------------------
 
-    let e: RichEmbed
+    let e: MessageEmbed
 
     switch (args[0]) {
       case 'streams': {
@@ -160,7 +160,7 @@ export default class Jellyfin extends Command {
 
           currentStreams.forEach((i) => {
             e.addField(
-              `\u200b`,
+              '\u200b',
               `**Username**
               - ${i.user}
               **Client Type**
@@ -216,7 +216,7 @@ export default class Jellyfin extends Command {
 
                 const re = embed(msg, this.color)
                   .setURL(getLink(item))
-                  .setTitle(`Jellyfin Recent - Movies`)
+                  .setTitle('Jellyfin Recent - Movies')
                   .setThumbnail(getImage(item))
                   .addField('Movie', Name, true)
 
@@ -236,7 +236,7 @@ export default class Jellyfin extends Command {
 
                 const re = embed(msg, this.color)
                   .setURL(getLink(item))
-                  .setTitle(`Jellyfin Recent - Series`)
+                  .setTitle('Jellyfin Recent - Series')
                   .setThumbnail(getImage(item))
                   .addField('Series', SeriesName, true)
                   .addField('Episode', Name, true)

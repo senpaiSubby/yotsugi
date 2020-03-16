@@ -31,7 +31,7 @@ export default class Manga extends Command {
     // * ------------------ Setup --------------------
     const { standardMessage, embed, paginate, warningMessage, errorMessage } = Utils
 
-    const waitMessage = (await standardMessage(msg, this.color, 'Fetching data from the Kitsu API')) as Message
+    const waitMessage = await standardMessage(msg, this.color, 'Fetching data from the Kitsu API')
 
     try {
       const response = await get(
@@ -70,7 +70,7 @@ export default class Manga extends Command {
       await waitMessage.delete()
       return warningMessage(msg, 'No anime found by that name')
     } catch {
-      return errorMessage(msg, 'I\'m not able to connect to Kitsu.io right now. Please try again later')
+      return errorMessage(msg, "I'm not able to connect to Kitsu.io right now. Please try again later")
     }
   }
 }

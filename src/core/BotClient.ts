@@ -32,11 +32,11 @@ export class BotClient extends Client {
     this.config = config
     // Log discord warnings
     this.on('warn', (info) => console.log(`warn: ${info}`))
-    this.on('reconnecting', () => Log.warn('Nezuko', 'Reconnecting to Discord'))
-    this.on('resume', () => Log.warn('Nezuko', 'Reconnected to Discord'))
+    this.on('shardReconnecting', () => Log.warn('Nezuko', 'Reconnecting to Discord'))
+    this.on('shardResumed', () => Log.warn('Nezuko', 'Reconnected to Discord'))
 
     // Unhandled Promise Rejections
-    process.on('unhandledRejection', (reason) => null)
+    process.on('unhandledRejection', (reason: any) => Log.error('Unhandled Rejection', reason.stack))
     // Unhandled Errors
     process.on('uncaughtException', (error) => Log.error('Uncaught Exception', error))
   }
@@ -59,10 +59,10 @@ export class BotClient extends Client {
     // Handle general config
     await ConfigManager.handleGeneralConfig()
 
-    const guilds = this.guilds.map((guild) => guild.id)
+    const guilds = this.guilds.cache.map((guild) => guild.id)
 
     for (const guildID of guilds) {
-      const guild = this.guilds.get(guildID)
+      const guild = this.guilds.cache.get(guildID)
 
       // Handle server configs
       await ConfigManager.handleServerConfig(guild)

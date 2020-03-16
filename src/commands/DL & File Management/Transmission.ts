@@ -23,7 +23,7 @@ export default class Transmission extends Command {
       category: 'DL & File Management',
       description: 'Control Transmission downloads',
       name: 'tor',
-      usage: [`tor list`, 'tor add [magnet link]']
+      usage: ['tor list', 'tor add [magnet link]']
     })
     this.color = '#AE0701'
   }
@@ -39,7 +39,8 @@ export default class Transmission extends Command {
       standardMessage,
       missingConfig,
       paginate,
-      embed
+      embed,
+      arraySplitter
     } = Utils
 
     // Fetch config from database
@@ -80,7 +81,7 @@ export default class Transmission extends Command {
         case 2:
           return 'checking'
         case 3:
-          return 'downloadWait'
+          return 'waiting'
         case 4:
           return 'downloading'
         case 5:
@@ -88,7 +89,7 @@ export default class Transmission extends Command {
         case 6:
           return 'seeding'
         case 7:
-          return 'No Peers'
+          return 'dead'
       }
     }
 
@@ -110,22 +111,17 @@ export default class Transmission extends Command {
             id,
             status: getStatus(status),
             percentage: downloadedEver ? Math.round((downloadedEver / sizeWhenDone) * 100).toString() : '0',
-            rate: {
-              up: rateUpload ? bytesToSize(rateUpload) : 0,
-              down: rateDownload ? bytesToSize(rateDownload) : 0
-            },
-            size: {
-              current: downloadedEver ? bytesToSize(downloadedEver) : 0,
-              complete: sizeWhenDone ? bytesToSize(sizeWhenDone) : 0
-            }
+            uploadSpeed: rateUpload || 0,
+            downloadSpeed: rateDownload || 0,
+            currentSize: downloadedEver ? bytesToSize(downloadedEver) : 0,
+            completedSize: sizeWhenDone ? bytesToSize(sizeWhenDone) : 0
           }
         })
 
         // Return queue sorted by completed percentage
-        return sortByKey(downloadQueue, 'percentage')
+        return sortByKey(downloadQueue, 'downloadSpeed')
       } catch (e) {
-        // If failed to fetch results
-        const text = await errorMessage(msg, 'Failed to connect to Transmission')
+        await errorMessage(msg, 'Failed to connect to Transmission')
       }
     }
 
@@ -152,30 +148,48 @@ export default class Transmission extends Command {
     switch (option) {
       // Lists all downloads
       case 'list': {
-        const data = await getQueue()
+        let data = await getQueue()
 
         // If downloads in queue
         if (data && data.length) {
-          // Generate embed list
-          const embedList = data.map((item) => {
-            const { name, id, status, percentage, rate, size } = item
+          const filter = args.shift()
 
-            return embed(msg, this.color, 'transmission.png')
-              .setTitle('Transmission Queue')
-              .addField('Filename', `[ ${id} ] ${name}`, false)
-              .addField('Status', `${status}`, true)
-              .addField('Percentage', `${percentage}`, true)
-              .addField('Size Total', `${size.complete}`, true)
-              .addField('Size Current', `${size.current}`, true)
-              .addField('Rate Down', `${rate.down}`, true)
-              .addField('Rate Upload', `${rate.up}`, true)
-          })
+          switch (filter) {
+            case 'stopped':
+            case 'seeding':
+            case 'dead':
+            case 'waiting':
+            case 'downloading':
+              data = data.filter((r) => r.status === filter)
+            case 'all': {
+              const text = sortByKey(data, 'down').map(
+                (r) =>
+                  // tslint:disable-next-line:prefer-template
+                  `**${r.name}**\n` +
+                  '```\n' +
+                  `Status:         ${r.status.toUpperCase()}\n` +
+                  `Size:           ${r.currentSize} / ${r.completedSize}\n` +
+                  `Percentage:     ${r.percentage}%\n` +
+                  `Download Speed: ${bytesToSize(r.downloadSpeed)}/s\n` +
+                  `Upload Speed:   ${bytesToSize(r.uploadSpeed)}/s\n` +
+                  '```'
+              )
 
-          // Return results
-          return paginate(msg, embedList)
+              const embedList = arraySplitter(text).map((i) =>
+                embed(msg, this.color, 'transmission.png')
+                  .setTitle('Transmission Queue')
+                  .setDescription(i)
+              )
+
+              // Return results
+              return paginate(msg, embedList)
+            }
+            default:
+              return validOptions(msg, ['all', 'stopped', 'seeding', 'dead', 'waiting', 'downloading'])
+          }
         }
         // Else nothing in download wueue
-        return warningMessage(msg, `Nothing in download Queue`)
+        return warningMessage(msg, 'Nothing in download Queue')
       }
 
       // Adds a torrent via magnet link

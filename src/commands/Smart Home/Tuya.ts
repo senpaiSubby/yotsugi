@@ -23,7 +23,7 @@ export default class Tuya extends Command {
       description: 'Control Tuya smart plugs and devices',
       name: 'tuya',
       ownerOnly: true,
-      usage: [`tuya [device name]`],
+      usage: ['tuya [device name]'],
       webUI: true
     })
   }
@@ -63,7 +63,7 @@ export default class Tuya extends Command {
 
         return deviceList
       } catch (e) {
-        await errorMessage(msg, `Failed to collect device list`)
+        await errorMessage(msg, 'Failed to collect device list')
       }
     }
 

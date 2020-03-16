@@ -1,43 +1,44 @@
-/*!
- * Coded by CallMeKory - https://github.com/callmekory
- * 'It’s not a bug – it’s an undocumented feature.'
- */
-
-interface SpeedTestResult {
-  speeds: Speeds
-  client: Client
+interface RootObject {
+  timestamp: string
+  ping: Ping
+  download: Download
+  upload: Download
+  isp: string
+  interface: Interface
   server: Server
+  result: Result
+}
+
+interface Result {
+  id: string
+  url: string
 }
 
 interface Server {
-  host: string
-  lat: number
-  lon: number
+  id: number
+  name: string
   location: string
   country: string
-  cc: string
-  sponsor: string
-  distance: number
-  distanceMi: number
-  ping: number
-  id: string
-}
-
-interface Client {
+  host: string
+  port: number
   ip: string
-  lat: number
-  lon: number
-  isp: string
-  isprating: number
-  rating: number
-  ispdlavg: number
-  ispulavg: number
-  country: string
 }
 
-interface Speeds {
-  download: number
-  upload: number
-  originalDownload: number
-  originalUpload: number
+interface Interface {
+  internalIp: string
+  name: string
+  macAddr: string
+  isVpn: boolean
+  externalIp: string
+}
+
+interface Download {
+  bandwidth: number
+  bytes: number
+  elapsed: number
+}
+
+interface Ping {
+  jitter: number
+  latency: number
 }

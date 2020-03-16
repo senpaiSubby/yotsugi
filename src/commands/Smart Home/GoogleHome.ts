@@ -24,7 +24,7 @@ export default class GoogleHome extends Command {
       description: 'Speak through Google Home devices',
       name: 'say',
       ownerOnly: true,
-      usage: [`say [msg]`],
+      usage: ['say [msg]'],
       webUI: true
     })
     this.color = '#4586F7'
@@ -61,7 +61,7 @@ export default class GoogleHome extends Command {
 
       return standardMessage(msg, 'green', `Told Google Home to say [ ${textToHaveSpoken} ]`)
     } catch (e) {
-      return errorMessage(msg, `Failed to connect to Google Home`)
+      return errorMessage(msg, 'Failed to connect to Google Home')
     }
   }
 }

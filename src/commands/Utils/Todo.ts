@@ -45,8 +45,8 @@ export default class Todo extends Command {
         }
 
         if (!todo) {
-          const m = (await warningMessage(msg, 'Todo cannot be empty!')) as Message
-          return m.delete(3000)
+          const m = await warningMessage(msg, 'Todo cannot be empty!')
+          return m.delete({ timeout: 3000 })
         }
 
         todos.push(todo.trim())
@@ -58,7 +58,7 @@ export default class Todo extends Command {
         if (!todos.length) {
           return channel.send(
             embed(msg, 'yellow')
-              .setTitle(`Todo list is empty!`)
+              .setTitle('Todo list is empty!')
               .setDescription(`\`${p}todos add <todo to add>\` to add one`)
           )
         }
@@ -78,7 +78,7 @@ export default class Todo extends Command {
         // Setup initial embed
         const e = embed(msg, 'green', 'todo.png').setTitle('Todo List')
         todos.forEach((i, index) => e.addField(`[ ${index + 1} ]`, `${i}`, true))
-        const m = (await channel.send(e)) as Message
+        const m = await channel.send(e)
 
         await asyncForEach(todos, async (i, index) => {
           await m.react(reactions[index])
@@ -97,7 +97,7 @@ export default class Todo extends Command {
         })
 
         collector.on('collect', async (a) => {
-          if (a.emoji.name === '🛑') return m.clearReactions()
+          if (a.emoji.name === '🛑') return m.reactions.removeAll()
 
           // Find index
           const index = reactions.findIndex((i) => i === a.emoji.name)
@@ -106,15 +106,15 @@ export default class Todo extends Command {
           const name = todos[index]
           todos.splice(index, 1)
           await db.update({ config: JSON.stringify(config) })
-          const removeMessage = (await standardMessage(msg, 'green', `[ ${name} ] removed from todo list`)) as Message
-          removeMessage.delete(2000)
+          const removeMessage = await standardMessage(msg, 'green', `[ ${name} ] removed from todo list`)
+          removeMessage.delete({ timeout: 2000 })
 
           // Edit original embed with updated content
-          await m.clearReactions()
+          await m.reactions.removeAll()
           if (!todos.length) {
             return m.edit(
               embed(msg, 'yellow')
-                .setTitle(`There are no more todos!`)
+                .setTitle('There are no more todos!')
                 .setDescription(`\`${p}todos add <todo to add>\` to add one`)
             )
           }

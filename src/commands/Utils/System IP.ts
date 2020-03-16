@@ -19,7 +19,7 @@ export default class SystemIP extends Command {
       description: 'Get the server IP',
       name: 'ip',
       ownerOnly: true,
-      usage: [`ip`],
+      usage: ['ip'],
       webUI: true
     })
   }

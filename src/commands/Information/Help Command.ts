@@ -75,7 +75,7 @@ export default class Help extends Command {
       if (command && checkUserPerms(command)) {
         const e = embed(msg, 'green')
           .setTitle(`Help - ${capitalize(command.name)}`)
-          .setThumbnail(client.user.avatarURL)
+          .setThumbnail(client.user.avatarURL())
           .setDescription(`**${command.description}**`)
           .addField('Usage', `**${command.usage.join('\n')}**`)
 
@@ -99,7 +99,7 @@ export default class Help extends Command {
     const embedList = Object.keys(splitByCategory).map((key) => {
       const e = Utils.embed(msg, 'green')
         .setTitle(`Help - [ ${key} ]`)
-        .setThumbnail(client.user.avatarURL)
+        .setThumbnail(client.user.avatarURL())
         .setDescription(
           `**Showing commands that you have access to**\n**\`${prefix}help [ command ]\` for command usage**`
         )

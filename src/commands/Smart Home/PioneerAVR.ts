@@ -22,7 +22,7 @@ export default class PioneerAVR extends Command {
       description: 'Control Pioneer AV Recievers',
       name: 'avr',
       ownerOnly: true,
-      usage: [`avr vol [1-100]`, `avr [off/on]`, `avr [mute]`],
+      usage: ['avr vol [1-100]', 'avr [off/on]', 'avr [mute]'],
       webUI: true
     })
   }
@@ -124,7 +124,7 @@ export default class PioneerAVR extends Command {
           return standardMessage(msg, 'green', `:speaker: Current volume is [ ${currentVol} / 100 ]`)
         }
         if (isNaN(level)) {
-          return warningMessage(msg, `Volume should be a number between 1-100`)
+          return warningMessage(msg, 'Volume should be a number between 1-100')
         }
         for (let i = 0; i < 3; i++) {
           await setVolume(level)

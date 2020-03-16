@@ -28,7 +28,7 @@ export default class OmbiMovies extends Command {
       category: 'Media',
       description: 'Search and request movies via Ombi',
       name: 'movie',
-      usage: [`movie [Movie Name]`, `movie tmdb:603`]
+      usage: ['movie [Movie Name]', 'movie tmdb:603']
     })
     this.color = '#E37200'
   }
@@ -40,14 +40,13 @@ export default class OmbiMovies extends Command {
     const { errorMessage, warningMessage, missingConfig, standardMessage, embed, paginate } = Utils
     const { author, channel, member } = msg
 
-    const role = msg.guild.roles.find((r) => r.name === 'requestmovie')
+    const role = msg.guild.roles.cache.find((r) => r.name === 'requestmovie')
     if (!role) {
-      await msg.guild.createRole({ name: 'requestmovie' })
       return channel.send(
         Utils.embed(msg, 'yellow')
           .setTitle('Missing role [ requestmovie ]')
           .setDescription(
-            'I created a role called **requestmovie**. Assign this role to members to let them request movies!'
+            'Please created a role called **requestmovie**. Assign this role to members to let them request movies!'
           )
       )
     }
@@ -106,7 +105,7 @@ export default class OmbiMovies extends Command {
     }
 
     const requestMovie = async (movie) => {
-      if (!member.roles.some((r) => r.name === 'requestmovie')) {
+      if (!member.roles.cache.some((r) => r.name === 'requestmovie')) {
         return warningMessage(msg, 'You must be part of the [ `requestmovie` ] role to request movies.')
       }
 
@@ -148,7 +147,7 @@ export default class OmbiMovies extends Command {
     const movieName = args.join(' ')
 
     if (!movieName) {
-      return warningMessage(msg, `Please enter a valid TV show name!`)
+      return warningMessage(msg, 'Please enter a valid TV show name!')
     }
 
     const results = await getTMDbID(movieName)

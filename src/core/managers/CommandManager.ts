@@ -164,7 +164,7 @@ export class CommandManager {
         'Command Manager',
         `User [ ${author.username} ] tried to run command [ ${requestedCommandName} ] in a DM`
       )
-      return Utils.warningMessage(msg, 'Commands cannot be ran in DM\'s')
+      return Utils.warningMessage(msg, "Commands cannot be ran in DM's")
     }
 
     // Check if command is on cooldown for user
@@ -310,7 +310,7 @@ export class CommandManager {
       )
 
       // Log command was attempted
-      return Utils.standardMessage(msg, 'yellow', `This command only works inside of guilds`)
+      return Utils.standardMessage(msg, 'yellow', 'This command only works inside of guilds')
     }
   }
 
@@ -321,7 +321,7 @@ export class CommandManager {
    */
   private async missingPerms(msg: Message, command: Command) {
     // If command requires specific permissiong
-    if (command.permsNeeded) {
+    if (command.permsNeeded && msg.channel.type !== 'dm') {
       // Check which permissions the user is missing
       const userMissingPerms = Utils.checkPerms(msg.member, command.permsNeeded)
 
@@ -383,7 +383,7 @@ export class CommandManager {
       Log.info('Command Manager', `[ ${msg.author.tag} ] tried to run [ ${command.name} ] without parameters`)
 
       // Notify the user of the arguments needed for the command
-      const m = (await msg.reply(
+      const m = await msg.reply(
         Utils.embed(msg, 'yellow')
           .setTitle('Command requires parameters')
           .setFooter('Message will self destruct in 30 seconds')
@@ -394,9 +394,9 @@ export class CommandManager {
 
             \`\`\`css\n${command.usage.join('\n')}\`\`\``
           )
-      )) as Message
+      )
 
-      return m.delete(10000)
+      return m.delete({ timeout: 10000 })
     }
   }
 
@@ -419,7 +419,7 @@ export class CommandManager {
         )
 
         // Notify user that command is owner only
-        return Utils.errorMessage(msg, `This command is reserved for my Senpai`)
+        return Utils.errorMessage(msg, 'This command is reserved for my Senpai')
       }
     }
   }

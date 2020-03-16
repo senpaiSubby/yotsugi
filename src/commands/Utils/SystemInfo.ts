@@ -58,9 +58,7 @@ export default class SystemInfo extends Command {
     // * ------------------ Usage Logic --------------------
 
     // Send wait message to let user know stats are loading
-    const waitMessage = (await channel.send(
-      embed(msg, 'green').setDescription('**:timer: Loading system stats..**')
-    )) as Message
+    const waitMessage = await channel.send(embed(msg, 'green').setDescription('**:timer: Loading system stats..**'))
 
     // React with a stop sign so when click live stats will stop
     await waitMessage.react('🛑')
@@ -104,7 +102,7 @@ export default class SystemInfo extends Command {
     if (foundReaction) {
       if (foundReaction.emoji.name === '🛑') {
         clearInterval(interval)
-        return waitMessage.clearReactions()
+        return waitMessage.reactions.removeAll()
       }
     }
   }

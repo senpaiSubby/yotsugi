@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { PermissionResolvable } from 'discord.js'
+import { PermissionString } from 'discord.js'
 import { CommandData } from 'typings/Command'
 
 import { BotClient } from '../BotClient'
@@ -17,7 +17,7 @@ export class Command {
   public usage: string[]
   public guildOnly: boolean
   public ownerOnly: boolean
-  public permsNeeded: PermissionResolvable[]
+  public permsNeeded: PermissionString[]
   public disabled: boolean
   public cooldown: number
 
@@ -31,7 +31,7 @@ export class Command {
     this.usage = data.usage || []
     this.guildOnly = data.guildOnly || false
     this.ownerOnly = data.ownerOnly || false
-    this.permsNeeded = data.permsNeeded || []
+    this.permsNeeded = data.permsNeeded || ['SEND_MESSAGES']
     this.cooldown = data.cooldown || 0
     this.disabled = data.disabled || false
   }

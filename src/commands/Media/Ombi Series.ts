@@ -28,7 +28,7 @@ export default class OmbiTV extends Command {
       category: 'Media',
       description: 'Search and request TV Shows via Ombi',
       name: 'tv',
-      usage: [`tv [Series Name]`]
+      usage: ['tv [Series Name]']
     })
     this.color = '#E37200'
   }
@@ -40,14 +40,13 @@ export default class OmbiTV extends Command {
     const { errorMessage, warningMessage, standardMessage, missingConfig, embed, paginate } = Utils
     const { author, member } = msg
 
-    const role = msg.guild.roles.find((r) => r.name === 'requesttv')
+    const role = msg.guild.roles.cache.find((r) => r.name === 'requesttv')
     if (!role) {
-      await msg.guild.createRole({ name: 'requesttv' })
       return msg.channel.send(
         embed(msg, 'yellow')
           .setTitle('Missing role [ requesttv ]')
           .setDescription(
-            'I created a role called **requesttv**. Assign this role to members to let them request TV Shows!'
+            'Please create a tole called **requesttv**. Assign this role to members to let them request TV Shows!'
           )
       )
     }
@@ -106,7 +105,7 @@ export default class OmbiTV extends Command {
     }
 
     const requestTVShow = async (show) => {
-      if (!member.roles.some((r) => r.name === 'requesttv')) {
+      if (!member.roles.cache.some((r) => r.name === 'requesttv')) {
         return warningMessage(msg, 'You must be part of the [ `requesttv` ] role to request TV Shows.')
       }
 
@@ -145,7 +144,7 @@ export default class OmbiTV extends Command {
     const showName = args.join(' ')
 
     if (!showName) {
-      return warningMessage(msg, `Please enter a valid TV show name!`)
+      return warningMessage(msg, 'Please enter a valid TV show name!')
     }
 
     const results = await getTVDBID(showName)

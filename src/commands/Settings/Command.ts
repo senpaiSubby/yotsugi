@@ -158,7 +158,7 @@ export default class CMD extends Command {
       }
 
       // If not then notify user that there are no currently locked commands
-      return standardMessage(msg, 'green', `No commands are currently locked`)
+      return standardMessage(msg, 'green', 'No commands are currently locked')
     }
 
     /**
@@ -326,7 +326,7 @@ export default class CMD extends Command {
         )
       }
 
-      return standardMessage(msg, 'green', `No commands are disabled`)
+      return standardMessage(msg, 'green', 'No commands are disabled')
     }
     // * ------------------ Usage Logic --------------------
 

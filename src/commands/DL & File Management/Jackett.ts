@@ -56,7 +56,7 @@ export default class Jackett extends Command {
     }
 
     // Wait message while we are searching for torrents
-    const waitMessage = (await standardMessage(msg, this.color, 'Searching..')) as Message
+    const waitMessage = await standardMessage(msg, this.color, 'Searching..')
 
     /**
      * Fetches results for the provided term

@@ -1,0 +1,27 @@
+{
+  "timestamp": "2020-03-16T02:58:39.000Z",
+  "ping": { "jitter": 1.474, "latency": 6.962 },
+  "download": { "bandwidth": 28898850, "bytes": 257001703, "elapsed": 9001 },
+  "upload": { "bandwidth": 1433294, "bytes": 5741320, "elapsed": 4006 },
+  "isp": "Spectrum",
+  "interface": {
+    "internalIp": "10.0.0.15",
+    "name": "enp1s0f0",
+    "macAddr": "0C:4D:E9:B0:B5:A2",
+    "isVpn": false,
+    "externalIp": "45.48.105.103"
+  },
+  "server": {
+    "id": 16974,
+    "name": "Spectrum",
+    "location": "Los Angeles, CA",
+    "country": "United States",
+    "host": "speedtest.west.rr.com",
+    "port": 8080,
+    "ip": "142.129.0.65"
+  },
+  "result": {
+    "id": "625eb2f2-1f68-436a-a109-91ba0d7e1908",
+    "url": "https://www.speedtest.net/result/c/625eb2f2-1f68-436a-a109-91ba0d7e1908"
+  }
+}

@@ -38,7 +38,7 @@ export default class Shortcut extends Command {
     switch (param) {
       case 'list': {
         if (!shortcuts.length) {
-          return warningMessage(msg, `There are no shortcuts!`)
+          return warningMessage(msg, 'There are no shortcuts!')
         }
 
         const e = embed(msg, 'green', 'shortcut.png').setTitle('Shortcuts')
@@ -77,7 +77,7 @@ export default class Shortcut extends Command {
       }
       case 'run': {
         const index = shortcuts.findIndex((i) => i.name === args[0])
-        if (index === -1) return warningMessage(msg, `Shortcut doesn't exist`)
+        if (index === -1) return warningMessage(msg, "Shortcut doesn't exist")
 
         const { command, arg } = shortcuts[index]
 

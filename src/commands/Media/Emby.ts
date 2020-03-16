@@ -2,7 +2,7 @@
  * Coded by CallMeKory - https://github.com/callmekory
  * 'It’s not a bug – it’s an undocumented feature.'
  */
-import { RichEmbed } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 import { GeneralDBConfig, NezukoMessage } from 'typings'
 import { get } from 'unirest'
 import urljoin from 'url-join'
@@ -123,7 +123,7 @@ export default class Emby extends Command {
 
     // * ------------------ Usage Logic --------------------
 
-    let e: RichEmbed
+    let e: MessageEmbed
 
     switch (args[0]) {
       case 'streams': {
@@ -162,7 +162,7 @@ export default class Emby extends Command {
 
           currentStreams.forEach((i) => {
             e.addField(
-              `\u200b`,
+              '\u200b',
               `**Username**
               - ${i.user}
               **Client Type**
@@ -218,7 +218,7 @@ export default class Emby extends Command {
 
                 const re = embed(msg, this.color)
                   .setURL(getLink(item))
-                  .setTitle(`Emby Recent - Movies`)
+                  .setTitle('Emby Recent - Movies')
                   .setThumbnail(
                     getImage(item) || 'https://emby.media/community/public/style_images/master/meta_image1.png'
                   )
@@ -240,7 +240,7 @@ export default class Emby extends Command {
 
                 const re = embed(msg, this.color)
                   .setURL(getLink(item))
-                  .setTitle(`Emby Recent - Series`)
+                  .setTitle('Emby Recent - Series')
                   .setThumbnail(
                     getImage(item) || 'https://emby.media/community/public/style_images/master/meta_image1.png'
                   )

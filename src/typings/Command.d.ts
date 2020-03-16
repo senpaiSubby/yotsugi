@@ -3,7 +3,7 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 
-import { PermissionResolvable } from 'discord.js'
+import { PermissionString } from 'discord.js'
 
 interface CommandData {
   name: string
@@ -15,7 +15,7 @@ interface CommandData {
   usage?: string[]
   guildOnly?: boolean
   ownerOnly?: boolean
-  permsNeeded?: PermissionResolvable[]
+  permsNeeded?: PermissionString[]
   disabled?: boolean
   cooldown?: number
 }

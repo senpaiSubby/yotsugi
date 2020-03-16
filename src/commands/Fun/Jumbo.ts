@@ -33,7 +33,7 @@ export default class Jumbo extends Command {
       return warningMessage(msg, 'Please provide a valid emoji.')
     }
 
-    const emoji = client.emojis.get(match[1])
+    const emoji = client.emojis.cache.get(match[1])
 
     if (!emoji) {
       return warningMessage(msg, 'That emoji could not be identified!')

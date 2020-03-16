@@ -196,7 +196,7 @@ export default class Routines extends Command {
 
       case 'list': {
         if (!routines.length) {
-          return warningMessage(msg, `There are no routines!`)
+          return warningMessage(msg, 'There are no routines!')
         }
 
         const embedList = []
@@ -226,7 +226,7 @@ export default class Routines extends Command {
         }
 
         if (!command) {
-          return warningMessage(msg, `Please specify the command to add to the routine`)
+          return warningMessage(msg, 'Please specify the command to add to the routine')
         }
 
         // Check if command is already part of routine

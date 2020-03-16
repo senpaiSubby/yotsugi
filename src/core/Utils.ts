@@ -3,15 +3,7 @@
  * 'It’s not a bug – it’s an undocumented feature.'
  */
 import { Promise as promise } from 'bluebird'
-import {
-  DMChannel,
-  GroupDMChannel,
-  GuildMember,
-  Message,
-  PermissionResolvable,
-  RichEmbed,
-  TextChannel
-} from 'discord.js'
+import { DMChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel } from 'discord.js'
 import fs from 'fs'
 import moment from 'moment'
 import path from 'path'
@@ -31,8 +23,8 @@ export class Utils {
    * @param user GuildeMember to check perms of
    * @param permsNeeded Permission list to check against
    */
-  public static checkPerms(user: GuildMember, permsNeeded: PermissionResolvable[]) {
-    const missingPerms: PermissionResolvable[] = []
+  public static checkPerms(user: GuildMember, permsNeeded: PermissionString[]) {
+    const missingPerms: string[] = []
 
     if (user.id !== config.ownerID && !config.exemptUsers.includes(user.id)) {
       for (const perm of permsNeeded) {
@@ -92,9 +84,9 @@ export class Utils {
   }
 
   /**
-   * Paginates RichEmbeds
+   * Paginates MessageEmbeds
    * @param msg Original message
-   * @param embedList RichEmbed list
+   * @param embedList MessageEmbed list
    * @param [acceptButton] Show accept button?
    */
   public static async paginate(msg: NezukoMessage, embedList: any[], acceptButton?: boolean) {
@@ -105,7 +97,7 @@ export class Utils {
     const totalPages = embedList.length
 
     // Run our loop to wait for user input
-    const paginated = (await msg.channel.send('|')) as NezukoMessage
+    const paginated = await msg.channel.send('|')
     while (running) {
       const index = page - 1
       try {
@@ -164,21 +156,21 @@ export class Utils {
             break
           case '✅':
             running = false
-            await paginated.clearReactions()
+            await paginated.reactions.removeAll()
             return index
           case '🛑': {
             running = false
-            const m = (await msg.channel.send(Utils.embed(msg, 'green').setDescription('Canceling..'))) as NezukoMessage
-            await m.delete(2000)
-            await paginated.clearReactions()
+            const m = await msg.channel.send(Utils.embed(msg, 'green').setDescription('Canceling..'))
+            await m.delete({ timeout: 2000 })
+            await paginated.reactions.removeAll()
             break
           }
         }
       } else {
         running = false
-        await paginated.clearReactions()
+        await paginated.reactions.removeAll()
       }
-      await paginated.clearReactions()
+      await paginated.reactions.removeAll()
     }
   }
 
@@ -289,10 +281,10 @@ export class Utils {
    * @param decimals How many decimal places to include
    */
   public static bytesToSize(bytes: number, decimals = 1) {
-    if (bytes === 0) return '0 Bytes'
+    if (bytes === 0) return '0 B'
     const k = 1024
     const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     // Eslint-disable-next-line no-restricted-properties
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
@@ -320,8 +312,8 @@ export class Utils {
   }
 
   // Global Error Function
-  public static async error(name: string, message: string, channel: TextChannel | DMChannel | GroupDMChannel) {
-    const embed = new RichEmbed()
+  public static async error(name: string, message: string, channel: TextChannel | DMChannel) {
+    const embed = new MessageEmbed()
       .setColor('#cc241d')
       .addField('Module', name, true)
       .addField('Time', new Date(), true)
@@ -346,7 +338,7 @@ export class Utils {
       black: '#282828',
       grey: '#928374'
     }
-    const e = new RichEmbed().setColor(colors[color] ? colors[color] : color)
+    const e = new MessageEmbed().setColor(colors[color] ? colors[color] : color)
 
     if (image) {
       e.setThumbnail(`https://raw.githubusercontent.com/callmekory/nezuko/master/src/core/images/icons/${image}`)
@@ -382,11 +374,11 @@ export class Utils {
 
   // Standard valid options return
   public static async validOptions(msg: NezukoMessage | Message, options: string[]) {
-    const m = (await msg.channel.send(
+    const m = await msg.channel.send(
       Utils.embed(msg, 'yellow', 'question.png').setDescription(
         `:grey_question: **Valid options are:\n\n- ${options.join('\n- ')}**`
       )
-    )) as NezukoMessage
-    return m.delete(20000)
+    )
+    return m.delete({ timeout: 20000 })
   }
 }

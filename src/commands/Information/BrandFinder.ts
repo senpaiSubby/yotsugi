@@ -5,12 +5,11 @@
 
 // TODO fix this shit it doesnt work
 
-import { BotClient } from 'src/core/BotClient'
-import { NezukoMessage } from 'src/typings'
 import twitter from 'twitter'
+import { NezukoMessage } from 'typings'
 import whois from 'whois-2'
-
 import { Command } from '../../core/base/Command'
+import { BotClient } from '../../core/BotClient'
 import { Utils } from '../../core/Utils'
 
 /*!

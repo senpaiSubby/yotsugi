@@ -24,7 +24,7 @@ export default class SabNZBD extends Command {
       category: 'DL & File Management',
       description: 'Control SABNZBD downloads',
       name: 'sab',
-      usage: [`sab list`]
+      usage: ['sab list']
     })
     this.color = '#FFCA28'
   }
@@ -108,7 +108,7 @@ export default class SabNZBD extends Command {
           return paginate(msg, embedList)
         }
         // Else nothing is in download queue
-        return warningMessage(msg, `Nothing in download Queue`)
+        return warningMessage(msg, 'Nothing in download Queue')
       }
 
       // If none of the above options are specified
