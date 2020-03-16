@@ -5,13 +5,11 @@
 import { BotClient } from '../BotClient'
 
 export class Subprocess {
-  public client: BotClient
   public name: string
   public description: string
   public disabled: boolean
 
-  constructor(client: BotClient, data: SubprocessData) {
-    this.client = client
+  constructor(data: SubprocessData) {
     this.name = data.name
     this.description = data.description
     this.disabled = data.disabled || false
@@ -20,7 +18,7 @@ export class Subprocess {
   /**
    * Runs subprocess
    */
-  public async run() {
+  public async run(client: BotClient) {
     throw new Error('Missing Run Method')
   }
 }

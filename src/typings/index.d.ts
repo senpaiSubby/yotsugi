@@ -41,7 +41,7 @@ interface ServerDBConfig {
 interface GeneralDBConfig {
   archivebox: { path: string | null }
   aria2: { host: null; port: null; secure: false; secret: null; saveDir: null }
-  autorun: AutorunItem[]
+  autorun: AutoRun
   priceTracking: any[]
   disabledCommands: any[]
   docker: { host: string | null }

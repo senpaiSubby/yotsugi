@@ -5,6 +5,7 @@
 import { Guild } from 'discord.js'
 import { NezukoMessage } from 'typings'
 
+import { createGunzip } from 'zlib'
 import * as config from '../../config/config.json'
 import { database } from '../database/database'
 import { Log } from '../Logger'
@@ -30,6 +31,7 @@ export class ConfigManager {
     if (db) {
       // Handle DB changes for existing databases
       const cfg = JSON.parse(db.get('config') as string)
+      // Await db.update({ config: JSON.stringify(cfg) })
     }
     // If database doesn\'t exist then create it with the following defaults
     else {
@@ -41,7 +43,7 @@ export class ConfigManager {
         id: ownerID,
         config: JSON.stringify({
           archivebox: { path: null },
-          autorun: [],
+          autorun: { channelID: null, tasks: [] },
           disabledCommands: [],
           docker: { host: null },
           emby: { apiKey: null, host: null, userID: null },

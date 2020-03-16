@@ -71,9 +71,7 @@ export default class Meraki extends Command {
             if (device.description) {
               description = device.description
             } // If no device description set use hostname instead
-            else {
-              description = device.dhcpHostname
-            }
+            else description = device.dhcpHostname
 
             // General device info
             const { ip, vlan, mac } = device

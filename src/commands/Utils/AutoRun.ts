@@ -43,7 +43,7 @@ export default class AutoRun extends Command {
 
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
-    const { autorun } = config
+    const { tasks } = config.autorun
 
     // * ------------------ Logic --------------------
     // * ------------------ Usage Logic --------------------
@@ -53,102 +53,96 @@ export default class AutoRun extends Command {
       case 'changetime': {
         const taskTime = args[1]
         const newTime = args[2]
-        const timeIndex = autorun.findIndex((i) => i.time === taskTime)
+        const timeIndex = tasks.findIndex((i) => i.time === taskTime)
 
         // Check for new name
         if (!newTime) {
-          return warningMessage(msg, `Please specify the time for autorun [ ${newTime} ]`)
+          return warningMessage(msg, `Please specify the time for tasks [ ${newTime} ]`)
         }
 
-        // Check if autorun exists
+        // Check if tasks exists
         if (timeIndex === -1) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun at doesn't exist`)
+          return warningMessage(msg, `[ ${taskTime} ] tasks at doesn't exist`)
         }
 
-        // Rename autorun
-        autorun[timeIndex].time = newTime
+        // Rename tasks
+        tasks[timeIndex].time = newTime
 
         // Save changes
         await db.update({ config: JSON.stringify(config) })
-        await standardMessage(msg, 'green', `Retimed [ ${taskTime} ] autorun to [ ${newTime} ]`)
+        await standardMessage(msg, 'green', `Retimed [ ${taskTime} ] tasks to [ ${newTime} ]`)
         return process.exit()
       }
 
       case 'enable': {
         const taskTime = args[1]
-        const timeIndex = autorun.findIndex((i) => i.time === taskTime)
+        const timeIndex = tasks.findIndex((i) => i.time === taskTime)
 
-        // Check if autorun exists
+        // Check if tasks exists
         if (timeIndex === -1) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun doesn't exist`)
+          return warningMessage(msg, `[ ${taskTime} ] tasks doesn't exist`)
         }
 
         // Check if user specified command
         if (!args[2]) {
-          return warningMessage(msg, `Please specify the command # in [ ${taskTime} ] autorun to enable`)
+          return warningMessage(msg, `Please specify the command # in [ ${taskTime} ] tasks to enable`)
         }
 
         const command = (args[2] as any) - 1
 
         // Get index of individual command list
-        const foundCommand = autorun[timeIndex].commands[command]
+        const foundCommand = tasks[timeIndex].commands[command]
 
         // Check if command exists
         if (!foundCommand) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`)
+          return warningMessage(msg, `[ ${taskTime} ] tasks doesnt contain command # [ ${command} ]`)
         }
 
         // Check current status
-        const isEnabled = autorun[timeIndex].commands[command].enabled
+        const isEnabled = tasks[timeIndex].commands[command].enabled
         if (isEnabled) {
-          return warningMessage(
-            msg,
-            `Command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun is already enabled`
-          )
+          return warningMessage(msg, `Command [ ${foundCommand.command} ] in [ ${taskTime} ] tasks is already enabled`)
         }
-        // Enable command in autorun
+        // Enable command in tasks
         foundCommand.enabled = true
 
         // Save changes
         await db.update({ config: JSON.stringify(config) })
 
-        await standardMessage(msg, 'green', `Enabled command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun`)
+        await standardMessage(msg, 'green', `Enabled command [ ${foundCommand.command} ] in [ ${taskTime} ] tasks`)
         return process.exit()
       }
 
       case 'disable': {
         const taskTime = args[1]
-        const timeIndex = autorun.findIndex((i) => i.time === taskTime)
+        const timeIndex = tasks.findIndex((i) => i.time === taskTime)
 
-        // Check if autorun exists
+        // Check if tasks exists
         if (timeIndex === -1) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun doesn't exist`)
+          return warningMessage(msg, `[ ${taskTime} ] tasks doesn't exist`)
         }
 
         // Check if user specified command
         if (!args[2]) {
-          return warningMessage(msg, `Please specify the command # in [ ${taskTime} ] autorun to disable`)
+          return warningMessage(msg, `Please specify the command # in [ ${taskTime} ] tasks to disable`)
         }
 
         const command = (args[2] as any) - 1
 
         // Get index of individual command list
-        const foundCommand = autorun[timeIndex].commands[command]
+        const foundCommand = tasks[timeIndex].commands[command]
 
         // Check if command exists
         if (!foundCommand) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun doesnt contain command # [ ${command} ]`)
+          return warningMessage(msg, `[ ${taskTime} ] tasks doesnt contain command # [ ${command} ]`)
         }
 
         // Check current status
-        const isEnabled = autorun[timeIndex].commands[command].enabled
+        const isEnabled = tasks[timeIndex].commands[command].enabled
         if (!isEnabled) {
-          return warningMessage(
-            msg,
-            `Command [ ${foundCommand.command} ] in [ ${taskTime} ] autorun is already disabled`
-          )
+          return warningMessage(msg, `Command [ ${foundCommand.command} ] in [ ${taskTime} ] tasks is already disabled`)
         }
-        // Disable command in autorun
+        // Disable command in tasks
         foundCommand.enabled = false
 
         // Save changes
@@ -157,21 +151,21 @@ export default class AutoRun extends Command {
         await standardMessage(
           msg,
           'green',
-          `Disabled command  [ ${command + 1} ][ ${foundCommand.command} ] in [ ${taskTime} ] autorun`
+          `Disabled command  [ ${command + 1} ][ ${foundCommand.command} ] in [ ${taskTime} ] tasks`
         )
         return process.exit()
       }
 
       case 'list': {
-        if (!autorun.length) {
-          return warningMessage(msg, `There are no autoruns!`)
+        if (!tasks.length) {
+          return warningMessage(msg, `There are no autorun commands set!`)
         }
 
         const embedList = []
-        autorun.forEach((i) => {
+        tasks.forEach((i) => {
           const { time, commands } = i
 
-          const e = embed(msg, 'green', 'timer.png').setTitle(`autoruns - [ ${time} ]`)
+          const e = embed(msg, 'green', 'timer.png').setTitle(`autorun commands set - [ ${time} ]`)
 
           commands.forEach((c, index) => {
             const { enabled, command } = c
@@ -186,45 +180,45 @@ export default class AutoRun extends Command {
 
       case 'add': {
         const taskTime = args[1]
-        let index = autorun.findIndex((i: AutorunItem) => i.time === taskTime)
+        let index = tasks.findIndex((i: AutorunItem) => i.time === taskTime)
 
         args.splice(0, 2)
         const command = args.join(' ')
 
         if (!command) {
-          return warningMessage(msg, `Please specify the command to add to the autorun`)
+          return warningMessage(msg, `Please specify the command to add to the tasks`)
         }
 
-        // Create autorun if doesnt exist
+        // Create tasks if doesnt exist
         if (index === -1) {
-          autorun.push({
+          tasks.push({
             time: taskTime,
             commands: [{ command, enabled: true }]
           })
-          index = autorun.findIndex((i) => i.time === taskTime)
+          index = tasks.findIndex((i) => i.time === taskTime)
         }
-        // Check if command is already part of autorun
-        else if (autorun[index].commands.find((c) => c.command.toLowerCase() === command.toLowerCase())) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun already has command [ ${command} ]`)
+        // Check if command is already part of tasks
+        else if (tasks[index].commands.find((c) => c.command.toLowerCase() === command.toLowerCase())) {
+          return warningMessage(msg, `[ ${taskTime} ] tasks already has command [ ${command} ]`)
         } else {
-          autorun[index].commands.push({ command, enabled: true })
+          tasks[index].commands.push({ command, enabled: true })
         }
 
         // Save changes
         await db.update({ config: JSON.stringify(config) })
 
-        await standardMessage(msg, 'green', `Added command [ ${command} ] to [ ${taskTime} ] autorun`)
+        await standardMessage(msg, 'green', `Added command [ ${command} ] to [ ${taskTime} ] tasks`)
 
         return process.exit()
       }
 
       case 'remove': {
         const taskTime = args[1]
-        const timeIndex = autorun.findIndex((i) => i.time === taskTime)
+        const timeIndex = tasks.findIndex((i) => i.time === taskTime)
 
-        // Create autorun if doesnt exist
+        // Create tasks if doesnt exist
         if (timeIndex === -1) {
-          return warningMessage(msg, `[ ${taskTime} ] autorun doesn't exist`)
+          return warningMessage(msg, `[ ${taskTime} ] tasks doesn't exist`)
         }
 
         if (args[2]) {
@@ -232,30 +226,30 @@ export default class AutoRun extends Command {
           const command = args.join(' ')
 
           // Get index of individual command
-          const commandIndex = autorun[timeIndex].commands.findIndex(
+          const commandIndex = tasks[timeIndex].commands.findIndex(
             (i) => i.command.toLowerCase() === command.toLowerCase()
           )
 
           // Check if command exists
           if (
             commandIndex === -1 ||
-            autorun[timeIndex].commands[commandIndex].command.toLowerCase() !== command.toLowerCase()
+            tasks[timeIndex].commands[commandIndex].command.toLowerCase() !== command.toLowerCase()
           ) {
-            return warningMessage(msg, `[ ${taskTime} ] autorun doesnt contain command [ ${command} ]`)
+            return warningMessage(msg, `[ ${taskTime} ] tasks doesnt contain command [ ${command} ]`)
           }
 
-          // Remove command from autorun
-          autorun[timeIndex].commands.splice(commandIndex, 1)
+          // Remove command from tasks
+          tasks[timeIndex].commands.splice(commandIndex, 1)
           await db.update({ config: JSON.stringify(config) })
 
-          await standardMessage(msg, 'green', `Removed command [ ${command} ] from [ ${taskTime} ] autorun`)
+          await standardMessage(msg, 'green', `Removed command [ ${command} ] from [ ${taskTime} ] tasks`)
           return process.exit()
         }
 
         // Save changes
-        autorun.splice(timeIndex, 1)
+        tasks.splice(timeIndex, 1)
         await db.update({ config: JSON.stringify(config) })
-        await standardMessage(msg, 'green', `Removed [ ${taskTime} ] autorun`)
+        await standardMessage(msg, 'green', `Removed [ ${taskTime} ] tasks`)
         return process.exit()
       }
 

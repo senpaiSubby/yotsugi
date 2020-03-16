@@ -36,7 +36,7 @@ export class BotClient extends Client {
     this.on('resume', () => Log.warn('Nezuko', 'Reconnected to Discord'))
 
     // Unhandled Promise Rejections
-    process.on('unhandledRejection', (reason: any) => Log.error('Unhandled Rejection', reason.stack))
+    process.on('unhandledRejection', (reason) => null)
     // Unhandled Errors
     process.on('uncaughtException', (error) => Log.error('Uncaught Exception', error))
   }
@@ -59,13 +59,11 @@ export class BotClient extends Client {
     // Handle general config
     await ConfigManager.handleGeneralConfig()
 
-
-
     const guilds = this.guilds.map((guild) => guild.id)
 
     for (const guildID of guilds) {
       const guild = this.guilds.get(guildID)
-      
+
       // Handle server configs
       await ConfigManager.handleServerConfig(guild)
     }

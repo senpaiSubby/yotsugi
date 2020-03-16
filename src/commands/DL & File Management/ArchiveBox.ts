@@ -33,12 +33,10 @@ export default class ArchiveBox extends Command {
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { path } = config.archivebox
 
-    // If archivebox path ins't set then inform user
     if (!path) {
       return missingConfig(msg, 'ArchiveBox', ['config set archivebox path [path to archivebox]'])
     }
 
-    // Let the user know the archiving is beginning
     await channel.send(
       embed(msg, 'green', 'archivebox.png').setDescription(`**:printer: Archiving the url
 
@@ -52,10 +50,8 @@ export default class ArchiveBox extends Command {
       silent: true
     })
 
-    // If exit code isn't 0 then the archive failed
     if (code !== 0) return errorMessage(msg, `Failed to archive [ ${args[0]} ]`)
 
-    // Notify that archive is complete
     return standardMessage(
       msg,
       'green',

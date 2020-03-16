@@ -19,7 +19,7 @@ export default class AutoRun extends Subprocess {
 
   constructor() {
     super({
-      name: 'AutoRun',
+      name: 'autorun',
       description: 'Schedule commands to run at specified times',
       disabled: false
     })
@@ -52,6 +52,7 @@ export default class AutoRun extends Subprocess {
         if (command) {
           return client.commandManager.runCommand(client, command, message, args)
         }
+
         return `No command [ ${cmdName} ]`
       }
 

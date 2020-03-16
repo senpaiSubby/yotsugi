@@ -10,8 +10,8 @@ import { NezukoMessage } from 'src/typings'
 import twitter from 'twitter'
 import whois from 'whois-2'
 
-import { Command } from '../src/core/base/Command'
-import { Utils } from '../src/core/Utils'
+import { Command } from '../../core/base/Command'
+import { Utils } from '../../core/Utils'
 
 /*!
  * Coded by nwithan8 - https://github.com/nwithan8
@@ -72,9 +72,7 @@ export default class Whois extends Command {
         results = await this.domain_search(`${keyword}.${alt}`)
         if (!results.domain_name) availableAltDomainsList = `${keyword}.${alt}`
       }
-    } else {
-      domainAvailable = true
-    }
+    } else domainAvailable = true
 
     /** Check if Twitter handle is available */
 

@@ -115,31 +115,36 @@ export class Utils {
         // For non embeds
         await paginated.edit(`${embedList[index]} \`Page ${page}/${totalPages}\``)
       }
-      if (totalPages !== 1) {
-        if (page === 1) {
+
+      if (page === 1) {
+        if (totalPages !== 1) {
           await paginated.react('⏭️')
           await paginated.react('➡️')
-          if (acceptButton) await paginated.react('✅')
-          // Await paginated.react('🛑')
-        } else if (page === totalPages) {
-          await paginated.react('⬅️')
-          await paginated.react('⏮️')
-          if (acceptButton) await paginated.react('✅')
-          // Await paginated.react('🛑')
-        } else {
-          await paginated.react('⏮️')
-          await paginated.react('⬅️')
-          await paginated.react('➡️')
-          await paginated.react('⏭️')
-          if (acceptButton) await paginated.react('✅')
-          // Await paginated.react('🛑')
         }
+
+        if (acceptButton) await paginated.react('✅')
+        // Await paginated.react('🛑')
+      } else if (page === totalPages) {
+        if (totalPages !== 1) {
+          await paginated.react('⬅️')
+          await paginated.react('⏮️')
+        }
+
+        if (acceptButton) await paginated.react('✅')
+        // Await paginated.react('🛑')
+      } else {
+        await paginated.react('⏮️')
+        await paginated.react('⬅️')
+        await paginated.react('➡️')
+        await paginated.react('⏭️')
+        if (acceptButton) await paginated.react('✅')
+        // Await paginated.react('🛑')
       }
 
       const collected = await paginated.awaitReactions(
         // tslint:disable-next-line: no-shadowed-variable
         (reaction, user) => ['⬅️', '➡️', '✅', '⏭️', '⏮️', '🛑'].includes(reaction.emoji.name) && user.id === author.id,
-        { max: 1, time: 60000 }
+        { max: 1, time: 60000 * 5 }
       )
 
       const reaction = collected.first()
@@ -240,11 +245,13 @@ export class Utils {
    * @param key Key to sort by
    */
   public static sortByKey(array: any[], key: string) {
-    let sortOrder
+    let sortOrder: number
+
     if (key[0] === '-') {
       sortOrder = -1
       key = key.substr(1)
     }
+
     if (sortOrder === -1) {
       return array.sort((a, b) => {
         const x = a[key]
@@ -267,11 +274,12 @@ export class Utils {
    */
   public static groupBy(array: any[], property: string | number) {
     const hash = []
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < array.length; i++) {
-      if (!hash[array[i][property]]) hash[array[i][property]] = []
-      hash[array[i][property]].push(array[i])
-    }
+
+    array.forEach((item, index) => {
+      if (!hash[array[index][property]]) hash[array[index][property]] = []
+      hash[array[index][property]].push(array[index])
+    })
+
     return hash
   }
 

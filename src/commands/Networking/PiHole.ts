@@ -114,7 +114,7 @@ export default class PiHole extends Command {
             embed(msg, this.color, 'pi.png')
               .setTitle('PiHole Stats')
               .addField('Status', capitalize(status.status), true)
-              .addField("URL's Being Blocked", status.domainsBeingBlocked, true)
+              .addField('URL\'s Being Blocked', status.domainsBeingBlocked, true)
               .addField('Total Queries', status.totalQueries, true)
               .addField('Queries Today', status.queriesToday, true)
               .addField('Blocked Today', status.adsBlockedToday, true)

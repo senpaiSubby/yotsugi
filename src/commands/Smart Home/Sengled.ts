@@ -29,35 +29,32 @@ export default class Sengled extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
-
     const { p } = client
     const { missingConfig, warningMessage, errorMessage, standardMessage, capitalize, embed } = Utils
     const { channel } = msg
 
-    // * ------------------ Config --------------------
+    // Load config from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
 
     const { username, password } = config.sengled
-    const { jsessionid } = config.sengled
-
-    // * ------------------ Check Config --------------------
+    let { jsessionid } = config.sengled
 
     if (!username || !password) {
       const settings = [`${p}config set sengled username <user>`, `${p}config set sengled password <pass>`]
       return missingConfig(msg, 'sengled', settings)
     }
 
-    // * ------------------ Logic --------------------
-
+    // Jsession id must be sent with each api request
     const baseUrl = 'https://us-elements.cloud.sengled.com:443/zigbee'
     const headers = {
       'Content-Type': 'application/json',
       Cookie: `JSESSIONID=${jsessionid}`
     }
 
-    // TODO add sengled login typings
+    /**
+     * Logs into sengled and return jsessionid
+     */
     const login = async () => {
       try {
         const response = await post(`${baseUrl}/customer/remoteLogin.json`)
@@ -77,12 +74,9 @@ export default class Sengled extends Command {
       }
     }
 
-    if (!jsessionid) {
-      config.sengled.jsessionid = await login()
-
-      await db.update({ config: JSON.stringify(config) })
-    }
-
+    /**
+     * Fetches all devices from sengled account
+     */
     const getDevices = async () => {
       try {
         const response = await post(`${baseUrl}/room/getUserRoomsDetail.json`).headers(headers)
@@ -110,6 +104,7 @@ export default class Sengled extends Command {
             })
           })
         })
+
         return deviceList
       } catch (e) {
         // If (api) return `Failed to connect to Sengled`
@@ -118,25 +113,10 @@ export default class Sengled extends Command {
       }
     }
 
-    // Eslint-disable-next-line no-unused-vars
-    const setLight = async (deviceID, deviceName, newState) => {
-      try {
-        await post(`${baseUrl}/device/deviceSetOnOff.json`)
-          .headers(headers)
-          .send({
-            deviceUuid: deviceID,
-            onoff: newState === 'off' ? 0 : 1
-          })
-
-        const icon = newState === 'on' ? ':full_moon:' : ':new_moon:'
-        const state = newState === 'on' ? 'on' : 'off'
-        return standardMessage(msg, 'green', `${icon} [ ${deviceName} ] light turned [ ${state} ]`)
-      } catch (e) {
-        Log.error('Sengled', 'Failed to connect to Sengled', e)
-        await errorMessage(msg, `Failed to connect to Sengled`)
-      }
-    }
-    const setBrightness = async (deviceUuid, deviceName, newBrightness) => {
+    /**
+     * Sets the new brightness of the light from 1-100 percent
+     */
+    const setBrightness = async (deviceUuid, deviceName: string, newBrightness: number) => {
       deviceName = capitalize(deviceName)
       newBrightness = Number(newBrightness)
       try {
@@ -155,7 +135,7 @@ export default class Sengled extends Command {
             return standardMessage(msg, 'green', `${icon} [ ${deviceName} ] light turned [ ${capitalize(newStatus)} ]`)
           }
 
-          return standardMessage(msg, 'green', `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness} ]`)
+          return standardMessage(msg, 'green', `:bulb: [ ${deviceName} ] brightness set to [ ${newBrightness}%]`)
         }
       } catch (e) {
         Log.error('Sengled', 'Failed to connect to Sengled', e)
@@ -163,18 +143,27 @@ export default class Sengled extends Command {
       }
     }
 
-    // * ------------------ Usage Logic --------------------
+    // Check if jsession ID was present and if not generate and save into database
+    if (!jsessionid) {
+      const newJsessionId = await login()
+
+      config.sengled.jsessionid = newJsessionId
+      jsessionid = newJsessionId
+
+      await db.update({ config: JSON.stringify(config) })
+    }
 
     const devices = await getDevices()
-
     if (devices) {
       switch (args[0]) {
+        // Fetches the jsession if from sengled account
         case 'id': {
           const x = await login()
 
           return standardMessage(msg, 'green', `${x.jsessionid}`)
         }
 
+        // List all devices in account
         case 'list': {
           const e = embed(msg, 'green', 'light.png').setTitle(':bulb: Sengled Lights')
           if (typeof devices !== 'string') {
@@ -188,17 +177,22 @@ export default class Sengled extends Command {
           }
           return channel.send(e)
         }
+
+        // If user does `sengled [device name] [on/off/percentage]`
         default: {
           const deviceName = args[0].toLowerCase()
+
           // Find index based of of key name
           let index: number
           if (typeof devices !== 'string') {
             index = devices.findIndex((d) => d.name.toLowerCase() === deviceName)
           }
+
           // If light not found
           if (index === -1) {
             return warningMessage(msg, `Could not find a light named [ ${capitalize(deviceName)} ]`)
           }
+
           const device = devices[index].uuid
 
           if (args[1]) {
@@ -208,9 +202,11 @@ export default class Sengled extends Command {
               const newState = args[1] === 'on' ? 100 : 0
               return setBrightness(device, deviceName, newState)
             }
+
             // Set light brightness eg: !light desk 100
             return setBrightness(device, deviceName, args[1])
           }
+
           // If no brightness specified then toggle light power
           const newState = devices[index].status === 'on' ? 0 : 100
           return setBrightness(device, deviceName, newState)

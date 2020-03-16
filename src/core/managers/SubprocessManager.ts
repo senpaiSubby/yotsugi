@@ -35,33 +35,30 @@ export class SubprocessManager {
     for (const item of subprocesses) {
       const location = path.join(dir, item, 'index.js')
       if (!fs.existsSync(location)) return
-
-      // tslint:disable-next-line:variable-name
-      const Process = require(location).default
-      const instance = new Process(this.client)
-      instance.location = location
-
-      if (!instance.disabled) {
-        if (this.processes.has(instance.name)) {
-          throw new Error('Subprocesses cannot have the same name')
-        } else {
-          this.processes.set(instance.name, instance)
-          this.loadedModules.push(instance.name)
-        }
-      }
+      this.startModule(location)
     }
-    for (const subprocess of this.processes.values()) {
-      this.startModule(subprocess)
-    }
+
     Log.ok('Subprocess Manager', `Loaded [ ${this.loadedModules.join(' | ')} ]`)
   }
 
-  public async startModule(subprocess: Subprocess) {
-    try {
-      await subprocess.run(this.client)
-      this.loadedModules.push(subprocess.name)
-    } catch (err) {
-      Log.warn('Subprocess', err)
+  public async startModule(location: string) {
+    // tslint:disable-next-line:variable-name
+    const Process = require(location).default
+
+    const instance = new Process(this.client)
+
+    instance.location = location
+
+    if (!instance.disabled) {
+      if (this.processes.has(instance.name)) {
+        throw new Error('Subprocesses cannot have the same name')
+      }
+
+      this.processes.set(instance.name, instance)
+
+      this.loadedModules.push(instance.name)
+
+      await instance.run(this.client)
     }
   }
 }

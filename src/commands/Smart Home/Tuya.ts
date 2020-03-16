@@ -29,19 +29,17 @@ export default class Tuya extends Command {
   }
 
   public async run(client: BotClient, msg: NezukoMessage, args: any[]) {
-    // * ------------------ Setup --------------------
-
     const { errorMessage, warningMessage, standardMessage, asyncForEach, capitalize, embed } = Utils
     const { channel } = msg
 
-    // * ------------------ Config --------------------
-
+    // Load config from database
     const db = await database.models.Configs.findOne({ where: { id: client.config.ownerID } })
     const config = JSON.parse(db.get('config') as string) as GeneralDBConfig
     const { tuyaDevices } = config
 
-    // * ------------------ Logic --------------------
-
+    /**
+     * connect to and list device status's
+     */
     const listPlugs = async () => {
       try {
         const deviceList = []
@@ -54,24 +52,28 @@ export default class Tuya extends Command {
           await device.connect()
 
           const currentStatus = await device.get()
+
           deviceList.push({
             name: capitalize(d.name),
             status: currentStatus === 1 ? 'on' : 'off'
           })
+
           await device.disconnect()
         })
 
         return deviceList
       } catch (e) {
-        const text = `Failed to collect device list`
-        Log.error('Tuya', text, e)
-        await errorMessage(msg, text)
+        await errorMessage(msg, `Failed to collect device list`)
       }
     }
 
+    /**
+     * Toggles power state of plug
+     */
     const togglePlug = async (d) => {
       const { id, key } = d
       let { name } = d
+
       name = capitalize(name)
 
       try {
@@ -132,7 +134,6 @@ export default class Tuya extends Command {
           }
           return channel.send(e)
         }
-        return
       }
       default: {
         const deviceName = args[0].toLowerCase()

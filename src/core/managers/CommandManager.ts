@@ -130,7 +130,7 @@ export class CommandManager {
    * @param client BotClient
    */
   public async handleMessage(msg: NezukoMessage, client: BotClient) {
-    const { content, author, channel, guild } = msg
+    const { content, author, guild } = msg
 
     // If message author is the bot then ignore it
     if (msg.author.bot) return
@@ -164,7 +164,7 @@ export class CommandManager {
         'Command Manager',
         `User [ ${author.username} ] tried to run command [ ${requestedCommandName} ] in a DM`
       )
-      return Utils.warningMessage(msg, "Commands cannot be ran in DM's")
+      return Utils.warningMessage(msg, 'Commands cannot be ran in DM\'s')
     }
 
     // Check if command is on cooldown for user
