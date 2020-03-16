@@ -75,7 +75,6 @@ Nezuko was created to simplify the management of my servers. I wanted a easy way
 | Utils                | speedtest   | Runs a network speedtest                       |
 | Utils                | todo        | Your personal todo list                        |
 
-
 <!------------------------- GETTING STARTED ------------------------->
 
 <h2 align="center"><b>Setup With Docker</b></h2>
