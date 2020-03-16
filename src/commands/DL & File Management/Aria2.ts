@@ -85,11 +85,9 @@ export default class Template extends Command {
        */
       const pauseDownload = async (downloadGID: string) => {
         try {
-          const reponse = await aria2.call('pause', downloadGID)
-          if (reponse === downloadGID) console.log('Paused my G')
-        } catch {
-          console.log('File cannot be paused')
-        }
+          const response = await aria2.call('pause', downloadGID)
+          if (response === downloadGID) return true
+        } catch {}
       }
 
       /**
@@ -97,11 +95,9 @@ export default class Template extends Command {
        */
       const unpauseDownload = async (downloadGID: string) => {
         try {
-          const reponse = await aria2.call('unpause', downloadGID)
-          if (reponse === downloadGID) console.log('Unpaused my G')
-        } catch {
-          console.log('File cannot be unpaused')
-        }
+          const response = await aria2.call('unpause', downloadGID)
+          if (response === downloadGID) return true
+        } catch {}
       }
 
       const pauseAll = async () => await aria2.call('pauseAll')

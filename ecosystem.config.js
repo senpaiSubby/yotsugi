@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'nezuko',
-      script: 'build/index.js',
+      script: 'dist/index.js',
       instances: 1,
       autorestart: true,
       watch: false,

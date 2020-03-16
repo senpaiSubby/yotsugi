@@ -1,0 +1,9 @@
+version: '3'
+services:
+  nezuko:
+    image: callmekory/nezuko:latest
+    container_name: nezuko
+    volumes:
+      - /path/for/config/files:/app/dist/config # where config.json, rclone.conf and db are stored
+      - /path/for/logs:/app/logs # path for pm2 logs
+    restart: unless-stopped

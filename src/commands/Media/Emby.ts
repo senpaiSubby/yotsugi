@@ -73,7 +73,6 @@ export default class Emby extends Command {
 
     const getImage = (item) => {
       const mediaType = item.Type
-      // Console.log(mediaType)
       if (mediaType === 'Episode') {
         const seriesId = item.SeriesId
         return urljoin(host, 'Items/', seriesId, '/images/Primary')
@@ -96,7 +95,6 @@ export default class Emby extends Command {
     const fetchData = async (endPoint: string) => {
       try {
         const response = await get(`${urljoin(host, endPoint)}`).headers(headers)
-        console.log(response.body)
 
         switch (response.status) {
           case 200: {

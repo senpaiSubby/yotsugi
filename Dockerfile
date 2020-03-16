@@ -10,18 +10,24 @@ RUN mkdir -p /app
 WORKDIR /app
 
 # Copy and Install bot
-COPY . /app
+COPY src /app/src
+
+COPY package.json /app/
+COPY tsconfig.json /app/
+COPY tslint.json /app/
+
+RUN ls -a
+
 RUN npm install
 RUN npm install --only=dev
 RUN tsc
-RUN gulp
 
 # Expose ports
 EXPOSE 5700
 
 # Expose volume
-VOLUME /app/build/config
+VOLUME /app/dist/config
 VOLUME /app/logs
 
 # Start
-CMD ["pm2-runtime", "build/index.js"]
+CMD ["pm2-runtime", "dist/index.js"]

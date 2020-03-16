@@ -74,9 +74,10 @@ export default class RcloneCacher extends Subprocess {
 
           // Spawn shell and fetch json results from rclone
           // @ts-ignore
-          const { stdout } = await spawn('rclone', [`--config=${configPath} lsjson ${remote}:/ --fast-list -R`], {
+          const { stdout } = await execAsync(`rclone --config=${configPath} lsjson ${remote}:/ --fast-list -R`, {
             maxBuffer: 500 * 1024 * 1024,
-            shell: true
+            shell: true,
+            silent: true
           })
 
           // Open database for remote

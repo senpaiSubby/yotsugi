@@ -1,4 +1,4 @@
-build
+dist
 config
 *.log
 logs

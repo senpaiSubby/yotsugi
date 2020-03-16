@@ -4,15 +4,16 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/callmekory/nezuko.git"
+    "url": "https://github.com/callmekory/nezuko.git"
   },
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0",
   "author": "callmekory",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node dist/index.js"
   },
   "dependencies": {
+    "@callmekory/utils": "^1.0.6",
     "@types/shelljs": "^0.8.6",
     "aria2": "^4.1.0",
     "bluebird": "^3.7.2",
