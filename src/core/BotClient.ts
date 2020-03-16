@@ -19,7 +19,7 @@ export class BotClient extends Client {
     ownerID: string
     prefix: string
     token: string
-    exemptUsers: string[]
+    trustedUsers: string[]
   }
 
   public p: string | undefined

@@ -1,4 +1,9 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/callmekory/nezuko/badge)](https://www.codefactor.io/repository/github/callmekory/nezuko)
+![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/callmekory/nezuko?style=for-the-badge)
+![Docker Pulls](https://img.shields.io/docker/pulls/callmekory/nezuko?style=for-the-badge)
+![GitHub stars](https://img.shields.io/github/stars/callmekory/nezuko?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/callmekory/nezuko?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/callmekory/nezuko?style=for-the-badge)
+
 
 <!------------------------- PROJECT LoggerO ------------------------->
 <br />
@@ -78,17 +83,17 @@ Nezuko was created to simplify the management of my servers. I wanted a easy way
 <!------------------------- GETTING STARTED ------------------------->
 
 <h2 align="center"><b>Setup With Docker</b></h2>
-Easy setup with docker-compose
+Easy setup with docker-compose  
 
 1. Create a folder for Nezuko with a `config` and `logs` directory inside of it. 
-2. Inside the `config` directory make a `config.json` file with the following content. Changing ownerID, prefix and token accordingly. `exceptUsers` are the user ID's of members who bypass permission checks for commands.
+2. Inside the `config` directory make a `config.json` file with the following content. Changing ownerID, prefix and token accordingly. `trustedUsers` are the user ID's of members who bypass permission checks for commands.
 
 ```json
 {
   "ownerID": "YOUR DISCORD USER ID",
   "prefix": "//",
   "token": "YOUR BOT TOKEN",
-  "exemptUsers": []
+  "trustedUsers": ["userID 1", "userID 2"]
 }
 
 ```
@@ -168,7 +173,15 @@ Distributed under the GPL3 License. See `LICENSE` for more information.
 
 <h2 align="center"><b>Contact</b></h2>
 
-You can shoot me a PM on Discord if you have any question. My tag is Sublime#4233
+You can open a issue on github or join my personal Discord server and chat with me there if you'd like some help. Feel free to also DM me, my tag is callmekory#4233
+
+<div align="center">
+	<p>
+		<a href="https://discord.gg/ZmtfTvU"><img src="https://discordapp.com/api/guilds/302306803880820736/widget.png?style=banner2" alt="" /></a>
+	</p>
+</div>
+
+
 
 <!------------------------- ACKNOWLEDGEMENTS ------------------------->
 

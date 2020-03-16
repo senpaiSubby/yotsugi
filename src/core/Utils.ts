@@ -26,7 +26,7 @@ export class Utils {
   public static checkPerms(user: GuildMember, permsNeeded: PermissionString[]) {
     const missingPerms: string[] = []
 
-    if (user.id !== config.ownerID && !config.exemptUsers.includes(user.id)) {
+    if (user.id !== config.ownerID && !config.trustedUsers.includes(user.id)) {
       for (const perm of permsNeeded) {
         if (!user.permissions.has(perm)) missingPerms.push(perm)
       }

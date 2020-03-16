@@ -272,7 +272,7 @@ export class CommandManager {
     })
 
     // If command or usage is locked and user isn't excempt
-    if (locked && !config.exemptUsers.includes(msg.author.id)) {
+    if (locked && !config.trustedUsers.includes(msg.author.id)) {
       // Notify that command is locked
       Log.info('Command Manager', `[ ${msg.author.tag} ] tried to run locked command [ ${lockedMessage} ]`)
       return Utils.warningMessage(msg, `Command [ ${lockedMessage} ] is locked`)
@@ -409,9 +409,9 @@ export class CommandManager {
    */
   private async isNotOwnerOrExempt(msg: Message, command: Command, requestedCommandName: string, args: string[]) {
     // Checks for non owner user
-    if (msg.author.id !== config.ownerID && !config.exemptUsers.includes(msg.author.id)) {
+    if (msg.author.id !== config.ownerID && !config.trustedUsers.includes(msg.author.id)) {
       // If command is marked 'ownerOnly: true' then don't execute
-      if (command.ownerOnly && !config.exemptUsers.includes(msg.author.id)) {
+      if (command.ownerOnly && !config.trustedUsers.includes(msg.author.id)) {
         // Log that the user tried to run a owner only command
         Log.info(
           'Command Manager',
